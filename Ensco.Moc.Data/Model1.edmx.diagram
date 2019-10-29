@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f7c68d5ad35442ecb7d7730686c0f904" Name="Diagram1">
+        <EntityTypeShape EntityType="EnscoMocModel.ActionNotification" Width="1.5" PointX="5.25" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.ActionReview" Width="1.5" PointX="5.25" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Action" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Activity" Width="1.5" PointX="3" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Approval" Width="1.5" PointX="3" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Attachment" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Barrier" Width="1.5" PointX="7.5" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.ClientInterfaceChange" Width="1.5" PointX="3" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.DeviationFromStandard" Width="1.5" PointX="3" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.DocumentChange" Width="1.5" PointX="3" PointY="22" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Document" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Hazard" Width="1.5" PointX="5.25" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Moc" Width="1.5" PointX="0.75" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Notification" Width="1.5" PointX="3" PointY="25.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.OrgStructureChange" Width="1.5" PointX="3" PointY="28" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.PersonnelChange" Width="1.5" PointX="3" PointY="30.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.RegulatoryChange" Width="1.5" PointX="3" PointY="34.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.RigModification" Width="1.5" PointX="3" PointY="37.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Risk" Width="1.5" PointX="3" PointY="41" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.Task" Width="1.5" PointX="12" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.WorkOrder" Width="1.5" PointX="9.75" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupAdmGroup" Width="1.5" PointX="9.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupAdmSubSystem" Width="1.5" PointX="14.25" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupAdmSystem" Width="1.5" PointX="12" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupControlHeirarchy" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupCriticality" Width="1.5" PointX="12.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupMocType" Width="1.5" PointX="5.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupPriority" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupRigModDiscipline" Width="1.5" PointX="14.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupRigModReason" Width="1.5" PointX="7.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupRiskConsequence" Width="1.5" PointX="7.75" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupRiskProbability" Width="1.5" PointX="10" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupRiskSeverity" Width="1.5" PointX="10" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EnscoMocModel.XLookupStatu" Width="1.5" PointX="14.75" PointY="10.75" IsExpanded="true" />
+        <AssociationConnector Association="EnscoMocModel.FK_ActionNotifications_Actions" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_ActionReviews_Actions" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Actions_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Activity_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Hazards_Activity" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Approvals_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Barriers_Hazards" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_ClientInterfaceChange_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_DeviationFromStandard_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_DocumentChange_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Documents_DocumentChange" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Notifications_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_OrgStructureChange_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_PersonnelChange_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_RegulatoryChange_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_RigModification_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Risks_Moc" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_Tasks_WorkOrders" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_XLookupAdmSystem_XLookupAdmGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_XLookupAdmSubSystem_XLookupAdmSystem" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_XLookupRiskProbability_XLookupRiskConsequence" ManuallyRouted="false" />
+        <AssociationConnector Association="EnscoMocModel.FK_XLookupRiskSeverity_XLookupRiskConsequence" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

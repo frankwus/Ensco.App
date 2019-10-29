@@ -1,0 +1,257 @@
+﻿@model Ensco.App.Areas.Oap.Controllers.NoAnswerControlViewModel
+
+@{
+    var guid = Guid.NewGuid();
+}
+<div style="position:relative;">
+    <span style="position: absolute;
+        top: 40%;
+        left: -45px;
+        color: white;
+        font-size: x-large;
+        transform: rotate(270deg);">No Answer
+    </span>
+
+    @Html.DevExpress().FormLayout(l =>
+{
+    l.Name = "NoAnswerLayout_" + guid;
+    l.ColumnCount = 4;
+    l.Width = Unit.Percentage(100);
+
+    l.ControlStyle.BorderTop.BorderWidth = Unit.Pixel(20);
+    l.ControlStyle.BorderTop.BorderColor = Color.Red;
+    l.ControlStyle.BorderLeft.BorderWidth = Unit.Pixel(35);
+    l.ControlStyle.BorderLeft.BorderColor = Color.Red;
+
+    l.UseDefaultPaddings = false;
+
+    l.Items.AddGroupItem(g =>
+    {
+        g.ShowCaption = DefaultBoolean.False;
+        g.ColumnCount = 2;
+        //g.GroupBoxStyle.Border.BorderWidth = Unit.Pixel(0);
+        g.Width = Unit.Percentage(50);
+
+        g.UseDefaultPaddings = false;
+
+        g.GroupBoxStyle.BorderRight.BorderColor = Color.Black;
+        g.GroupBoxStyle.BorderRight.BorderWidth = Unit.Pixel(25);
+
+        g.Items.Add(i =>
+        {
+            i.ColumnSpan = 1;
+            i.Caption = "Beginning Date";
+            i.Name = string.Format("{0}_{1}", "StartDateTime", l.Name);
+            i.NestedExtensionType = FormLayoutNestedExtensionItemType.Label;
+            var labelSettings = (LabelSettings)i.NestedExtensionSettings;
+            labelSettings.Text = Model.StartDateTime.ToLocalTime().ToString("dd-MMM-yyyy HH:mm");
+        });
+
+        if (Model.SourceRigOapChecklistId.HasValue)
+        {
+            g.Items.Add(i =>
+            {
+                i.ColumnSpan = 1;
+                i.ShowCaption = DefaultBoolean.False;
+                i.SetNestedContent(() =>
+                {
+                    Html.DevExpress().HyperLink(link =>
+                    {
+                        link.Properties.Text = "Source Checklist";
+                        link.NavigateUrl = Url.Action("List", "BarrierAuthority", new { Id = Model.SourceRigOapChecklistId });
+                        link.Properties.Target = "_blank";
+                    }).Render();
+                });
+            });
+        }
+
+        g.Items.Add(i =>
+        {
+            i.ColumnSpan = 2;
+            i.Caption = "By";
+            i.FieldName = "StartCommentBy";
+            i.Name = string.Format("{0}_{1}", "StartCommentBy", Model.OapChecklistQuestionId);
+            i.NestedExtensionType = FormLayoutNestedExtensionItemType.Label;
+        });
+
+        g.Items.Add(i =>
+        {
+            i.Caption = "Stop Work Authority Exercised";
+            i.FieldName = "IsStopWorkAuthorityExercised";
+            i.SetNestedContent(() =>
+            {
+                Html.DevExpress().RadioButtonListFor(m => m.IsStopWorkAuthorityExercised, settings =>
+                {
+                    settings.Name = string.Format("{0}_{1}", i.FieldName, Model.OapChecklistQuestionId);
+                    settings.Properties.RepeatDirection = RepeatDirection.Horizontal;
+                    settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+                    settings.Properties.Items.Add("False", "false");
+                    settings.Properties.Items.Add("True", "true");
+
+                }).Render();
+            });
+        });
+
+        g.Items.Add(i =>
+        {
+            i.Caption = "Able to correct immediately";
+            i.FieldName = "WasAbletoCorrectImmediately";
+            i.SetNestedContent(() =>
+            {
+                Html.DevExpress().RadioButtonListFor(m => m.WasAbletoCorrectImmediately, settings =>
+                {
+                    settings.Name = string.Format("{0}_{1}", i.FieldName, Model.OapChecklistQuestionId);
+                    settings.Properties.RepeatDirection = RepeatDirection.Horizontal;
+                    settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+                    settings.Properties.Items.Add("False");
+                    settings.Properties.Items.Add("True");
+                }).Render();
+            });
+        });
+
+        g.Items.Add(i =>
+        {
+            i.Caption = "Describe";
+            i.FieldName = "Comment";
+            i.Name = string.Format("{0}_{1}", i.FieldName, Model.OapChecklistQuestionId);
+            i.ColumnSpan = 2;
+            i.NestedExtension().Memo(m =>
+            {
+                m.Properties.Rows = 4;
+                m.ReadOnly = Model.Status == "Closed";
+                m.Width = Unit.Percentage(100);
+            });
+        });
+
+        g.Items.Add(i =>
+        {
+            i.Caption = "Evidences";
+            i.SetNestedContent(() => Html.RenderAction("MultiFileUploadPartial", new { Area = "Common", Controller = "Admin", SourceForm = "Oap - No Answer Control", SourceFormId = Model.Id, controlName = "Upload_" + l.Name }));
+        });
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                ViewContext.Writer.Write("<div id='upload-container-" + Model.Id + "'>");
+                foreach (var attachment in Model.Attachments)
+                {
+                    Html.DevExpress().HyperLink(link =>
+                    {
+                        link.Properties.Text = attachment.FileName;
+                        link.NavigateUrl = attachment.FilePath;
+                    }).Render();
+                    ViewContext.Writer.Write("<br />");
+                }
+                ViewContext.Writer.Write("</div>");
+            });
+        });
+
+    });
+
+    l.Items.AddGroupItem(g =>
+    {
+        g.ShowCaption = DefaultBoolean.False;
+        g.GroupBoxStyle.Border.BorderWidth = Unit.Pixel(0);
+        g.ColumnCount = 2;
+        g.UseDefaultPaddings = false;
+
+        g.Items.Add(i =>
+        {
+            i.FieldName = "Status";
+            i.ColumnSpan = 1;
+            i.NestedExtension().TextBox(t =>
+            {
+                t.Name = "NoAnswerStatus_" + Model.OapChecklistQuestionId;
+                t.ClientEnabled = true;
+                t.Enabled = false;
+            });
+        });
+
+        if (Model.ClosureRigOapChecklistId.HasValue)
+        {
+            g.Items.Add(i =>
+            {
+                i.ColumnSpan = 1;
+                i.ShowCaption = DefaultBoolean.False;
+                i.SetNestedContent(() =>
+                {
+                    Html.DevExpress().HyperLink(link =>
+                    {
+                        link.Properties.Text = "End Checklist";
+                        link.NavigateUrl = Url.Action("List", "BarrierAuthority", new { Id = Model.ClosureRigOapChecklistId });
+                        link.Properties.Target = "_blank";
+                    }).Render();
+                });
+            });
+        }
+
+        g.Items.Add(i =>
+        {
+            i.Caption = "End Date";
+            i.Name = string.Format("{0}_{1}", "EndDateTime", l.Name);
+            i.NestedExtensionType = FormLayoutNestedExtensionItemType.Label;
+
+            if (Model.EndDateTime.HasValue)
+            {
+                var labelSettings = (LabelSettings)i.NestedExtensionSettings;
+                labelSettings.Text = Model.EndDateTime.Value.ToLocalTime().ToString("dd-MMM-yyyy HH:mm");
+            }
+        });
+
+        g.Items.Add(i =>
+        {
+            i.Caption = "By";
+            i.FieldName = "EndCommentBy";
+            i.ColumnSpan = 2;
+            i.Name = string.Format("{0}_{1}", i.FieldName, l.Name);
+            i.NestedExtensionType = FormLayoutNestedExtensionItemType.Label;
+        });
+
+        g.Items.Add(i =>
+        {
+            i.FieldName = "Correction";
+            i.ColumnSpan = 2;
+            i.Name = string.Format("{0}_{1}", i.FieldName, Model.OapChecklistQuestionId);
+            i.NestedExtension().Memo(m =>
+            {
+                m.Properties.Rows = 5;
+                m.ReadOnly = Model.Status == "Closed";
+                m.Width = Unit.Percentage(100);
+            });
+        });
+
+        g.Items.Add(i =>
+        {
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+            i.ShowCaption = DefaultBoolean.False;
+            i.ColumnSpan = 2;
+            i.NestedExtension().Button(b =>
+            {
+                b.Name = "btnSaveNoAnswer_" + Model.OapChecklistQuestionId;
+                b.Text = "Save Changes";
+                b.ClientVisible = false;
+                b.UseSubmitBehavior = false;
+                b.ClientEnabled = true;
+                b.ClientSideEvents.Click = "function (s,e) { updateNoAnswer('" + Model.Id + "',"+ Model.OapChecklistQuestionId + "); }";
+            });
+        });
+
+        g.Items.Add(i =>
+        {
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+            i.ShowCaption = DefaultBoolean.False;
+            i.ColumnSpan = 2;
+            i.NestedExtension().Button(b =>
+            {
+                b.Name = "btnCloseNoAnswer_" + Model.OapChecklistQuestionId;
+                b.Text = "Close Case";
+                b.ClientVisible = false;
+                b.ClientEnabled = true;
+                b.ClientSideEvents.Click = "function (s,e) { closeNoAnswer('" + Model.Id + "','" + Model.OapChecklistQuestionId + "') }";
+            });
+        });
+    });
+}).GetHtml()
+</div>

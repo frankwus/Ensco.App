@@ -1,0 +1,53 @@
+﻿@model Ensco.Irma.Models.Jobs.JobsHomeModel
+
+@Html.DevExpress().Splitter(settings =>
+{
+    settings.Name = "jobHomeIsolationSplitter";
+    settings.AllowResize = false;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+    settings.SeparatorVisible = false;
+    settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelShortIsolations";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            Html.RenderAction("JobHomeShortTermIsolations", "Jobs", Model);
+        });
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelIsolationsEmpty1";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+        pane.SetContent(() =>
+        {
+            ViewContext.Writer.Write("<br/>");
+        });
+
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelLongIsolations";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            Html.RenderAction("JobHomeLongTermIsolations", "Jobs", Model);
+        });
+    });
+}).GetHtml()
+

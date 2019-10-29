@@ -1,0 +1,90 @@
+﻿@model Ensco.Irma.Models.CrewFlightModel
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().GridView(gridPob =>
+{
+    gridPob.Name = "gridView_CrewChangeFlightPobs";
+    gridPob.SettingsDetail.MasterGridName = "gridView_ActiveCrewChangeFlights";
+    gridPob.KeyFieldName = Model.FlightPobInfo.KeyFieldName;
+
+    gridPob.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "ActiveCrewChangeDetailFlightPartial", FlightId = Model.Id };
+    gridPob.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "ActiveCrewChangeFlightPobAddPartial" };
+    gridPob.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "ActiveCrewChangeFlightPobUpdatePartial" };
+    gridPob.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "ActiveCrewChangeFlightPobDeletePartial" }; //Delete it, this is not a template
+    gridPob.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+
+    gridPob.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    gridPob.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.EditButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    gridPob.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    gridPob.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    gridPob.SettingsCommandButton.CancelButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+    Html.SetEnscoGridColumns(gridPob, typeof(Ensco.Irma.Models.CrewFlightPobModel));
+
+    var attribs = Ensco.Utilities.UtilitySystem.GetCustomAttributes(typeof(Ensco.Irma.Models.CrewFlightPobModel));
+    gridPob.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridPob.SettingsPager.FirstPageButton.Visible = true;
+    gridPob.SettingsPager.LastPageButton.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridPob.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    gridPob.CommandColumn.Visible = false;
+    //gridPob.CommandColumn.ShowEditButton = true;
+    //gridPob.CommandColumn.ShowNewButtonInHeader = false;
+    //gridPob.CommandColumn.ShowDeleteButton = true;
+    //gridPob.CommandColumn.ShowUpdateButton = true;
+    //gridPob.CommandColumn.ShowCancelButton = true;
+    gridPob.CommandColumn.Width = 25;
+    gridPob.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+
+    //GridViewCommandColumnCustomButton item = new GridViewCommandColumnCustomButton();
+    //item.ID = "Onboard";
+    //item.Image.Url = "~/Images/Onboard.png";
+    //item.Image.Width = 24;
+    //item.Image.Height = 24;
+    //item.Index = 2;
+    //gridPob.CommandColumn.CustomButtons.Add(item);
+
+    //gridPob.ClientSideEvents.CustomButtonClick = "function(s, e) { document.location='" + DevExpressHelper.GetUrl(new { Controller = "Personnel", Action = "OnboardPersonnel" }) + "?CrewId=" + Model.CrewChangeId + "&FlightId=" + Model.Id + "&PobId=' + s.GetRowKey(e.visibleIndex) }";
+
+    gridPob.Styles.Header.Wrap = DefaultBoolean.True;
+    gridPob.SettingsPager.EnableAdaptivity = true;
+    gridPob.Styles.FilterRow.BackColor = System.Drawing.Color.LightSkyBlue;
+
+
+    gridPob.EditFormLayoutProperties.ColumnCount = 4;
+    foreach (var attrib in attribs)
+    {
+        if (!attrib.Visible)
+            continue;
+
+        gridPob.EditFormLayoutProperties.Items.Add(attrib.FieldName);
+    }
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+
+    gridPob.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.FlightPobInfo.KeyFieldName;
+    e.QueryableSource = Model.FlightPobInfo.Dataset;
+}).GetHtml()
+
+

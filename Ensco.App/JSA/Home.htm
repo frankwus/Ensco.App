@@ -1,0 +1,229 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <div class="orangecolor" style="font-size:22;font-weight:bold">JSA Home Page </div><br />
+        <table id="t" width="100%" class="marginBottom">
+            <tr style="font-weight:bold">
+                <td>JSAs
+                <td>Additional Forms
+                <td>Ensco Management System
+            <tr>
+                <td> <a href="nonwi.htm"> JSA without a Work Instruction/a>
+                <td>Hazard ID Prompt Card
+            <tr>
+                <td>
+                    <a href="wi.htm"> JSA with a Work Instruction</a>
+                <td>
+        </table>
+        <table id="tJsa" border="1" class="marginBottom"></table>
+        <table id="tSearch" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="29">
+                    Search
+            <tr>
+                <td>ID
+                <td><input id="id" type="text" />
+                <td>Type
+                <td><select id="Type"></select>
+                <td>Nonconformity
+                <td><select id="Nonconformity"></select>
+                <td>Status
+                <td><select id="Status"></select>
+            <tr>
+                <td>Participant
+                <td><img src="../Images/Select Personnel icon.png" onclick="on_PobSelect(this)" /><span id="Participant"></span>
+                <td>Has CAPA
+                <td><select id=""></select>
+                <td>Job Supervisor
+                <td><img src="../Images/Select Personnel icon.png" onclick="on_PobSelect(this)" /><span id="JobSupervisor"></span>
+                <td>Date
+                <td>From: <input id="FromDate" type="text" /> To: <input id="ToDate" type="text" />
+            <tr>
+                <td>Job Factors
+                <td><input type="button" onclick="on_Factor(this)" value="..." /><span id="Factors"></span>
+                <td>Hazards
+                <td><select></select>
+                <td>Location
+                <td><input type="button" onclick="on_Location(this)" value="..." /><span id="Location"></span>
+            <tr>
+                <td colspan="8">
+                    <a href="javascript:void(0)" onclick="on_Search(this)">Search</a>
+                    <a href="#" style="margin:10" onclick="on_Clear(this)">Clear</a>
+                    <a href="#" onclick="on_Export()">Export to Excel</a>
+        </table>
+        <table id="tSearchResult" style="margin-bottom:15;display:none" border="1"></table>
+    </form>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var tJsa = $('#tJsa')
+    var tSearch = $('#tSearch')
+    var tSearchResult = $('#tSearchResult')
+    $(document).ready(function () {
+        InitJsa()
+        Init()
+        InitFold()
+    })
+    function InitJsa() {
+        var t = tJsa
+        var xml = GetArray(['usp_JsaGetAll'])
+        DataBind(t, xml)
+        AddHeader(t, 'JSA Management')
+        var arr = [['Open', 'Open JSAs'], ['Closed', 'JSAs Closed Last 24 Hours'], ['Scheduled', 'JSAs Scheduled Next 24 Hours']]
+        for (var i in arr) {
+            var name = arr[i][0]
+            var value = arr[i][1]
+            var tr = t.find('td:contains(' + name + ')').eq(0).closest('tr')
+            $('<tr><td/></tr>').insertBefore(tr).find('td').text(value).attr('colSpan', 11).addClass('darkblue')
+        }
+        //t.find('tr').eq(1).remove()
+        t.find('td:nth-child(4), th:nth-child(4)').remove()
+        t.find('tr').eq(1).find('th>span ').remove()
+        t.find('td:nth-child(1)').each(function () {
+            var td = $(this)
+            var id = td.text()
+            if (isNaN(id))
+                return
+            td.html('<a href=NonWi.htm?id=' + id + '>' + id + '</a>')
+        })
+    }
+    function Init() {
+        t.find('td').css('border', 'none')
+        t.find('a').css('margin-left', 22)
+        
+        InitSearch()
+    }
+    function InitSearch() {
+        var w = 10
+        var t = tSearch
+        t.find('td:even').not(':last').addClass('label').css('text-align', 'right').css('width', w + '%').attr('nowrap', 1)
+        t.find(':text').slice(-2).datepicker({ dateFormat: 'd-M-y' }).css('width', 70)
+        t.find('td:odd').css('width', ((100 - w * 4) / 4) + '%')
+        AddSelectYesNo(t, 1)
+        AddSelect(t, 2, ['Open', 'Closed'])
+        AddSelectYesNo(t, 4)
+        AddSelectYesNo(t, 5)
+        var xml = GetArray(['usp_OapSearchFilter'])
+        //alert(xml )
+        BindSelect(xml, t.find('select').eq(0), 'Position', 'Position')
+        BindSelect(xml, t.find('select').eq(3), 'EmployeeID', 'Name')
+    }
+    function on_Search(src) {
+        var t = tSearch
+        var root = $('<r />')
+        var element = $.createElement('common')
+        t.find('[id]').each(function () {
+            var src = $(this)
+            var id = src.attr('id')
+            if (['Factors', 'Hazards'].indexOf(id) != -1) {
+                CreateXmlList(src, element)
+                return
+            }
+            var value = GetVal(src)
+            if (id == '' || !isNaN(id) || value == null || value == '')
+                return
+            element.addAttr(id, value)
+
+        })
+        element.addAttr('Location',  t.find('tr').eq(3).children().eq(5).find('span').attr('id') )
+        root.append(element)
+        var xml = root[0].outerHTML
+        //        alert(xml )
+        xml = GetArray(['usp_JsaSearch', xml])
+        t = tSearchResult
+        t.hide()
+        if ($(xml).text() == '')
+            return
+        DataBind(t, xml)
+        t.show()
+        AddHeader(t, 'Search Results')
+    }
+    function CreateXmlList(span, root) {
+        span.find('[id]').each(function () {
+            var src = $(this)
+            var id = src.attr('id')
+            var element = $.createElement(span.attr('id'))
+            element.addAttr('id', id)
+            root.append(element)
+        })
+    }
+    function on_PobSelect(src) {
+        src = $(src)
+        var r = Popup('../common/popupPob.htm?a=1', 800, 400)
+        if (r == null)
+            return
+        src.next().text(r[1]).attr('userId', r[0])
+    }
+    function on_Factor(src) {
+        src = $(src)
+        var xml = GetArray('select id, Name from ListJsaFactor')
+        OpenDialog(src, xml)
+    }
+    function on_Location(src) {
+        src = $(src)
+        var r = Popup('../common/PopupLocation.htm?a=1', 900, 900)
+        
+        if (r ==null)
+            return
+        var span = src.next()
+        span.attr('id', r[0]).text ( r[1])      
+    }
+    function DialogReturn(src, r) {
+        var span = src.next()
+        if (r == null)
+            return
+        span.children().remove()
+        $(r).find(':checkbox:checked').map(function () {
+            var td = $(this).parent().next()
+            $('<div/>').appendTo(span).text(td.next().text()).attr('id', td.text())
+        })
+    }
+    function OpenDialog(src, xml) {
+        var t = $('<table/>')
+        DataBind(t, xml)
+        t.find('tr').first().remove()
+        t.find('tr').prepend('<td style="width:1%"><input type=checkbox /></td')
+        //var html = '<table><tr><td class=header colspan=2><br>'
+        //$(xml).find('Name').each(function () {
+        //    var element = $(this)
+        //    html += '<tr><td style="width:1%"><input type=checkbox /> <td id =' + element.prev().text() + ' > ' + element.text()
+        //})
+        //html+='</table>'
+        $('<div/>').dialog({
+            autoOpen: false,
+            resizable: true,
+            height: 800,
+            width: 800,
+            modal: true,
+            buttons: {
+                Submit: function () {
+                    DialogClose(this, this)
+                }, 'Cancel': function () {
+                    DialogClose(this, null)
+                }
+            }
+            , open: function () {
+                $(this).prepend('<div>test</div>')
+                $('td').on('click', function (e) {
+                    alert('td ')
+                })
+            }
+        })
+      .data('callback', DialogReturn)
+      .data('src', src)
+      .dialog('open').append(t) 
+    }
+    function DialogClose(src, r) {
+        src = $(src)
+        src.dialog('close');
+        src.data("callback")(src.data("src"), r)
+    }
+</script>

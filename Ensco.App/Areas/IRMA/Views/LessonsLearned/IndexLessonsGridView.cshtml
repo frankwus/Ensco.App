@@ -1,0 +1,95 @@
+﻿@model List<Ensco.OAP.Models.LessonLearnedModel>
+@{ 
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = true;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.AddButtonText = "Add Lesson Learned";
+    options.ShowTitle = false;
+    //options.Title = "Open Lessons Learned";
+}
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "gvLessonsLearned";
+    settings.KeyFieldName = "Id";
+    settings.SettingsPager.PageSize = 10;
+    settings.Height = Unit.Point(300);
+    settings.Caption = DbRes.T("Open Lessons Learned", "Resources");
+
+    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "IndexLessonsGridView" };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "IndexLessonsAddGridView" };
+
+    Html.EnscoStandardGrid(settings, typeof(Ensco.OAP.Models.ViewModels.LL_IndexGridRowModel), options);
+
+    settings.Columns.Remove(settings.Columns["TypeId"]);
+    settings.Columns.Add(col =>
+    {
+        col.Caption = "Type";
+        col.FieldName = "Type.Name";
+        col.VisibleIndex = 2;
+    }); 
+
+    var idColumn = (MVCxGridViewColumn)settings.Columns["Id"];
+    idColumn.Width = Unit.Percentage(3);
+    idColumn.Caption = "Id";
+    idColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    idColumn.Settings.AllowHeaderFilter = DefaultBoolean.False;
+
+
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+
+    settings.EditFormLayoutProperties.ColumnCount = 4;
+    settings.EditFormLayoutProperties.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+
+    settings.EditFormLayoutProperties.Items.Add(t =>
+    {
+        t.ColumnName = "Title";
+        t.Width = Unit.Percentage(70);
+    });
+    settings.EditFormLayoutProperties.Items.Add(t =>
+    {
+        t.Caption = "Impact Level";
+        t.Width = Unit.Percentage(20);
+        t.SetTemplateContent(container =>
+        {
+            Html.DevExpress().ComboBox(cb =>
+            {
+                cb.Name = "ImpactLevel";
+            }).BindList(Enum.GetNames(typeof(Ensco.OAP.Models.LessonsLearnedImpact)).ToList()).GetHtml();
+        });
+    });
+    settings.EditFormLayoutProperties.Items.Add(t =>
+    {
+        t.Caption = "Lesson Learned Type";
+        t.Width = Unit.Percentage(40);
+        t.SetTemplateContent(container =>
+        {
+            Html.DevExpress().ComboBox(cb =>
+            {
+                cb.Name = "TypeId";
+                cb.Properties.TextField = "Name";
+                cb.Properties.ValueField = "Id";
+                cb.Properties.NullText = "[Select]";
+                cb.Properties.ValueType = typeof(int);
+
+                cb.PreRender = (sender, e) =>
+                {
+                    var combobox = (sender as MVCxComboBox);
+                    var items = combobox.Items;
+                };
+            }).BindList(ViewBag.LessonTypes).GetHtml();
+        });
+    });
+
+    settings.EditFormLayoutProperties.Items.AddCommandItem(i => {
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+
+    settings.PreRender = (sender, e) =>
+    {
+        MVCxGridView gridView = (MVCxGridView)sender;
+        gridView.SortBy(gridView.Columns["Id"], DevExpress.Data.ColumnSortOrder.Descending);
+    };
+
+}).Bind(Model).GetHtml()

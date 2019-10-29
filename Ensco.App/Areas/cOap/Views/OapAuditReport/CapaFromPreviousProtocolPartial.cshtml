@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Ensco.App.Areas.cOap.Models.OapCapaProtocolsFlatModel>
+  
+@{
+    var controller = (dynamic)ViewContext.Controller;
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.CapaPreviousProtocolErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+
+        controller.ConfigureCapaPreviousProtocolGrid(settings, Html, ViewContext);
+        
+    });
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+    grid.Bind(Model.OrderByDescending(c => c.FindingId)).GetHtml();
+}

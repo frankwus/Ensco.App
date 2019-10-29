@@ -1,0 +1,92 @@
+﻿@using Ensco.OAP.Models;
+@{
+    // ViewBag won't work after the page is loaded, so needs to access the HttpContext
+    var lessonLearned = (LessonLearnedModel)ViewContext.HttpContext.Session["LessonLearnedModel"];
+    var lessonStatus = lessonLearned.Status;
+
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = (lessonStatus == "Open" || lessonStatus == "Final Review");
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = (lessonStatus == "Open" || lessonStatus == "Final Review");
+    options.ShowCommandColumn = (lessonStatus == "Open" || lessonStatus == "Final Review");
+    options.AddButtonText = "Add Approver";
+    options.ShowTitle = true;
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "gvApproval";
+    settings.Width = Unit.Percentage(100);
+    settings.Caption = "Approval";
+    settings.KeyFieldName = "Id";
+
+    Html.EnscoStandardGrid(settings, typeof(Ensco.Irma.Models.ApprovalModel), options);
+
+    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedApprovalPartial" };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedApprovalAddPartial" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedApprovalDeletePartial" };
+
+    if (lessonStatus == "Open" || lessonStatus == "Pending Review" || lessonStatus == "Final Review")
+    {
+        var toolbar = settings.Toolbars[0];
+        toolbar.Items.Add(i =>
+        {
+            i.Index = 0;
+            i.SetTemplateContent(template =>
+            {
+                Html.DevExpress().Button(button =>
+                {
+                    button.Name = "SubmitForApproval";
+                    button.Text = "Submit For Approval";
+                    button.ControlStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                    button.ControlStyle.ForeColor = System.Drawing.Color.White;
+                    button.ControlStyle.Border.BorderStyle = BorderStyle.None;
+                    button.ClientEnabled = true;
+                    button.ClientSideEvents.Click = "function (s,e) { e.processOnServer = submitForApprovalValidation(); }";
+                    button.RouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "SubmitForApproval" };
+                    if (((IEnumerable<dynamic>)Model).Count() <= 0) // Disables button if there is no approver in the grid
+                    {
+                        button.Enabled = false;
+                        button.ControlStyle.BackColor = System.Drawing.Color.LightGray;
+                    }
+                }).GetHtml();
+            });
+        });
+    }
+
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+    settings.EditFormLayoutProperties.ColumnCount = 4;
+    settings.EditFormLayoutProperties.Items.Add("Approver");
+    settings.EditFormLayoutProperties.Items.Add("DueDate");
+    settings.EditFormLayoutProperties.Items.Add("RequesterComments");
+    settings.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+
+    settings.InitNewRow = (s, e) =>
+    {
+        e.NewValues["DueDate"] = DateTime.Now;
+    };
+
+    settings.CellEditorInitialize = (s, e) =>
+    {
+        switch (e.Column.FieldName)
+        {
+            case "DueDate":
+            case "RequestorComments":
+                e.Editor.ReadOnly = false;
+                break;
+        }
+    };
+
+    // Fixes bug when deleting the last row in the gridview
+    settings.DataBinding += (s, e) =>
+    {
+        DevExpress.Web.Mvc.MVCxGridView grid = (DevExpress.Web.Mvc.MVCxGridView)s;
+        grid.ForceDataRowType(typeof(Ensco.Irma.Models.ApprovalModel));
+    };
+
+}).Bind(Model).GetHtml()

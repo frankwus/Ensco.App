@@ -1,0 +1,121 @@
+﻿<head>
+<style>
+    .calheader{
+       background-color:gray;
+       color:white;     
+       border-color:white; 
+    }
+    .cal{
+    background-color:greenyellow; 
+    border-left:none; 
+    border-right:none; 
+    border-radius:10%; 
+}
+    td{
+        border:1 solid lightgray; 
+    }
+</style>
+
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<table id="t">
+    <tr>
+        <td class="right">
+            <input id="From" type="text" /><input id="To" type="text" />
+            <input type="button" value="Go" onclick="Render(this)" />
+</table>
+<div id="Cal"></div>
+<script>
+    var From, To
+    var t = GetId('t')
+    var Cal =GetId('Cal')
+    $(document).ready(function () {
+
+        Init()
+    })
+    function Init() {
+        From= GetId('From')
+        To  = GetId('To')
+        InitDate(From)
+        InitDate(To)
+        var d=new Date()
+        SetVal(To, GetDateName(d, 0) )
+        d.addDays(-1)
+        SetVal(From, GetDateName(d, 0) )
+        GetId('t').find('td').addClass('noborder')
+        Render()
+    }
+    function Render() {
+       Cal.children().remove() 
+        var d1 = GetDate( GetVal(To)) 
+        var d = GetDate(GetVal(From))
+        var i0 = d.getHours()
+        var hours = GetDiff(d, d1)  +24
+        var xml = GetArray(['usp_JobCalendar', d, d1])
+        // alert (i0 + ' '+hours )
+        var s = '<table class=marginBottom ><tr><td class=calheader >'
+        var s1 = '<tr><td class=calheader >'
+        for (var i = i0; i < i0 + hours; i++) {
+            if (i % 24 == 0)
+                s += '<td colspan=24 class="calheader center" >' + GetDateName(d, i)
+            s1 += '<td width=20 class="calheader center">' + (i % 24)
+        }
+        s += s1
+        GetXmlTable(xml, 1).each(function () {
+            var element = $(this)
+            var title = element.find('JobTitle').text()
+            var start = GetDiff(d, element.find('TargetStart').text())
+            var end =GetDiff(d,  element.find('TargetEnd').text()) 
+            start = parseInt(start)
+            end = parseInt(end )
+            s += '<tr><td class=calheader >' + title
+            for (var i = i0; i < i0 + hours; i++) {
+                var c = ' class'
+                var len = end - start
+
+                if (i == start)
+                    s += '<td  class="center cal" colspan= ' +len +'>'+title
+                else if (i > start && i < end)
+                    continue
+                else 
+                    s += '<td >'
+            }
+        })
+        s += '</table> '
+        $(s).appendTo(Cal)
+        var t = Cal.find('table')
+        t.find('td').first().css('border-bottom', 'none')
+        t.find('tr').eq(1).find('td').first().css('border-top', 'none')
+    }
+    function GetDiff(d, d1) {
+        d1 = new Date(d1)
+        d= new Date(d)
+        var diff = d1.valueOf() - d.valueOf();
+        var hours = diff / 1000 / 60 / 60
+        return hours 
+    }
+    function GetDateName(d0, i) {
+       var d =new Date(d0 )
+        d = d.AddHours(i)
+        var day = d.getDate()
+        if (day < 10)
+            day = '0' + day
+        var m = d.toLocaleString('en-us', { month: "short" });
+        return day + '-' + m + '-' + (d.getYear() - 100)
+    }
+    Date.prototype.AddHours = function (h) {
+        this.setHours(this.getHours() + h);
+        return this;
+    }
+</script>

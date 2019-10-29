@@ -1,0 +1,140 @@
+﻿@using System.Data;
+@using Ensco.Utilities;
+<script src="@Url.Content("~/irma.js")"></script>
+<script src="@Url.Content("~/base.js")"></script>
+@{
+    string[] arr = UtilitySystem.GetGridType();
+    string mType = arr[0];
+    string dType = arr[1];
+    HttpCookie cookie = this.Request.Cookies["ListName"];
+}
+@{
+    string selectionChangedEvent = string.Format("function(s, e){{ var index = s.GetFocusedRowIndex(); document.location = '{0}?passportId=' + s.GetRowKey(index);}}", Url.Action("FleetSummary", "Cap", new { Area = "IRMA" }));
+
+    Dictionary<EnscoHelper.EventHandlerType, string> handlers = new Dictionary<EnscoHelper.EventHandlerType, string>();
+    handlers[EnscoHelper.EventHandlerType.FocusRowChanged] = selectionChangedEvent;
+}
+<br /><span class="dxflGroupBoxCaption_EnscoTheme">List</span>
+@Html.DevExpress().ComboBox( settings => {
+   settings.Name = "cbAdminList";
+   settings.Width = 180;
+   settings.Properties.ValueType = typeof(string);
+
+   DataTable dt=(DataTable)ViewData["AdminList"];
+   foreach (DataRow dr in dt.Rows )
+       settings.Properties.Items.Add( this.Translate(dr[0].ToString() ) ) ;
+
+   settings.Properties.ClientSideEvents.SelectedIndexChanged = "function(s,e){onComboBoxSelectedIndexChanged(s, e) }";
+   settings.PreRender = (s, e) => {
+       MVCxComboBox cb = (MVCxComboBox)s;
+       for (int i = 0; i < cb.Items.Count; i++) {
+           if (cookie != null && cb.Items[i].Text.Replace("POB ", "POB_").Replace(" ", "")  == cookie.Value) {
+               cb.SelectedIndex = i;
+           }
+       }
+   };
+}).GetHtml()
+@Html.DevExpress().PageControl(pc =>
+{
+    pc.Name = "pcManageLists";
+    pc.ActivateTabPageAction = ActivateTabPageAction.Click;
+    pc.EnableHotTrack = true;
+    pc.SaveStateToCookies = true;
+    pc.TabAlign = TabAlign.Left;
+    pc.TabPosition = TabPosition.Top;
+    pc.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    pc.ControlStyle.CssClass = "dxtcFixed";
+    pc.ClientSideEvents.ActiveTabChanged= "function(s,e){onActiveTabChanged(s, e) }";
+
+    Html.RenderAction("GridPartial", "Admin", new { Area = "Common" , mType= mType, dType=dType});
+}).GetHtml()
+@functions {
+    string Translate(string name) {
+        return UtilitySystem.SplitPascalCase(name).Replace("PO B_", "POB"); 
+    }
+}
+<script>
+    $(document).ready(function () {
+        Init()
+    })
+    function Init() {
+    }
+    function onEndCallback(s, e) {
+    }
+    function TextChanged(s, e) {
+    }
+    function onFocusRowChangedEvent(s, e) {
+        var index = s.GetFocusedRowIndex();
+        var position = GetId('PassportId_DDD_gv_DXMainTable').children().children().eq(index+1).children().eq(5).text()
+        grid.GetEditor('Position').SetValue(position)
+        var k = s.GetRowKey(index)
+    }
+    function onBeginCallback(s, e) {
+        try {
+            if (e.command != 'UPDATEEDIT')
+                return
+            if (PassportId == null)
+                return
+            var passport = PassportId.GetValue()
+            if (passport == null ) {
+                alert('Please select a value. ')
+                return false
+            }
+            $('[name=PassportId]').val(passport[0])
+        } catch (ex) {
+
+        }
+    }
+    function UpdateRow() {
+        var tr = $('[id*="_DXEditingRow"]') 
+        if (tr.length == 0) {
+            setTimeout(function () {
+                UpdateRow()
+            }, 100)
+            return
+        }
+        var arr = ['Rig', 'JobCode']
+        var tHeader = GetId(Name + '_DXHeaderTable')
+        for (var i in arr) {
+            tHeader.find('tr').eq(1).children().each(function (index) {
+                console.log(GetVal($(this).find('td').eq(0)))
+                if (MyReplace(GetVal($(this).find('td').eq(0)), ' ', '') == arr[i]) {
+                    var td = tr.children().eq(index)
+                    td.children().hide()
+                    $('<div>' + GetVal(td.find(':text')) + ' </div>').appendTo(td)
+                }
+            })
+        }
+    }
+    function onComboBoxSelectedIndexChanged(s, e) {
+        var name = s.GetValue()
+        name=name.replace('POB ', 'POB_').replace(' ', '')
+        setCookie('ListName', name)
+        var mType = "Ensco.Models." + name + "Model";
+        var dType = "Ensco.Irma.Data.Master_" + name;
+        if (name.indexOf("POB_") != -1 ) {
+            name=name.replace('POB_', '')
+            mType = 'Ensco.Irma.Models.'+name +'Model'
+            dType = 'Ensco.Irma.Data.POB_'+name ;
+        }
+        setCookie('mType', mType)
+        setCookie('dType', dType)
+        if (name != null)
+            window.location = '@Url.Content("~/Common/Admin/ManageLists")'
+    }
+    function onToolbarItemClick(s, e) {
+        s.AddNewRow();
+    }
+    function onActiveTabChanged(s, e) {
+        var pc = pcManageLists
+        var cb = cbAdminList
+        cb.SetVisible(false )
+        if (pc.GetActiveTabIndex() == 3)
+            cb.SetVisible(true )
+    }
+</script>
+
+
+
+
+

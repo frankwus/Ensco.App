@@ -1,0 +1,9 @@
+﻿@model string 
+@using Ensco.Utilities
+@using Ensco.Models;
+@using System.Data;
+
+@{
+    DataSet ds = (DataSet)this.ViewBag.dsSummary;
+}
+@Html.BindDataTable("Summary", "Summary", ds.Tables[0], "irma", "capa", "SummaryPartial", Model )

@@ -1,0 +1,30 @@
+﻿@model Ensco.Models.LookupListModel<dynamic>
+
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().GridView(gridPob =>
+{
+    gridPob.Name = "gridViewActiveCrewInbound";
+    gridPob.KeyFieldName = Model.KeyFieldName;
+    gridPob.Settings.ShowTitlePanel = true;
+    gridPob.SettingsText.Title = "Inbound";
+    gridPob.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "ActiveCrewChangeInboundPartial", FlightId = Model.Id };
+
+    Html.SetEnscoGridColumns(gridPob, typeof(Ensco.Irma.Models.CrewFlightPobModel));
+
+    var attribs = Ensco.Utilities.UtilitySystem.GetCustomAttributes(typeof(Ensco.Irma.Models.CrewFlightPobModel));
+    gridPob.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridPob.SettingsPager.FirstPageButton.Visible = true;
+    gridPob.SettingsPager.LastPageButton.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridPob.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    gridPob.Styles.Header.Wrap = DefaultBoolean.True;
+    gridPob.SettingsPager.EnableAdaptivity = true;
+    gridPob.Styles.FilterRow.BackColor = System.Drawing.Color.LightSkyBlue;
+
+}).Bind(Model.Items).GetHtml()
+
+
+

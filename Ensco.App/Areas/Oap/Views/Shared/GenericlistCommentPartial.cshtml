@@ -1,0 +1,12 @@
+﻿@model Ensco.Irma.Oap.WebClient.Rig.RigOapChecklistComment
+ 
+
+@Html.DevExpress().FormLayout(settings => { 
+
+    var genericListController = (dynamic) ViewContext.Controller;
+    genericListController.ConfigureComment(settings, Html, ViewContext, Model);
+
+}).Bind(Model).GetHtml()
+
+
+

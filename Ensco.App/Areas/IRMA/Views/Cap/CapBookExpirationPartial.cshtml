@@ -1,0 +1,45 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    options.ShowToolbar = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CapBookExpirationCompetency";
+    grid.KeyFieldName = Model.Competency.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Cap", Action = "CapBookExpirationPartial" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.TLC.Models.CAP_CompetencyAssessModel), options);
+
+    grid.CommandColumn.Width = Unit.Pixel(25);
+    // Master Detail
+    grid.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+    grid.SettingsDetail.ShowDetailRow = true;
+
+    grid.SetDetailRowTemplateContent(c =>
+    {
+        if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+        {
+            Html.RenderAction("CapBookExpirationDetailPartial", new { compId = DataBinder.Eval(c.DataItem, Model.Competency.KeyFieldName) });
+        }
+    });
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.Competency.KeyFieldName;
+    e.QueryableSource = Model.Competency.Dataset;
+}).GetHtml()
+
+
+

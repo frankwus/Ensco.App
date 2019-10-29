@@ -1,0 +1,136 @@
+﻿@using Ensco.Irma.Oap.WebClient.Rig
+@using Ensco.App.Areas.Oap.Controllers
+@using Ensco.Utilities
+
+@model IEnumerable<RigOapChecklistVerifier>
+
+@{
+    var genericListController = (dynamic) ViewContext.Controller;
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.VerificationErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+}
+
+@{ 
+    RigOapChecklist checklist = (RigOapChecklist)ViewBag.RigChecklist;
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gridviewVerifiers";
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.BackColor = ColorTranslator.FromHtml("#f4f4f4"); ;
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "UserId";
+        c.Caption = Html.Translate("Name");
+
+        c.CellStyle.HorizontalAlign = HorizontalAlign.Left;
+
+        c.SetDataItemTemplateContent(container =>
+        {
+            var userId = (Int32)DataBinder.Eval(container.DataItem, "UserId");
+            if (userId != 0)
+            {
+                var userModel = Ensco.Services.ServiceSystem.GetUser(userId);
+
+                ViewContext.Writer.Write(userModel.DisplayName);
+            }
+        });
+
+    });
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Role";
+        c.Caption = Html.Translate("Role");
+    });
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Comment";
+        c.Caption = Html.Translate("Comment");
+        c.SetDataItemTemplateContent(container =>
+        {
+            var assigneeId = (int)DataBinder.Eval(container.DataItem, "UserId");
+            var status = DataBinder.Eval(container.DataItem, "Status");
+            if (GridConstants.WorkflowStatus.Pending.ToString().Equals(status) && assigneeId == UtilitySystem.CurrentUserId) {
+                Html.DevExpress().TextBox(t =>
+                {
+                    t.Name = "txtComment_" + c.Index;
+                    t.Width = Unit.Percentage(100);
+                }).GetHtml();
+            } else if (GridConstants.WorkflowStatus.Completed.ToString().Equals(status) || GridConstants.WorkflowStatus.Rejected.ToString().Equals(status))
+            {
+                ViewContext.Writer.Write(DataBinder.Eval(container.DataItem, "Comment"));
+            }
+
+        });
+    });
+    
+    settings.Columns.Add(c =>
+    {
+        c.Caption = Html.Translate("Review / Sign");
+        c.Width = Unit.Percentage(15);
+        c.SetDataItemTemplateContent(container =>
+        {
+            DateTime? dateSigned = DataBinder.Eval(container.DataItem, "SignedOn") as DateTime?;
+
+            string role = (string)DataBinder.Eval(container.DataItem, "Role");
+            string status = (string)DataBinder.Eval(container.DataItem, "Status");
+            var assigneeId = (int)DataBinder.Eval(container.DataItem, "UserId");
+
+            if (status == "Completed" || status == "Rejected")
+            {
+                ViewContext.Writer.Write(dateSigned.Value.ToLongDateString());
+            }
+            else if (status == "Pending" && assigneeId == UtilitySystem.CurrentUserId)
+            {
+
+                var order = (Int32)DataBinder.Eval(container.DataItem, "Order");
+
+                string buttonTextAndRouteAction;
+
+                if (role == GridConstants.VerifierRole.Assessor.ToString() || role == GridConstants.VerifierRole.Master.ToString()) // Sign                
+                    buttonTextAndRouteAction = "Sign";                
+                else                
+                    buttonTextAndRouteAction = "Review";                
+
+                Html.DevExpress().Button(btSettings =>
+                {
+                    btSettings.Name = "btnSignatureSign_" + c.VisibleIndex;
+                    btSettings.Text = buttonTextAndRouteAction;
+                    btSettings.UseSubmitBehavior = false;
+                    btSettings.RouteValues = new { Action = buttonTextAndRouteAction, userId = assigneeId, order = order };
+                    btSettings.RenderMode = ButtonRenderMode.Button;
+
+                    // Includes the comment in the submit url
+                    btSettings.ClientSideEvents.Click = string.Format("function (s,e) {{ s.submitUrl = s.submitUrl + \"&Comment=\" + txtComment_{0}.GetValue(); e.processOnServer = confirm('Confirm Signature?'); }} ", c.Index - 1);
+
+                }).Render();
+
+                Html.DevExpress().Button(btSettings =>
+                {
+                    btSettings.Name = "btnSignatureCancel_" + c.VisibleIndex;
+                    btSettings.Text = Html.Translate("Cancel");
+                    btSettings.UseSubmitBehavior = false;
+                    btSettings.Style.Add("margin-left", "0.8em");
+                    btSettings.RouteValues = new { Action = "Cancel", userId = assigneeId, order = order };
+                    btSettings.ClientSideEvents.Click = string.Format("function (s,e) {{ s.submitUrl = s.submitUrl + \"&Comment=\" + txtComment_{0}.GetValue(); e.processOnServer = confirm('Confirm checklist cancellation?'); }}", c.Index - 1);
+                }).Render();                
+            }
+        });
+
+    });
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Status";
+        c.Caption = Html.Translate("Status");
+    });
+
+}).Bind(Model.OrderBy(v => v.Order)).GetHtml()

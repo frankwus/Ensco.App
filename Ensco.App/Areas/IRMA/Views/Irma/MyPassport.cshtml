@@ -1,0 +1,86 @@
+﻿@model Ensco.Irma.Models.IrmaHomeModel
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+            }
+        );
+    </script>
+}
+@Html.DevExpress().PageControl(settings =>
+{
+    settings.Name = "pcIrmaHome";
+    settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+    settings.EnableHotTrack = true;
+    settings.SaveStateToCookies = true;
+    settings.TabAlign = TabAlign.Left;
+    settings.TabPosition = TabPosition.Top;
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.ControlStyle.CssClass = "dxtcFixed";
+
+    settings.TabPages.Add("Me").SetContent(() =>
+    {
+        Html.RenderPartial("IrmaHomeEnscoPassportInfoPartial", Model.UserInfo);
+    });
+    settings.TabPages.Add("PoB History").SetContent(() =>
+    {
+        Html.RenderAction("IrmaHomeEnscoPobPartial");
+    });
+    settings.TabPages.Add("Open CAPAs").SetContent(() =>
+    {
+        Html.RenderAction("OpenCapaPartial", "Capa", new { source = "MyPassport", sourceId = "0", sourceUrl = "My" });
+    });
+    settings.TabPages.Add("Open Tasks").SetContent(() =>
+    {
+        //Html.RenderAction("IrmaHomeEnscoPassportTasksTaskPartial", "Irma", new { flag = 0 } );
+        Html.RenderPartial("IrmaHomeEnscoPassportTasksTaskPartial", "");        
+        Html.RenderAction("ReviewsPartial", "NoAnswer", new { Area = "Oap" });
+    });
+    settings.TabPages.Add("Open Jobs").SetContent(() =>
+    {
+        Html.RenderAction("IrmaHomeEnscoPassportTasksJobPartial", "Irma");
+    });
+    settings.TabPages.Add("Open Energy Isolations").SetContent(() =>
+    {
+        Html.RenderAction("IrmaHomeEnscoPassportTasksIsolationPartial", "Irma");
+    });
+    settings.TabPages.Add("TLC-CAP").SetContent(() => {
+        Html.RenderAction("IrmaHomeEnscoCapPartial", "Irma");
+    });
+    settings.TabPages.Add("TLC-Training").SetContent(() =>
+    {
+        Html.RenderAction("IrmaHomeEnscoPassportTrainingPartial", "Irma" );
+    });
+    settings.TabPages.Add("TLC-Career Development").SetContent(() =>
+    {
+        Html.RenderAction("IrmaHomeEnscoPassportCareerDevPartial", "Irma");
+    });
+}).GetHtml()
+<script>
+    $(document).ready(function () {
+        onEndCallbackTask()
+        onEndCallback()
+    })
+    function onBeginCallback(s, e) {
+    }
+    function onEndCallback(s, e) {
+    }
+    function onEndCallbackTask(s, e) {
+        GetId('grid_HomeTasksTask_DXMainTable').children().children().slice(1).each(function () {
+            var tr = $(this)
+            var arr = [2]
+            for (var i in arr) {
+                var td = tr.children().eq(arr[i])
+                td.html(td.text())
+            }
+        })
+    }
+
+</script>
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+﻿
+@model Ensco.Irma.Models.Admin.ReconcilePassportModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                GetId('grid').find('table').eq(0).children().children().slice(1).each(function () {
+                    var tr = $(this)
+                    var td = tr.children().eq(0)
+                    var id = GetVal(td)
+                    td.html( '<input onclick=onDisable(this) type=button value=Disable id='+id+' />')
+                })
+            }
+        );
+        function onDisable(src ) {
+            src = $(src)
+            var id = src.attr('id')
+            GetAjax('irma/irma/DisablePassport/' + id)
+            grid.PerformCallback() 
+        }
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+                case "MergeUsers":
+                    // process merge here....
+                    alert('Merge Users Implementation');
+                    break;
+            }
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderAction("ReconcilePassportPartial", "Irma", new { Area = "IRMA" });
+}
+

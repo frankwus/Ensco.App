@@ -1,0 +1,35 @@
+﻿@model List<Ensco.OAP.Models.LessonLearnedModel>
+@using Ensco.App.App_Start
+@{
+    ViewBag.Title = "Lessons Learned";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                //AdjustMainGrid(grid_CrewChange); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+    <form>
+      @Html.Action("IndexLessonsGridView", Model)
+    </form> 
+

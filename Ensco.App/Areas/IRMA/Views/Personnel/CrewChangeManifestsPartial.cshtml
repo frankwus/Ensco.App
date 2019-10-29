@@ -1,0 +1,66 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+
+@using Ensco.App.App_Start
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = bPobEditor;
+    options.ShowEditButton = bPobEditor;
+    options.ShowDeleteButton = bPobEditor;
+    options.ShowCommandColumn = true;
+    options.AddButtonText = "Add Manifest";
+    options.Title = "Manifests";
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_Manifest";
+    grid.SettingsDetail.MasterGridName = "grid_CrewChange";
+    grid.KeyFieldName = Model.CrewFlightInfo.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangeManifestsPartial", CrewChangeId=Model.Id };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "ManifestAdd" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "ManifestUpdate" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "ManifestDelete" }; //Disable internally
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.CrewFlightModel), options);
+
+    grid.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    GridViewCommandColumnCustomButton rptBtn = new GridViewCommandColumnCustomButton();
+    rptBtn.Text = "Manifest Report";
+    rptBtn.ID = "ManifestReport";
+    rptBtn.Image.Url = "~/Images/Report.png";
+    rptBtn.Image.Width = 24;
+    rptBtn.Image.Height = 24;
+    grid.CommandColumn.CustomButtons.Add(rptBtn);
+    grid.ClientSideEvents.CustomButtonClick = string.Format("function(s, e){{ document.location = '{0}?Id=' + s.GetRowKey(e.visibleIndex);}}", Url.Action("FlightManifestReport", "Personnel", new { Area = "IRMA" }));
+
+    grid.InitNewRow = (s, e) =>
+    {
+        e.NewValues["DateCreated"] = DateTime.Now;
+        e.NewValues["Status"] = 1;
+    };
+
+    grid.CellEditorInitialize = (s, e) =>
+    {
+        switch (e.Column.FieldName)
+        {
+            case "DateCreated":
+                e.Editor.Value = DateTime.Now;
+                e.Editor.ReadOnly = true;
+                break;
+            case "Status":
+                e.Editor.ReadOnly = true;
+                break;
+        }
+    };
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.CrewFlightInfo.KeyFieldName;
+    e.QueryableSource = Model.CrewFlightInfo.Dataset;
+}).GetHtml()
+

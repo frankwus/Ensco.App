@@ -1,0 +1,58 @@
+﻿@model Ensco.Models.CorpAdminManageModel
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formManageCorpLists";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    var groupItem = form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Manage Lists";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 2;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        i.Width = Unit.Pixel(400);
+        i.Height = Unit.Percentage(100);
+
+        i.Items.Add(x => x.Type, item =>
+        {
+            item.NestedExtension().ComboBox(s =>
+            {
+                s.Properties.ValueType = typeof(int);
+                s.Properties.TextField = "Name";
+                s.Properties.ValueField = "Id";
+                s.Properties.DataMember = "Name";
+                s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                s.Properties.NullText = "[Select List Type]";
+                s.Properties.DataSource = Model.ItemType;
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.NestedExtension().Button(s =>
+            {
+                s.Name = "btnCorpListSubmit";
+                s.Text = "";
+                s.Images.Image.Url = "~/Images/Submit.png";
+                s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                s.UseSubmitBehavior = true;
+            });
+        });
+        i.Items.AddEmptyItem();
+        i.Items.AddEmptyItem();
+
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.ColumnSpan = 2;
+            item.SetNestedContent(() =>
+            {
+                Html.RenderPartial("ManageCorpListItemsPartial", Model);
+            });
+        });
+    });
+
+}).GetHtml()
+

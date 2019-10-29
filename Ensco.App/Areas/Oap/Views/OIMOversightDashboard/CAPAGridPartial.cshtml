@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Ensco.App.Areas.Oap.Controllers.CapaOIMGridViewModel>
+
+@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gridOpenCapa";
+    settings.KeyFieldName = "Id";
+
+    settings.SettingsText.Title = "Open CAPAs";
+    settings.Settings.ShowTitlePanel = true;
+
+    // Routes
+    settings.CallbackRouteValues = new { Controller = "OIMOversightDashboard", Action = "GetOpenCAPAs" };
+
+    // Columns
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Id";
+        c.Width = Unit.Percentage(5);
+
+        c.SetDataItemTemplateContent(container =>
+        {
+            Html.DevExpress().HyperLink(link =>
+            {
+                string Id = DataBinder.Eval(container.DataItem, "Id").ToString();
+                link.Properties.Text = Id;
+                string url = "/irma/capa/index/" + Id;
+                if (DataBinder.Eval(container.DataItem, "Source").ToString().ToLower() == "emoc")
+                {
+                    url = DataBinder.Eval(container.DataItem, "SourceUrl").ToString();
+                }
+                link.NavigateUrl = url;
+            }).Render();
+        });
+    });
+    settings.Columns.Add("Source").Width = Unit.Percentage(10);
+    settings.Columns.Add("AssignedBy").Width = Unit.Percentage(15);    
+    settings.Columns.Add("ActionRequired");
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Criticality";
+        c.Width = Unit.Percentage(10);
+
+        c.SetDataItemTemplateContent(container =>
+        {
+            if (DataBinder.Eval(container.DataItem, "Criticality") != null)
+            {
+                switch (Int32.Parse(DataBinder.Eval(container.DataItem, "Criticality").ToString()))
+                {
+                    case 1:
+                        ViewContext.Writer.Write("Low");
+                        break;
+                    case 2:
+                        ViewContext.Writer.Write("Medium");
+                        break;
+                    case 3:
+                        ViewContext.Writer.Write("High");
+                        break;
+                    case 4:
+                        ViewContext.Writer.Write("Critical");
+                        break;
+                    default:
+                        ViewContext.Writer.Write("");
+                        break;
+                }
+            }
+        });
+
+    });
+    settings.Columns.Add("Status").Width = Unit.Percentage(10);
+
+    // Filter
+    settings.Settings.ShowHeaderFilterButton = true;
+
+    // Paging
+    settings.SettingsPager.FirstPageButton.Visible = true;
+    settings.SettingsPager.LastPageButton.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+
+    // Style
+    settings.Width = Unit.Percentage(100);
+
+}).Bind(Model).GetHtml()

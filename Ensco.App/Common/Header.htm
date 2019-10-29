@@ -1,0 +1,156 @@
+﻿
+<table id="EnscoLogo">
+    <tr>
+        <td align="left" style="border-style: none">
+            <img src="../images/logos_previews_ensco_3.gif" alt="Ensco Plc." onclick="on_Logo(this) " />
+        </td>
+        <td id=011311 class="hidden noborder">
+            <input type="button" onclick="on_TogglePaper(this)" value="Toggle" />
+            <input type="button" onclick="on_AutoPermit(this)" value="Auto Permit" />
+            <input type="button" onclick="on_Reset(this)" value="Reset" />
+            <input style="width:200" type="text" /><input type="button" onclick="on_Impersonate(this)" value="Go" />
+            <input type="button" onclick="on_Impersonate(this)" value="Search" />
+            <input type="button" onclick="on_Impersonate(this)" value="PH" />
+            <input type="button" onclick="on_Impersonate(this)" value="PA" />
+            <input type="button" onclick="on_Impersonate(this)" value="PI" />
+            <input type="button" onclick="on_Impersonate(this)" value="Client" />
+            <input type="button" onclick="on_Impersonate(this)" value="F" />
+            <input type="button" onclick="on_Impersonate(this)" value="D" />
+            <input type="button" onclick="on_Impersonate(this)" value="N" />
+            <input type="button" onclick="on_Impersonate(this)" value="TH" />
+<td align="right" style="border-style: none">
+            <img src="../images/IRMA-Logo-Final 04.png" onclick="on_Logo(this)" alt="Integrated Rig Management Advantage" height="60px" />
+        </td>
+    </tr>
+</table>
+<table id="HeaderCrumb" border="0" width="100%" style="background-image:url('../images/bar_RGB3.png'); background-size:100% auto" cellpadding="2">
+    <tr style1="height:30px" class="headerWhite">
+        <td align="left" class="noborder" valign="bottom" id=Crumb>
+            <a href="home.htm" class=headerWhite>ENSCO 100</a><span> > </span>
+            <a href="home.htm" class=headerWhite>OAP</a> <span> > </span>
+            <a href="home.htm" class=headerWhite>Barrier Authority Checklist</a>
+        </td>
+        <td align="right" class="noborder" valign="bottom" width="33%">
+            <a href="../Common/MyPage.htm" style="color:white">My Page</a>
+            <span id=HeaderUserName></span>
+            <img style='padding-left:10px;padding-right:10' title="Change a user" onclick="on_Login(false)" src="../images/080417_CORP_ICN_Select-Personnel_RGB_white.png" height="12" align="middle" />
+            <img style='padding-right:10' title="Log out" onclick="on_Logout(this)" src="../images/Close icon.png" height="12" align="middle" />
+            <!--<a href="" onclick="on_Lang(this);return false " class=headerWhite id=Lang title="Language"> PT</a>-->
+            <select disabled1 onchange="on_Lang(this)" id=Lang title="Language" style="width:50">
+                <option value="EN">EN</option>
+                <option value="PT">PT</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<script>
+
+    InitCrumb()
+    function InitCrumb() {
+        var root = GetSiteUrl().toLowerCase() + '/'
+        var url = window.location.toString().toLowerCase()
+        var path = url.replace(root, '')
+        var id = getParameterByName('id')
+        if (id != '')
+            path = path.toString().split('?').slice(0, 1).toString()
+        if (path.indexOf('swadummy') != -1) {
+            var arr = path.split('/')
+            id = ''
+            if (arr.length > 1) {
+                id = arr[arr.length - 1]
+                path = path.replace('/' + id, '')
+            }
+        }
+        var pageName = GetPagePath()
+        console.log(GetPagePath() + ' ' + pageName.split('/').length)
+
+        if (pageName.split('/').length == 1) {
+            GetId('EnscoLogo').add(GetId('HeaderCrumb')).find('img, a').each(function () {
+                var src = $(this)
+                var url 
+                if (src.prop('tagName') == 'IMG') {
+                     url = src.attr('src')
+                    src.attr('src', url.replace('../', ''))
+                } else {
+                     url = src.attr('href')
+                    src.attr('href', url.replace('../', ''))
+                }
+            })
+            var t = GetId('HeaderCrumb')
+            url = t.css('background-image').toString().toLowerCase()
+            if (url.indexOf('localhost') !=-1 )
+                t.css('background-image',url.replace('/images', '/irma/images'))
+            t.find('select').css('color', 'black').css('border', '1 solid black')
+            pageName=''
+        }
+        var xml = GetArray(['usp_ComGetCrumb', pageName, id])
+        $('#Crumb').html($(xml).text())
+    }
+    function on_Logo(src) {
+        var src = $(src)
+        var img = src.attr('src').toLowerCase()
+        var url = 'https://payzone.enscoplc.com'
+        if (img.indexOf('ensco') == -1)
+            url = GetSiteUrl()
+
+        window.open(url)
+    }
+    function on_Impersonate(src) {
+        src = $(src)
+        var userId = GetVal($('#011311').find('input:text'))
+
+        if (src.val() == 'Search') {
+            var r = GetADUser()
+            userId = r[0]
+        }
+        if (src.val() == 'PH')
+            userId = '77777'
+        if (src.val() == 'PA')
+            userId = '88888'
+        if (src.val() == 'PI')
+            userId = '99999'
+        if (src.val() == 'IA')
+            userId = '22222'
+        if (src.val() == 'Client')
+            userId = '66666'
+
+        if (src.val() == 'J')
+            userId = '002112'
+        if (src.val() == 'F')
+            userId = '011311'
+        if (src.val() == 'D')
+            userId = '022434'
+        if (src.val() == 'N')
+            userId = '009578'
+        if (src.val() == 'TH')
+            userId = 'TEST111'
+        if (userId == '') {
+            localStorage['Impersonate'] = 0
+            userId = '011311'
+        } else
+            localStorage['Impersonate'] = 1
+        var name = GetADUserName(userId)
+        if (Trim(name) == '') {
+            var xml = GetArray(['usp_ComGetNonEnscoUser', userId])
+            name = Trim( $(xml).text() ) 
+        }
+        SaveLoginCookie(userId + ':' + name)
+        Refresh()
+    }
+    function on_AutoPermit() {
+        var src
+        if (Page == 'EI')
+            src = iFrame.contents()
+        var t = GetId('tAuthorization0')
+        t.find('tr').slice(2).find('span').each(function () {
+            var span = $(this)
+            if (GetVal(span.parent().prev()) != 'Client')
+                span.attr('userId', '011311').text('Frank Wang')
+        })
+        // t.find('img').last().trigger('click')
+    }
+    function on_TogglePaper() {       
+        GetArray(['usp_JobPacketToggle', GetPageName(), Id])
+        Refresh()
+    }
+</script>

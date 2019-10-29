@@ -1,0 +1,28 @@
+﻿@model Ensco.OAP.Models.LessonLearnedModel
+<script>
+    function onFileUploadComplete(e) {
+        if (e.callbackData) {
+            var fileData = e.callbackData.split('|');
+            var fileName = fileData[0],
+                fileUrl = fileData[1],
+                fileSize = fileData[2];
+            DXUploadedFilesContainer.AddFile(fileName, fileUrl, fileSize);
+        }
+    }
+</script>
+
+@Html.DevExpress().UploadControl(settings =>
+{
+    settings.Name = "uplLessons";
+    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "UploadFiles", LessonId = Model.Id };
+
+    settings.ShowProgressPanel = true;
+    settings.ShowUploadButton = true;
+    settings.AdvancedModeSettings.EnableMultiSelect = true;
+    settings.AdvancedModeSettings.EnableFileList = true;
+    settings.AdvancedModeSettings.EnableDragAndDrop = true;
+    settings.NullText = "Select a file to upload..";
+
+    //settings.ClientSideEvents.FilesUploadStart = "function(s,e) { DXUploadedFilesContainer.Clear(); }";
+    settings.ClientSideEvents.FileUploadComplete = "function(s,e) { onFileUploadComplete(e); }";
+}).GetHtml()

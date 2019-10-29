@@ -1,0 +1,31 @@
+﻿
+<br />
+<div style="text-align:right">
+    @Html.DevExpress().Button(s => {
+        s.Name = "btnCapa";
+        s.Text = "New CAPA Plan";
+        s.ClientSideEvents.Click = "function(s,e){ window.location='CapaPlan' } ";
+    }
+    ).GetHtml();
+</div>
+@using(Html.BeginForm( )) {
+    Html.RenderAction("OpenCapaPlanPartial", "Capa"); 
+}
+@*@{Html.RenderAction("OpenCapaPartial", "Capa", new { source = "CapaPlanHome", sourceId = "0", sourceUrl = "CapaPlan" });}*@
+
+<script>
+    $(document).ready(function () {
+    })
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

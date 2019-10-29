@@ -1,0 +1,927 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <table border="0">
+            <tr style="border:none">
+                <td width="90%" style="border:none">
+                    <span class="orangecolor">Job Safety Analysis without Work Instruction</span>
+                    <a href="Home.htm">JSA Home</a>
+                    <span id="011311" style="display:none">
+                        <input type="button" onclick="on_Reset(this)" value="Reset" />
+                        <input type="text" /><input type="button" onclick="on_Impersonate(this)" value="Impersonate" />
+                        <input type="button" onclick="on_Impersonate(this)" value="T" />
+                        <input type="button" onclick="on_Impersonate(this)" value="Z" />
+                    </span>
+                <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+                <td><img src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+                <td><img src="Images/outlook.png" onclick="on_Outlook()" />
+                <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+        </table>
+        <table id="tPlanning" class="marginBottom" border="1">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="22">
+                    Planning
+            <tr>
+                <td>JSA ID
+                <td>
+                <td>Job
+                <td><img src="../Images/Link icon.png" onclick="on_JobLink(this) " /><span id="Job"></span><span id="JobTitle"></span>
+                <td>Location
+                <td><input type="button" onclick="on_Location(this)" value="..." /><span id="Location"></span>
+                <td>Date
+                <td width="100"><input id="dt" type="text" />  
+                <td>Status
+                <td width="100" id="Status">
+            <tr>
+        </table>        
+        <table id="tPersonnel" class="marginBottom">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="10">
+                    <span>-</span>Personnel
+            <tr>
+                <td colspan="10">
+                    <table>
+                        <tr>
+                            <td class="label right" width="200">Job Supervisor
+                            <td class="label right" width="20">Position
+                            <td id="SupervisorPosition">
+                            <td class="label right" width="20"> Name
+                            <td>  <img onclick="on_AddSupervisor(this)" src="../Images/Select Personnel icon.png" /><span id="SupervisorName"></span><span id="SupervisorId"></span>
+</table>
+            <tr class="label center">
+                <td>Action
+                <td>Position
+                <td>Name
+                <td> Signature
+                <td>Company
+                <td>Date/Time
+
+            <tr style="display:none">
+                <td>  <img src="../Images//delete.png" width="16" onclick="on_Delete(this)" />
+                <td>
+                <td>
+                <td>
+                <td>
+                <td> <a href=# onclick="on_Now(this); return false">Now</a> <input type="text" />
+            <tr>
+                <td colspan="8">  <a href=# onclick="on_AddPersonnel(this); return false">Add Personnel</a>
+        </table>
+        <table id="tExecution" border="1">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="11">
+                    Execution
+        </table>
+        <table id="tDuty" border="1" class="marginBottom"></table>
+        <table id="tTask" border="1" class="marginBottom"></table>
+        <table id="tEvent" border="1" class="marginBottom"></table>
+        <table id="tFactor" border="1" class="marginBottom"></table>
+
+        <table id="tHand" border="1" class="marginBottom"></table>
+        <table id="tObject" border="1" class="marginBottom"></table>
+        <!--<table id="A" style="display:none">
+            <tr>
+                <td class="orange" style="border-right:none">
+                    <div class="A">S1</div>
+                    <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                <td style="border:none">
+                    <table border="0">
+                        <tr>
+                            <td class="orange" style="border:none">Job Step
+                        <tr>
+                            <td style="border:none">
+                                <input type="text" />
+
+                        <tr>
+                            <td style="border:none">
+                                <table id="H">
+
+                                    <tr>
+                                        <td class="Hazard" style="border-right:none;border-top:none">
+                                            <div class="H">H1</div>
+                                            <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                                        <td style="border:none">
+                                            <table>
+                                                <tr>
+                                                    <td style="border:none">
+                                                        <table>
+
+                                                            <tr>
+                                                                <td class="Hazard" colspan="10" style="border-top:none; border-left:none">
+                                                                    <span>Hazard</span>
+                                                            <tr class="H">
+                                                                <td style="border-left:none;border-bottom:none">
+                                                                    <input type="text" />
+                                                                <td style="border:none">
+                                                                    <table id="B">
+
+                                                                        <tr>
+                                                                            <td colspan="2" style="border:none" class="darkblue">
+                                                                                Barrier
+                                                                            <td style="border-top:none" class="darkblue">
+                                                                                Control Hierarchy Type
+                                                                            <td style="border-top:none;" class="darkblue">Person
+                                                                        <tr class="B">
+                                                                            <td style="border-left:none;">
+                                                                                <div class="B">B1</div>
+                                                                                <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                                                                            <td>
+                                                                                <select />
+                                                                            <td>
+                                                                                <select />
+                                                                            <td>
+                                                                                <table>
+                                                                                    <tr class="P">
+                                                                                        <td width="1" style="border-top:none;border-right:none">
+                                                                                            <div class="P">P1</div>
+                                                                                            <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+
+                                                                                        <td style="border-top:none;border-right:none">
+                                                                                            <span>  </span>
+                                                                                            <img src="../Images/Select Personnel icon.png" onclick="on_PersonSelect(this)" />
+                                                                                    <tr>
+                                                                                        <td style="border-bottom:none;border-right:none" colspan="10"><u><span class="P" onclick="on_AddWingDing(this)">+ Add Person</span></u>
+                                                                                </table>
+                                                                        <tr>
+                                                                            <td style="border-left:none;border-bottom:none" class="B" colspan="10"><u><span class="B" onclick="on_AddWingDing(this)">+ Add Barrier</span></u>
+                                                                        </tr>
+
+                                                                    </table>
+                                                            </tr>
+
+                                                        </table>
+
+                                                </tr>
+
+                                            </table>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="11">
+                                            <u><span class="H" onclick="on_AddWingDing(this)">+ Add Hazard</span></u>
+                                </table>
+                    </table>
+            <tr>
+                <td colspan="11">
+                    <u><span class="A" onclick="on_AddWingDing(this)">+ Add Job Step</span></u>
+        </table>-->
+        <table id="A" style="display:none;margin-bottom:15" ">
+            <tr>
+                <td class="orange" style="border-right:none">
+                    <div class="A">S1</div><div></div><div></div>
+                    <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                <td style="border:none">
+                    <table border="0">
+                        <tr>
+                            <td class="orange" style="border:none">Job Step
+                        <tr class="A">
+                            <td style="border:none">
+                                <input type="text" />
+
+                        <tr>
+                            <td style="border:none">
+                                <table id="H">
+                                    <tr>
+                                        <td class="darkblue" colspan="11">Hazards Applicable to Job – to be completed by the Job Supervisor before commencing the job
+                                    <tr>
+                                        <td class="label" colspan="11">Add Job Factors that are applicable to the job as a whole.  Job Factors that apply to only specific job steps will be entered below.
+
+                                    <tr>
+                                        <td class="Hazard" style="border-right:none">
+                                            <div class="H">H1</div><div></div><div></div>
+                                            <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                                        <td style="border:none">
+                                            <table>
+                                                <tr>
+                                                    <td style="border:none">
+                                                        <table>
+
+                                                            <tr>
+                                                                <td class="Hazard" colspan="10" style="border-top:none; border-left:none">
+                                                                    <span>Hazard</span>
+                                                            <tr class="H">
+                                                                <td style="border-left:none;border-bottom:none">
+                                                                    <input type="text" />
+                                                                <td style="border:none">
+                                                                    <table id="B">
+
+                                                                        <tr>
+                                                                            <td colspan="2" style="border:none" class="darkblue">
+                                                                                Barrier
+                                                                            <td style="border-top:none" class="darkblue">
+                                                                                Control Hierarchy Type
+                                                                            <td style="border-top:none;" class="darkblue">Person
+                                                                        <tr class="B">
+                                                                            <td style="border-left:none;">
+                                                                                <div class="B">B1</div><div></div><div></div>
+                                                                                <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                                                                            <td>
+                                                                                <select />
+                                                                            <td>
+                                                                                <select />
+                                                                            <td>
+                                                                                <table>
+                                                                                    <tr class="P">
+                                                                                        <td width="1" style="border-top:none;border-right:none">
+                                                                                            <div class="P">P1</div><div></div><div></div>
+                                                                                            <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+
+                                                                                        <td style="border-top:none;border-right:none">
+                                                                                            <span>  </span>
+                                                                                            <img src="../Images/Select Personnel icon.png" onclick="on_PobSelect(this)" />
+                                                                                    <tr>
+                                                                                        <td style="border-bottom:none;border-right:none" colspan="10"><u><span class="P" onclick="on_AddWingDing(event, this)">+ Add Person</span></u>
+                                                                                </table>
+                                                                        <tr>
+                                                                            <td style="border-left:none;border-bottom:none" colspan="10"><u><span class="B" onclick="on_AddWingDing(event, this)">+ Add Barrier</span></u>
+                                                                        </tr>
+
+                                                                    </table>
+                                                            </tr>
+
+                                                        </table>
+
+                                                </tr>
+
+                                            </table>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="11">
+                                            <u><span class="H" onclick="on_AddWingDing(event, this)">+ Add Hazard</span></u>
+                                </table>
+                    </table>
+            <tr>
+                <td colspan="11">
+                    <u><span class="A" onclick="on_AddWingDing(event, this)">+ Add Job Step</span></u>
+            <tr>
+                <td colspan="11">
+                    <u><span onclick="on_StartJob( this)">Start the Job</span></u><span> <input id="NewJSAConducted" type="checkbox" />New JSA Conducted</span>
+        </table>
+    </form>
+</body>
+</html>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tPersonnel = $('#tPersonnel')
+    var tExecution = $('#tExecution')
+    var tDuty = $('#tDuty')
+    var tTask = $('#tTask')
+    var tEvent = $('#tEvent')
+    var tFactor = $('#tFactor')
+    var tHand = $('#tHand')
+    var tObject = $('#tObject')
+    var H = $('#H')
+    var A = $('#A')
+    var tVerification = $('#tVerification')
+    var Id = getParameterByName('id')
+    var Page = 'NonWi'
+    var Type='NonWi'
+    var ARR = [ 'Type', 'dt', 'Status', 'SupervisorId', 'Location', 'Job', 'JobTitle', 'SupervisorName', 'SupervisorPosition', 'NewJSAConducted']
+    $(document).ready(function () {
+        if (Id == '') {
+            Id = 0
+        }
+        InitDateTime(['dt'])
+        InsertCommon()
+        tVerification = $('#tVerification')
+        InitFold()
+        var xml = GetArray('usp_JsaGet', [Id])
+        InitPlanning(xml )
+        InitExecution(xml )
+        InitObservation()
+        InitReviewer()
+        Customize()
+        
+        // Init011311()
+        tExecution.find('span').on('click', function (e) {
+            e.stopPropagation()
+            var span = $(this)
+            if (span.text() == '-') {
+                tExecution.nextUntil(tVerification).hide()
+                span.text('+')
+            } else {
+                tExecution.nextUntil(tVerification).show()
+                span.text('-')
+            }
+        })
+        LockSecurity()
+    })
+    function Customize() {
+        var t = tVerification
+    }
+    function on_AddPersonnel(src) {
+        src = $(src)
+        var r = Popup('../common/popupPob.htm', 800, 400)
+        if (r == null)
+            return
+        //r.each(function)
+        var tr0 = src.closest('tr').prev()
+        var tr = tr0.clone().show()
+        // alert(r)
+        var dt = tr.insertBefore(tr0).find(':text') //. datepicker({ dateFormat: 'd-M-y' })
+        InitDateTime(dt )
+        tr.attr('UserId', r[0])
+        tr.children().eq(1).text(r[2])
+        tr.children().eq(2).text(r[1])
+        tr.children().eq(4).text(r[3])
+    }
+    function LockSecurity() {
+        tPersonnel.find('tr:gt(2)').not(':last').not(':last').each(function () {
+            var tr = $(this)
+            if (tr.attr('userid') != UserId || tr.find(':text').val() !='' )
+                tr.find(':text').prop('disabled', true ).prev().hide()
+        })
+    }
+    function InitPlanning(xml ) {
+        var t = tPlanning
+        //var xml = GetArray('usp_JsaGetHeader', [Id])
+        //var src=$(xml)
+        var element = $($.parseXML(xml)).find('Table')
+        t.find('td').eq(1).text(Id)
+        //var dt = t.find(':text').eq(0)
+        $('#dt').datepicker({ dateFormat: 'd-M-y' })
+       // dt.val(element.find('dt').text())
+        var time =$('#Time')
+        time.timepicker({
+            step: 15, // "minuteStep" is also an alternative option
+            showSeconds: true
+        })
+        //time.val(element.find('Time').text())
+        //t.find('td').eq(7).text(element.find('Status').text())
+        t.find('td:even').addClass('label').css('text-align', 'right')
+        //var Location = $('#Location')
+        //Location.text(element.find('Location').text()).attr('id', element.find('LocationId').text())
+
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), element.find(id).text() )
+        }
+    }
+    function InitExecution(xml ) {
+        InitPersonnel(xml)
+        InitDuty(xml)
+        InitTask(xml)
+        InitEvent(xml)
+        InitFactor(xml)
+        InitHazard(xml)
+        InitHand(xml)
+        InitObject(xml)
+        InitStep(xml)
+    }
+    function InitPersonnel(xml) {
+        var t = tPersonnel
+        $(xml).find('Table1').each(function () {
+            var element = $(this)
+            var tr = t.find('tr').slice(-2, -1)
+            var tr1 = tr.clone().show()
+            tr1.insertBefore(tr)
+            tr1.attr('UserId', element.find('UserId').text())
+            tr1.children().eq(1).text(element.find('Position').text())
+            tr1.children().eq(2).text(element.find('Name').text())
+            tr1.children().eq(4).text(element.find('Company').text())
+            var dt =  tr1.children().last().find(':text') 
+   
+            InitDateTime(dt)
+            dt.val(element.find('dt').text() )
+        })
+    }
+    function InitDuty(xml) {
+        var t = tDuty
+        DataBind(t, xml, 2)
+        t.find('td:nth-last-child(1)').each(function () {
+            var td = $(this)
+            var checked = ''
+            if (td.text() == 'true')
+                checked = 'checked'
+            td.html('<input type=checkbox ' + checked + ' />')
+            if (td.prev().text() == 'false')
+                AddDelete(td.closest('tr').children().first())
+            td.prev().remove()
+        })
+        t.find('th:nth-last-child(2)').remove()
+        AddTd(AddTr(t), '<a href=# onclick="on_AddDuty(this); return false">Add </a>', 'td', 3)
+        t.find('tr').eq(0).remove() // .find('th').slice(1).remove()
+        AddHeader(t, 'Job Supervisor Duties').removeClass('header').addClass('darkblue')
+        t.find('tr:gt(0)').not(':last').find('td:nth-child(1),  td:nth-child(2)').addClass('label')
+    }
+    function InitTask(xml) {
+        var t = tTask
+        var html = ''
+        var i = 0
+        $(xml).find('Table3').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            var text = element.find('Text').text()
+            if (i++ % 4 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (element.find('Checked').text() == 'true')
+                checked = ' checked '
+            if (name == 'Other')
+                html += '<td colspan=2 id=' + id + '>' + name + '<input style="margin-left:10;width:50%;border:1 solid" type=text value="' + text + '" />'
+            else
+                html += '<td id=' + id + '>' + name + '<td style="width:1"><input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        AddHeader(t, 'Job Tasks – What am I about to do?').removeClass('header').addClass('darkblue')
+        t.find('tr:gt(0)').find('td:even').addClass('label right')
+    }
+    function InitEvent(xml) {
+        var t = tEvent
+        var html = '<tr>'
+        var i = 0
+        $(xml).find('Table4').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            var checked = ''
+            if (element.find('Checked').text() == 'true')
+                checked = ' checked '
+            html += '<td id=' + id + '><img width=30 src=../images/' + name + '.png /> <input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        AddHeader(t, 'Process Safety Events – What are the worst-case scenarios?').removeClass('header').addClass('darkblue')
+    }
+    function InitFactor(xml) {
+        var t = tFactor
+        var html = ''
+        html += '<tr><td colspan=18 class=label>Add Job Factors that are applicable to the job as a whole.  Job Factors that apply to only specific job steps will be entered below.'
+        html += '<tr style="text-align:center"><td colspan=2><img src=../images/warning.png /><td colspan=4><img src=../images/warning.png /><td colspan=2><img src=../images/warning.png /><td colspan=2><img src=../images/warning.png />'
+        var element = $(xml).find('Table5')
+        var count = element.find('Seq:contains(1)').length
+        for (var i = 0; i < count ; i++) {
+            html += '<tr>'
+            for (var j = 0; j < 5; j++) {
+                html += '<td><td>'
+            }
+        }
+        t.html(html)
+        for (var j = 0; j < 5; j++) {
+            element.find('seq:contains(' + (j + 1) + ')').each(function (index) {
+                var src = $(this)
+                var id = src.prev().prev().text()
+                var name = src.prev().text()
+                var checked = ''
+                if (src.next().text() == 'true')
+                    checked = ' checked '
+                var td = t.find('tr').eq(index + 3).find('td').eq(j * 2)
+                td.text(name).attr('id', id)
+                td.next().html('<input type=checkbox ' + checked + '/>')
+            })
+        }
+        t.find('img').width(30)
+        AddHeader(t, 'Job Factors Applicable to Job – to be completed by the Job Supervisor before commencing the job')
+            .removeClass('header').addClass('darkblue').attr('colSpan', 11)
+        t.find('tr').eq(2).addClass('label')
+        t.find('tr:gt(2)').find('td:even').addClass('label')
+    }
+    function InitHazard(xml) {
+        var element = $($(xml).find('Table6').text())
+        A.find('td').css('padding', 0)
+        A.find(':text').width('98%')
+
+        var xml = GetArray(' select * from ListBarrier select * from ListCHT')
+        BindSelect(xml, H.find('select').eq(0), 0)
+        BindSelect(xml, H.find('select').eq(1), 1)
+        var t = H.clone().show()
+        t.insertAfter(tFactor)
+        //t.find('.Delete').closest('tr').remove()
+        InitH(t, element)
+    }
+    function InitH(t, element) {
+        element.each(function (index) {  //Hazard
+            var elementH = $(this)
+            console.log(elementH[0].outerHTML)
+            var span = t.find('span.H').last()
+            if (index > 0)
+                span.trigger('click')
+            var trH = span.closest('tr').prev()
+            trH.find(':text').val(elementH.attr('Text'))
+            UpdateDiv(trH, elementH, 'H')
+            $('B', elementH).each(function (index) { //Barrier
+                var elementB = $(this)
+                var span = trH.find('span.B').last()
+                if (index > 0)
+                    span.trigger('click')
+                var trB = span.closest('tr').prev()
+                trB.find('select').eq(0).val(elementB.attr('Barrier'))
+                trB.find('select').eq(1).val(elementB.attr('CHT'))
+                UpdateDiv(trB, elementB, 'B')
+                $('P', elementB).each(function (index) { // Person
+                    var elementP = $(this)
+                    var span = trH.find('span.P').last()
+                    if (index > 0)
+                        span.trigger('click')
+                    var trP = span.closest('tr').prev()
+                    trP.find('span').eq(0).text(elementP.attr('UserName')).attr('UserId', elementP.attr('UserId'))
+                    UpdateDiv(trP, elementP, 'P')
+                })
+            })
+        })
+    }
+    function InitStep(xml) {
+        var element = $($(xml).find('Table9').text())
+        var t = A.clone().show()
+        t.insertAfter(tObject)
+        // if (element.length)
+        t.find('.Delete').closest('tr').remove()
+        // return
+        element.each(function (index) {  //Hazard
+            var elementA = $(this)
+            var span = t.find('span.A')
+            span.trigger('click')
+            var trA = span.closest('tr').prev()
+            trA.find(':text').first().val(elementA.attr('Text'))
+            UpdateDiv(trA, elementA, 'A')
+            InitH(trA.find('#H'), elementA.find('H'))
+        })
+    }
+    function UpdateDiv(tr, element, name) {
+        var div = tr.find('div.' + name)
+       // div.next().text(element.attr(name + 'Action'))
+       // div.next().next().text(element.attr(name + 'dt'))
+    }
+    function InitStep2(xml) {
+        var element = $($(xml).find('Table6').text())
+        var A = $('#A')
+        H.find('td').css('padding', 0)
+        var xml = GetArray(' select * from ListBarrier select * from ListCHT')
+        BindSelect(xml, H.find('select').eq(0), 0)
+        BindSelect(xml, H.find('select').eq(1), 1)
+        H.find(':text').width('98%')
+
+        var t = A.clone().show()
+        t.insertAfter(tObject)
+        if (element.length)
+            t.find('.Delete').first().closest('tr').remove()
+        element.each(function (index) {  //Hazard
+            var elementH = $(this)
+            var span = t.find('span.H')
+            span.trigger('click')
+            var trH = span.closest('tr').prev()
+            trH.find(':text').val(elementH.attr('Text'))
+
+            $('B', elementH).each(function (index) { //Barrier
+                var elementB = $(this)
+                var span = trH.find('span.B').last()
+                if (index > 0)
+                    span.trigger('click')
+                var trB = span.closest('tr').prev()
+                trB.find('select').eq(0).val(elementB.attr('Barrier'))
+                trB.find('select').eq(1).val(elementB.attr('CHT'))
+                $('P', elementB).each(function (index) { // Person
+                    var elementP = $(this)
+                    var span = trH.find('span.P').last()
+                    if (index > 0)
+                        span.trigger('click')
+                    var trP = span.closest('tr').prev()
+                    trP.find('span').eq(0).text(elementP.attr('UserName')).attr('UserId', elementP.attr('UserId'))
+                })
+            })
+        })
+    }
+    function InitHand(xml) {
+        var t = tHand
+        var html = '<tr><td class=hazard colspan=18>Hand Hazards – How can I injure my hands and fingers?'
+        var element = $(xml).find('Table7')
+
+        for (var j = 0; j < 5; j++) {
+            html += '<tr>'
+            element.find('seq:contains(' + (j + 1) + ')').each(function (index) {
+                var src = $(this)
+                var id = src.prev().prev().text()
+                var name = src.prev().text()
+                var checked = ''
+                if (src.next().text() == 'true')
+                    checked = ' checked '
+                var text = src.next().next().text()
+                if (name == 'Other')
+                    html += '<td colSpan=2 id=' + id + '>' + name + '<input style="margin-left:10;width:50%;border:1 solid" type=text value=" ' + text + '" />'
+                else
+                    html += '<td id=' + id + '>' + name + '<td> <input type=checkbox ' + checked + '/>'
+            })
+        }
+        t.html(html)
+        t.find('tr:gt(0)').find('td:even').addClass('label')
+    }
+    function InitObject(xml) {
+        var t = tObject
+        var html = '<tr><td class=hazard colspan=18>Dropped Objects – What about potential dropped objects?'
+        var i = 0
+        $(xml).find('Table8').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            if (i++ % 4 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (element.find('Checked').text() == 'true')
+                checked = ' checked '
+            html += '<td id=' + id + '>' + name + '<td style="width:1"><input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        t.find('tr:gt(0)').find('td:even').addClass('label')
+    }
+    function on_AddDuty(src) {
+        src = $(src)
+        var tr = src.closest('tr')
+        var index = tr.index()
+        var tr1 = tr.prev().clone()
+        tr1.find('td').eq(0).text(index).next().html('<input style="width:100%" type=text/>').siblings().find(':checkbox').prop('checked', false)
+        AddDelete(tr1.children().first())
+        tr1.insertBefore(tr)
+    }
+    function AddDelete(td) {
+        td.append('<span style="font-family: Wingdings" onclick="on_Delete(this) ">&#253;</span>')
+    }
+    function AddSelect(xml, name, t) {
+        var index = parseInt(name.replace('Table', ''))
+        //alert(index )
+        var src = t.find('select').eq(index)
+        $('<option/>').appendTo(src)
+        $(xml).find(name).find('Name').each(function () {
+
+            var element = $(this)
+            var option = $('<option/>').appendTo(src)
+            option.val(element.next().text()).text(element.text())
+            if (element.prev().length) {
+                option.attr('parent', element.prev().text())
+                option.wrap('<div/>')
+            }
+        })
+        src.children('option').wrap('<div/>')
+
+    }
+    function WingDing(name) {
+        return '<font color=red>' + name + '</font>'
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            element.addAttr(id, value)
+        }
+        element.addAttr('Type', Type )
+        root.append(element)
+    }
+    function on_Save(submitForApproval, isClient) {
+        var root = $('<r />')
+        root.addAttr('id', Id)
+
+        XmlGeneral(root )
+        tPersonnel.find('tr:visible:gt(3)').not(':last').each(function () {
+            var tr = $(this)
+            var element = $.createElement('Personnel')
+            element.addAttr('id', tr.index()-2 )
+            element.addAttr('UserId', tr.attr('UserId'))
+            element.addAttr('Name', tr.children().eq(2).text() )
+            element.addAttr('Position', tr.children().eq(1).text())
+            element.addAttr('Company', tr.children().eq(4).text() )
+            element.addAttr('dt', GetVal( tr.find(':text')) )
+            root.append(element)
+        })
+        tDuty.find('tr:gt(0)').not(':last').each(function () {
+            var tr = $(this)
+            var element = $.createElement('Duty')
+            element.addAttr('id', tr.index())
+            element.addAttr('Name', CleanSpecialCharacter(GetValTd(tr.children().eq(1))))
+            element.addAttr('Required', tr.find('span').length ? 0 : 1)
+            element.addAttr('Checked', tr.find(':checked').length)
+            root.append(element)
+        })
+        tTask.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('task')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            element.addAttr('Text', CleanSpecialCharacter(td.find(':text').val()))
+            root.append(element)
+        })
+        tEvent.find('tr:gt(0)').find('td').each(function () {
+            var td = $(this)
+            var element = $.createElement('event')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.find(':checked').length)
+            root.append(element)
+        })
+        tFactor.find(':checkbox').each(function () {
+            var td = $(this).parent().prev()
+            var element = $.createElement('factor')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            root.append(element)
+        })
+        CreateXmlHazard($('#H').first(), root)
+        tHand.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('hand')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            element.addAttr('Text', CleanSpecialCharacter(td.find(':text').val()))
+            root.append(element)
+        })
+        tObject.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('object')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            root.append(element)
+        })
+        CreateXmlStep(root)
+        var xml = root[0].outerHTML
+        xml = GetArray('usp_JsaSave', [xml])
+        Id = $(xml).text()
+        window.location = 'NonWi.htm?id=' + Trim(Id)
+    }
+    function CreateXmlStep(root) {
+        $('#A').first().find('tr.A').each(function (index) {
+            var tr = $(this)
+            var A = $.createElement('A')
+            A.addAttr('id', index + 1)
+            A.addAttr('Text', tr.find(':text').val())
+            var div = tr.parent().closest('tr').parent().closest('tr').find('div.A')
+            A.addAttr('Action', div.next().text())
+            A.addAttr('dt', div.next().next().text())
+            console.log(tr.next().find('#H').length)
+            tr.next().find('#H').each(function () {
+                CreateXmlHazard($(this), A)
+            })
+            root.append(A)
+        })
+    }
+    function CreateXmlHazard(srcH, root) {
+        srcH.find('tr.H').each(function (index) {
+            var tr = $(this)
+            var H = $.createElement('H')
+            H.addAttr('id', index + 1)
+            H.addAttr('Text', tr.find(':text').val())
+            var div = tr.parent().closest('tr').parent().closest('tr').find('div.H')
+            //H.addAttr('Action', div.next().text())
+            //H.addAttr('dt', div.next().next().text())
+            UpdateXmlAction(H, div)
+            $('tr.B', tr).each(function (index) {
+                var tr = $(this)
+                var B = $.createElement('B')
+                B.addAttr('id', index + 1)
+                B.addAttr('Barrier', tr.find('select').eq(0).val())
+                B.addAttr('CHT', tr.find('select').eq(1).val())
+                var div = tr.find('div.B')
+                UpdateXmlAction(B, div)
+
+                $('tr.P', tr).each(function (index) {
+                    var tr = $(this)
+                    var P = $.createElement('P')
+                    P.addAttr('id', index + 1)
+                    P.addAttr('UserId', tr.find('span').eq(0).attr('UserId'))
+                    P.addAttr('UserName', tr.find('span').eq(0).text())
+                    var div = tr.find('div.P')
+                    UpdateXmlAction(P, div)
+                    B.append(P)
+                })
+                H.append(B)
+            })
+            root.append(H)
+        })
+    }
+    function UpdateXmlAction(element, div) {
+        var action = div.next().text()
+        var dt = div.next().next().text()
+        if (action == '') {
+            action = 'Added'
+            dt = GetDt()
+        }
+        element.addAttr('Action', action)
+        element.addAttr('dt', dt)
+    }
+    function CleanSpecialCharacter(xml) {
+        return MyReplace(xml, "'", "''")
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+    }
+    function on_Impersonate(src) {
+        src = $(src)
+        var id = $.trim($('#011311').find('input:text').val())
+        var id1 = id
+        if (src.val() == 'T')
+            id = '011014'
+        if (src.val() == 'Z')
+            id = '016101'
+
+        var s = window.location.toString().toLowerCase()
+        if (s.indexOf('userid') == -1)
+            s += '&userId=' + id
+        else {
+            var id0 = getParameterByName('userId').toLowerCase()
+            if (id == '')
+                s = MyReplace(s, '&userid=' + id0, '')
+            else
+                s = MyReplace(s, id0, id)
+        }
+        window.location = s
+    }
+    function  {
+        document.onkeydown = function () {
+            if ((event.keyCode == 83) && (event.ctrlKey)) {
+                event.cancelBubble = true;
+                event.returnValue = false;
+                event.keyCode = false;
+                if (event.keyCode == 83)
+                    on_Save()
+                return false;
+            }
+        }
+        $(':text').keypress(function (e) {
+            if (e.which != 13) return
+            e.preventDefault()
+            on_Save()
+        })
+    }
+    function on_AddWingDing(e, src) {
+        src = $(src)
+        var c = src.attr('class')
+        var tr = src.closest('tr')
+        var t = tr.closest('table')
+        var count = t.find('div.' + c).length
+        var tr1 = A.find('span.' + c).closest('tr').prev().clone()
+        var text = c
+        if (c == 'A')
+            text = 'S'
+        text += (count + 1)//+'<br>Added<br>'+(new Date())
+        var div = tr1.find('div.' + c)
+        div.html(text)
+
+        if (!e.isTrigger) {
+          //  div.next().text('Added')
+           // div.next().next().text(GetDt())
+        }
+        tr1.insertBefore(tr)
+    }
+    function GetDt() {
+        var dt = new Date()
+        var arr = dt.toString().split(' ')
+        return arr[2] + '-' + arr[1] + '-' + (arr[3] - 2000) + ' ' + arr[4]
+    }
+    function on_PobSelect(src) {
+        src = $(src)
+        var r = Popup('../common/popupPob.htm', 800, 400)
+        if (r == null)
+            return
+        src.prev().text(r[1]).attr('userId', r[0])
+    }
+    function on_AddSupervisor(src) {
+        src = $(src)
+        var r = Popup('../common/popupPob.htm', 800, 400)
+        if (r == null)
+            return
+        var td = src.parent()
+        var span = src.next()
+        span.attr('userId', r[0]).text(r[1])
+        td.prev().prev().text (r[2])
+    }
+    function on_DeleteWingDing(src) {
+        src = $(src)
+       // src.prev().text(GetDt())
+        src.prev().prev().text('Deleted')
+    }
+    function on_StartJob(src) {
+        src = $(src)
+        var name = src.text()
+        //alert(name )
+        name = MyReplace(name, ' the Job', '')
+        if (name == 'Start' || name == 'Resume')
+            name = 'Suspend'
+        else if (name == 'Suspend')
+            name = 'Resume'
+        src.text(name + ' the Job')
+    }
+    function on_Location(src) {
+        src = $(src)
+        var r = Popup('../common/PopupLocation.htm?a=1', 900, 900)
+
+        if (r == null)
+            return
+        var span = src.next()
+        span.text(r[1])
+    }
+    function on_Now(src) {
+        src = $(src)
+        var id = src.closest('tr').index() - 2
+        GetArray('usp_JsaUpdatePersonnel', [Id, id])
+        Refresh () 
+    }
+</script>

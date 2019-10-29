@@ -1,0 +1,26 @@
+﻿@model Ensco.Models.DataTableModel
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_HomeTasksIsolation";
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.CallbackRouteValues = new { Action = "IrmaHomeEnscoPassportTasksIsolationPartial", Controller = "Irma" };
+    grid.ClientSideEvents.EndCallback = "function(s,e) { onEndCallback(s, e);}";
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.OpenEiModel), options);
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+

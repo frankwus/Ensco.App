@@ -1,0 +1,54 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+
+@using System.Web.UI.WebControls
+@using System.Linq.DataExtensions
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+    bool bRigAdmin = (userInfo != null && userInfo.IsAdminEditor) ? true : false;
+    int count = (Model != null) && (Model.Assets != null) ? Model.Assets.Dataset.Count() : 0;
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = bPobEditor;
+    options.ShowEditButton = bPobEditor;
+    options.ShowDeleteButton = bPobEditor;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    options.AddButtonText = "Add Relation";
+}
+
+
+@*<div style='float:left; padding-right:30px'>
+    @if (bRigAdmin && count <= 0)
+    {
+        Html.DevExpress().Button(btnSettings =>
+        {
+            btnSettings.Name = "btnPassportSearch";
+            btnSettings.Text = "Auto Populate Relations";
+            btnSettings.UseSubmitBehavior = false;
+            btnSettings.Enabled = true;
+            btnSettings.ClientSideEvents.Click = string.Format("function(s, e){{document.location = '{0}'}}", Url.Action("RigAdminAssetAutoPopulate", "RigAdmin", new { Area = "IRMA" }));
+        }).GetHtml();
+    }
+</div>*@
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridRigAdminAssetRelation";
+    grid.KeyFieldName = "Id";
+
+    grid.CallbackRouteValues = new { Area = "IRMA", Controller = "RigAdmin", Action = "RigAdminAssetsPartial" };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "RigAdmin", Action = "RigAssetRelationAdd" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "RigAdmin", Action = "RigAssetRelationUpdate" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "RigAdmin", Action = "RigAssetRelationDelete" }; //Delete it, this is not a template
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.RigAssetRelationModel), options);
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.Assets.KeyFieldName;
+    e.QueryableSource = Model.Assets.Dataset;
+}).GetHtml()
+
+

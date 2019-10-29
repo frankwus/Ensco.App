@@ -1,0 +1,57 @@
+﻿@model Ensco.Irma.Models.ManageCrewChangeModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(grid_CrewChange); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+        function onBeginCallback(s, e) {
+        }
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+                case "Schedule":
+                    popupControlScheduleCrewChange.Show()
+                    GetId('btnCreate').parent().prev().html('')
+                    break;
+            }
+        }
+    </script>
+}
+@Html.DevExpress().PopupControl(settings => {
+    settings.Name = "popupControlScheduleCrewChange";
+    settings.CallbackRouteValues = new { Controller = "Personnel", Action = "ScheduleCrewChange" };
+    settings.CloseAction = CloseAction.OuterMouseClick;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.ShowFooter = true;
+    settings.AllowDragging = true;
+    settings.EnableHotTrack = true;
+    settings.Height = Unit.Percentage(100);
+    settings.Width = Unit.Percentage(100);
+    settings.HeaderText = "Schedule Crew Change";
+
+    settings.SetContent(() => {
+        using (Html.BeginForm())
+        {
+            Html.RenderAction("ScheduleCrewChangePartial", "Personnel");
+        }
+    });
+}).GetHtml()
+
+@using(Html.BeginForm()) {
+    Html.RenderPartial("CrewChangePartial", Model);
+}
+
+

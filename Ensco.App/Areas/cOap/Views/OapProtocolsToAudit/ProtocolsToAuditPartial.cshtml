@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.RigOapChecklist>
+
+@{
+    Html.EnableClientValidation();
+
+    var controller = (dynamic)ViewContext.Controller;
+
+    var errorkey = controller.GenericDashBoardErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.ClientSideEvents.BeginCallback = "function(s, e) {if(document.getElementById('SelectedAuditId')==null) {e.processOnServer = false;}else{ e.customArgs['aId'] = SelectedAuditId.value;}}";
+        settings.ClientSideEvents.EndCallback = "function(s, e) { if(document.getElementById('SelectedAuditId')!=null)hideGV();}";
+        settings.CallbackRouteValues = new { Area = "cOap", Controller = "OapProtocolsToAudit", Action = "DisplayProtocols", aId = ViewData["SelectedAuditId"] };
+        controller.Configure(settings, Html, ViewContext);
+    }).Bind(Model.OrderByDescending(c => c.RigChecklistUniqueId));
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+
+    grid.GetHtml();
+}

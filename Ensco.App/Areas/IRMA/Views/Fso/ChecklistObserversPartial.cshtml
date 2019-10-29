@@ -1,0 +1,53 @@
+@model Ensco.FSO.Models.ChecklistObserverGridModel
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = true;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = true;
+    options.ShowCommandColumn = true;
+    options.AddButtonText = "Add Observer";
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(gvObserver =>
+{
+
+    gvObserver.Name = "gvObservers";
+    gvObserver.KeyFieldName = "Id";
+
+
+    gvObserver.CallbackRouteValues = new { Area = "IRMA", Controller = "Fso", Action = "ChecklistObserversPartial" };
+    gvObserver.SettingsEditing.AddNewRowRouteValues = new { Controller = "Fso", Action = "ChecklistObserversAddPartial" };
+    gvObserver.SettingsEditing.UpdateRowRouteValues = new { Controller = "Fso", Action = "ChecklistObserversUpdatePartial" };
+    gvObserver.SettingsEditing.DeleteRowRouteValues = new { Controller = "Fso", Action = "ChecklistObserversDeletePartial" }; //Delete it, this is not a template
+
+
+    Html.EnscoStandardGrid(gvObserver, typeof(Ensco.FSO.Models.ChecklistObserverGridRowModel), options);
+    gvObserver.SettingsEditing.Mode = GridViewEditingMode.EditForm; // Change Inline to EditForm    
+
+    gvObserver.EditFormLayoutProperties.ColumnCount = 4;
+    gvObserver.EditFormLayoutProperties.Items.Add("PassportId");
+    gvObserver.EditFormLayoutProperties.Items.Add("LeadObserver");
+    gvObserver.EditFormLayoutProperties.Items.Add("Tour");
+    gvObserver.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+
+    gvObserver.Columns.Add(c =>
+    {
+        c.FieldName = "PassportId";
+        c.ColumnType = MVCxGridViewColumnType.TextBox;        
+    });
+
+    //gvObserver.InitNewRow = (s, e) =>
+    //{
+    //    e.NewValues[0] = "teste";
+    //};
+
+
+}).Bind(Model.Observers).GetHtml()

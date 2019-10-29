@@ -1,0 +1,37 @@
+﻿@model Ensco.Irma.Models.PobBoardingModel
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(gridView_PobCurrent); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+        function OnValueChanged(s, url, id, selected) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { id: id, selected: selected },
+                beforeSend: function () {
+                },
+                success: function (msg) {
+                }
+            });
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("OffboardPersonnelPobPartial", Model);
+}
+
+

@@ -1,0 +1,130 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=11"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+<body>
+    <table id="t" >
+        <tr>
+            <th class="header" style="text-align: left;" colspan="10">
+                List Management 
+        <tr>
+            <td class="labelright" width="200">
+                List
+            <td width="500">
+                <select />
+        <tr class="hidden">
+            <td class="labelright">Search
+
+            <td>
+                <input type="text" />
+        <tr>
+            <td class="right">
+                <img src="../Images/Submit icon.png" onclick="on_Submit(this)" />
+            <td>
+                <img src="../Images/Cancel icon.png" onclick="on_Cancel(this)" />
+    </table>
+    <input style="margin:10" type="button" onclick="on_Add(this)" value="Add" />
+    <table id="t1"></table>
+</body>
+<script>
+    var t = $('#t')
+    var t1 = $('#t1')
+    $(document).ready(function () {
+        t.width('40%')
+        //t.find('td').addClass('noborder')
+        Init()
+        CleanUp()
+    })
+    function Init() {
+        var xml = GetArray(['usp_ComGetList', ''])
+        BindSelect(xml, t.find('select'), 0, 'id', 'id')
+        t.find('select').on('change', function () {
+            var type = $(this).val()
+            if (type == '')
+                return
+            var xml = GetArray(['usp_ComGetList', type])
+            DataBind(t1, xml)
+            t1.find('th').first().html('')
+            GetTd(t1.find('tr').slice(1), 0 ).each(function () {
+                var td = $(this)
+                AddButton(td)
+                td.width(200)
+            })
+        }).val('bed').trigger('change')
+    }
+    function AddButton(td){
+        var id = td.text()
+        td.attr('id', id)
+        var arr=['Delete', 'Edit', 'Save', 'Cancel']
+        var html =''
+        for (var i in arr)
+            html +=  CreateButton(arr[i], i>1?true:false  )
+        td.html(html )
+    }
+    function on_Add(src){
+        var html ='<tr><td><td></tr>'
+        $(html).appendTo(t1)
+        var td = t1.find('tr').last().children().first()
+        AddButton(td)
+        td.find(':button').eq(1).trigger('click')
+    }
+    function on_Click(src) {
+        src = $(src)
+        var tr =src.closest('tr')
+        var name = src.val()
+        switch (name) {
+            case 'Delete1':
+                var id = src.parent().attr('id')
+                if (id == null)
+                    id = 0
+                var text = GetVal(tr.find(':text'))
+                var type = t.find('select').val()
+                GetArray(['usp_ComSaveList', id, text, type])
+                on_Submit()
+                break
+            case 'Edit':
+                src.nextAll().show()
+                src.prev().andSelf().hide()
+                tr.children().slice(1).each(function () {
+                    var td = $(this)
+                    var text = td.text()
+                    td.attr('text', text)
+                    td.html('')
+                    $('<input type=text />').appendTo(td).val( text )
+                })
+                CleanUp()
+                break
+            case 'Save' : case 'Delete':
+                var id = src.parent().attr('id')
+                if (id ==null )
+                    id=0 
+                var text = GetVal(tr.find(':text'))
+                var type = t.find('select').val()
+                if (name == 'Save') {
+                    if (text == '') {
+                        alert('The field cannot be empty.')
+                        return 
+                    }
+                } else
+                    text = ''
+                GetArray(['usp_ComSaveList', id, text, type])
+                on_Submit()
+                break
+            case 'Cancel':
+                on_Submit()
+                break
+        }
+    }
+    function on_Submit() {
+        t.find('select').trigger('change')
+    }
+    function CreateButton(name, hide ) {
+        return '<input type=button '+ (hide? 'hidden':'') +' onclick=on_Click(this) value ='+name+' />'
+        }
+</script>

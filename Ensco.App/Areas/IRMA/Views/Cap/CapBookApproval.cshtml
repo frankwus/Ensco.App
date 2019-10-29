@@ -1,0 +1,81 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@section scripts
+{
+    <script type="text/javascript">
+    MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+        function (s, e) {
+        }
+    );
+
+    function OnCapBookSplitterPaneResized() {
+        if (e.pane.name == "panelCapApprovalDetails") {
+            AdjustGrid(gridView_CapBookVerification, e.pane.GetClientWidth(), e.pane.GetClientHeight());
+        }
+        }
+
+    </script>
+}
+
+@Html.Hidden("SelectedCapApprovalPassport", (string)ViewData["SelectedCapApprovalPassport"])
+
+@Html.DevExpress().Splitter(settings =>
+{
+    settings.Name = "splitterCapBookApproval";
+    settings.AllowResize = false;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+    settings.SeparatorVisible = false;
+    settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+    settings.ClientSideEvents.PaneResized = "function(s, e){ if(e.pane.name == \"panelCapApprovalCapBook\") { grid_CapBookApproval.SetWidth(e.pane.GetClientWidth()); grid_CapBookApproval.SetHeight(e.pane.GetClientHeight());} else if (e.pane.name == \"panelCapApprovalDetails\") { gridView_CapBookVerification.SetWidth(e.pane.GetClientWidth()), gridView_CapBookVerification.SetHeight(e.pane.GetClientHeight()); }}";
+
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelCapApprovalCapBook";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            //using (Html.BeginForm())
+            {
+                Html.RenderAction("CapBookApprovalPartial", "Cap", new { Area = "IRMA" });
+            }
+        });
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelCapBookEmpty2";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+        pane.SetContent(() =>
+        {
+            ViewContext.Writer.Write("<br/>");
+        });
+
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelCapApprovalDetails";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            //using (Html.BeginForm())
+            {
+                Html.RenderAction("CapBookApprovalDetailPartial", "Cap", new { Area="IRMA" });
+            }
+        });
+    });
+}).GetHtml()
+
+
+

@@ -1,0 +1,228 @@
+﻿@using Ensco.Irma.Oap.WebClient.Corp
+@using Westwind.Globalization;
+
+@model IEnumerable<Ensco.App.Areas.Oap.Models.ChecklistAssessorGridViewModel>
+
+@{
+
+    RigOapChecklist rigChecklist = (RigOapChecklist)ViewBag.RigChecklist;
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.AssessorsErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+
+//genericListController.Configure(settings, Html, ViewContext);
+
+settings.Name = "gridAssessors";
+        settings.KeyFieldName = "Id";
+        settings.Caption = DbRes.T("Assessors", "OapResources");
+
+// Routes
+settings.CallbackRouteValues = new { Action = "ChecklistAssessorsPartial" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Action = "CreateAssessor" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Action = "DeleteAssessor" };
+
+// Command columns
+settings.CommandColumn.Caption = " ";
+        settings.CommandColumn.Visible = rigChecklist.Status == "Open";
+        settings.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+        settings.SettingsCommandButton.DeleteButton.Image.Width = 16;
+        settings.SettingsCommandButton.DeleteButton.Image.Height = 16;
+        settings.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+        settings.SettingsCommandButton.UpdateButton.Image.Width = 16;
+        settings.SettingsCommandButton.UpdateButton.Image.Height = 16;
+        settings.SettingsCommandButton.UpdateButton.Image.ToolTip = "Save";
+        settings.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+        settings.SettingsCommandButton.CancelButton.Image.Width = 16;
+        settings.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+// Colums
+settings.Columns.Add(c =>
+        {
+            c.FieldName = "Name";
+            c.Caption = "Assessor";
+            c.Width = Unit.Percentage(30);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Position";
+            c.Width = Unit.Percentage(20);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Department";
+            c.Width = Unit.Percentage(20);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Tour";
+            c.Width = Unit.Percentage(15);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "IsLead";
+            c.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            c.SetDataItemTemplateContent(container =>
+            {
+                Html.DevExpress().CheckBox(cbox =>
+                {
+                    cbox.Name = "cbIsLead_" + Guid.NewGuid();
+                    cbox.Checked = (bool)DataBinder.Eval(container.DataItem, "IsLead");
+                    cbox.ClientEnabled = false;
+                }).Render();
+            });
+        });
+
+// Popup form customization
+settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.EditFormLayoutProperties.ColumnCount = 3;
+        settings.SettingsPopup.EditForm.Modal = true;
+        settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.Center;
+        settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+        settings.SettingsPopup.EditForm.CloseOnEscape = AutoBoolean.True;
+        settings.SettingsText.PopupEditFormCaption = "Add " + settings.Caption;
+
+// Style
+settings.Width = Unit.Percentage(100);
+
+// Filter
+settings.Settings.ShowHeaderFilterButton = true;
+
+// Paging
+settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+
+// Toolbar
+settings.SettingsSearchPanel.CustomEditorName = "search_Assessor";
+        settings.Toolbars.Add(t =>
+        {
+
+            t.ItemAlign = GridToolbarItemAlign.Right;
+
+            if (rigChecklist.Status == "Open")
+            {
+                t.Items.Add(i =>
+                {
+                    i.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                    i.Command = GridViewToolbarCommand.Custom;
+                    i.Name = "AddNewAssessor";
+                    i.Text = DbRes.T("Add Assessor", "Resources");
+                    i.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                    i.ItemStyle.ForeColor = System.Drawing.Color.White;
+                    i.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                    i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                    i.BeginGroup = true;
+                });
+            }
+
+            t.Items.Add(i =>
+            {
+                i.ClientEnabled = false;
+                i.SetTemplateContent("&nbsp;&nbsp;&nbsp;");
+            });
+
+            t.Items.Add(i =>
+            {
+                i.SetTemplateContent(cont =>
+                {
+                    Html.DevExpress().ButtonEdit(s =>
+                    {
+                        s.Name = "search_Assessor";
+                        s.Properties.NullText = "Search";
+                        s.Properties.Buttons.Add().Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                    }).Render();
+                });
+            });
+
+            t.Items.Add(i =>
+            {
+                i.Command = GridViewToolbarCommand.Refresh;
+                i.DisplayMode = GridToolbarItemDisplayMode.Image;
+                i.Image.Url = "~/Images/Refresh.png";
+                i.Image.Height = Unit.Pixel(24);
+                i.Image.Width = Unit.Pixel(24);
+                i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+
+            t.Items.Add(i =>
+            {
+                i.Command = GridViewToolbarCommand.ShowFilterRow;
+                i.DisplayMode = GridToolbarItemDisplayMode.Image;
+                i.Image.Url = "~/Images/Filter.png";
+                i.Image.Height = Unit.Pixel(24);
+                i.Image.Width = Unit.Pixel(24);
+                i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+
+        });
+
+// EditForm Fields
+settings.EditFormLayoutProperties.Items.Add(i =>
+        {
+            i.Caption = "Assessor";
+            i.ColumnSpan = 2;
+            i.SetTemplateContent(container =>
+            {
+                int ownerId = Ensco.Utilities.UtilitySystem.CurrentUserId;
+                Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "LeadAssessorLookup", lookup = "Passport", multi = false, selected = ownerId });
+            });
+        });
+
+        settings.EditFormLayoutProperties.Items.Add(i =>
+        {
+            i.Caption = "Is Lead";
+            i.SetTemplateContent(container =>
+            {
+
+                Html.DevExpress().CheckBox(cbox =>
+                {
+                    cbox.Name = "cbIsLead";
+                    cbox.PreRender = (s, e) =>
+                    {
+                        MVCxCheckBox checkbox = (MVCxCheckBox)s;
+                        checkbox.Value = false;
+                        checkbox.Checked = false;
+
+                        if (Model.Any(a => a.IsLead))
+                        {
+                            checkbox.Enabled = false;
+                            checkbox.ToolTip = "There can be only one lead assessor";
+                        }
+                        else
+                            checkbox.Checked = true;
+
+                    };
+                }).Render();
+            });
+        });
+
+        settings.EditFormLayoutProperties.Items.AddCommandItem(i =>
+        {
+            i.ShowUpdateButton = true;
+            i.ShowCancelButton = true;
+            i.ColumnSpan = 3;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        });
+
+        settings.ClientSideEvents.ToolbarItemClick = "function (s,e) { onToolbarItemClick(s, e); }";
+        settings.ClientSideEvents.BeginCallback = "function (s,e) { if (e.command == 'UPDATEEDIT') { e.customArgs['IsLead'] = typeof cbIsLead.GetValue === 'function' ? cbIsLead.GetValue() : false; e.customArgs['UserId'] = LeadAssessorLookup.GetValue()[0]; } }";
+
+    });
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+    grid.Bind(Model).GetHtml();
+}

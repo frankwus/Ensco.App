@@ -1,0 +1,75 @@
+﻿@model Ensco.Irma.Models.TourManagementModel
+
+@section scripts
+{
+    <script type="text/javascript">
+       // var Saved
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                //var c = getCookie('tourChanged')
+                //if (c == 1) {
+                //    setCookie('tourChanged', 0)
+                //    //gridView_TourChange.Refresh() 
+                //  //  Refresh()
+                //    return 
+                //}
+                AdjustMainGrid(gridView_TourChange); // grid is client side Id
+            }
+        );
+        function onEndCallback(s, e) {
+            //console.log(Saved) 
+            //return 
+            //if (Saved)
+            //    Refresh() 
+        }
+        function OnTourChange(s, e) {
+            $('form').submit()
+            //console.log('change ' + $('form').outerHTML )
+            //Saved=true
+        }
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            AdjustMainGrid(gridView_TourChange); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+
+        function OnValueChanged(s, url, id, selected) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { id: id, selected: selected },
+                beforeSend: function () {
+                },
+                success: function (msg) {
+                }
+            });
+        }
+        @*function OnTourChange(s, url) {
+            debugger;
+            var newtour = @Model.TourChange;
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { tour: newtour },
+                beforeSend: function () {
+                },
+                success: function (msg) {
+                }
+            });
+        }*@
+    </script>
+}
+
+@{
+    Html.RenderPartial("TourManagementPartial", Model);
+}
+
+

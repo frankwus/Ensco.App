@@ -1,0 +1,31 @@
+﻿
+@using Ensco.Resources
+@model Ensco.Irma.Models.Irma.IrmaDashboardModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                //AdjustMainGrid(grid_HomePobHistory); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 180; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+@if (Ensco.Utilities.UtilitySystem.Settings.RigId == 1)
+{
+    Html.Partial("IrmaCorpPartial", Model);
+}
+else
+{
+    Html.Partial("IrmaHomePartial", Model);
+}
+
+

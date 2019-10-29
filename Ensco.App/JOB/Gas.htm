@@ -1,0 +1,1046 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<form>
+    <table border="0">
+        <tr style="border:none">
+            <td width="99%" style="border:none">
+            <td><a id="Close" class="hidden" href="javascript:void(0)" onclick="on_Close(this)">Close</a>
+            <td><img id="Clone" src="../Images/Clone icon.png" onclick="on_Clone(this)" />
+            <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+            <td><img src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+            <td><img src="../Images/print.png" onclick="on_Print(this)" Title="Print Webpage" />
+            <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+            <td><img src="../Images/Help icon.png" onclick="on_Help()" Title="Help" />
+    </table>
+
+    <table id="tPlanning">
+
+        <tr>
+            <th class="header" style="text-align: left;" colspan="8">
+                Planning
+        <tr>
+            <td>Certificate No.
+            <td id="id">
+            <td>Job
+            <td id="JobId" width="200">
+            <td>Permit
+            <td><select id="PermitId"></select>
+            <td>Status
+            <td><span id="Status"></span>
+        <tr>
+            <td>Authorized Gas Tester
+            <td>
+                <img onclick="on_PobSelect(this, 'Gas Testers')" src="../Images/Select Personnel icon.png">
+                <span class="hidden" id="AuthorizedGasTesterId"></span><span id="AuthorizedGasTester"></span>
+
+            <td>Location(s) Tested
+            <td>
+                <img src='../images/search icon.png' onclick="on_Location(this)" />
+                <table border="0" id="Location"></table>
+            <td>Date/Time Performed
+            <td><input id="DateDone" type="text" />
+            <td>Date/Time Created
+            <td id="Date">
+        <tr>
+            <td colspan="1">Continuous gas monitoring required?
+            <td><input id="ContinuousGas" type="checkbox" />
+            <td colspan="1">If not, repeat gas test every
+            <td><input id="Repeat" type="text" />
+
+            <td colspan="1">Gas detector calibrated and function tested?
+            <td><input id="GasDetector" type="checkbox" />
+            <td colspan="1">Has a gas test been done before work start?
+            <td><input id="TestedBefore" type="checkbox" />
+    </table>
+    <table id="tGasToTest">
+        <tr>
+            <th class="Hazard" style="text-align: left;" colspan="11">
+                Select which gases will be tested:
+        <tr>
+            <td>Gas to Test
+            <td>O<sub>2</sub>
+            <td><input id="O2" type="checkbox" />
+            <td> Hydrocarbons
+            <td>  <input id="H2S" type="checkbox" />
+            <td>H<sub>2</sub>S
+            <td> <input id="Hydrocarbons" type="checkbox" />
+            <td>Toxic
+            <td width="300"><input  id="Toxic" type="text" />
+            <td>Other
+            <td width="300"><input id="Other" type="text" />
+        <tr>
+            <td colspan="22" style="padding-bottom:20">       
+                <a href="javascript:void(0)" onclick="on_SignGas(this)"> Sign</a>
+                 <a  class="hidden" id="SubmitForAuthorization" href="javascript:void(0)" onclick="on_SubmitForApproval('Submit') ">Submit For Authorization</a>
+
+</table>
+    <table id="tParameter" class="marginBottom">
+        <tr class="labelCenter">
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                Parameters
+        <tr class="labelCenter">
+            <td>Parameter
+            <td>Entry Allowed with Permit
+            <td>Entry Allowed with Permit and Formal Risk Assessment
+
+            <td>No Entry Allowed
+        <tr class="label">
+            <td>Type of Gas
+            <td>Airborne Concentration
+            <td>Airborne Concentration
+            <td>Airborne Concentration
+        <tr>
+            <td>O<sub>2</sub>
+            <td>19.5% - 23.5%
+            <td>19.5% - 23.5%
+            <td><19.5% or>23.5%
+        <tr>
+            <td>Hydrocarbons
+            <td><1% of LEL
+            <td>1% - 10% of LEL
+            <td>>10% of LEL
+        <tr>
+            <td>H<sub>2</sub>S
+            <td><10ppm
+            <td>10ppm – 100ppm
+            <td>>100ppm
+        <tr>
+            <td>SO<sub>2</sub>
+            <td><2ppm
+            <td>2ppm – 100ppm
+            <td>>100ppm
+        <tr>
+            <td>CO<sub>2</sub>
+            <td><10,000ppm
+            <td>10,000ppm – 50,000ppm
+            <td>>50,000ppm
+        <tr>
+            <td>CO
+            <td><25ppm
+            <td>25ppm – 200ppm
+            <td>>200ppm
+    </table>
+    <table id="tStart" class="marginBottom">
+        <tr class="hidden">
+            <th class="darkblue" style="text-align: left;" colspan="11">
+        <tr>
+            <td>
+                <a href="javascript:void(0)" onclick="on_Start(this) ">Start Initial Gas Test</a>
+    </table>
+    <table id="tAuthorization" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="11">
+                Authorization
+        <tr class="labelCenter">
+            <td>Role
+            <td>Name
+            <td>Position
+            <td>Approver Actions
+            <td>Status
+            <td>Approver Comments
+        <tr>
+            <td>Permit Issuer
+            <td>
+                <span id=PermitIssuerId class="hidden"></span><span id="PermitIssuerName"></span>
+            <td>
+            <td><input style1="display: none;" type="button" value="Approve"><input style1="display: none;" type="button" value="Reject"></td>
+            <td>
+            <td><input type="text" style="width:98%" />
+    </table>
+    <table id="tExecution" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="10">
+                Initial Test
+        <tr>
+            <td colspan="10" class="label left">Value must be numeric. Enter 0 if no gas detected.
+        <tr class="labelCenter">
+            <td>
+            <td>Area / Site
+            <td>O<sub>2</sub>(%)
+            <td>Hydrocarbons(% LEL)
+            <td>H<sub>2</sub>S(ppm)
+            <td>Toxic (ppm)
+
+            <td>Others
+            <td>Date / Time Tested
+            <td>Name
+            <td>Date/Time
+        <tr type="Subsequent">
+            <td colspan="10" class="darkblue">Subsequent Testing
+        <tr style="display:none">
+            <td>
+                <img width="16" onclick="on_Delete(this)" src="../Images//delete.png">
+                <input type="checkbox" />
+            <td>
+                <select />
+            <td><input type="text" />
+            <td><input type="text" />
+            <td><input type="text" />
+            <td><input type="text" />
+            <td><input type="text" />
+            <td><input type="text" />
+            <td>
+            <td> 
+                <!--<a href="javascript:void(0)" onclick="on_Save()" >Submit</a>-->
+        <tr>
+            <td colspan="20"><a href="javascript:void(0)" onclick="on_AdditionalTest(this)"> + Add Additional Test </a>
+        <tr>
+            <td colspan="20">
+                <a href="javascript:void(0)" onclick="on_SignGas(this)"> Sign</a>
+                <a href="javascript:void(0)" onclick="on_SubmitForApproval('SubmitVerify')"> Submit For Verification </a>
+    </table>
+    <table id="tVerification" class=marginBottom>
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                Verification
+        <tr class="left" style="font-size:8pt">
+            <td colspan="11" class="label"><i>I have personally tested the area, recorded the results and certify that the atmosphere is safe for the permitted activity</i>
+        <tr class="labelCenter">
+            <td>Role
+            <td>Name
+            <td>Signature
+            <td>Date / Time Completed
+        <tr>
+            <td class="label">Gas Tester
+            <td><span class="hidden" id="GasTesterId"></span><span id="GasTester" />
+            <td>
+                <input type="button" value="Verify" onclick="on_Action(this)" />
+                <input type="button" value="Reject" onclick="on_Action(this)" />
+            <td>
+    </table>
+    <table id="tProcessChart" class=marginBottom>
+        <th class="header" colspan="11">
+            Process Chart
+    </table>
+</form>
+<iframe id="f" class="hidden"></iframe>
+
+
+<script>
+    var tPlanning = $('#tPlanning')
+    var tGeneral = $('#tGeneral')
+    var tParameter = GetId('tParameter')
+    var tGasToTest = $('#tGasToTest')
+    var tAuthorization = $('#tAuthorization')
+    var tExecution = $('#tExecution')
+    var tVerification = $('#tVerification')
+    var Id = getParameterByName('id')
+    var tProcessChart = GetId('tProcessChart')
+    var Status
+    var Page = 'gas'
+    
+    var IsPaperView
+    var Clone = getParameterByName('clone')
+    var ARRdsfdsfd = ['id', 'CertificateNo', 'JobId', 'PermitId', 'AuthorizedGasTesterId', 'Status', 'AuthorizedGasTester', 'ContinuousGas', 'Repeat', 'Date', 'O2'
+        , 'H2S', 'Hydrocarbons', 'Toxic', 'Other']
+    var ARR = ['id', 'CertificateNo', 'JobId', 'DateDone', 'Date', 'PermitId', 'AuthorizedGasTesterId', 'Status', 'AuthorizedGasTester', 'ContinuousGas', 'Repeat'
+    , 'GasDetector', 'TestedBefore', 'Date1', 'DateDone1', 'O2', 'H2S', 'Hydrocarbons', 'Toxic', 'Other']
+    var IsDirty
+    var Xml
+    var f = GetId('f')
+    var IsTester
+    $(document).ready(function () {
+        if (Id == '')
+            Id = 0
+        InitDateTime(['DateDone'])
+        NumberOnly(['Repeat'])
+        var xml = GetArray(['usp_JobGetGas', Id, UserId, Lang ])
+        Xml = xml 
+        BindSelect(xml, $('#PermitId'))
+        InsertCommon()
+        InitFold()
+        InitPlanning(xml)
+      
+        InitExecution()
+        LockAuthorization(tVerification, xml)
+        Status = $('#Status').text()
+        InitEvent()
+         
+        LockSecurity(xml)
+        InitPaperView(tPlanning)
+        AutoSelectTester(xml)
+
+        if (IsPaperView) {
+            var t = tPlanning
+            var tr = t.find('tr').eq(2)
+
+            var html = '<table><tr><td colSpan=11 class=darkblue >People</td> </table>'
+            $(html).insertAfter(t)
+            t.find('tr').eq(2).children().slice(0, 2).appendTo(t.next()).first().width(200)
+            t.find('tr').first().nextAll().slice(-2).hide()
+
+            var xml = GetArray(['usp_AdminGetOIM', UserId])
+            if ($(xml).text() != '' && Status != 'Closed')
+                GetId('Close').show()
+            return 
+        }
+        LoadJobPacket(tGasToTest)
+        MoveInitialTest()
+        InitStatus(xml)
+
+        CleanUp()
+        ProcessChart()
+    })
+    function AutoSelectTester(xml) {
+        try {
+            if ( GetVal(GetId('AuthorizedGasTesterId')) == '' && $(GetXmlTable(xml, 1).text()).attr('IsTester')==1 ) {
+                GetId('AuthorizedGasTesterId').text(UserId)
+                GetId('AuthorizedGasTester').text(UserName)
+            }
+        }catch(e ){
+
+        }
+        if ( GetVal(GetId('AuthorizedGasTesterId'))== UserId)   
+            IsTester=true 
+    }
+    function ProcessChart( ) {
+        var t = tProcessChart.show() 
+        DataBind(t, Xml, 5)
+        t.find('tr').first().remove()
+        t.find('tr').each(function (index) {
+            var tr = $(this)
+            $('<tr><td>Step ' + (parseInt(index) + 1) + '<td>Status<td>By<td>At</td></tr>').insertBefore(tr).children().eq(0).addClass('hazard').width('30%').siblings().addClass('labelCenter')
+            var html = '<tr><td colspan=4 style="border:none"><center>' + WingDing(234, 'orange') + WingDing(234, 'orange') + ' </center></tr>'
+            $(html).insertAfter(tr)
+            if (index == 5 || index == 6) {
+                var text = (index == 5 ? 'Work Can Commence' : 'Gas Tests No Longer Required and Work Complete')
+               // $('<tr><td colspan=4 style="border:none;"><center style="color:orange;font-weight:bold">' + text + '</center></tr>').insertAfter(tr.next())
+                InsertTr(text, 'orange', tr.next() )
+                $(html).insertAfter(tr.next().next())
+                tr.nextAll().slice(0, 3).children().css('borderTop', 'none').css('borderBottom', 'none')
+            }
+            var td =tr.children().eq(1)
+            var status = td.text()
+            var html=WingDing( 252, 'green') 
+            if (status.indexOf('Pending') != -1)
+                html  = WingDing( 161, 'orange') 
+            if (status.indexOf('Rejected') != -1)
+                html=WingDing( 251, 'red') 
+            if (status !='')
+                td.html('<center>'+ html +'</center>' )
+        })
+        InsertTr('Process Complete', 'green', t.find('tr').last() )
+        //$('<tr><td colspan=4 style="border:none;"><center style="color:green;font-weight:bold">Process Complete</center></tr>').appendTo(t)
+        t.find('tr').slice(-2).children().css('borderTop', 'none').css('borderBottom', 'none')
+        AddGridHeader(t, 'Process Chart')
+        t.find('th').first().attr('colspan', 4)
+        t.find('.minus').trigger('click')
+    }
+    function InsertTr(text, color, tr) {
+        var tr1 = $('<tr/>').insertAfter(tr)
+        AddTd(tr1, text, 'td', 4).css('border', 'none').addClass('center').css('font-weight', 'bold').css('color', color)
+    }
+    function InitStatus(xml) {
+        if (Id == 0)
+            return 
+        Status = GetVal(GetId('Status'))
+        if (Status == '' || Status == 'Open') {
+            tParameter.insertAfter(tGasToTest)
+            tParameter.find('.minus').trigger('click')
+            tAuthorization.nextAll().andSelf().hide()
+
+        }
+        if (Status == 'Started') {
+            GetId('tStart').hide()
+            tAuthorization.nextAll().hide()
+            tAuthorization.find('tr').slice(-1).hide()
+            GetId('SubmitForAuthorization').show()
+        }
+        if (Status == 'Pending Authorization') {
+            GetId('tStart').hide()
+            tAuthorization.find('a').closest('tr').children().html('&nbsp')
+            tExecution.nextAll().andSelf().hide()
+            GetId('SubmitForAuthorization').remove()
+        }
+
+        if (Status == 'Authorized') {
+            tPlanning.add(tGasToTest).find('input, img').prop('disabled', true)
+            GetId('tStart').hide()
+            tAuthorization.find('a').closest('tr').children().html('&nbsp')
+            tVerification.nextAll().andSelf().hide()
+            GetId('SubmitForAuthorization').remove()
+        }
+        if (Status == 'Pending Verification') {
+            GetId('tStart').hide()
+             tAuthorization.find('a').closest('tr').children().html('&nbsp')
+            tExecution.find('a').closest('tr').hide()
+            tExecution.find('tr').slice(-3).remove()
+            GetId('SubmitForAuthorization').remove()
+
+            var src = tParameter.nextAll()
+            LockTable(src, true)
+            if (IsTester )
+                tVerification.find(':button').show().prop('disabled', false)
+        }
+
+        if (Status == 'Closed' || ( $(GetXmlTable(xml, 1).text()).attr('IsJobOwner') == 0 && !IsTester)){
+            var src = tPlanning.nextAll().andSelf()
+            //LockTable(src, true)
+            LockPage()
+            tParameter.nextAll().find('a').closest('tr').hide()
+        }
+        if (!IsTester) {
+            var t = tAuthorization.add(tExecution )
+            t.find(':checkbox, select, .text, img').prop('disabled', true)
+            t.find('a').hide()
+        }
+    }
+    function LockSecurity(xml) {
+        return
+        var planning = tPlanning.next().andSelf()
+        var execution = tExecution.next().andSelf().add(tVerification)
+        LockTable(tPlanning.next().andSelf(), true)
+        if (Status == 'Open')
+            LockTable(planning, false)
+
+        if (Status != 'Authorized') {
+            LockTable(execution, true)
+
+            tExecution.find(':checkbox').closest('tr').each(function () {
+                var tr = $(this)
+                if (GetVal(tr.children().last()) == '')
+                    tr.find('select, input, img').prop('disabled', false)
+            })
+        } else {
+            if (!execution.find(('select:visible:not([disabled])')).length)
+                tVerification.find(':button').show()
+        }
+        if (GetId('AuthorizedGasTesterId').text() != UserId) {
+            var xml1 = $(xml).find('Table3').text()
+            if (xml1.indexOf(UserId) == -1)
+                LockPage()
+        }
+    }
+    function on_Close() {
+        var ok = true
+        var arr = ['AuthorizedGasTester']
+        for (var i in arr) {
+            if (IsEmpty(GetId(arr[i])))
+                ok = false
+        }
+        if (!ok) {
+            alert(RequiredMessage)
+            return
+        }
+        on_Save(0, true)
+        GetArray(['usp_JobAction', Page, 'Verification', Id, '', 'Close', UserId])
+        Refresh()
+    }
+    function MoveInitialTest() {
+        var tr = tAuthorization.find('tr').first()
+        tGasToTest.find('tr').last().insertAfter(tr)
+        tExecution.find('tr').slice(0, 4).insertAfter(tr)
+        tAuthorization.find('tr').eq(3).clone().insertAfter(tExecution.find('tr').eq(0))
+
+        var tr1 = tAuthorization.find('tr').eq(4)
+        if (GetVal(tr1.children().last()) == '') {
+            InitDateTime(tr1.find(':text').last())
+            tAuthorization.find('img').last().show()
+        }
+        ShowSign()
+        $('<tr><th class=header colspan=10><span>-</span> Execution</tr>').prependTo(tExecution)
+    }
+    function ShowSign() {
+        var t = tExecution
+        if (t.find('tr').slice(2, t.find('tr').length-3 ).find('td:last-child()').filter(function () {
+               return GetVal($(this)) == ''
+        }).length) {
+           t.find('a').eq(1).show().next().hide()
+        } else {
+            t.find('a').eq(1).hide().next().show()
+        }
+        if (t.find('tr').length == 5)
+            t.find('a').last().hide()
+        t = tAuthorization
+        if (GetVal( t.find('tr').eq(4).children().last()) =='')
+            t.find('a').eq(0).show().next().hide()
+        else 
+            t.find('a').eq(0).hide().next().show()
+    }
+    function on_CommonAction(src) {
+        src = $(src)
+        var action = src.val()
+        var role = src.closest('tr').children().first().text()
+        var section = src.closest('table').attr('id')
+
+        section = section.substring(1, section.length)
+        GetArray(['usp_JobAction', Page, section, Id, role, action, UserId ])
+        Refresh()
+    }
+    function ActionButton(name) {
+        return '<input type=button onclick=on_CommonAction(this) value =' + name + ' />'
+    }
+    function InitApprover(xml) {
+        var t = tAuthorization
+        // var t1 = t.clone().insertAfter(tExecution)
+        DataBind(t, xml, 2)
+        HideColumn(t, 1)
+
+        RemoveWingDing(t)
+        t.find('tr').each(function () {
+            var tr = $(this)
+            if (tr.children().eq(1).text() == UserId && tr.children().eq(4).text() == 'Pending Approval') {
+                tr.children().eq(4).html(ActionButton('Authorize') + ActionButton('Reject'))
+            }
+            tr.children().attr('colspan', 2)
+        })
+        AddGridSubHeader(t, 'Permit Issuer Authorization')
+        AddGridHeader(t, 'Authorization')
+    }
+    function LockAuthorization(t, xml) {
+        t.find(':button, img').hide()
+        t.find(':text').prop('disabled', true)
+        t.find('span[userId=' + UserId + ']').closest('tr').each(function () {
+            var tr = $(this)
+            if (tr.children().eq(3).text() == 'Pending Approval') {
+                tr.children().eq(4).children().show()
+                tr.children().eq(6).children().prop('disabled', false)
+            }
+        })
+        t.find('td:nth-child(2)').filter(function () {
+            return $(this).text() == ''
+        }).closest('tr').find('img').show()
+        var dt = GetXmlTable(xml, 4).find('DateCompleted').text()
+        t.find('td').last().text(dt)
+    }
+    function LockTable(src, b) {
+        src.find('input, img, select, textarea').prop('disabled', b)
+
+        return 
+        if (b)
+            src.find('a').closest('tr').hide()
+    }
+    function InitPlanning(xml) {
+        var t = tPlanning
+        t.find('tr').eq(1).children().width('13%')
+        t.find('tr').slice(1, 5).find('td:even').addClass('labelRight')
+
+        t.next().find('td').css('border-top', 'none').first().addClass('labelRight').nextAll('td:even').addClass('labelRight')
+        var xml1 = $(xml).find('Table1').text()
+        if (Id == 0)
+            return
+        var src = $(xml1)
+        if (src == null)
+            return
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), src.attr(id))
+        }
+        LockField('PermitId')
+        src.find('Location').each(function () {
+            var element = $(this)
+            AddLocation($('#Location').prev(), element.attr('id'), element.attr('Name'))
+        })
+        InitInitialTest(src)
+        InitApprover(xml)
+    }
+    function InitExecution() {
+        var t = tExecution
+        t.find('tr').eq(1).addClass('labelCenter')
+
+        var t = tExecution
+        t.prev().find('tr').eq(2).children().width('25%')
+        var trs = t.prev().find('tr').slice(4)
+        GetTd(trs, 1).css('background-color', 'lightgreen')
+        GetTd(trs, 2).css('background-color', 'yellow')
+        GetTd(trs, 3).css('background-color', 'red').css('color', 'white')
+        t.find('img').first().hide()
+
+        var src1 = $('#AuthorizedGasTester')
+        var src2 = $('#GasTester')
+        src2.text(src1.text())
+        tVerification.find('tr').eq(3).children().eq(1).text(src1.text())
+        src2.prev().text(src1.prev().text())
+
+        t.find('span').first().on('click', function (e) {
+            var span = $(this)
+            var tr = span.closest('tr')
+            var trs = tr.nextUntil('[type=Subsequent]')
+            Toggle(span, trs)
+        })
+        t.find('tr[type=Subsequent]').find('span').first().on('click', function (e) {
+            var span = $(this)
+            var tr = span.closest('tr')
+            var trs = tr.nextAll()
+            Toggle(span, trs)
+        })
+    }
+    function Toggle(span, trs) {
+        event.stopPropagation();
+        var text = span.text()
+        if (text != '-' && text != '+')
+            return
+        if (text == '-') {
+            span.text('+')
+            trs.hide()
+        }
+        else {
+            span.text('-')
+            trs.show()
+        }
+    }
+    function on_AdditionalTest(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var tr1 = tr.clone().show()
+        
+        tr1.insertBefore(tr)
+        InitDateTime(tr1.find(':text').last())
+        var select = tr1.find('select')
+        $('#Location').find('td:odd').each(function () {
+            var td = $(this)
+            $('<option/>').val(td.attr('id')).text(td.text()).appendTo(select)
+        })
+        AddOptionAll(select)
+        AutoSelect(select)
+        NumberOnly(tr1.find(':text').not(':last'))
+        ShowSign()
+    }
+    function AutoSelect(src) {
+        if (src.children().length == 2)
+            src.children().eq(1).prop('selected', true)
+    }
+    function on_Save(flag, noRefresh) {
+        if (!Validate()) {
+            alert('Please fill out the required fields.')
+            return
+        }
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        root.addAttr('flag', flag)
+
+        SaveXmlAttachment()
+        XmlGeneral(root)
+        XmlAuthorization(tAuthorization, root)
+        XmlAuthorization(tVerification, root)
+        XmlIntialTest(root)
+        var xml = root[0].outerHTML
+        xml = GetArray(['usp_JobSaveGas', UserId,  xml])
+
+        Id = Trim($(xml).find('Column1').first().text())
+        if (flag == 'Submit' && $(xml).find('Flag').text() == '')
+            alert(' Permit Issuer not assigned to linked permit.')
+        if (noRefresh)
+            return 
+        window.location = 'gas.htm?id=' + Trim(Id)
+    }
+    function InitInitialTest(src) {
+        var t = tExecution
+        var a = t.find('a').first()
+        var found = false
+        src.find('GasInitialTest').each(function (index) {
+            var element = $(this)
+            a.trigger('click')
+            var tr = t.find('tr').slice(-4, -3)
+            tr.attr('id', element.attr('id'))
+            InitDateTime(tr.find(':text').last())
+            var select = tr.find('select')
+
+            select.val(element.attr('LocationId'))
+            tr.find(':text').eq(0).val(element.attr('O2'))
+            tr.find(':text').eq(1).val(element.attr('Hydrocarbons'))
+            tr.find(':text').eq(2).val(element.attr('H2S'))
+            tr.find(':text').eq(3).val(element.attr('Toxic'))
+            tr.find(':text').eq(4).val(element.attr('Other'))
+            tr.find(':text').last().val(element.attr('dtTested1'))
+            tr.children().slice(-2, -1).text(element.attr('Name'))
+            var td = tr.children().last()
+            td.text(element.attr('dt1'))
+            if (GetVal(td) != '') {
+                tr.find(':checkbox, img').hide()
+                tr.find('select, :text').prop('disabled', true)
+            } else {
+                td.prev().andSelf().addClass('label')
+               // tGasToTest.find('tr').last().hide().children().hide()
+            }
+            var span = tr.find('span').eq(0)
+            span.text(element.attr('Name')).attr('UserId', element.attr('UserId'))
+            // alert(tr.prev().html())
+            if (index == 0)
+                tr.insertBefore(tr.prev())
+            tr.children().first().append('<span >' + (index + 1) + '</span>')
+            found = true
+            NumberOnly(tr.find(':text').not(':last'))
+        })
+        if (!found) {
+            on_AdditionalTest(a)
+            var tr = t.find('tr').slice(-3, -2)
+            tr.insertAfter(t.find('tr').eq(2))
+            tr.find('img').first().remove()
+        }
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            //value = CleanSpecialCharacter(value )
+            element.addAttr(id, value)
+        }
+        $('#Location').find('td:odd').each(function () {
+            var td = $(this)
+            var Location = $.createElement('Location')
+            Location.addAttr('id', td.attr('id'))
+            Location.addAttr('Name', GetVal(td))
+            element.append(Location)
+        })
+        root.append(element)
+    }
+    function XmlAuthorization(t, element) {
+        return
+        var section = t.attr('id').substring(1, t.attr('id').length)
+        t.find('tr').eq(2).each(function () {
+            var tr = $(this)
+            var type = tr.children().first().text()
+            type = Trim(type)
+            var span = tr.children().eq(1).find('span')
+            var el = $.createElement('Authorization')
+            el.addAttr('Page', Page)
+            el.addAttr('Section', section)
+            el.addAttr('Type', type)
+            el.addAttr('UserId', span.attr('userId'))
+            el.addAttr('Name', span.text())
+            el.addAttr('Position', tr.children().eq(2).text())
+            el.addAttr('Status', tr.children().eq(3).text())
+            el.addAttr('Action', tr.children().eq(4).text())
+            el.addAttr('DateCompleted', tr.children().eq(5).text())
+            el.addAttr('Comment', CleanSpecialCharacter(tr.children().eq(6).find(':text').val()))
+            element.append(el)
+        })
+    }
+    function XmlIntialTest(element) {
+        var t = tExecution
+        t.add(tAuthorization).find('select').closest('tr').not(':last').each(function (index) {
+            //tAuthorization.find('tr').eq(4).add(t.find('tr:gt(1)').not(':last').not(':last')).each(function (index) {
+            var tr = $(this)
+            var span = tr.find('span').eq(1)
+            var el = $.createElement('IntialTest')
+            el.addAttr('LocationId', tr.find('select').val())
+            el.addAttr('id', tr.attr('id'))
+            el.addAttr('O2', GetVal(tr.find(':text').eq(0)))
+            el.addAttr('Hydrocarbons', GetVal(tr.find(':text').eq(1)))
+            el.addAttr('H2S', GetVal(tr.find(':text').eq(2)))
+            el.addAttr('Toxic', GetVal(tr.find(':text').eq(3)))
+            el.addAttr('Other', GetVal(tr.find(':text').eq(4)))
+            var td = tr.children().slice(-2, -1)
+            el.addAttr('UserId', td.attr('userId'))
+            var name = GetVal(td)
+            if (name == '1')
+                name=UserName 
+            el.addAttr('Name', name)
+            el.addAttr('dtTested', GetVal(tr.find(':text').last()))
+                el.addAttr('dt', GetVal(tr.children().last()))
+
+            element.append(el)
+        })
+    }
+    function on_SignGas(src) {
+        src = $(src)
+        var t =src.closest('table')
+        var td = src.parent()
+        //if (t.is(tAuthorization))
+        //    tAuthorization.find(':checkbox').prop('checked', true)
+        if (t.find(':checkbox:visible' ).length==1)
+            t.find(':checkbox').prop('checked', true)
+        if (!t.find(':checkbox:checked').length) {
+            alert('Please make a selection.')
+            return 
+        }
+        on_Submit('') 
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+        ShowSign()
+    }
+    function on_AuthoritySelect(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var type = tr.children().first().text()
+        type = Trim(type)
+        var r = GetPobUser()
+        if (r == null)
+            return
+        r = r[0]
+        $('#AuthorizedGasTesterId').text(r[0])
+        $('#AuthorizedGasTester').text(r[1])
+    }
+
+    function InitEvent() {
+        tPlanning.find('input, img, select').on('click', function () {
+            IsDirty = true
+        })
+        tExecution.find(':text, select').on('change', function () {
+            IsDirty = true
+        })
+        $('#ContinuousGas').on('change', function () {
+            var ck = $(this)
+            if (ck.prop('checked'))
+                ck.parent().nextAll().slice(0, 2).children().hide().val('')
+            else
+                ck.parent().nextAll().slice(0, 2).children().show()
+        }).trigger('change')
+        $(':button').on('click', function () {
+            var button = $(this)
+            var tr = button.closest('tr')
+            var action = button.val()
+            if (action != 'Approve' && action != 'Reject')
+                return
+            var section = button.closest('table').attr('id')
+            section = section.substring(1, section.length)
+            var role = tr.children().first().text()
+            var comment = GetVal(tr.find(':text'))
+
+            role = Trim(role)
+            GetArray(['usp_JobActionGas', Id, section, role, UserId, action, comment])
+            //NotifyStatus(section, role, action)
+            Refresh()
+        })
+    }
+    function on_PobSelect(src) {
+        src = $(src)
+
+        var r = GetPobUser('Gas Tester')
+        if (r == null)
+            return
+        r = r[0]
+        $('#AuthorizedGasTesterId').text(r[0])
+        $('#AuthorizedGasTester').text(r[1])
+    }
+    function on_Location(src) {
+        src = $(src)
+        var r = Popup('../common/PopupLocation.htm?a=1', 900, 900)
+
+        if (r == null)
+            return
+        AddLocation(src, r[0], r[1])
+    }
+    function AddLocation(src, id, name) {
+        var t = src.next()
+        if (t.find('td').filter(function () {
+            return $(this).text() == name
+        }).length)
+            return
+        var tr = AddTr(t)
+        AddTd(tr, '<img src="../Images//delete.png" width="16" onclick="on_Delete(this)" />').width(1)
+        AddTd(tr, name).attr('id', id)
+        t.find('td').css('border', 'none')
+    }
+    function on_SignGasGasTest(src) {
+        src = $(src)
+        if (!VerifyLogin()) {
+            return
+        }
+        var tr = src.closest('tr')
+        var dt = GetVal(tr.children().last())
+        GetArray(['usp_JobSignGasTest', Id, tr.attr('id')])
+        Refresh()
+    }
+    function Validate() {
+        if (IsPaperView)
+            return true 
+        var ok = true
+        var arr = ['AuthorizedGasTester', 'Location', 'DateDone', 'PermitId']
+        for (var i in arr) {
+            if (IsEmpty($('#' + arr[i])))
+                ok = false
+        }
+        var t = tGasToTest
+        if (!t.find(':checked').length && GetVal(t.find(':text').eq(0)) == '' && GetVal(t.find(':text').eq(1)) == '') {
+            ok = false
+            tGasToTest.find('tr').eq(1).children().css('background-color', 'yellow')
+        }
+        return ok
+    }
+    function on_SubmitForApproval(flag) {
+        if (!Validate()) {
+            alert('Please fill out the required fields.')
+            return
+        }
+        if (flag == 'SubmitVerify') {
+            var permitId  =GetVal (GetId('PermitId') )
+            var xml = GetArray(['usp_JobGetPermit', permitId, '', '' , Lang ])
+            var status = $(GetXmlTable(xml, 2).text()).attr('status')
+            if (status != 'Authorized') {
+                //alert('Please authorize the permit.')
+                //return 
+            }
+            if ( TdByName(tExecution.find('tr').slice(2), 'Date/Time').filter(function () {
+                return GetVal( $(this))==''
+            }).length) {
+                alert('Please sign all the gas tests')
+                return 
+            }
+        }
+        if (flag == 'Submit')
+            tAuthorization.find(':checkbox').prop('checked', true)
+        on_Submit(flag)
+    }
+    function on_Submit(flag) {
+        var t = tExecution
+        var found = false
+        var ok = true
+
+        var arr = tGasToTest.find('tr').eq(1).find('input').map(function () {
+            var src = $(this)
+            var type = src.attr('type').toLowerCase()
+            if ((type == 'checkbox' && src.prop('checked')) || (type == 'text' && GetVal(src) != ''))
+                return src.parent().index() / 2
+            else
+                return 0
+        }).get()
+        tExecution.add( tAuthorization).find('select').closest('tr').not(':last').each(function () {
+            var tr = $(this)
+            if ( !tr.find(':checkbox:checked:visible').length) {
+                return
+            }
+            var td = tr.children().last()
+            td.html('1/1/30')
+            td.prev().html(UserName)
+
+            if (IsEmpty(tr.find('select').first()))
+                ok = false
+            for (var i in arr) {
+                var index = arr[i]
+                if (index == 0)
+                    continue
+                if (IsEmpty(tr.children().eq(index + 1).children()))
+                    ok = false
+            }
+            if (IsEmpty(tr.children().slice(-3, -2).find(':text')))
+                ok = false
+            if (!ok)
+                return
+            tr.children().slice(-2, -1).text(UserName).attr('userId', UserId)
+            found = true
+        })
+        if (!ok) {
+            alert('Please fill the required fields.')
+            return
+        }
+        if (!found) {
+            //alert('Please make a selection.')
+            //return
+        }
+        on_Save(flag, true )
+        //NotifyStatus( (flag=='Submit'? 'Authorization':'Verification'), '', 'Submit'  )
+        Refresh()
+    }
+    function GetLink(src, text) {
+        return '<a href ="' + GetSiteUrl() + '/job/' + src + '" >' + text + '</a> '
+    }
+    function NotifyStatus(type, role, action, loaded) {
+        var permitId = GetVal(GetId('PermitId'))
+        if (action != 'Reject') {
+            if (!loaded) {
+                f.attr('src', 'permit.htm?id=' + permitId)
+            }
+            var jobId = GetVal(f.contents().find("#JobId"))
+            window.status = window.status + jobId
+            if (jobId == null) {
+                setTimeout(function () {
+                    NotifyStatus(type, role, action, true);
+                }, 100)
+                return
+            }
+        }
+        var t = tPlanning
+        t.find('th').first().text('Gas Test Certificate')
+        var jobId = GetVal(GetId('JobId'))
+        var title = 'Title' // GetVal(GetId('Title'))
+
+        var subject = 'Gas Test Certifcate ' + Id  + ' '+type
+        var s = '<table ><tr><th class=header colspan=7 > ' + (action == 'Reject' ? 'Rejection' : 'Task') + '</tr><tr class=labelCenter>'
+        var arr = ['Type', 'Job', 'Source', 'Source Title', 'Assigned By', 'Date/Time Created', 'Comment']
+        var arr1 = [type, GetLink('job.htm?id=' + jobId, jobId), GetLink('gas.htm?id=' + Id, 'Gas Test ' + Id), title, '', '']
+        for (var i in arr)
+            s += '<td>' + arr[i]
+        s += '<tr>'
+        for (var i in arr1)
+            s += '<td>' + arr1[i]
+        s += '</table>'
+        if (action == 'Reject') {
+            subject = 'Gas Test Certificate ' + Id + ' - Rejection'
+        } else {
+            s += Strip(t)
+            t = tGasToTest
+            s += Strip(t)
+            t = tAuthorization
+            t.find('th').eq(0).attr('colspan', 10 )
+            t.find('tr').slice(-2).remove()
+            s += Strip(t)
+
+            if (type == 'Verification') {
+                t = tExecution
+                t.find('tr').slice(-2).remove()
+                s += Strip(t)
+            }
+            //Permit
+            t = f.contents().find('#A')
+            AddGridHeader(t, 'Permit').attr('colspan', 8)
+            s += Strip(t)
+
+            t = f.contents().find('#tEquipment')
+            s += Strip(t)
+
+            t = f.contents().find('#tAuthorization0')
+            s += Strip(t)
+            
+            t = f.contents().find('#B')
+            t.find('tr').last().children().last().text('')
+            s += Strip(t )
+            t = GetId('tPacket')
+            t.find('tr').last().remove()
+            t.find('th').first().attr('colspan', 6)
+            t.find(':hidden').show()
+            s += Strip(t)
+            
+            t = tProcessChart
+            if ( GetVal( t.find('.minus').first())=='+')
+                t.find('.minus').trigger('click')
+            s +=Strip(t )
+        }        
+        GetArray(['usp_NotifyStatus', subject, s, Id, 'Gas', type, role, action ])
+        //f.remove()
+        Refresh()
+    }
+    function on_Action(src) {
+        var ok = true
+        var t = tGasToTest
+        t.find(':checkbox').closest('tr').each(function () {
+            var tr = $(this)
+            if (tr.children().last().text() == '')
+                ok = false
+        })
+        if (!ok) {
+            alert('Please fill the required fields.')
+            return
+        }
+
+        src = $(src)
+        var action = src.val()
+
+        on_Save(action)
+        Refresh()
+    }
+    function on_Start(src) {
+        on_Save('Start')
+    }
+    function on_Clone() {
+        var xml = GetArray(['usp_JobCloneGas', Id, GetVal(GetId('PermitId')), null])
+        Id = $(xml).text()
+        window.location = 'gas.htm?id=' + Trim(Id)
+    }
+</script>

@@ -1,0 +1,54 @@
+﻿
+<head>
+    <style>
+        body {
+            margin: 15;
+        }
+
+        td {
+            padding: 2;
+        }
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <table id="t" border="1" width="100%" style="border-collapse:collapse"></table>
+    <br>
+    <input type="button" value="Back" onclick="window.close()" />
+    <iframe id="f" class1="hidden" width="100%"  height="100%"></iframe>
+</body>
+</html>
+<script>
+    var f = $('#f')
+    var ARR=[]
+    $(document).ready(function () {
+        var xml = GetArray(['utl_GetPage'])
+        GetXmlTable(xml).each(function () {
+            var src = $(this)   
+            ARR.push( src.text() )
+        })
+      // ARR.push('common.htm')
+        //alert(ARR); return         
+        Process()
+    })
+    function Process() {
+        if (!ARR.length) {
+            alert('Done')
+            return
+        }
+        var url = ARR.pop()
+        window.status = (url )
+        f.attr('src', '../' + Trim(url) + '?crawl=1')
+    }
+</script>

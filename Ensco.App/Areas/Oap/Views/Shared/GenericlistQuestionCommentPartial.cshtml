@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklistQuestionComment>
+
+@{
+    var genericListController = (dynamic) ViewContext.Controller;
+    var rigChecklistQuestionId = Guid.Parse(ViewData[Ensco.App.Areas.Oap.Controllers.GridConstants.RigChecklistQuestionIdKey].ToString());
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.RigChecklistQuestionInlineCommentErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+
+        genericListController.ConfigureChecklistQuestionComment(settings, Html, ViewContext, rigChecklistQuestionId);
+    });
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+    grid.Bind(Model).GetHtml();
+}

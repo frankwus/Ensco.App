@@ -1,0 +1,134 @@
+﻿@model Ensco.Irma.Models.CrewFlightModel
+
+@Html.DevExpress().GridView(gridPob =>
+{
+    gridPob.Name = "gridView_FlightManifestFlightPobs";
+    gridPob.SettingsDetail.MasterGridName = "gridView_FlightManifestPartial";
+    gridPob.KeyFieldName = "Id";
+
+    gridPob.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "FlightManifestDetailFlightPartial"};
+    gridPob.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestPobAddPartial" };
+    gridPob.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestPobUpdatePartial" };
+    gridPob.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestPobDeletePartial" }; //Delete it, this is not a template
+    gridPob.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+
+
+    gridPob.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    gridPob.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.EditButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    gridPob.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    gridPob.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    gridPob.SettingsCommandButton.CancelButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+    var attribs = Ensco.Utilities.UtilitySystem.GetCustomAttributes(typeof(Ensco.Irma.Models.FlightManifestPobModel));
+    Html.SetEnscoGridColumns(gridPob, typeof(Ensco.Irma.Models.FlightManifestPobModel));
+
+    MVCxGridViewColumn col = gridPob.Columns["PassportId"] as MVCxGridViewColumn;
+
+    Ensco.Models.LookupListModel<dynamic> lkpList = Ensco.Utilities.UtilitySystem.GetLookupList("Passport");
+    col.EditorProperties().ComboBox(combo =>
+    {
+        combo.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+        combo.ValidationSettings.Display = Display.Dynamic;
+        combo.ValidationSettings.SetFocusOnError = true;
+        combo.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        combo.NullText = "[Select]";
+        combo.TextField = lkpList.DisplayField;
+        combo.ValueField = lkpList.KeyFieldName;
+        combo.DataMember = lkpList.DisplayField;
+        combo.DropDownStyle = DropDownStyle.DropDownList;
+        combo.DataSource = lkpList.Items;
+    });
+
+
+    // Hide Position, Company & Nationality in edit mode (these should be coming from Passport)
+    MVCxGridViewColumn colPosition = gridPob.Columns["Position"] as MVCxGridViewColumn;
+    colPosition.EditFormSettings.Visible = DefaultBoolean.False;
+    MVCxGridViewColumn colCompany = gridPob.Columns["Company"] as MVCxGridViewColumn;
+    colCompany.EditFormSettings.Visible = DefaultBoolean.False;
+    MVCxGridViewColumn colNationality = gridPob.Columns["Nationality"] as MVCxGridViewColumn;
+    colNationality.EditFormSettings.Visible = DefaultBoolean.False;
+
+    gridPob.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridPob.SettingsPager.FirstPageButton.Visible = true;
+    gridPob.SettingsPager.LastPageButton.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridPob.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    gridPob.CommandColumn.Visible = true;
+    gridPob.CommandColumn.ShowEditButton = true;
+    gridPob.CommandColumn.ShowNewButtonInHeader = true;
+    gridPob.CommandColumn.ShowDeleteButton = true;
+    gridPob.CommandColumn.ShowUpdateButton = true;
+    gridPob.CommandColumn.ShowCancelButton = true;
+    //gridPob.SettingsBehavior.ConfirmDelete = true;
+
+    //gridPob.CommandColumn.SetHeaderCaptionTemplateContent(c =>
+    //{
+    //    ViewContext.Writer.Write(Html.HiddenFor(x=>x.IsOffboarding).ToHtmlString());
+    //    Html.DevExpress().Button(button =>
+    //    {
+    //        button.Name = "btnOnboardPob";
+    //        button.Images.Image.Url = "~/Images/Create.png";
+    //        button.Images.Image.Width = 24;
+    //        button.Images.Image.Height = 24;
+    //        button.Text = "";
+    //        button.ClientSideEvents.Click = "function (s, e) { var item =  document.getElementById('IsOffboarding'); item.value = 0; gridView_FlightManifestFlightPobs.AddNewRow(); }";
+    //    }).GetHtml();
+    //    Html.DevExpress().Button(button =>
+    //    {
+    //        button.Name = "btnOffboardPob";
+    //        button.Images.Image.Url = "~/Images/Create.png";
+    //        button.Images.Image.Width = 24;
+    //        button.Images.Image.Height = 24;
+    //        button.Text = "";
+    //        button.ClientSideEvents.Click = "function (s, e) { debugger; var item =  document.getElementById('IsOffboarding'); item.value = 1; $('#IsOffboarding').val(1); gridView_FlightManifestFlightPobs.AddNewRow(); }";
+    //    }).GetHtml();
+    //});
+
+    gridPob.Styles.Header.Wrap = DefaultBoolean.True;
+    gridPob.SettingsPager.EnableAdaptivity = true;
+
+    gridPob.CellEditorInitialize = (s, e) =>
+    {
+        e.Editor.ReadOnly = false;
+    };
+
+    gridPob.FormatConditions.AddHighlight("Status", "[Status] = 3", GridConditionHighlightFormat.GreenFillWithDarkGreenText);
+    gridPob.FormatConditions.AddHighlight("Status", "[Status] = 4", GridConditionHighlightFormat.LightRedFillWithDarkRedText);
+
+
+    gridPob.EditFormLayoutProperties.ColumnCount = 3;
+    foreach (var item in attribs)
+    {
+        if (!item.Visible)
+            continue;
+
+        if (item.FieldName == "Position" || item.FieldName == "Nationality" || item.FieldName == "Company")
+            continue;
+
+        gridPob.EditFormLayoutProperties.Items.Add(item.FieldName);
+    }
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+
+
+    gridPob.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+}).Bind(Model.Personnel).GetHtml()
+
+
+

@@ -1,0 +1,272 @@
+﻿@model Ensco.Models.UserRecordsModel
+
+@Html.DevExpress().GridView(gridRecords =>
+{
+    gridRecords.Name = "gridView_PassportPartialRecords";
+    gridRecords.SettingsDetail.MasterGridName = "gridView_PassportPartial";
+    gridRecords.KeyFieldName = "Id";
+
+    gridRecords.CallbackRouteValues = new { Area = "Common", Controller = "Admin", Action = "PassportDetailPartialRecords", userId=Model.Id };
+    gridRecords.SettingsEditing.AddNewRowRouteValues = new { Controller = "Admin", Action = "PassportAddRecordPartial", Area = "Common" };
+    gridRecords.SettingsEditing.UpdateRowRouteValues = new { Controller = "Admin", Action = "PassportUpdateRecordPartial", Area = "Common" };
+    gridRecords.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "PassportDeleteRecordPartial", Area = "Common" }; //Disable internally
+    gridRecords.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+
+    gridRecords.Width = Unit.Percentage(100);
+
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "Name";
+        cr.EditorProperties().TextBox(s =>
+        {
+
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "Status";
+        cr.Caption = "Status";
+        cr.EditorProperties().ComboBox(s =>
+        {
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+            s.BindList(Ensco.Utilities.UtilitySystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.UserStatus.ToString()).Items);
+            s.NullText = "[Select Status]";
+            s.TextField = "Name";
+            s.ValueField = "Id";
+            s.DataMember = "Name";
+            s.DropDownStyle = DropDownStyle.DropDownList;
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "GovtIdType";
+        cr.Caption = "Govt ID Type";
+        cr.EditorProperties().ComboBox(s =>
+        {
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+            s.BindList(Ensco.Utilities.UtilitySystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.UserGovtIdType.ToString()).Items);
+            s.NullText = "[Select Type]";
+            s.TextField = "Name";
+            s.ValueField = "Id";
+            s.DataMember = "Name";
+            s.DropDownStyle = DropDownStyle.DropDownList;
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "Number";
+        cr.Caption = "Number";
+        cr.EditorProperties().TextBox(s =>
+        {
+
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "DateIssued";
+        cr.Caption = "Issued Date";
+        cr.EditorProperties().DateEdit(s =>
+        {
+            //if (colAttrib.DisplayFormat != null)
+            //{
+            //    s.EditFormat = EditFormat.Custom;
+            //    s.EditFormatString = colAttrib.DisplayFormat;
+            //    if (colAttrib.DisplayFormat.Contains("hh"))
+            //    {
+            //        s.TimeSectionProperties.ShowSecondHand = false;
+            //        s.TimeSectionProperties.Visible = true;
+            //    }
+            //}
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "DateExpires";
+        cr.Caption = "Expiry Date";
+        cr.EditorProperties().DateEdit(s =>
+        {
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "IssuedBy";
+        cr.Caption = "Issued By";
+        cr.EditorProperties().TextBox(s =>
+        {
+
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "Country";
+        cr.Caption = "Country";
+        cr.EditorProperties().ComboBox(s =>
+        {
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+            s.BindList(Ensco.Utilities.UtilitySystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.Nationality.ToString()).Items);
+            s.NullText = "[Select Country]";
+            s.TextField = "Name";
+            s.ValueField = "Id";
+            s.DataMember = "Name";
+            s.DropDownStyle = DropDownStyle.DropDownList;
+        });
+    });
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "Notes";
+        cr.Caption = "Notes";
+        cr.EditorProperties().Memo(s =>
+        {
+
+            s.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.ValidationSettings.Display = Display.Dynamic;
+            s.ValidationSettings.SetFocusOnError = true;
+            s.Width = Unit.Percentage(100);
+        });
+    });
+
+    gridRecords.Columns.Add(cr =>
+    {
+        cr.FieldName = "DocumentFile";
+
+        cr.SetEditItemTemplateContent(c =>
+        {
+            using (Html.BeginForm())
+            {
+                Html.RenderPartial("UploadPartial", DataBinder.Eval(c.DataItem, "Id"));
+            }
+        });
+    });
+
+    gridRecords.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridRecords.SettingsPager.FirstPageButton.Visible = true;
+    gridRecords.SettingsPager.LastPageButton.Visible = true;
+    gridRecords.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridRecords.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridRecords.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    gridRecords.CommandColumn.Width = Unit.Pixel(75);
+    gridRecords.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    gridRecords.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    gridRecords.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    gridRecords.SettingsCommandButton.EditButton.Image.Width = 16;
+    gridRecords.SettingsCommandButton.EditButton.Image.Height = 16;
+    gridRecords.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    gridRecords.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    gridRecords.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    gridRecords.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    gridRecords.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    gridRecords.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    gridRecords.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    gridRecords.SettingsCommandButton.CancelButton.Image.Width = 16;
+    gridRecords.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+    gridRecords.CommandColumn.Visible = true;
+    gridRecords.CommandColumn.ShowEditButton = true;
+    gridRecords.CommandColumn.ShowNewButtonInHeader = true;
+    gridRecords.CommandColumn.ShowDeleteButton = true;
+    gridRecords.CommandColumn.ShowUpdateButton = true;
+    gridRecords.CommandColumn.ShowCancelButton = true;
+
+    //gridRecords.SettingsBehavior.ConfirmDelete = true;
+
+    gridRecords.Styles.Header.Wrap = DefaultBoolean.True;
+    gridRecords.SettingsPager.EnableAdaptivity = true;
+
+    gridRecords.ClientLayout = (s, e) =>
+    {
+        if (e.LayoutMode == ClientLayoutMode.Loading)
+        {
+            if (Session["GridState"] != null)
+                e.LayoutData = (string)Session["GridState"];
+        }
+        else
+            Session["GridState"] = e.LayoutData;
+    };
+
+    //gridRecords.EditFormLayoutProperties.ColCount = 3;
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "Document";
+    //    i.RowSpan = 5;
+    //    i.ShowCaption = DefaultBoolean.False;
+    //    i.Width = 160;
+    //});
+
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "Name";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "Status";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "GovtIdType";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "Number";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "DateIssued";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "DateExpires";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "IssuedBy";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "Country";
+    //});
+    //gridRecords.EditFormLayoutProperties.Items.Add(i =>
+    //{
+    //    i.ColumnName = "Notes";
+    //});
+
+    //gridRecords.CommandButtonInitialize = (s, e) => {
+    //};
+    //gridRecords.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    //{
+    //    i.ShowUpdateButton = true;
+    //    i.ShowCancelButton = true;
+    //    i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    //});
+
+}).Bind(Model.UserRecords).GetHtml()
+

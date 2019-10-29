@@ -1,0 +1,10 @@
+﻿@model Ensco.Irma.Oap.WebClient.Corp.RigOapChecklistQuestionFinding
+
+
+@using (Html.BeginForm())
+{
+    var controller = (dynamic) ViewContext.Controller;
+    controller.ConfigureFindingsPage(Html, ViewContext);
+}
+ 
+

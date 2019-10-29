@@ -1,0 +1,42 @@
+﻿@model Ensco.App.Areas.IRMA.Controllers.AttachmentSource
+@using Ensco.Utilities
+@using Ensco.Models;
+@using System.Data;
+@Html.DevExpress().UploadControl(settings =>
+{
+    settings.Name = ViewBag.ControlName ?? "MultiFileUpload";
+    settings.CallbackRouteValues = new { Area = "Common", Controller = "Admin", Action = "MultiFileUpload", SourceForm = Model.SourceForm, SourceFormId = Model.SourceFormId, controlName = ViewBag.ControlName };
+
+    settings.ShowProgressPanel = true;
+    // settings.ShowUploadButton = true;
+    // settings.AutoStartUpload = true;
+    settings.ClientEnabled = !( this.ViewBag.readOnly==null? true : (bool)this.ViewBag.readOnly ) ;
+    settings.AdvancedModeSettings.EnableMultiSelect = true;
+    settings.AdvancedModeSettings.EnableFileList = true;
+    settings.AdvancedModeSettings.EnableDragAndDrop = true;
+    settings.NullText = "Select a file to upload..";
+
+    settings.ClientSideEvents.FilesUploadComplete = "function(s,e) { onFileUploadComplete(e); }";
+}).GetHtml()
+
+@{
+    //IEnumerable<AttachmentModel> attachments = (IEnumerable<AttachmentModel>)this.ViewBag.Atts;
+    IEnumerable<AttachmentModel> attachments = Model.Attachments; // (IEnumerable<AttachmentModel>)this.Session["Atts"];
+    if (attachments != null) {
+        foreach (var attachment in attachments) {
+            Html.DevExpress().HyperLink(l => {
+                l.Properties.ImageUrl = "~/Images/Delete.png";
+                l.NavigateUrl = "#";
+                l.Attributes.Add("onclick", "onDelete(this)");
+                l.Properties.ImageWidth = Unit.Pixel(15);
+                l.Style.Add("margin-right", "5px");
+            }).GetHtml();
+
+            Html.DevExpress().HyperLink(l => {
+                l.Properties.Text = attachment.FileName;
+                l.NavigateUrl = attachment.FilePath;
+            }).GetHtml();
+            ViewContext.Writer.Write("<br />");
+        }
+    }
+}

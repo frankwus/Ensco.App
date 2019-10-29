@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+    <title>@DbRes.T(ViewBag.Title) - IRMA</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Html.DevExpress().GetStyleSheets(
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.GridView, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Editors, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Chart, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Report, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.TreeList, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Scheduler, Theme = "EnscoTheme" }
+                                )
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-ui")
+    @RenderSection("AdditionalResources", required: false)
+
+    @Html.DevExpress().GetScripts(
+                            new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+                            new Script { ExtensionSuite = ExtensionSuite.GridView },
+                            new Script { ExtensionSuite = ExtensionSuite.Editors },
+                            new Script { ExtensionSuite = ExtensionSuite.Chart },
+                            new Script { ExtensionSuite = ExtensionSuite.Report },
+                            new Script { ExtensionSuite = ExtensionSuite.TreeList },
+                            new Script { ExtensionSuite = ExtensionSuite.Scheduler }
+                            )
+    <style>
+        .metropolisPane {
+            border: 1px solid #c0c0c0 !important;
+        }
+
+        .youthfulPane {
+            border: 1px solid #d3e4a6 !important;
+        }
+
+        .custom-form-layout,
+        .custom-form-layout > table,
+        .custom-form-layout .dxflGroupSys {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .custom-group {
+            height: 100% !important;
+        }
+    </style>
+    <script>
+        function OnSplitterPaneResized(s, e) {
+        }
+    </script>
+</head>
+
+<body style="margin-left:5px;margin-right:5px">
+@Html.DevExpress().Splitter(settings =>
+{
+    settings.Name = "MainSplitter";
+    settings.AllowResize = false;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+    settings.FullscreenMode = true;
+    settings.SeparatorVisible = false;
+    settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.PaddingLeft = System.Web.UI.WebControls.Unit.Pixel(2);
+    settings.Styles.Pane.Paddings.PaddingRight = System.Web.UI.WebControls.Unit.Pixel(1);
+    settings.Styles.Pane.Paddings.PaddingBottom = System.Web.UI.WebControls.Unit.Pixel(2);
+    settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "Header";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.PaneStyle.CssClass = "headerPane";
+        pane.SetContent(() =>
+        {
+            Html.RenderPartial("LayoutHeader");
+        });
+    });
+
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "paneMainContent";
+        pane.PaneStyle.CssClass = "mainContentPane";
+        pane.MinSize = System.Web.UI.WebControls.Unit.Pixel(375);
+        pane.PaneStyle.BackColor = System.Drawing.Color.White;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.SetContent(() =>
+        {
+            Html.DevExpress().Splitter(csettings =>
+            {
+                csettings.Name = "ContentSplitter";
+                csettings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                csettings.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+                csettings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+                csettings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+                csettings.ClientSideEvents.PaneResized = "OnSplitterPaneResized";
+                csettings.Styles.Separator.HoverStyle.BackColor = System.Drawing.Color.FromArgb(0x00467F);
+                
+                csettings.Panes.Add(subpane =>
+                {
+                    subpane.Name = "ContentCenter";
+                    subpane.PaneStyle.CssClass = "contentPane";
+                    subpane.ScrollBars = System.Web.UI.WebControls.ScrollBars.Auto;
+                    subpane.Separator.Visible = DefaultBoolean.True;
+                    subpane.Separator.SeparatorStyle.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+                    subpane.Separator.SeparatorStyle.BorderTop.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);                    
+                    subpane.AutoHeight = false;
+                    subpane.AutoWidth = true;
+                    subpane.SetContent(RenderBody().ToHtmlString());
+                });
+
+            }).GetHtml();
+        });
+    });
+
+    //settings.Panes.Add(pane =>
+    //{
+    //    pane.Name = "Footer";
+    //    pane.Size = System.Web.UI.WebControls.Unit.Pixel(50);
+    //    pane.PaneStyle.CssClass = "footerPane";
+    //    pane.SetContent(() =>
+    //    {
+    //        Html.RenderPartial("LayoutFooter");
+    //    });
+    //});
+}).GetHtml()
+
+</body>
+@RenderSection("scripts", required: false)
+@Html.PageScripts()
+</html>

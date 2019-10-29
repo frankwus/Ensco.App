@@ -1,0 +1,71 @@
+﻿@model Ensco.Irma.Models.PobBoardingModel
+
+@{
+    ViewBag.Title = "OnboardIndividual";
+}
+
+<style>
+    .scrollable {
+        overflow-y: auto;
+        height: 600px;
+    }
+</style>
+@section scripts
+{
+    <script type="text/javascript">
+        function onValueChanged(s, e) {
+            document.location = '/irma/Personnel/OnboardIndividual?Id=' + s.GetValue() 
+        }
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustSize();
+            }
+        );
+
+        function AdjustSize() {
+            //$.event.trigger("AdjustOtherElements");
+            formIndividualOnboardingPob.height = $(window).height() - 300;
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            //AdjustMainGrid(gridView_PobCurrent); // grid is client side Id
+            formIndividualOnboardingPob.height = $(window).height() - 300;
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 300; // see if we can calculate footer height dynamically
+
+            $("#MainLayoutPanel").css("height", height);
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+}
+
+@*@Html.Partial("OnboardIndividualPartial", Model);*@
+@using (Html.BeginForm("OnboardSaveIndividual", "Personnel", FormMethod.Post))
+{
+    Html.RenderAction("OnboardInvidualPobPartial", "Personnel");
+}
+    <script>
+        $(document).ready(function () {
+            if (getCookie('result') == 1) {
+                alert('The person was onboarded successfully. ')
+                setCookie('result', 0)
+            }
+        })
+        function onValueChangedCompanyType(s, e) {
+            var id = s.GetValue()
+            var json = GetAjax('/irma/personnel/GetPersonnelType/' + id)
+            PersonnelType.ClearItems()
+            for (var i in json[0]) {
+                var obj = json[0][i]
+                PersonnelType.AddItem(obj.Name, obj.Id)
+            }
+        }
+    </script>

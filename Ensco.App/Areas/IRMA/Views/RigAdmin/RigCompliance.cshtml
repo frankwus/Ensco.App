@@ -1,0 +1,65 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+
+@{
+    ViewBag.Title = "RigCompliance";
+}
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(gridView_ComplianceUsers); // grid is client side Id
+            }
+        );
+
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            AdjustMainGrid(gridView_ComplianceUsers); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 200; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    //Html.RenderAction("RigAdminCompliancePartial", "RigAdmin", new { Area = "IRMA" });
+    Html.RenderAction("RigCompliancePartial", "RigAdmin", new { Area = "IRMA" });
+}
+
+@*@Html.DevExpress().PageControl(pc =>
+{
+    pc.Name = "pcManageRigReqs";
+    pc.ActivateTabPageAction = ActivateTabPageAction.Click;
+    pc.EnableHotTrack = true;
+    pc.SaveStateToCookies = true;
+    pc.TabAlign = TabAlign.Left;
+    pc.TabPosition = TabPosition.Top;
+    pc.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    pc.ControlStyle.CssClass = "dxtcFixed";
+
+    pc.TabPages.Add("Rig Requirement Compliance").SetContent(() =>
+    {
+        using (Html.BeginForm())
+        {
+            Html.RenderAction("RigAdminCompliancePartial", "RigAdmin", new { Area = "IRMA" });
+        }
+    });
+    pc.TabPages.Add("Personnel").SetContent(() =>
+    {
+        using (Html.BeginForm())
+        {
+            Html.RenderAction("RigAdminPersonnelPartial", "RigAdmin", new { Area = "IRMA" });
+        }
+    });
+}).GetHtml()*@
+
+
+

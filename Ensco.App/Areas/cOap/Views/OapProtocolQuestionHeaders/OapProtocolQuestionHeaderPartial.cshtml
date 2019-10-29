@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapProtocolQuestionHeader>
+
+@{
+
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+        var oapGroupGroupController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapProtocolQuestionHeadersController;
+        oapGroupGroupController.Configure(settings, Html, ViewContext);
+
+
+
+    }).Bind(Model).GetHtml();
+}
+
+

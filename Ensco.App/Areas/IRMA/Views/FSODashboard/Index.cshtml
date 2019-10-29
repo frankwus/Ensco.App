@@ -1,0 +1,76 @@
+﻿@using Ensco.Irma.Oap.WebClient.Rig;
+@{
+    ViewBag.Title = DbRes.T("Formal Safety Observation", "Resources");
+}
+
+<link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+@if (ViewData["Errors"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["Error"]
+    </div>
+}
+
+<script>
+    function onToolbarItemClick(s, e) {        
+        switch (e.item.name) {
+            case "AddItem" + s.name:
+                s.AddNewRow();
+                break;
+        }
+    }
+</script>
+
+@if (ViewData["CorpChecklistNull"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["CorpChecklistNull"]
+    </div>
+}
+else
+{
+    <form>
+        @Html.DevExpress().FormLayout(layout =>
+   {
+
+       layout.Name = "layoutOpenChecklists";
+       layout.Width = Unit.Percentage(100);     
+              layout.Items.AddGroupItem(group =>
+       {
+           group.GroupBoxDecoration = GroupBoxDecoration.None;
+           group.ShowCaption = DefaultBoolean.False;
+           group.Items.Add(i =>
+           {
+               i.ShowCaption = DefaultBoolean.False;
+               i.SetNestedContent(() =>
+               {
+                   Html.RenderPartial("IndexOpenChecklistsPartial", ViewData["OpenChecklists"]);
+               });
+           });
+       });
+   }).GetHtml()
+    </form>
+    <form> 
+    @Html.DevExpress().FormLayout(layout =>
+{
+    layout.Name = "layoutTrainedObservers";
+    layout.Width = Unit.Percentage(100);
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.GroupBoxDecoration = GroupBoxDecoration.None;
+        group.ShowCaption = DefaultBoolean.False;
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.RenderPartial("TrainedObserversOnboardPartial");
+            });
+        });
+    });
+
+}).GetHtml()
+    </form>
+}
+

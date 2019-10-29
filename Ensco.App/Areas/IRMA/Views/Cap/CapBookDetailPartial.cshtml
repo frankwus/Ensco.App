@@ -1,0 +1,30 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@Html.DevExpress().PageControl(settings =>
+{
+    settings.Name = "pcCapBookDetail";
+    settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+    settings.EnableHotTrack = true;
+    settings.SaveStateToCookies = true;
+    settings.TabAlign = TabAlign.Left;
+    settings.TabPosition = TabPosition.Top;
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.ControlStyle.CssClass = "dxtcFixed";
+
+    settings.TabPages.Add("CAP Book").SetContent(() =>
+    {
+        Html.RenderAction("CapBookKSAsPartial", "Cap");
+    });
+    settings.TabPages.Add("Additional").SetContent(() =>
+    {
+        Html.RenderAction("CapBookAdditionalPartial", "Cap");
+    });
+    settings.TabPages.Add("Expiration").SetContent(() =>
+    {
+        Html.RenderAction("CapBookExpirationPartial", "Cap");
+    });
+    settings.TabPages.Add("Assessor Guide").SetContent(() =>
+    {
+        Html.RenderAction("CapBookAssessorGuidePartial", "Cap");
+    });
+}).GetHtml()

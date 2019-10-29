@@ -1,0 +1,418 @@
+﻿@model Ensco.Models.ManagePassportModel
+
+@{
+    Html.DevExpress().GridView(grid =>
+    {
+        grid.Name = "gridView_PassportPartial";
+        grid.KeyFieldName = Model.Passports.KeyFieldName;
+
+        grid.CallbackRouteValues = new { Area = "Common", Controller = "Admin", Action = "PassportPartial" };
+        grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "Admin", Action = "PassportAddPartial" };
+        grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "Admin", Action = "PassportUpdatePartial" };
+        grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "PassportDeletePartial" }; //Disable internally
+        grid.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+
+        bool IsEditing = Ensco.Models.ManagePassportModel.IsEditing;
+        bool IsNewRowEditing = Ensco.Models.ManagePassportModel.IsNewRowEditing;
+
+        grid.SettingsPopup.HeaderFilter.Height = Unit.Pixel(300);
+        grid.SettingsPopup.HeaderFilter.SettingsAdaptivity.Mode = PopupControlAdaptivityMode.OnWindowInnerWidth;
+        grid.SettingsPopup.HeaderFilter.SettingsAdaptivity.SwitchAtWindowInnerWidth = 768;
+
+        Html.SetEnscoGridColumns(grid, typeof(Ensco.Models.UserModel));
+
+        grid.CommandColumn.Width = Unit.Pixel(75);
+        grid.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+        grid.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+        grid.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+        grid.SettingsCommandButton.EditButton.Image.Width = 16;
+        grid.SettingsCommandButton.EditButton.Image.Height = 16;
+        grid.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+        grid.SettingsCommandButton.DeleteButton.Image.Width = 16;
+        grid.SettingsCommandButton.DeleteButton.Image.Height = 16;
+        grid.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+        grid.SettingsCommandButton.UpdateButton.Image.Width = 16;
+        grid.SettingsCommandButton.UpdateButton.Image.Height = 16;
+        grid.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+        grid.SettingsCommandButton.CancelButton.Image.Width = 16;
+        grid.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+
+        grid.CommandButtonInitialize = (s, e) =>
+        {
+            if (e.VisibleIndex == -1)
+                return;
+
+            if (e.ButtonType == ColumnCommandButtonType.Edit || e.ButtonType == ColumnCommandButtonType.Delete)
+            {
+                object aduser = ((MVCxGridView)s).GetRowValues(e.VisibleIndex, "ADUser");
+                e.Visible = (aduser == null || !(bool)aduser);
+            }
+
+            //if(!e.Visible)
+            //{
+            //    object row = ((MVCxGridView)s).GetRow(e.VisibleIndex);
+
+            //    e.Column.CellStyle.BackColor = System.Drawing.Color.DarkGray;
+            //    e.Column.CellStyle.Border.BorderColor = System.Drawing.Color.White;
+            //    e.Column.CellStyle.Border.BorderWidth = 1;
+            //    e.Column.CellStyle.Border.BorderStyle = BorderStyle.Solid;
+            //}
+        };
+
+        grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        grid.SettingsPager.FirstPageButton.Visible = true;
+        grid.SettingsPager.LastPageButton.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+        grid.CommandColumn.Visible = true;
+        grid.CommandColumn.ShowEditButton = true;
+        grid.CommandColumn.ShowNewButtonInHeader = true;
+        grid.CommandColumn.ShowDeleteButton = true;
+        grid.CommandColumn.ShowUpdateButton = true;
+        grid.CommandColumn.ShowCancelButton = true;
+        grid.Settings.ShowFilterRowMenu = true;
+
+        //grid.SettingsBehavior.ConfirmDelete = true;
+
+        grid.Styles.Header.Wrap = DefaultBoolean.True;
+        grid.SettingsPager.EnableAdaptivity = true;
+        grid.Toolbars.Add(toolbar =>
+        {
+            toolbar.Enabled = true;
+            toolbar.EnableAdaptivity = true;
+            toolbar.Position = GridToolbarPosition.Top;
+            toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+            toolbar.Items.Add(i =>
+            {
+                i.BeginGroup = true;
+                i.SetTemplateContent(c =>
+                {
+                    Html.DevExpress().ButtonEdit(s =>
+                    {
+                        s.Name = "search";
+                        s.Properties.NullText = "Search...";
+                        s.Properties.Buttons
+                            .Add()
+                            .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                    }).Render();
+                });
+            });
+
+            toolbar.Items.Add(item =>
+            {
+                item.Command = GridViewToolbarCommand.Refresh;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Refresh.png";
+                item.Image.Width = Unit.Pixel(32);
+                item.Image.Height = Unit.Pixel(32);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ShowFilterRow;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Filter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ClearFilter;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/ClearFilter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.Command = GridViewToolbarCommand.ExportToPdf;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Pdf.png";
+                item.Image.Width = Unit.Pixel(32);
+                item.Image.Height = Unit.Pixel(32);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.Command = GridViewToolbarCommand.ExportToCsv;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Excel.png";
+                item.Image.Width = Unit.Pixel(32);
+                item.Image.Height = Unit.Pixel(32);
+                //item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+        });
+
+        grid.SettingsSearchPanel.CustomEditorName = "search";
+
+        grid.SettingsExport.EnableClientSideExportAPI = true;
+        //grid.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+        grid.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+        grid.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+        grid.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+        grid.SettingsDetail.ShowDetailRow = true;
+
+        grid.SetDetailRowTemplateContent(c =>
+        {
+            Ensco.Irma.Models.ManageCrewChangeModel.IsEditing = c.Grid.IsEditing;
+            Ensco.Irma.Models.ManageCrewChangeModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+
+            if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+            {
+                var id = DataBinder.Eval(c.DataItem, Model.Passports.KeyFieldName);
+                Model.SelectedUser = Model.Passports.GetItem(id);
+
+                Html.DevExpress().PageControl(pc => {
+                    pc.Name = "pcPassport";
+                    pc.ActivateTabPageAction = ActivateTabPageAction.Click;
+                    pc.EnableHotTrack = true;
+                    pc.SaveStateToCookies = true;
+                    pc.TabAlign = TabAlign.Left;
+                    pc.TabPosition = TabPosition.Top;
+                    pc.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                    pc.ControlStyle.CssClass = "dxtcFixed";
+                    pc.TabPages.Add("Passport").SetContent(() => {
+                        Html.DevExpress().FormLayout(form =>
+                        {
+                            form.Name = "formPassportDetailView";
+                            form.EncodeHtml = false;
+                            form.UseDefaultPaddings = false;
+                            form.Width = Unit.Percentage(100);
+                            form.ColumnCount = 4;
+
+                            //form.Items.Add(i =>
+                            //{
+                            //    i.FieldName = "Picture";
+                            //    i.RowSpan = 6;
+                            //    i.ShowCaption = DefaultBoolean.False;
+                            //    i.NestedExtension().BinaryImage(s =>
+                            //    {
+                            //        s.Width = 100;
+                            //        s.Height = 100;
+                            //        s.Name = "Picture" + DataBinder.Eval(c.DataItem, "Id");
+                            //    });
+                            //});
+
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "FirstName";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "MiddleName";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "LastName";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "Passport";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "Position";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "Status";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "Company";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "Nationality";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "DisplayName";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "City";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "State";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "Country";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "PrimaryPhone";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+                            form.Items.Add(i =>
+                            {
+                                i.FieldName = "Email";
+                                i.NestedExtension().Label(s =>
+                                {
+                                    s.Width = Unit.Percentage(100);
+                                });
+                            });
+
+                        }).Bind(Model.SelectedUser).GetHtml();
+                    });
+                    pc.TabPages.Add("Records").SetContent(() => {
+                        using (Html.BeginForm())
+                        {
+                            Html.RenderAction("PassportDetailPartialRecords", "Admin", new { userId = id });
+                        }
+                    });
+                }).GetHtml();
+
+            }
+            else
+            {
+                var aduser = DataBinder.Eval(c.DataItem, "ADUser");
+                Ensco.Models.ManagePassportModel.IsEditing = (c.Grid.IsEditing) && (aduser != null && !(bool)aduser);
+                Ensco.Models.ManagePassportModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+                bool editable = (((c.Grid.IsEditing && aduser != null && !(bool)aduser)) || c.Grid.IsNewRowEditing);
+                var updateError = ViewData["UpdateError"];
+                if (c.Grid.IsNewRowEditing && updateError == null)
+                {
+                    Model.SelectedUser = new Ensco.Models.UserModel();
+                }
+                else if (!c.Grid.IsNewRowEditing)
+                {
+                    var id = DataBinder.Eval(c.DataItem, Model.Passports.KeyFieldName);
+                    Ensco.Models.UserModel model = Model.Passports.GetItem(id);
+                    Model.SelectedUser = model.Copy();
+                }
+            }
+        });
+
+        //grid.CustomColumnDisplayText = (sender, e) =>
+        //{
+        //    if(e.Column.FieldName == "PrimaryPhone")
+
+        //};
+
+        grid.EditFormLayoutProperties.ColumnCount = 5;
+        grid.EditFormLayoutProperties.Items.Add(i => {
+            i.ColumnName = "Picture";
+            i.RowSpan = 5;
+            i.ShowCaption = DefaultBoolean.False;
+        });
+        grid.EditFormLayoutProperties.Items.Add("FirstName");
+        grid.EditFormLayoutProperties.Items.Add("MiddleName");
+        grid.EditFormLayoutProperties.Items.Add("LastName");
+        grid.EditFormLayoutProperties.Items.Add("DisplayName");
+
+        grid.EditFormLayoutProperties.Items.Add("Nationality");
+        grid.EditFormLayoutProperties.Items.Add("Company");
+        grid.EditFormLayoutProperties.Items.Add("Department");
+        grid.EditFormLayoutProperties.Items.Add("Position");
+
+        grid.EditFormLayoutProperties.Items.Add("City");
+        grid.EditFormLayoutProperties.Items.Add("State");
+        grid.EditFormLayoutProperties.Items.Add("Country");
+        grid.EditFormLayoutProperties.Items.Add("PrimaryPhone");
+
+        grid.EditFormLayoutProperties.Items.Add("DateOfBirth");
+        grid.EditFormLayoutProperties.Items.Add("Status");
+        grid.EditFormLayoutProperties.Items.Add("Email");
+        grid.EditFormLayoutProperties.Items.Add("UserType");
+
+        grid.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+        grid.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+        grid.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+
+        grid.EditFormLayoutProperties.Items.AddCommandItem(i =>
+        {
+            i.ShowUpdateButton = true;
+            i.ShowCancelButton = true;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        });
+    }).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+    {
+        e.KeyExpression = Model.Passports.KeyFieldName;
+        e.QueryableSource = Model.Passports.Dataset;
+    }).GetHtml();
+
+    //if (ViewData["EditError"] != null)
+    //{
+    //    gridView.SetEditErrorText((string)ViewData["EditError"]);
+    //}
+}
+
+

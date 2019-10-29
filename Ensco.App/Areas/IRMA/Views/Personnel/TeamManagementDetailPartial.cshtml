@@ -1,0 +1,54 @@
+﻿@model Ensco.Irma.Models.TeamModel
+
+@using Ensco.App.App_Start
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = bPobEditor;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = bPobEditor;
+    options.ShowCommandColumn = bPobEditor;
+    options.Title = "Add Member";
+
+    if(this.ViewData["UpdateError"] !=null ) {
+        options.Title = "Add Member <div class=error >The member already exists in the team</div> ";
+    }
+}
+@Html.DevExpress().GridView(gridPob =>
+{
+    gridPob.Name = "gridView_TeamManagementMembers";
+    gridPob.SettingsDetail.MasterGridName = "gridView_TeamManagementPartial";
+    gridPob.KeyFieldName = "Id"; // Model.Members.KeyFieldName;
+
+    gridPob.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "TeamManagementDetailPartial", Id = Model.Id };
+    gridPob.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "TeamMemberAdd" };
+    gridPob.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "TeamMemberDelete" }; //Delete it, this is not a template
+
+    Html.EnscoStandardGrid(gridPob, typeof(Ensco.Irma.Models.TeamMemberModel), options);
+    gridPob.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+
+    MVCxGridViewColumn column = (MVCxGridViewColumn)gridPob.Columns["OnboardNow"];
+    column.SetDataItemTemplateContent(c =>
+    {
+        bool value = (bool)DataBinder.Eval(c.DataItem, "OnboardNow");
+        string yesUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/Yes.png"));
+        string noUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/No.png"));
+        ViewContext.Writer.Write(String.Format("<img src=\"{0}\" width=\"16\" height=\"16\" />", (value ? yesUrl : noUrl)));
+    });
+
+    gridPob.EditFormLayoutProperties.ColumnCount = 4;
+    gridPob.EditFormLayoutProperties.Items.Add("Passport");
+    gridPob.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+    gridPob.ClientSideEvents.BeginCallback   = "function(s, e){ if (typeof onBeginCallback === 'function' ) onBeginCallback(s, e ) }";
+    gridPob.ClientSideEvents.EndCallback = "function(s, e){ if (typeof onEndCallback === 'function' ) onEndCallback(s, e ) }";
+}).Bind(Model.Members).GetHtml()
+
+

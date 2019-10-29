@@ -1,0 +1,46 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().GridView(gridFlight =>
+{
+    gridFlight.Name = "gridView_CrewChangeFlights";
+    gridFlight.KeyFieldName = Model.CrewFlightInfo.KeyFieldName;
+
+    gridFlight.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangeReportFlightPartial", Id = Model.Id };
+    gridFlight.Columns.Add(col =>
+    {
+        col.FieldName = "";
+        col.Caption = "";
+        col.Width = Unit.Pixel(100);
+        col.CellStyle.HorizontalAlign = HorizontalAlign.Left;
+        col.SetDataItemTemplateContent(c =>
+        {
+            Html.DevExpress().Button(btn =>
+            {
+                btn.Name = "btnManifest" + DataBinder.Eval(c.DataItem, "Id");
+                btn.Text = "";
+                btn.Images.Image.Url = "~/Images/Report.png";
+                btn.Images.Image.Width = Unit.Pixel(24);
+                btn.Images.Image.Height = Unit.Pixel(24);
+                btn.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                btn.ClientEnabled = true;
+                btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + DataBinder.Eval(c.DataItem, "Id") + "'}}", Url.Action("FlightManifestReport", "Personnel", new { Area = "IRMA" }));
+            }).GetHtml();
+        });
+    });
+    Html.SetEnscoGridColumns(gridFlight, typeof(Ensco.Irma.Models.CrewFlightModel));
+
+    gridFlight.Width = Unit.Percentage(100);
+
+    gridFlight.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridFlight.SettingsPager.FirstPageButton.Visible = true;
+    gridFlight.SettingsPager.LastPageButton.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridFlight.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.CrewFlightInfo.KeyFieldName;
+    e.QueryableSource = Model.CrewFlightInfo.Dataset;
+}).GetHtml()

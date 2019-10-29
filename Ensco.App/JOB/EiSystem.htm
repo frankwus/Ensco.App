@@ -1,0 +1,715 @@
+﻿<head>
+    <style>
+        .isolation {
+        }
+
+        .Delete {
+        }
+
+        .Execution {
+        }
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<form>
+    <table border="0">
+        <tr style="border:none">
+            <td width="99%" style="border:none">
+
+            <td class="noborder"><img class="hidden" id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+            <td class="noborder"><img src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+            <td class="noborder"><img src="../Images/print.png" onclick="on_Print(this)" Title="Print Webpage" />
+    </table>
+
+    <table id="tPlanning">
+        <tr>
+            <th class="header" colspan="24">
+                Planning
+        <tr>
+            <td> Certificate No.
+            <td id="EIid">
+            <td>Permit
+            <td id="PermitId">
+            <td>Location
+            <td id="Location">
+            <td>Status
+            <td id="Status">
+        <tr>
+            <td ">Job
+            <td id="JobId">
+            <td>Equipment ID
+            <td id="System">
+            <td>Isolation Type
+            <td id="IsoType">
+            <td>Isolation Authority
+            <td><select id="IA"></select>
+        <tr>
+            <td>Equipment
+            <td colspan="7" id="System">
+        <tr>
+            <td>Isolation Point
+            <td id="IsolationMethod">
+            <td>Order
+            <td id="Seq1">
+            <td>Date / Time Isolated
+            <td id="IAdt1">
+            <td>Locks
+            <td id="LockNo1">
+    </table>
+
+    <table id="tExecution" class="marginBottom"></table>
+    <table id="tIsolation"></table>
+    <table id="tDeIsolation"></table>
+    <table id="tTemplate" class="hidden">
+        <tr>
+            <td class="hazard">
+            <td class="labelCenter">Status
+            <td class="labelCenter">By
+            <td class="labelCenter">At
+        <tr>
+            <td width="200"><p style="white-space:nowrap"></p>
+            <td>
+            <td>
+            <td>
+        <tr>
+            <td colspan=7 style="border:none">
+                <center>
+                    <span style="font-family:wingdings;color:orange">&#234;</span>
+                    <span style="font-family:wingdings;color:orange">&#234;</span>
+                </center>
+        </tr>
+        <tr>
+            <td>Status
+            <td>Lock No(s)
+            <td>Isolation Point
+            <td>Date / Time Isolated
+            <td>Action
+        <tr>
+            <td>
+            <td style="padding:0"><input type="text" />
+            <td style="padding:0"><input type="text" />
+            <td style="padding:0"><input type="text" />
+            <td>
+                <a href="javascript:void(0)" onclick="on_Action(this)">Verify</a>
+                <a href="javascript:void(0)" onclick="on_Action(this)">Reject</a>
+    </table>
+    <table id="tShortTerm">
+        <tr>
+            <td class="labelCenter">Options
+            <td colspan="11" class="labelCenter">Description
+        <tr role="test">
+            <td><a href="javascript:void(0)" onclick="on_Action(this, 'tDePI')" id="lnkDeIsolate">De-Isolate Equipment</a>
+            <td colspan="11"><li>	Will initiate the Authorization to De-Isolate process</li>
+        <tr role="">
+            <td><a href="javascript:void(0)" onclick="on_Action(this, 'Suspend')">Temporarily De-Isolate</a>
+            <td colspan="11">
+                <li>Will initiate the Temporary De-Isolation process</li>
+                <li>
+                    Does the system require to be re-energized for testing purposes? If yes, have you notified Permit Authority and Permit Issuer of temporary suspension of isolation
+                </li>
+        <tr role="">
+            <td><a href="javascript:void(0)" onclick="on_Action(this, 'LongTerm')">Make Isolation Long Term</a>
+            <td colspan="11">
+                <li>Will move equipment to Long Term Isolation</li>
+                <li>Once done, cannot be undone on this certificate</li>
+                <li>To move out of Long Term Isolation, must open a new Energy Isolation Certificate and Permit</li>
+        <tr role="">
+            <td colspan="12">&nbsp;
+    </table>
+    <table id="tSuspend">
+        <tr>
+            <th class="darkblue" colspan="24">
+                Temporarily De-Isolate Equipment
+        <tr>
+            <td class="label" colspan="2">Have you notified the Permit Authority and Permit Issuer of temporary suspension of isolation
+            <td width="200"><input type="checkbox" id="Notified" />
+        <tr role="ShortTerm">
+            <td rowspan="2"><a href="javascript:void(0)" onclick="on_Action(this, 'ShortTerm')">Return to Isolation</a>
+            <td colspan="11" class="label">Will return the equipment back to Isolated status
+        <tr>
+            <td class="label">Have you notified the Permit Authority and Permit Issuer of temporary suspension of isolation
+            <td><input type="checkbox" />
+        <tr>
+            <td rowspan="2"><a href="javascript:void(0)" onclick="on_Action(this, 'tDePI')">De-Isolate Equipment</a>
+            <td colspan="2" class="label">Will initiate the Authorization to De-Isolate process
+    </table>
+    <table id="tLongTerm">
+        <tr>
+            <th class="darkblue" colspan="24">
+               Working On Long Term Isolation 
+        <!--<tr>
+            <td class="label" colspan="2" width="400">Has the permit holder given the key to the Permit Issuer
+            <td width="200"><input type="checkbox" />-->
+        <tr>
+            <td width="350" class="label">Reason for taking out of Long Term Isolation
+            <td colspan="2"><textarea id="Reason" rows="5"></textarea>
+        <!--<tr>
+            <td class="label" colspan="11">Work on the equipment selected above-->
+        <!--<tr>
+            <td><span>Option 1 </span><input type="radio" name="LongTerm" onclick="on_Option(this)" value="1" /> <select id="Permit"></select>
+            <td colspan="2" class="label"><li>Select an existing permit to link to the new Energy Isolation Certificate</li>
+        <tr>
+            <td><span>Option 2 </span><input type="radio" name="LongTerm" onclick="on_Option(this)" value="2" />
+            <td colspan="2" class="label"><li>	Create a new permit and link the new Energy Isolation Certificate to it</li>-->
+        <tr>
+            <td>General Comment
+            <td colspan="2" class="label">
+                <li>	Create a new permit and link the new Energy Isolation Certificate to it</li>
+                <li>	Once the new EI Certificate is valid, the equipment will become de-isolated on this certificate </li>
+        <tr>
+            <td colspan="11">
+            <img src="../Images/Submit icon.png" onclick="on_Submit(this)" />
+            <a class="hidden" href="" onclick="on_LongTerm(this);return false">Working On Long Term Equipment</a>
+    </table>
+    <div id="Div1" class1="hidden"></div>
+</form>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tTemplate = GetId('tTemplate')
+    var tShortTerm = GetId('tShortTerm')
+    var tSuspend = GetId('tSuspend')
+    var tLongTerm = GetId('tLongTerm')
+    var tExecution = GetId('tExecution')
+    var Id = getParameterByName('id')
+    var EiId = getParameterByName('EiId')
+    var Type
+    var Xml
+    var iFrame = GetId('iFrame')
+    var IsPopup = true
+    $(document).ready(function () {
+        Xml = window.dialogArguments
+        if (Xml == null) {
+            IsPopup = false
+            tLongTerm.find('tr').hide()
+            tLongTerm.find('tr').last().show().find('img').hide().next().show() 
+        }
+        if (EiId == '')
+            EiId = 0
+        if (Id == '')
+            Id = 0
+        var xml = GetArray(['usp_JobGetEiSystem', Id, EiId])
+
+        if (Xml != null) {
+            $('body').css('margin', 20)
+            tPlanning.nextAll().andSelf().not(tLongTerm).hide()
+        } else {
+            InitPlanning(xml)
+            Flow(xml)
+            InitLongTerm(xml)
+            AfterBreak(xml)
+        }
+
+        if (GetXmlTable(xml, 1).find('PH').text() != UserId)
+            $('#lnkDeIsolate').closest('tr').remove();
+
+        CleanUp()
+    })
+    function AfterBreak(xml) {
+        if (GetXmlTable(xml, 5).text() == '')
+            tLongTerm.find('input, textarea, select, img').prop('disabled', true)
+    }
+    function InitRadio() {
+        if (!$(':radio').closest('tr').nextAll().slice(0, 3).find('a').length)
+            $(':radio').prop('disabled', true)
+    }
+    function InitLongTerm(xml) {
+        var select = GetId('Permit').width(100).hide()
+        // var xml =GetArray(['usp_JobGetEi', EiId])
+        BindSelect(xml, select, 4)
+
+        if (Xml == null)
+            return
+        $('table').hide()
+        var t = tLongTerm
+        t.show()
+    }
+    function InitPlanning(xml) {
+        var t = tPlanning
+        t.find('td:even').addClass('labelRight')
+        t.find('tr').eq(1).children().width('13%')
+        BindSelect(xml, GetId('IA'), 6, 'UserId', 'Name')
+
+        t.find('[id]').add(GetId('Notified')).each(function () {
+            var td = $(this)
+            var id = td.attr('id')
+            var text = GetXmlTable(xml, 1).find(id).text()
+            SetVal(td, text)
+            //td.text(text)
+        })
+        if (['Equipment Selection', 'Isolation Authorization'].indexOf(GetVal(GetId('Status'))) == -1)
+            GetId('IA').prop('disabled', true)
+        tSuspend.add(tShortTerm).find('[id=Notified]').prop('checked', (GetXmlTable(xml, 1).find('Notified').text() == 1 ? true : false))
+        GetId('Reason').text(GetXmlTable(xml, 1).find('Reason').text())
+    }
+    function Flow(xml) {
+        if (Id == 0)
+            return
+        var t = tExecution
+        AddGridHeader(t, 'Execution - Isolation')
+        var arr = ['Authorization', 'Completion', 'Verification – Permit Authority', 'Permit']
+        var arr1 = ['PI', 'IA', 'PA', 'PIPermit']
+        var arr2 = ['Isolation', 'De-Isolation']
+        CreateTr(1, 'Equipment Selection', 'Plant')
+        var step = 2
+        for (var j = 0; j < 2; j++) {
+            for (var i = 0; i < 4; i++) {
+                var role = arr1[i]
+                var name = arr2[j] + ' ' + arr[i]
+                if (step == 5)
+                    name = 'Authorize Permit'
+                if (step == 9)
+                    name = 'Closeout Permit'
+                CreateTr(step++, name, role)
+            }
+        }
+        GetTd(t, 1).attr('colspan', 3)
+        GetTd(t, 3).attr('colspan', 2)
+        t.find('td:contains(Step)').siblings().addClass('labelCenter')
+        t.find('td:contains(Authority)').each(function (index) {
+            var tr = $(this).parent()
+            var role = tr.attr('role').replace('PA', 'PH')
+            var tr1 = tr.clone().insertBefore(tr).attr('role', role)
+            tr1.children().first().text(tr.children().first().text().replace('Authority', 'Holder'))                        
+            var html = '<tr><td colspan=7><font size=2><i>All isolations are in place and keys to isolation locks are held by the Isolation Authority(s) and the Permit Holder (or Permit Authority)</i></font></tr>'
+            if (index == 1) {
+                html = '<tr><td>All isolations have been removed?<td colspan=6>' + GetRadio('Yes', xml) + GetRadio('No', xml) + ' </tr>'
+            }            
+
+            if ($(Status).text() != 'De-Isolation Verification')
+                $(html).find("input[type='radio']").prop('disabled', true);
+
+            $(html).insertBefore(tr1).children().first().addClass('label')
+        })
+
+        try {
+            ShowTrail(xml)
+        } catch (e) {
+            console.error(e.message)
+        }
+
+        
+
+        // InsertTr(['Energy Isolation Complete'], 5)
+        //InsertTr(['Work Can Commence', 'Isolation No Longer Required'], 6)
+        tShortTerm.find('tr').insertBefore(t.find('td:contains("Step 6")').parent())
+
+        customize()
+        AuthorizePermit(xml)
+    }
+    function GetRadio(name, xml) {
+        var value = 0
+        var checked = ''
+        if (name == 'Yes')
+            value = 1
+        if (GetXmlTable(xml, 1).find('removed').text() == value)
+            checked = 'checked'
+        return '<span>' + name + ' </span><input style="margin-right:10" ' + checked + ' type=radio value=' + value + ' name=radio1>'
+    }
+    function AuthorizePermit(xml) {
+        var t = tExecution
+        var src = GetXmlTable(xml, 3)
+        var status = src.find('Status').text()
+        if (status == '')
+            return
+        var dt = src.find('dt').text()
+        var name = src.find('Name').text()
+        var tr = t.find('td:contains("Authorize Permit")').parent()
+        var html = WingDing('252', 'green')
+        if (status == 'Rejected')
+            html = WingDing('251', 'red')
+        if (status.indexOf('Pending') != -1) {
+            html = WingDing('161', 'orange')
+            var html1 = ''
+            if (name == UserId)
+                html1 = tTemplate.find('td').last().clone().html()
+            tr.children().eq(3).html(html1).find('a').first().text('Authorize')
+        } else {
+            tr.children().eq(3).html(dt)
+        }
+        tr.children().eq(1).html(html).addClass('center')
+        tr.children().eq(2).text(name)
+    }
+    function customize() {
+        var t = tExecution
+        // return
+        // t.find('td:contains("Energy Isolation Complete")').parent().clone().appendTo(t).children().text('Process Complete').css('color', 'green')
+        var src = t.find('td:contains("Step 6")').parent().nextAll().andSelf()
+        src.hide()
+        var shortTerm = t.find('td:contains("Isolation No Longer Required")').parent().nextAll().slice(1, 6)
+
+        shortTerm.hide()
+        // shortTerm.eq(4).show()
+        GetId('tShortTerm').hide()
+        GetId('tSuspend').hide()
+        GetId('tLongTerm').hide()
+        if (['tSuspend', 'tLongTerm'].indexOf(Type) != -1) {
+            GetId(Type).show()
+        } else if (Type == 'tShortTerm')
+            shortTerm.show()
+        else
+            src.show()
+    }
+    function InsertTr(arr, index) {
+        var tr = tExecution.find('td:contains("Step ' + index + '")').parent()
+        for (var i in arr) {
+            var trs = tTemplate.find('tr').slice(1, 3).clone().insertBefore(tr)
+            trs.eq(0).children().slice(1).remove()
+            trs.eq(0).children().text(arr[i]).attr('colspan', 7).addClass('center')
+                .css('color', 'orange')
+                .css('font-weight', 'bold')
+                .css('border', 'none')
+        }
+    }
+    function ShowTrail(xml) {
+        var t = tExecution
+        t.find('tr').remove()
+        var html = GetXmlTable(xml, 2).text()
+        html = html.replace('<table>', '').replace('</table>', '')
+        $(html).appendTo(t)
+        t.find
+        var arr = ['Permit Holder', 'Permit Authority']
+        for (var i in arr) {
+			t.find('td:first-child:contains("' + arr[i] + '")').each(function () {
+                var td = $(this)
+                var arr0 = [1, 3]
+                for (var j in arr0) {
+					var td1 = td.nextAll().eq(arr0[j])
+
+                    var arr1 = GetVal(td1).split(',')
+                    if (arr1.length > 0)
+                        td1.text(arr1[i])
+                }
+                //var td1=td.next().next()
+                //var arr1 = GetVal(td1).split(',')
+                //if (arr1.length > 0)
+                //    td1.text(arr1[i])
+                var tr = td.parent()
+                if (i == 0)
+                    tr.attr('role', tr.attr('role').replace('PA', 'PH'))
+            })
+        }
+        t.find('tr').each(function () {
+            var tr = $(this)
+            if (tr.children().length == 1)
+                tr.children().attr('colspan', 7)
+            else
+                tr.children().eq(1).attr('colspan', 3).next().next().attr('colspan', 2)
+        })
+		t.find('td:first-child:contains("Permit Holder")').each(function (index) {
+            var tr = $(this).parent()
+            var html = '<tr><td colspan=7><font size=2><i>All isolations are in place and keys to isolation locks are held by the Isolation Authority(s) and the Permit Holder (or Permit Authority)</i></font></tr>'            
+
+            if (index == 1) {
+                html = '<tr><td>All isolations have been removed?<td colspan=6>' + GetRadio('Yes', xml) + GetRadio('No', xml) + ' </tr>'
+            }            
+
+            $(html).insertBefore(tr).children().first().addClass('label')
+
+            if ($(Status).text() != 'De-Isolation Verification') {
+                $("input[type='radio']").closest('tr').remove();
+            }                
+        })
+        t.find('tr').eq(2).children().eq(0).text('Equipment Selection')
+        var src = GetXmlTable(xml, 1)
+        var type = src.find('Type').text()
+        ShowPending(type, xml)
+
+        if (type.indexOf('PA') != -1)
+            ShowPending(type.replace('PA', 'PH'), xml)
+        Type = type
+    }
+    function ShowPending(type, xml) {
+        if (EiId != '')
+            return
+        type = type.replace('t', '')
+        if (type == 'test')
+            return
+        if (type == 'DeIsolated')
+            type = 'CloseoutPermit'
+        var tr = tExecution.find('tr[role=' + type + ']')
+
+        var approver = GetVal(tr.children().eq(4))
+        var dt = GetVal(tr.children().eq(3))
+        if (dt != '')
+            return
+        var role = type.replace('De', '')
+        var src = GetXmlTable(xml, 1)
+        var isoLockXml =  src.find('isoLock').text() 
+        if ((role == 'PH' || role == 'PA') && src.find(role).text() != '')
+            return
+        tr.children().eq(1).html(WingDing('161', 'orange')).addClass('center')
+        tr.children().slice(-2, -1).html(tTemplate.find('td').last().clone().html())
+        var action = 'Verify'
+        if (type.indexOf('PI') != -1)
+            action = 'Authorize'
+        // alert( type +role )
+        if ((type == 'IA' && approver == UserId) || (type == 'PH' && role == 'PH' && approver == UserId && dt == '')) {
+            if (type == 'IA')
+                action = 'Isolate'
+            var status = tr.children().eq(1).html()
+            var t = tTemplate
+            var prevTr = tr.prev()
+            if (type == 'PH')
+                prevTr = prevTr.prev()
+            prevTr.children().slice(1).remove()
+            t.find('tr').eq(3).children().clone().appendTo(prevTr)
+            tr.children().slice(1).remove()
+            t.find('tr').eq(4).children().clone().css('borderTop', 'none').css('borderBottom', 'none').appendTo(tr)
+            tr.children().eq(1).html(status)
+            InitDateTime(tr.find(':text').last())
+            UpdateLock(tr.children().eq(2), xml)
+            tr.find(':text').first().val(GetXmlTable(xml, 1).find('IsolationMethod').text()).css('background-color', 'beige')
+            tr.children().css('border', 'solid 1px')
+            $(isoLockXml).each(function () {
+                var isoLock = $(this)
+                on_AddLock(tr.find('img').next(), isoLock.attr('id'), isoLock.attr('No'))
+            })
+        }
+        if (type == 'DeIA')
+            action = 'De-Isolate'
+        tr.find('a').slice(-2, -1).text(action)
+        if (type == 'Plant') {
+            tr.find('a').slice(-2, -1).text('Submit').next().hide()
+        }
+
+        if (approver != UserId)
+            tr.find('a').hide()
+    }
+    function UpdateLock(td, xml) {
+        var html = '<img src="../Images/Select Personnel icon.png" /><table border="0" id="Lock"></table>'
+        var xmlLock = GetXmlTable(xml, 1).find('LockNo1').text()
+        
+        $(html).appendTo(td.html('')).on('click', function () {
+            var img = $(this)
+            if (img.attr('src') == null || img.attr('src').indexOf('Select') == -1)
+                return
+            var craft = GetVal(GetId('IsoType'))
+            var r = showModal('PopupLockLookup.htm?craft=' + craft, '', 1000, 700)
+            if (r == null)
+                return
+            r = JSON.parse(r)
+            if (r == null)
+                return
+            var t1 = img.next()
+            for (var i in r) {
+                var arr = r[i]
+                on_AddLock(t1, arr[0], arr[1])
+            }
+        })
+        if (xmlLock == '')
+            return
+        $(xmlLock).each(function () {
+            var element = $(this)
+            on_AddLock(td.find('table'), element.attr('id'), element.attr('No'))
+        })
+
+    }
+    function on_AddLock(t, id, name) {
+        var tr = AddTr(t)
+        if (t.find('td[lockId=' + id + ']').length)
+            return
+        AddTd(tr, GetDelete()).width(1)
+        AddTd(tr, name).attr('lockId', id)
+        t.find('td').css('border', 'none')
+        t.find('tr').show()
+    }
+    function CreateTr(step, name, role) {
+        var t = tExecution
+        if (name.indexOf('De') != -1)
+            role = 'De' + role
+        var trs = tTemplate.find('tr').slice(0, 3).clone().appendTo(t)
+        trs.first().children().first().text('Step ' + step)
+        trs.eq(1).attr('role', role).find('p').text(name)
+    }
+    function on_Action(src, action) {
+        src = $(src)
+        var tr = src.closest('tr')
+        var role = tr.attr('role')
+        var type = 't' + role
+        type = type.replace('PH', 'PA')
+
+        var notified, reason
+        if (action == 'Suspend') { //|| (action == 'ShortTerm' && !tSuspend.find('[id=Notified]').prop('checked'))) {
+            var notified = showModal('popupEi.htm?action=' + action, '', 800, 800)
+            if (notified == null)
+                return
+        }
+        if (action == 'LongTerm') {
+            var r = showModal('popupLongTerm.htm', null, 808, 600)
+            if (r == null)
+                return
+            r = JSON.parse(r)
+            notified = r[0]
+            reason = r[1]
+        }
+        if (action == null)
+            action = src.text()
+        if (action == 'Submit')
+            action = 'tPI'
+        var eiid = GetVal(GetId('EIid'))
+        var xml = GetXml(eiid, tr, notified, reason)
+
+        if (action == 'Isolate' || (action == 'Verify' && role == 'PH')) {
+            var element = $(xml).find('plant')
+            if ($(xml).find('lock').length < 2 || element.attr('dt') == '') {
+                alert('Lock, and Date / Time Isolated are required. And at least 2 Locks are required.')
+                return
+            }
+        }
+        var section = GetVal(tr.children().eq(0))
+        if (section == 'De-Isolation Confirmation'
+            && !tr.prevAll().slice(0, 2).find(':radio:checked').length && action == 'Verify') {
+            alert('Please select a radio button and proceed.  ')
+            return
+        }
+        //role = GetFullRole(role)
+        role = role.replace('De', '')
+        if (section == 'Authorize Permit' || section == 'Closeout Permit') {//Authorize permit
+            var permitId = GetVal(GetId('PermitId'))
+            if (action != 'Reject')
+                action = 'Approve'
+            GetArray(['usp_JobActionPermit', permitId, (section == 'Authorize Permit' ? 'Authorization' : 'Verification')
+                , 'Permit Issuer', action, '', UserId, ''])
+        } else if (action == '1' || action == '2')
+            GetArray(['usp_JobCloneEILongTerm', eiid, xml, action])
+        else if (action == 'tDePI' || action == 'tPI')
+            GetArray(['usp_JobSubmitEI', action, xml, UserId])
+        else
+            GetArray(['usp_JobActionEI', eiid, type, UserId, role, action, xml, ''])
+        Refresh()
+    }
+    function GetXml(eiid, tr, notified, reason) {
+        var root = $('<r />')
+        root.attr('id', eiid)
+        root.attr('notified', notified)
+        root.attr('reason', reason)
+        var trs = tr.prevAll().slice(0, 2)
+        if (trs.find(':radio').length) {
+            var removed = trs.find(':checked').val()
+            root.attr('removed', removed)
+        }
+        var el = $.createElement('plant')
+        el.addAttr('id', Id)
+        el.addAttr('IA', GetVal(GetId('IA')))
+        if (['Equipment Isolation', 'Isolation Confirmation – Permit Holder'].indexOf(GetVal(tr.children().eq(0))) != -1) {
+            el.addAttr('IsolationMethod', GetVal(tr.children().eq(3).children()))
+
+            GetTd(tr.children().eq(2).find('table'), 1).each(function () {
+                var lock = $.createElement('lock')
+                lock.addAttr('id', $(this).attr('lockId'))
+                el.append(lock)
+            })
+        }
+        el.addAttr('dt', GetVal(tr.find(':text').last()))
+        root.append(el)
+        var xml = root[0].outerHTML
+        xml = xml.replace('<?XML:NAMESPACE PREFIX = "PUBLIC" NS = "URN:COMPONENT" />', '')
+        return xml
+    }
+    function GetFullRole(role) {
+        if (role == null)
+            return ''
+        if (role.indexOf('PI') != -1)
+            role = 'Permit Issuer'
+        if (role.indexOf('PH') != -1)
+            role = 'Permit Holder'
+        if (role.indexOf('PA') != -1)
+            role = 'Permit Authority'
+        if (role.indexOf('IA') != -1)
+            role = 'Electrical'
+        return role
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+    }
+    function on_Option(src) {
+        src = $(src)
+        var t = src.closest('table')
+
+        if (GetVal(src.prev()) == 'Option 1') {
+            t.find('select').show()
+        } else
+            t.find('select').hide()
+
+    }
+    function on_Submit() {
+        var t = tLongTerm
+        if (GetVal(t.find('textarea')) == '' ) {
+            alert('Please enter a reason.')
+            return
+        }
+        var permitId = t.find('select:visible').val()
+        permitId = getParameterByName('permitId')
+        if (Xml == null) {
+            Xml = '<r ><plant id= "' + Id + '"  /> </r>'
+        }
+        var xml
+        if (permitId == '') {
+            alert('Please select a permit.')
+            return
+        } else {
+            // xml = GetArray(['usp_JobCloneEILongTerm', Xml, permitId])
+            var r = showModal('PopupPermitClone.htm?id=' + permitId, Xml, screen.width - 100, screen.height - 200)
+            window.returnValue = r
+            window.close()
+            return
+        }
+        if (!IsPopup) {
+            Refresh()
+            return
+        }
+        window.returnValue = Trim($(xml).find('Column1').text())
+        window.close()
+    }
+    function on_LongTerm(src) {
+        InitFrame()
+        ShowFrame()
+    }
+    function ShowFrame() {
+        var f = iFrame.contents()
+        var t = f.find('#tAuthorization0')
+        if (!t.length || !GetId('B', f).length ){// || !f.find('#tPacket').length) {
+            setTimeout(function () {
+                ShowFrame( );
+            }, 100)
+            return
+        }
+        localStorage.removeItem('PermitClone')
+        localStorage['PermitClone'] = iFrame.contents().find('body').html()
+
+        var url = 'eiSystem.htm?id=' + Id + '&permitId=' + GetVal(GetId('PermitId'))
+        var root = $('<r />')
+        root.attr('id', GetVal(GetId('EIid')))
+        var el = $.createElement('plant')
+        el.addAttr('id', getParameterByName('id'))
+        el.appendTo(root)
+        var xml = GetCleanXml(root)
+        var r = showModal(url, xml, 1000, 700)
+        if (r != null)
+            window.location = 'ei.htm?id=' + r
+        return
+    }
+    function on_Save() {
+
+    }
+    function InitFrame() {
+        $('iFrame').remove() 
+        var permitId = GetVal(GetId('PermitId'))
+        var url = 'permit.htm?id=' + permitId
+        var html = '    <iframe id="iFrame" class="hidden"  src=' + url + ' width="100%" height="100"></iframe>'
+        $(html).insertBefore( GetId('Div1') )
+        iFrame = GetId('iFrame')
+    }
+</script>

@@ -1,0 +1,33 @@
+﻿@model Ensco.Models.DataTableModel
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid";
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.ClientSideEvents.BeginCallback = "function(s, e){onBeginCallback(s, e );}";
+    grid.CallbackRouteValues = new { Action = "OpenPartial", Controller = "Capa", Area="Irma"  };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.IrmaCapaModel), options);
+
+    string[] arr = new string[] { "Id",  "Status", "ActionRequired", "Source", "DueDate", "AssignedBy", "AssignedTo", "ActionRequired" };
+    grid.DataBound = (s, e) => {
+        ASPxGridView g = (ASPxGridView)s;
+        foreach (GridViewColumn c in g.Columns) {
+            if (arr != null && !arr.Contains(c.Caption.Replace(" ", ""), StringComparer.CurrentCultureIgnoreCase))
+                c.Visible = false;
+        }
+    };
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()

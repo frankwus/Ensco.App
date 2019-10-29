@@ -1,0 +1,39 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+@using System.Web.UI.WebControls
+
+@{ 
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+    options.ShowToolbar = false;
+}
+
+@Html.DevExpress().GridView(gridFlight =>
+{
+    gridFlight.Name = "gridView_CrewChangeVerification";
+
+    gridFlight.KeyFieldName = Model.CrewFlightInfo.KeyFieldName;
+
+    gridFlight.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangeReportVerificationPartial", Id = Model.Id };
+    gridFlight.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeApproverAddPartial" };
+    gridFlight.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeApproverUpdatePartial" };
+    gridFlight.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeApproverDeletePartial" }; //Delete it, this is not a template
+
+    Html.EnscoStandardGrid(gridFlight, typeof(Ensco.Irma.Models.ApprovalModel), options);
+
+    gridFlight.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+    gridFlight.EditFormLayoutProperties.ColumnCount = 2;
+    gridFlight.EditFormLayoutProperties.Items.Add("Approver");
+    gridFlight.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridFlight.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+
+}).Bind(Model.Verification).GetHtml()
+

@@ -1,0 +1,7 @@
+﻿@model Ensco.App.Areas.Oap.Models.RelatedSearchQueryModel
+
+@Html.DevExpress().FormLayout(settings => {
+
+    var genericListController = (dynamic) ViewContext.Controller;
+    genericListController.ConfigureRelatedSearchQuery(settings, Html, ViewContext);
+}).Bind(Model).GetHtml()

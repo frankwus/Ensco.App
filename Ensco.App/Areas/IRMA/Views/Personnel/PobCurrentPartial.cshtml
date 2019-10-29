@@ -1,0 +1,51 @@
+﻿@model Ensco.Irma.Models.PobHomeModel
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.Title = "Current PoB";
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridView_PobCurrent";
+    grid.Settings.ShowTitlePanel = true;
+    grid.SettingsText.Title = "Current PoB";
+    grid.KeyFieldName = Model.PobCurrent.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "PobCurrentPartial" };
+
+    grid.Columns.Add(col =>
+    {
+        col.FieldName = "";
+        col.Caption = "";
+        col.Width = Unit.Pixel(50);
+        col.CellStyle.HorizontalAlign = HorizontalAlign.Left;
+        col.SetDataItemTemplateContent(c =>
+        {
+            Html.DevExpress().Button(btn =>
+            {
+                btn.Name = "btnEditPersonnel" + DataBinder.Eval(c.DataItem, "Id");
+                btn.Text = "";
+                btn.Images.Image.Url = "~/Images/Edit.png";
+                btn.Images.Image.Width = Unit.Pixel(16);
+                btn.Images.Image.Height = Unit.Pixel(16);
+                btn.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                btn.ControlStyle.HorizontalAlign = HorizontalAlign.Left;
+                btn.ClientEnabled = true;
+                btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + DataBinder.Eval(c.DataItem, "PassportId") + "'}}", Url.Action("OnboardIndividual", "Personnel", new { Area = "IRMA" }));
+            }).GetHtml();
+        });
+    });
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.PobCurrentModel), options);
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.PobCurrent.KeyFieldName;
+    e.QueryableSource = Model.PobCurrent.Dataset;
+}).GetHtml()

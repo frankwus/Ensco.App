@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist>
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var  controller = (dynamic) ViewContext.Controller;
+
+    var errorkey = controller.GenericDashBoardErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        controller.Configure(settings, Html, ViewContext);
+    }).Bind(Model.OrderByDescending(c => c.RigChecklistUniqueId));
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+
+    grid.GetHtml();
+}

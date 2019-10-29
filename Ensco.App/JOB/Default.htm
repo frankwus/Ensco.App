@@ -1,0 +1,127 @@
+﻿<head>
+    <style>
+        div1d {
+            margin: 20;
+            padding: 20;
+            text-align: center;
+        }
+
+        span {
+            1color: white;
+            display: table;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .div0 {
+            margin: 20;
+            padding: 20;
+            text-align: center;
+        }
+
+        .div1 {
+            margin: 20;
+            padding: 20;
+            background-color: rgb(0, 70, 127);
+            text-align: center;
+        }
+
+        .div2 {
+            background-color: white;
+            color: black;
+        }
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+
+<table id="t">
+    <tr><td> <td><td>
+    <tr><td valign="top"><td valign="top"><td valign="top">
+</table>
+<script>
+
+    var Mode = 'Edit'
+    var t = GetId('t')
+    var Xml
+    $(document).ready(function () {
+        Init()
+
+    })
+    function Init() {
+        t.find('td').width('33%')
+        Xml = GetArray(['usp_GeteNavigation'])
+        Xml = $(Xml).text()
+        Xml = '<r>' + Xml + '</r>'
+        Update(0, 0)
+        $('<input type=button value= Add />').appendTo(t.find('tr').eq(0).children()).on('click', function () {
+            var src = $(this)
+            var index = src.parent().index()
+            var parent = 0
+            if (index > 0) {
+                parent = t.find('tr').eq(1).children().eq(index - 1).find('[active]').attr('id')
+            }
+            var r = showModal('../common/popupDefault.htm?id=0&parent=' + parent, null, 800, 600)
+            if (r != null)
+                Refresh()
+
+        })
+        // t.find('img, a,  div').on('mouseenter', function () {
+        t.on('mouseenter', 'img, span, div', function (e) {
+            // event.stopPropagation();
+            var src = $(this)
+            if (src.find('img').length)
+                return
+            window.status = src.prop('tagName')
+            if (src.prop('tagName') == 'DIV')
+                src = src.children()
+            var td = src.closest('td')
+            var src0 = td.find('[active]')
+            if (src0.is(src))
+                return
+            if (src0.length)
+                src0.attr('active', null).attr('src', '../images/' + src.attr('name'))
+            src.attr('active', 1).attr('src', '../images/' + src.attr('highlight'))
+            Update(src.attr('id'), td.index() + 1)
+        })
+    }
+    function Update(parent, index) {
+        var td = t.find('tr').eq(1).children().eq(index)
+        td.next().andSelf().html('').css('valign', 'top')
+        $(Xml).find('[Parent=' + parent + ']').each(function () {
+            // alert(Xml)
+            var src = $(this)
+            var name = src.attr('Name') + '.png'
+            var id = src.attr('id')
+            var highlight = name.replace('RGB', 'Highlighted_RGB')
+            var html = '<span/>'
+            if (parent == 0)
+                html = '<img/>'
+            $(html).appendTo(td)
+                .attr('id', id)
+                .attr('name', name)
+                .attr('highlight', highlight)
+                .attr('src', '../images/' + name)
+                .text(name)
+                .wrap('<div/>')
+            if (index != 0)
+                td.find('div').addClass('darkblue center') // .css('background-color', 'darkbluecolor')
+            td.find('span').width('100%')
+
+            td.find('div').removeClass().addClass('div' + index)
+        })
+    }
+    function GetButton(name) {
+        return '<input type=button value =' + name + ' />'
+    }
+</script>

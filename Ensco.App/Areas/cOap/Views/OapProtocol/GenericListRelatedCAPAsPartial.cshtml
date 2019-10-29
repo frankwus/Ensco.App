@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.IrmaCapa>
+
+@{
+    var genericListController = (dynamic)ViewContext.Controller;
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+    genericListController.ConfigureCAPAGrid(settings, Html, ViewContext);
+}).Bind(Model).GetHtml()

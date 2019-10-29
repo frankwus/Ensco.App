@@ -1,0 +1,9 @@
+﻿@model Ensco.Irma.Oap.WebClient.Corp.RigOapChecklistQuestionFinding
+
+@Html.DevExpress().FormLayout(settings => {
+
+    var controller = (dynamic) ViewContext.Controller;
+    controller.ConfigureFindingVerification(settings, Html, ViewContext);
+
+}).Bind(Model).GetHtml()
+

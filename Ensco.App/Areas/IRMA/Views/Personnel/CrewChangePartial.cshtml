@@ -1,0 +1,103 @@
+﻿@model Ensco.Irma.Models.ManageCrewChangeModel
+@using Ensco.App.App_Start
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+    bPobEditor = true;
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = bPobEditor;
+    options.ShowEditButton = bPobEditor;
+    options.ShowDeleteButton = bPobEditor;
+    options.ShowCommandColumn = true;
+    options.AddButtonText = "Add Crew Change";
+    options.Title = "Crew Changes";
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CrewChange";
+    grid.KeyFieldName = Model.CrewChanges.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangePartial" };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeAdd" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeUpdate" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeDelete" }; //Disable internally
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.CrewChangeModel), options);
+
+    // Schedule Crew Change item
+    if (bPobEditor)
+    {
+        MVCxGridViewToolbar toolbar = grid.Toolbars[0];
+        MVCxGridViewToolbarItem item = new MVCxGridViewToolbarItem();
+        item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+        item.Command = GridViewToolbarCommand.Custom;
+        item.Name = "Schedule";
+        item.Text = "Schedule Crew Changes";
+        item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+        item.ItemStyle.ForeColor = System.Drawing.Color.White;
+        item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+        item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+        item.ClientEnabled = true;
+        toolbar.Items.Insert(0, item);
+    }
+
+    // Crew Change Report Button
+    grid.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    GridViewCommandColumnCustomButton rptBtn = new GridViewCommandColumnCustomButton();
+    rptBtn.Text = "Crew Change Report";
+    rptBtn.ID = "CrewChangeReport";
+    rptBtn.Image.Url = "~/Images/Report.png";
+    rptBtn.Image.Width = 24;
+    rptBtn.Image.Height = 24;
+    grid.CommandColumn.CustomButtons.Add(rptBtn);
+    grid.ClientSideEvents.CustomButtonClick = string.Format("function(s, e){{ document.location = '{0}?Id=' + s.GetRowKey(e.visibleIndex);}}", Url.Action("CrewChangeReport", "Personnel", new { Area = "IRMA" }));
+
+    grid.InitNewRow = (s, e) =>
+    {
+        e.NewValues["DateCreated"] = DateTime.Now;
+        e.NewValues["DateCrewChange"] = DateTime.Now;
+        e.NewValues["Status"] = 1;
+        e.NewValues["InboundCrew"] = 1653;
+    };
+
+    grid.CellEditorInitialize = (s, e) =>
+    {
+        switch (e.Column.FieldName)
+        {
+            case "DateCreated":
+                e.Editor.Value = DateTime.Now;
+                e.Editor.ReadOnly = true;
+                break;
+            case "DateCrewChange":
+                e.Editor.Value = DateTime.Now;
+                break;
+            case "Status":
+                e.Editor.ReadOnly = true;
+                break;
+        }
+    };
+
+    // Master Detail
+    grid.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+    grid.SettingsDetail.ShowDetailRow = true;
+
+    grid.SetDetailRowTemplateContent(c =>
+    {
+        Ensco.Irma.Models.ManageCrewChangeModel.IsEditing = c.Grid.IsEditing;
+        Ensco.Irma.Models.ManageCrewChangeModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+        if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+        {
+            Html.RenderAction("CrewChangeManifestsPartial", new { CrewChangeId = DataBinder.Eval(c.DataItem, Model.CrewChanges.KeyFieldName) });
+        }
+    });
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.CrewChanges.KeyFieldName;
+    e.QueryableSource = Model.CrewChanges.Dataset;
+}).GetHtml()
+
+@*@Html.Partial("ScheduleCrewChange", new Ensco.Irma.Models.ScheduleCrewChangeModel())*@

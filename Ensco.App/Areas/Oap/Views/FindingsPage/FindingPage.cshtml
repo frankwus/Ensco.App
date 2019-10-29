@@ -1,0 +1,14 @@
+﻿@model Ensco.Irma.Oap.WebClient.Rig.RigOapChecklistQuestionFinding
+
+@{
+    ViewBag.Title = ViewBag.Title ?? "Finding";
+    Layout = "~/Areas/Oap/Views/Shared/_OapLayout.cshtml";
+}
+ 
+<div class="rig-oap-main-view">
+    @{
+        Html.RenderPartial("FindingPagePartial", Model);
+    }
+</div>
+
+

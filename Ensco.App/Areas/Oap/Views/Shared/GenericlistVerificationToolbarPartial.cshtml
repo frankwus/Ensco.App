@@ -1,0 +1,42 @@
+﻿@model Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist
+
+@Html.DevExpress().FormLayout(settings => {
+
+    var genericListController = (dynamic) ViewContext.Controller;
+    //genericListController.ConfigureVerificationToolbar(settings, Html, ViewContext, Model);
+
+    settings.Name = "VerificationToolbar";
+    settings.UseDefaultPaddings = false;
+    settings.AlignItemCaptionsInAllGroups = true;
+    settings.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+    settings.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 600;
+
+    settings.Items.Add(i =>
+    {
+        i.ShowCaption = DefaultBoolean.False;
+        i.CssClass = "buttonToolbar";
+        i.Width = Unit.Percentage(100);
+        i.NestedExtension().Button(s =>
+        {
+            s.Name = "startWorkflow";
+            s.Text = DbRes.T("Start Workflow", "OapResources");
+            s.UseSubmitBehavior = false;
+            s.Width = Unit.Pixel(100);
+            s.RouteValues = new { Action = "StartWorkflow", rigChecklistId = Model.Id };
+            s.Enabled = Model.Status == "Open";
+            s.ClientSideEvents.Click = "validateChecklist";
+        });
+    });
+
+
+}).GetHtml()
+
+
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "verificationLoading";
+    settings.Modal = true;
+    settings.ContainerElementID = "gridviewVerifiers";
+}).GetHtml()
+
+

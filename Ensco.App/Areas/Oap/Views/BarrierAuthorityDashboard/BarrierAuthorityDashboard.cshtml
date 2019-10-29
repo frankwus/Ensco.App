@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Rig Oap Checklists";
+    Layout = "~/Areas/Oap/Views/Shared/_OapLayout.cshtml";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItemgridBACChecklists":
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+<div class="rig-oap-main-view">
+    @using (Html.BeginForm())
+    {
+        @Html.Action("RigChecklists");
+    }
+</div>

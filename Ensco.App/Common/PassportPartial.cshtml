@@ -1,0 +1,792 @@
+﻿@model Ensco.Models.ManagePassportModel
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var lkpUserType = Ensco.Services.LookupListSystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.UserType);
+    var lkpCompnay = Ensco.Services.LookupListSystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.Company);
+    var lkpPosition = Ensco.Services.LookupListSystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.Position);
+    var lkpNationality = Ensco.Services.LookupListSystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.Nationality);
+    var lkpUserStatus = Ensco.Services.LookupListSystem.GetLookupList(Ensco.Utilities.UtilitySystem.EnscoLookupList.UserStatus);
+
+
+    var gridView = Html.DevExpress().GridView(grid =>
+    {
+        grid.Name = "gridView_PassportPartial";
+        grid.KeyFieldName = Model.Passports.KeyFieldName;
+
+        grid.CallbackRouteValues = new { Area = "Common", Controller = "Admin", Action = "PassportPartial" };
+
+
+        grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "Admin", Action = "PassportAddPartial" };
+        grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "Admin", Action = "PassportUpdatePartial" };
+        grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "PassportDeletePartial" }; //Disable internally
+        grid.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+
+        foreach (var column in Model.Passports.GetColumnInfo())
+        {
+            grid.Columns.Add(col =>
+            {
+                col.Name = (column.DisplayName != null && column.DisplayName != "") ? column.DisplayName : column.Name;
+                col.FieldName = column.FieldName;
+                //col.Visible = column.Visible;
+            });
+        }
+
+        grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        grid.SettingsPager.FirstPageButton.Visible = true;
+        grid.SettingsPager.LastPageButton.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+        grid.CommandColumn.Visible = true;
+        grid.CommandColumn.ShowEditButton = true;
+        grid.CommandColumn.ShowNewButtonInHeader = true;
+        grid.CommandColumn.ShowDeleteButton = true;
+        grid.CommandColumn.ShowUpdateButton = true;
+        grid.CommandColumn.ShowCancelButton = true;
+        //grid.SettingsBehavior.ConfirmDelete = true;
+
+        grid.Styles.Header.Wrap = DefaultBoolean.True;
+        grid.SettingsPager.EnableAdaptivity = true;
+
+        grid.Toolbars.Add(toolbar =>
+        {
+            toolbar.Enabled = true;
+            toolbar.EnableAdaptivity = true;
+            toolbar.Position = GridToolbarPosition.Top;
+            toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+            toolbar.Items.Add(GridViewToolbarCommand.ShowFilterRow);
+            toolbar.Items.Add(GridViewToolbarCommand.Refresh);
+            toolbar.Items.Add(GridViewToolbarCommand.ExportToPdf);
+            toolbar.Items.Add(GridViewToolbarCommand.ExportToXls);
+        });
+        grid.SettingsExport.EnableClientSideExportAPI = true;
+        grid.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+        grid.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+        grid.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+        //grid.Settings.HorizontalScrollBarMode = ScrollBarMode.Auto;
+
+        grid.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+        grid.SettingsDetail.ShowDetailRow = true;
+
+        grid.SetDetailRowTemplateContent(c =>
+        {
+            Ensco.Models.ManagePassportModel.IsEditing = c.Grid.IsEditing;
+            Ensco.Models.ManagePassportModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+
+            if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+            {
+@Html.DevExpress().PageControl(
+settings =>
+{
+    settings.Name = "pcFeatures";
+    settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+    settings.EnableHotTrack = true;
+    settings.SaveStateToCookies = true;
+    settings.TabAlign = TabAlign.Left;
+    settings.TabPosition = TabPosition.Top;
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.ControlStyle.CssClass = "dxtcFixed";
+    settings.TabPages.Add("General").SetContent(() =>
+    {
+        Html.DevExpress().FormLayout(form =>
+        {
+            form.Name = "panelPassportDetailGeneral";
+            form.EncodeHtml = false;
+            form.UseDefaultPaddings = false;
+            form.Width = Unit.Percentage(100);
+            form.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+            form.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 700;
+            form.ColCount = 3;
+
+            form.Items.Add(i =>
+            {
+                i.FieldName = "UserId";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.EncodeHtml = false;
+                    s.ReadOnly = true;
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "UserType";
+                i.NestedExtension().ComboBox(s =>
+                {
+                    s.Properties.ValueType = typeof(int);
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.DataMember = "Name";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.NullText = "[Select User]";
+                    s.Properties.DataSource = lkpUserType.Items;
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "Company";
+                i.NestedExtension().ComboBox(s =>
+                {
+                    s.Properties.ValueType = typeof(int);
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.DataMember = "Name";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.NullText = "[Select Company]";
+                    s.Properties.DataSource = lkpCompnay.Items;
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "Status";
+                i.NestedExtension().ComboBox(s =>
+                {
+                    s.Properties.ValueType = typeof(int);
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.DataMember = "Name";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.NullText = "[Select Status]";
+                    s.Properties.DataSource = lkpUserStatus.Items;
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "Position";
+                i.NestedExtension().ComboBox(s =>
+                {
+                    s.Properties.ValueType = typeof(int);
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.DataMember = "Name";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.NullText = "[Select Position]";
+                    s.Properties.DataSource = lkpPosition.Items;
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "Nationality";
+                i.NestedExtension().ComboBox(s =>
+                {
+                    s.Properties.ValueType = typeof(int);
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.DataMember = "Name";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.NullText = "[Select Country]";
+                    s.Properties.DataSource = lkpNationality.Items;
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "DisplayName";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.Width = Unit.Percentage(100);
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "FirstName";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.Width = Unit.Percentage(100);
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "MiddleName";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.Width = Unit.Percentage(100);
+                    s.ReadOnly = true;
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "LastName";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = true;
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "Email";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = true;
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+
+        }).Bind(Model.SelectedUser).Render();
+    });
+    settings.TabPages.Add("Personal").SetContent(() =>
+    {
+        Html.DevExpress().FormLayout(form =>
+        {
+            form.Name = "panelPassportDetailPersonal";
+            //form.EncodeHtml = false;
+            //form.UseDefaultPaddings = false;
+            form.Width = Unit.Percentage(100);
+            form.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+            form.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 700;
+            form.ColCount = 3;
+
+            form.Items.Add(i =>
+            {
+                i.FieldName = "BusinessAddress";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "BusinessCity";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "BusinessState";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "BusinessCountry";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "BusinessPhone";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "EmergencyContact";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "EmergencyPhone";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "Weight";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+            form.Items.Add(i =>
+            {
+                i.FieldName = "Height";
+                i.NestedExtension().TextBox(s =>
+                {
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+
+        }).Bind(Model.SelectedUser).Render();
+    });
+    settings.TabPages.Add("Records").SetContent(() =>
+    {
+        Html.RenderAction("PassportDetailPartialRecords");
+    });
+}).GetHtml();
+            }
+        });
+
+        grid.SetEditFormTemplateContent(c =>
+        {
+            Ensco.Models.ManagePassportModel.IsEditing = c.Grid.IsEditing;
+            Ensco.Models.ManagePassportModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+            if (c.Grid.IsNewRowEditing)
+            {
+                Model.SelectedUser = new Ensco.Models.UserModel();
+            }
+
+            // Editable only for non-AD users
+@Html.DevExpress().PageControl(
+        settings =>
+        {
+            settings.Name = "pcFeatures";
+            settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+            settings.EnableHotTrack = true;
+            settings.SaveStateToCookies = true;
+            settings.TabAlign = TabAlign.Left;
+            settings.TabPosition = TabPosition.Top;
+            settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            settings.ControlStyle.CssClass = "dxtcFixed";
+            settings.TabPages.Add("General").SetContent(() =>
+            {
+                Html.DevExpress().FormLayout(form =>
+                {
+                    form.Name = "panelPassportDetailGeneral";
+                    form.EncodeHtml = false;
+                    form.UseDefaultPaddings = false;
+                    form.Width = Unit.Percentage(100);
+                    form.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+                    form.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 700;
+                    form.ColCount = 3;
+
+                    //form.Items.Add(i =>
+                    //{
+                    //    i.FieldName = "Passport";
+                    //    i.SetNestedContent(() =>
+                    //    {
+                    //        Html.Hidden(DataBinder.Eval(c.DataItem, "Passport")).ToHtmlString();
+                    //    });
+                    //    i.Visible = false;
+                    //});
+                    //form.Items.Add(i =>
+                    //{
+                    //    i.FieldName = "RigId";
+                    //    i.SetNestedContent(() =>
+                    //    {
+                    //        ViewContext.Writer.Write(Html.Hidden("RigId").ToHtmlString());
+                    //    });
+                    //    i.Visible = false;
+                    //});
+
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "UserId";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.EncodeHtml = false;
+                            s.ReadOnly = true;
+                            s.Width = Unit.Percentage(100);
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "UserType";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.Properties.ValueType = typeof(int);
+                            s.Properties.TextField = "Name";
+                            s.Properties.ValueField = "Id";
+                            s.Properties.DataMember = "Name";
+                            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                            s.Properties.NullText = "[Select User]";
+                            s.Properties.DataSource = lkpUserType.Items;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem,"ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Company";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.Properties.ValueType = typeof(int);
+                            s.Properties.TextField = "Name";
+                            s.Properties.ValueField = "Id";
+                            s.Properties.DataMember = "Name";
+                            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                            s.Properties.NullText = "[Select Company]";
+                            s.Properties.DataSource = lkpCompnay.Items;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Status";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.Properties.ValueType = typeof(int);
+                            s.Properties.TextField = "Name";
+                            s.Properties.ValueField = "Id";
+                            s.Properties.DataMember = "Name";
+                            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                            s.Properties.NullText = "[Select Status]";
+                            s.Properties.DataSource = lkpUserStatus.Items;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Position";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.Properties.ValueType = typeof(int);
+                            s.Properties.TextField = "Name";
+                            s.Properties.ValueField = "Id";
+                            s.Properties.DataMember = "Name";
+                            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                            s.Properties.NullText = "[Select Position]";
+                            s.Properties.DataSource = lkpPosition.Items;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Nationality";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.Properties.ValueType = typeof(int);
+                            s.Properties.TextField = "Name";
+                            s.Properties.ValueField = "Id";
+                            s.Properties.DataMember = "Name";
+                            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                            s.Properties.NullText = "[Select Country]";
+                            s.Properties.DataSource = lkpNationality.Items;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "DisplayName";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "FirstName";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "MiddleName";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "LastName";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Email";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+
+                    if (c.Grid.IsEditing || c.Grid.IsNewRowEditing)
+                    {
+                        form.Items.Add(i =>
+                        {
+                            i.ShowCaption = DefaultBoolean.False;
+                        }).SetNestedContent(() =>
+                        {
+                            ViewContext.Writer.Write("<div style='float:right'>");
+                            Html.DevExpress().Button(btnSettings =>
+                            {
+                                btnSettings.Name = "btnUpdate";
+                                btnSettings.Text = "Save";
+                                btnSettings.ClientSideEvents.Click = "function(s, e){ gridView_PassportPartial.UpdateEdit();  }";
+                            }).Render();
+                            Html.DevExpress().Button(btnSettings =>
+                            {
+                                btnSettings.Name = "btnCancel";
+                                btnSettings.Text = "Cancel";
+                                btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+                                btnSettings.ClientSideEvents.Click = "function(s, e){ gridView_PassportPartial.CancelEdit(); }";
+                            }).Render();
+                            ViewContext.Writer.Write("</div>");
+                        });
+                    }
+                }).Bind(Model.SelectedUser).Render();
+            });
+            settings.TabPages.Add("Personal").SetContent(() =>
+            {
+                Html.DevExpress().FormLayout(form =>
+                {
+                    form.Name = "panelPassportDetailPersonal";
+                    //form.EncodeHtml = false;
+                    //form.UseDefaultPaddings = false;
+                    form.Width = Unit.Percentage(100);
+                    form.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+                    form.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 700;
+                    form.ColCount = 3;
+
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Address";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "City";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "State";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Country";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "PrimaryPhone";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem, "ADUser"));
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "EmergencyContact";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing && !(bool)DataBinder.Eval(c.DataItem,"ADUser"));
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "EmergencyPhone";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Weight";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                        });
+                    });
+                    form.Items.Add(i =>
+                    {
+                        i.FieldName = "Height";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.ReadOnly = (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing);
+                            s.Width = Unit.Percentage(100);
+                        });
+                    });
+
+
+                    if (c.Grid.IsEditing || c.Grid.IsNewRowEditing)
+                    {
+                        form.Items.AddEmptyItem();
+                        form.Items.AddEmptyItem();
+                        form.Items.Add(i =>
+                        {
+                            i.ShowCaption = DefaultBoolean.False;
+                        }).SetNestedContent(() =>
+                        {
+                            ViewContext.Writer.Write("<div style='float:right'>");
+                            Html.DevExpress().Button(btnSettings =>
+                            {
+                                btnSettings.Name = "btnUpdate1";
+                                btnSettings.Text = "Save";
+                                btnSettings.ClientSideEvents.Click = "function(s, e){ gridView_PassportPartial.UpdateEdit(); }";
+                            }).Render();
+                            Html.DevExpress().Button(btnSettings =>
+                            {
+                                btnSettings.Name = "btnCancel1";
+                                btnSettings.Text = "Cancel";
+                                btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+                                btnSettings.ClientSideEvents.Click = "function(s, e){ gridView_PassportPartial.CancelEdit(); }";
+                            }).Render();
+                            ViewContext.Writer.Write("</div>");
+                        });
+                    }
+
+                }).Bind(GetEdingUser(c.Grid)).Render();
+            });
+            settings.TabPages.Add("Records").SetContent(() =>
+            {
+                Html.RenderAction("PassportDetailPartialRecords");
+            });
+        }).GetHtml();
+});
+    }).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+    {
+        e.KeyExpression = Model.Passports.KeyFieldName;
+        e.QueryableSource = Model.Passports.Dataset;
+    });
+
+    if (ViewData["EditError"] != null)
+    {
+        gridView.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+
+@gridView.GetHtml()

@@ -1,0 +1,308 @@
+﻿
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formPassportDetailPartial";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+    form.ColumnCount = 5;
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Personnel Management";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Pixel(190);
+        i.ColCount = 1;
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "MyPassport";
+                link.NavigateUrl = Url.Action("MyPassport", "Irma", new { Area = "Irma" });
+                link.Properties.Text = "My Passport";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "PersonnelDatabase";
+                link.NavigateUrl = Url.Action("ManagePassport", "Admin", new { Area = "Common" });
+                link.Properties.Text = "Personnel Database";
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "RigRequirements";
+                link.NavigateUrl = Url.Action("RigRequirements", "RigAdmin", new { Area = "IRMA" });
+                link.Properties.Text = "Rig Requirements";
+                link.Enabled = true;
+            });
+        });
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Onboarding / Offboarding";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Pixel(190);
+        i.ColCount = 1;
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "OnboardBatch";
+                link.NavigateUrl = Url.Action("OnboardBatch", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Onboard Batch of Personnel";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "OnboardIndividual";
+                link.NavigateUrl = Url.Action("OnboardIndividual", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Onboard Individual Personnel";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "TeamManagement";
+                link.NavigateUrl = Url.Action("TeamManagement", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Team Management";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "OffboardPersonnel";
+                link.NavigateUrl = Url.Action("OffboardPersonnel", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Offboard Personnel";
+                link.Enabled = true;
+            });
+        });
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Crew Changes";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Pixel(190);
+        i.ColCount = 1;
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "crewchanges";
+                link.NavigateUrl = Url.Action("CrewChange", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Open Crew Changes";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "flightmanifests";
+                link.NavigateUrl = Url.Action("FlightManifest", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Flight Manifests";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "flightparkinglot";
+                link.NavigateUrl = Url.Action("FlightParkingLot", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Flight Parking Lot";
+                link.Enabled = true;
+            });
+        });
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Roster Reports";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Pixel(190);
+        i.ColCount = 1;
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "FullRosterReport";
+                link.NavigateUrl = "";
+                link.Properties.Text = "Full Roster Report";
+                link.Enabled = false;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "RosterSignInByMusterStation";
+                link.NavigateUrl = Url.Action("RosterSignInByMusterStation", "Personnel", new { Area = "IRMA" });
+                link.Properties.Text = "Roster Sign-In Sheet by Muster Station";
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "RosterSignInByLifeBoat";
+                link.NavigateUrl = "";
+                link.Properties.Text = "Roster Sign-In Sheet by Life Boat";
+                link.Enabled = false;
+            });
+        });
+
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Reports & Summaries";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Pixel(190);
+        i.ColCount = 1;
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "pobsummaryreport";
+                link.NavigateUrl = Url.Action("PobSummaryReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "PoB Summary Report";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "RoomAndBedSummary";
+                link.NavigateUrl = "";
+                link.Properties.Text = "Room and Bed Summary";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "lifeboatsummary";
+                link.NavigateUrl = Url.Action("RosterSignInByMusterStationReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Life Boat Summary";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "arrivallog";
+                link.NavigateUrl = Url.Action("ArrivalLogReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Arrival Log";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "departureLog";
+                link.NavigateUrl = Url.Action("DepartureLogReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Departure Log";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "lifeboatcompliance";
+                link.NavigateUrl = Url.Action("LifeBoatComplianceReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Life Boat Compliance Report";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "lifeboatrosterlist";
+                link.NavigateUrl = Url.Action("LifeBoatRosterListReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Life Boat Roster List Report";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "roombedsummary";
+                link.NavigateUrl = Url.Action("RoomBedSummaryReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Room Bed Summary Report";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "rostersigninbymusterstation";
+                link.NavigateUrl = Url.Action("RosterSignInByMusterStationReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Roster Sign-In by Muster Station Report";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "rostersigninbylifeboat";
+                link.NavigateUrl = Url.Action("RosterSignInByLifeBoatReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Roster Sign-In by Life Boat Report";
+                link.Enabled = true;
+            });
+        });
+        i.Items.Add(s =>
+        {
+            s.ShowCaption = DefaultBoolean.False;
+            s.NestedExtension().HyperLink(link =>
+            {
+                link.Name = "rostersigninfull";
+                link.NavigateUrl = Url.Action("RosterSignInReport", "Report", new { Area = "IRMA" });
+                link.Properties.Text = "Roster Sign-In Report";
+                link.Enabled = true;
+            });
+        });
+    });
+}).GetHtml()

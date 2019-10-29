@@ -1,0 +1,187 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+
+<table id="t" class="marginBottom">
+    <tr>
+        <th class="darkblue" style="text-align: left;" colspan="14">
+            Job Builder 
+    <tr>
+        <td style="vertical-align:top" width="15%"><table id="t1"></table>
+        <td style="vertical-align:top">
+            <table id="t2"></table>
+            <a style="height:100px" href="javascript:void(0)" onclick="on_Slide(this) ">Continue</a>
+</table>
+<script>
+    var t = $('#t')
+    var t1 = $('#t1')
+    var t2 = $('#t2')
+    var Id = getParameterByName('id')
+    var Status
+    var Page = 'Crane'
+    
+    var Clone = getParameterByName('clone')
+    var Checklist = []
+    var WI
+    var Root
+    var Id =getParameterByName('id')
+    $(document).ready(function () {
+        Init()
+        CleanUp()
+        document.onkeydown = function () {
+            if (event.keyCode == 32 ) {
+                event.cancelBubble = true;
+                event.returnValue = false;
+                event.keyCode = false;
+                on_Slide( t.find('a') )
+                return false;
+            }
+        }
+
+    })
+    function Init() {
+        var arr = ['Warning', 'Hot Work', 'Cold Work', 'Confined Space', 'Energy Isolation', 'Long Term Energy Isolation', 'Hazardous Work', 'Complete']// 'Work Instruction']
+       // arr=['Warning','Hot Work',  'Work Instruction', 'Complete']
+        for (var i in arr) {
+            var name = arr[i]
+            var tr = AddTr(t1).addClass('hazard')
+            AddTd(tr, name).addClass('lang')
+        }
+        t1.find('tr').first().removeClass().addClass('orange')
+        GetArray(['usp_JobGetBuilder', Lang ], function (data) {
+            var xml = data.d 
+            Xml = $(xml).find('Table1').text()
+            //alert(Xml)
+            Root = $(Xml)
+            t1.closest('td').css('padding', 0)//.css('border', 'none')
+            t1.find('td').css('padding', 0)
+            on_Slide()
+        })
+    }
+    function GetUniqueList() {
+        var arr=[]
+        for (var i in Checklist) {
+            var name =Trim( Checklist[i]) 
+            var arr1=name.split(',')
+            for (var j in arr1) {
+                var name1 = Trim(arr1[j])
+                if (name1 == 'EI')
+                    name1 = 'Energy Isolation'
+                if (name1 != 'PTW')
+                    name1=name1.capitalize() 
+                if (arr.indexOf(name1) ==-1 && name1 != 'PTW' )
+                    arr.push(name1 )
+            }
+        }
+        Checklist=arr 
+    }
+
+    function on_Slide(src) {
+        src = $(src)
+        if (src.text() == 'Load Job') {
+            localStorage.setItem('BuilderList', JSON.stringify(Checklist)) 
+            localStorage.setItem('BuilderWI', WI)
+            if (window.dialogArguments == null)
+                window.location = 'job.htm?builder=1&id=' + Id
+            else {
+                window.returnValue = 1
+                window.close()
+            }
+            return 
+        }
+        var index = t1.find('tr.orange').index()
+        var tr = t1.find('tr').eq(index + 1)
+        var name = Trim(tr.text())
+        console.log(name)
+        tr.prevAll().removeClass().addClass('darkblue')
+        tr.removeClass().addClass('orange')
+        t2.find(':checked').each(function () {
+            var ck = $(this)
+            var cl = ck.attr('Checklist')
+            if (cl != 'undefined' && cl != null) {
+                var permitType = ck.attr('PermitType')
+                if (['Hot Work', 'Cold Work', 'Confined Space'].indexOf(permitType) != -1)
+                    Checklist.push(permitType +' Permit')
+                Checklist.push(cl)
+            }
+        })
+        if (name == 'Complete') {
+            WI = t2.parent().find('select').val()
+            if (WI == null)
+                WI=''
+            t2.find('tr').remove()
+            var div = $('<div/>').insertBefore(t2)
+            GetUniqueList() 
+            if (Checklist.length) {
+                div.html('<li>' + Checklist.join('<li>') + WI +'<br><br>').addClass('capitalize')
+
+                var html = 'Based upon your selections, you will need the following Permit to Work forms:'
+                $('<div/>').html(html).prependTo(src.parent())
+            }
+            src.text('Load Job')
+            return
+        }
+        t2.find('tr').remove()
+
+        Root.find('[Type="' + name + '"]').each(function () {
+            var element = $(this)
+            var tr = AddTr(t2)
+            var id = element.attr('id')
+            var parent = element.attr('parent') 
+            var hide = element.attr('hide')
+            var margin = 1
+            var disabled =''
+            if (parent != null) {
+                margin = 20
+                disabled = 'disabled'
+            }
+            var checkbox = '<input PermitType="'+name +'" style="margin-right:5" Checklist="' + element.attr('Checklist') + '" ' + disabled + ' id=' + id + ' parent=' + parent + ' style="margin-left:' + margin + '"  type=checkbox />'
+            if (parent =='0')
+                checkbox=''
+            var html =checkbox + element.attr('name')
+            AddTd(tr, html).css('border', 'none')
+            if (hide == '1')
+                tr.hide().find(':checkbox').attr('hide', 1)
+            if (tr.text().indexOf('Global Work Instruction') != -1) {
+                var xml = GetArray(['usp_JobGetJobTitle', 0, 1])
+                var select = $('<select style="border:solid;border-width:1px" />').appendTo(tr.children())
+                BindSelect(xml, select, 0, 'JobTitle', 'JobTitle')
+            }
+        })
+        var cks = t2.find(':checkbox[hide!=1]')
+        cks.on('click', function () {
+            var ck = $(this)
+            var ck1 = t2.find(':checkbox[hide=1]')
+            if (t2.find(':checked[hide!=1]').length){
+                var tr = ck1.closest('tr')
+                if ( !tr.find('div').length)
+                    $('<div/>').prependTo(tr.children()).html('&nbsp').css('background-color', ' rgb(0, 70, 127)')
+                tr.show()
+            }
+            else
+                ck1.closest('tr').hide().prop('checked', false)
+        })
+        t2.find(':checkbox').on('click', function () {
+            var ck = $(this)
+            var id = ck.attr('id')
+            if (ck.prop('checked'))
+                t2.find('[parent=' + id + ']').prop('disabled', false)
+            else 
+                t2.find('[parent=' + id + ']').prop('disabled', true ).prop('checked', false )
+
+        })
+
+    }
+
+</script>

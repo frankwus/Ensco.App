@@ -1,0 +1,449 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<form>
+    <table border="0">
+        <tr style="border:none">
+            <td width="99%" style="border:none">
+                <span class="orangecolor">Man Riding Checklist</span>
+
+            <td><a id="Close" class="hidden" href="javascript:void(0)" onclick="on_Close(this)">Close</a>
+            <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+            <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+
+            <td><img src="../Images/Help icon.png" onclick="on_Help()" Title="Help" />
+    </table>
+
+    <table id="tPlanning">
+
+        <tr>
+            <th class="header" style="text-align: left;" colspan="24">
+                Planning
+        <tr>
+            <td>Checklist No.
+            <td style="width:40"><span id="id"></span>
+            <td>Job
+            <td id="JobId">
+            <td>Date/Time Performed
+            <td><input id="DateDone" type="text" />
+            <td>Status
+            <td id="Status">
+        <tr>
+            <td>Location
+            <td>
+                <img src='../images/search icon.png' onclick="on_Location(this)" />
+                <span border="0" id="Location"></span>
+                <span class="hidden" id="LocationId"></span>
+            <td>Winch Operator
+            <td colspan="1">
+                <img onclick="on_PobSelect(this)" src="../Images/Select Personnel icon.png">
+                <span class="hidden" id="WinchOperatorId"></span><span id="WinchOperator"></span><span id="Position" class="hidden" ></span>
+            <td>Date/Time Created
+            <td id="Date">
+            <td>Permit
+            <td><select id="PermitId"></select>
+    </table>
+    <table id="tRider" class="marginBottom"></table>
+    <table>
+        <tr><td style="border-top:none"><img onclick="on_Rider(this)" src="../Images/Select Personnel icon.png">
+    </table>
+
+
+
+    <table id="tAuthorization"></table>
+    <table id="tExecution" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                Execution
+    </table>
+    <table id="tVerification" class="marginBottom"></table>
+</form>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tRider = $('#tRider')
+    var tGeneral = $('#tGeneral')
+    var tAuthorization = $('#tAuthorization')
+    var tExecution = $('#tExecution')
+    var tVerification = $('#tVerification')
+    var Id = getParameterByName('id')
+    var Status
+    var Page = 'Riding'
+    var IsPaperView
+    
+    var Clone = getParameterByName('clone')
+    var ARR = ['id', 'Position', 'PermitId', 'LocationId', 'Location', 'Date', 'DateDone', 'JobId', 'WinchOperatorId', 'WinchOperator', 'ManRider', 'Status']
+    $(document).ready(function () {
+        InitDateTime(['DateDone'])
+        InsertCommon()
+        var xml = GetArray(['usp_JobGetRiding', Id, UserId, Lang ])
+        InitFold()
+        InitPlanning(xml)
+        Status = $('#Status').text()
+        InitVerification(xml)
+        InitRider(xml)
+        InitEvent()
+        LoadJobPacket(tPlanning)
+        InitApprover(xml)
+        InitStatus(xml )
+        InitPaperView(tPlanning)
+        if (IsPaperView) {
+            var t = tPlanning
+            var tr = t.find('tr').eq(2)
+            tr.prev().children().slice(-4).css('border', '1 solid gray')
+            $('<tr/><tr/>').insertBefore(tr)
+            tr.children().slice(-4).appendTo(t.find('tr').eq(2))
+
+            tr.children().slice(-4).insertBefore(tr.prev().children().eq(6))  //.show().last().attr('colSpan', 7)
+            var html = '<td colSpan=11 class=darkblue >People</td> '
+            t.find('tr').eq(3).html(html)
+            t.find('tr').slice(-1).children().slice(0, 2).hide().siblings().css('border', '1 solid gray').last().attr('colspan', 11)
+            tRider.show().next().show()
+            var xml = GetArray(['usp_AdminGetOIM', UserId])
+            if ($(xml).text() != '' && Status != 'Closed')
+                GetId('Close').show()
+        }
+        CleanUp()
+        tExecution.find(':text').css('border', '1 solid gray').css('border-bottom', 'none')
+    })
+    function on_Close() {
+        var ok = true
+        var arr = ['PermitId', 'DateDone', 'WinchOperator' ]
+        for (var i in arr) {
+            if (IsEmpty(GetId(arr[i])))
+                ok = false
+        }
+        if (!ok) {
+            alert(RequiredMessage)
+            return
+        }
+        on_Save()
+        GetArray(['usp_JobAction', Page, 'Verification', Id, '', 'Close', UserId])
+        Refresh()
+    }
+    function InitRider(xml) {
+        var t = tRider
+        DataBind(t, xml, 3)
+        // RemoveWingDing(t )
+        GetTd(t, 2).hide()
+        t.find('tr').eq(0).children().eq(2).hide()
+
+        AddGridHeader(t, 'Man Riders')
+        t.find('th').first().removeClass().addClass('hazard')
+        t.find('tr').last().hide()
+        GetTd(t, 0).each(function () {
+            var td = $(this)
+            td.html(GetDelete())//td.parent().index() +
+        })
+    }
+    function InitApprover(xml) {
+        var t = tVerification
+        $(xml).find('Table6').find('Type').each(function () {
+            var element = $(this)
+            var type = element.text().replace(' ', '').replace('.', '')
+            t.find('[id=' + type + 'Id]').text(element.next().text())
+            t.find('[id=' + type + 'Name]').text(element.next().next().text())
+        })
+    }
+    function InitStatus(xml) {
+        var t = tAuthorization
+        t.find(':button, img').hide()
+        t.find(':text').prop('disabled', true)
+        t.find('span[userId=' + UserId + ']').closest('tr').each(function () {
+            var tr = $(this)
+            if (tr.children().eq(3).text() == 'Pending Approval') {
+                tr.children().eq(4).children().show()
+                tr.children().eq(6).children().prop('disabled', false)
+            }
+        })
+
+        t.find('td:nth-child(5)').filter(function () {
+            return $(this).text() == ''
+        }).closest('tr').find('img').show()
+                
+        if (Status != 'Open' || $(GetXmlTable(xml, 1).text()).attr('IsJobOwner') == 0 ) {
+            LockPage()
+            GetId('Submit').hide()
+        }
+        if (Status == 'Verification') {
+            tVerification.find(':button').prop('disabled', false)
+            GetId('Submit').hide()
+        }
+    }
+    function InitVerification(xml) {
+        var t = tVerification
+        DataBind(t, xml, 5)
+        HideColumn(t, 1)
+
+        RemoveWingDing(t)
+        AddGridHeader(t, 'Verification')
+
+        if (Status != 'Verification')
+            return
+        t.find('td:contains("' + UserId + '")').each(function () {
+            var td = $(this).nextAll().last()
+            if (GetVal(td) == '' && td.prev().text() == 'Pending Approval') {
+                td.html('<input type=button onclick=on_Action(this) value =Verify /><input type=button onclick=on_Action(this) value =Reject />')
+            }
+
+        })
+    }
+    function on_Action(src) {
+        src = $(src)
+        var action = src.val()
+        var role = src.closest('tr').children().first().text()
+        GetArray(['usp_JobAction', Page, 'Verification', Id, role, action, UserId])
+        Refresh()
+    }
+    function InitPlanning(xml) {
+        var t = tPlanning
+        t.find('td:even').addClass('labelRight')
+        t.find('tr').eq(1).find('td').width('13%')
+        BindSelect(xml, $('#PermitId'), 6)
+
+        InitExecution(xml)
+        var xml1 = $(xml).find('Table1').text()
+        var src = $(xml1)
+        if (src == null)
+            return
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), src.attr(id))
+        }
+        LockField('PermitId')
+        src.find('Location').each(function () {
+            var element = $(this)
+            AddLocation($('#Location').prev(), element.attr('id'), element.attr('Name'))
+        })
+    }
+    function InitExecution(xml) {
+        var t = tExecution
+        var xml1 = $(xml).find('Table2').text()
+        var src = $(xml1)
+        var i = 1
+        src.each(function () {
+            var s = $(this)
+            var section = s.attr('section')
+            AddTd(AddTr(t), section).addClass('darkblue').attr('colSpan', 5)
+            s.find('sub').each(function () {
+                var sub = $(this)
+                var subSection = sub.attr('sub')
+                AddTd(AddTr(t), subSection).addClass('label').attr('colSpan', 5)
+                sub.find('q').each(function () {
+                    var q = $(this)
+                    var tr = AddTr(t)
+                    AddTd(tr, i++)
+                    var input = ''
+                    var html = q.attr('Q')
+                    var comment = q.attr('comment')
+                    if (comment != null)
+                        html += '<br><span>Explain:</span><input style="width:90%;" type=text value="' + comment + '" />'
+                    AddTd(tr, html)
+
+                    html = '<input type=radio name=' + q.attr('id') + ' />'
+                    for (var j = 0; j < 3; j++) {
+                        AddTd(tr, html).addClass('center').css('padding', 0)
+                    }
+                    var answer = q.attr('answer')
+                    if (!isNaN(answer) && answer > -1)
+                        tr.find(':radio').eq(answer).prop('checked', true)
+                })
+            })
+
+        })
+        t.find('tr').eq(2).addClass('center').append($('<td>Yes<td> No <td>N/A</td>')).children().first().attr('colspan', 2)
+        AddTd(AddTr(t), ' <a id=Submit href="javascript:void(0)" onclick="on_Submit(this)"> Submit for verification </a>')
+            .attr('colspan', 5)
+    }
+    function on_Save(submit) {
+        SaveXmlAttachment()
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        root.addAttr('submit', submit)
+        XmlGeneral(root)
+        if (!XmlExecution(root)) {
+            alert('Please fill the required fields.')
+            return
+        }
+        XmlRider(root)
+        var xml = root[0].outerHTML
+        xml = GetArray(['usp_JobSaveRiding', xml])
+        Id = Trim( $(xml).text()) 
+        window.location = 'Riding.htm?id=' + Id 
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            //value = CleanSpecialCharacter(value )
+            element.addAttr(id, value)
+        }
+        $('#Location').find('td:odd').each(function () {
+            var td = $(this)
+            var Location = $.createElement('Location')
+            Location.addAttr('id', td.attr('id'))
+            Location.addAttr('Name', td.text())
+            element.append(Location)
+        })
+        root.append(element)
+    }
+    function XmlRider(root) {
+        tRider.find('tr:gt(1)').not(':last').each(function () {
+            var element = $.createElement('rider')
+
+            var tr = $(this)
+            element.addAttr('id', tr.index() - 1)
+            element.addAttr('UserId', tr.children().eq(2).text())
+            element.addAttr('Name', GetVal(tr.children().eq(3)))
+            element.addAttr('Position', tr.children().eq(4).text())
+            element.addAttr('Company', tr.children().eq(5).text())
+            root.append(element)
+        })
+    }
+    function XmlExecution(element) {
+        var t = tExecution
+        var isOk = true
+        t.find(':radio').closest('tr').each(function () {
+            var tr = $(this)
+            var el = $.createElement('checklist')
+            el.addAttr('id', tr.find(':radio').eq(0).attr('name'))
+            var index = tr.find(':checked').parent().index() - 2
+            el.addAttr('Answer', index)
+            if (index == 1) {
+                if (IsEmpty(tr.find(':text')))
+                    isOk = false
+                el.addAttr('Comment', GetVal(tr.find(':text')))
+            }
+            element.append(el)
+        })
+        return isOk
+    }
+    function CleanSpecialCharacter(xml) {
+        return MyReplace(xml, "'", "''")
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+    }
+
+    function GetDt() {
+        var dt = new Date()
+        var arr = dt.toString().split(' ')
+        return arr[2] + '-' + arr[1] + '-' + (arr[3] - 2000) + ' ' + arr[4]
+    }
+    function on_AuthoritySelect(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var type = tr.children().first().text()
+        type = Trim(type)
+        var r = showModal('../common/popupPob.htm', type, 800, 400)
+        if (r == null)
+            return
+
+        src.next().text(r[1]).attr('userId', r[0])
+        src.parent().next().text(r[2])
+    }
+    function on_Clone() {
+        var xml = GetArray(['usp_JobCloneRiding', Id])
+        Id = $(xml).text()
+        window.location = 'Riding.htm?id=' + Trim(Id)
+    }
+    function InitEvent() {
+        tExecution.find(':radio').on('change', function () {
+            var src = $(this)
+            var tr = src.closest('tr')
+            var td = tr.children().eq(1) // src.parent().prev()
+            if (src.parent().index() == 3) {
+                if (td.children().length)
+                    td.children().show()
+                else
+                    $('<br><span> Explain:</span><input style="width:90%" type=text />').appendTo(td)
+
+                // td.find(':text').css('border', 'none').css('border-top', '1 solid gray')
+            } else
+                td.children().hide()
+        })
+        //$(':button').on('click', function () {
+        //    var button = $(this)
+        //    var tr = button.closest('tr')
+        //    var name = button.val()
+        //    if (name != 'Approve' && name != 'Reject')
+        //        return
+        //    var section = button.closest('table').attr('id')
+        //    section = section.substring(1, section.length)
+        //    var type = tr.children().first().text()
+        //    var comment = GetVal(tr.find(':text'))
+
+        //    type = Trim(type)
+        //    GetArray(['usp_JobActionRiding', Id, section, type, name, comment])
+        //    Refresh()
+        //})
+    }
+    function on_Rider(src) {
+        var t = tRider
+        var r = GetPobUser()
+        if (r == null)
+            return
+        for (var i in r) {
+            var arr = r[i]
+            var tr = t.find('tr').last()
+            var tr1 = tr.clone().show().insertBefore(tr)
+            for (var j = 0; j < 4; j++) {
+                tr1.children().eq(j + 2).text(arr[j])
+            }
+        }
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var r
+        if (arr != null)
+            r = arr
+        else {
+            r = GetPobUser()
+            if (r == null)
+                return
+        }
+        r = r[0]
+        src.next().text(r[0]).next().text(r[1]).next().text(r[2] )
+    }
+
+    function on_Submit(src) {
+        if (!Validate()) {
+            alert('Please fill out the required fields.')
+            return
+        }
+        on_Save(1)
+    }
+    function Validate() {
+        if (IsPaperView)
+            return true 
+        var ok = true
+        var arr = ['WinchOperator', 'DateDone', 'PermitId']
+        for (var i in arr) {
+            if (IsEmpty($('#' + arr[i])))
+                ok = false
+        }
+        $(':radio').closest('tr').each(function () {
+            var tr = $(this)
+            if (!tr.find(':checked').length) {
+                tr.find(':radio').parent().css('background-color', 'yellow')
+                ok = false
+            }
+            if (IsEmpty(tr.find(':text'))) {
+                ok = false
+            }
+        })
+        return ok
+    }
+</script>

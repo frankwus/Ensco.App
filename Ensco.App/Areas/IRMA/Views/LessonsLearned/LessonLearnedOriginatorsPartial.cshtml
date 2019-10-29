@@ -1,0 +1,51 @@
+﻿@using Ensco.OAP.Models;
+@model List<Ensco.OAP.Models.LessonLearnedOriginatorModel>
+@{
+    // ViewBag won't work after the page is loaded, so needs to access the HttpContext
+    var lessonLearned = (LessonLearnedModel)ViewContext.HttpContext.Session["LessonLearnedModel"];
+    var lessonStatus = lessonLearned.Status;
+
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = lessonStatus == "Open";
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = true;     
+    options.ShowCommandColumn = ViewBag.IsEditable ?? false;
+    options.AddButtonText = "Add Originator";
+    options.ShowTitle = true;
+}
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "gvOriginators";
+    settings.Width = Unit.Percentage(100);
+    settings.KeyFieldName = "Id";
+
+    Html.EnscoStandardGrid(settings, typeof(Ensco.OAP.Models.ViewModels.LL_EditOriginatorsGridRowModel), options);
+
+    settings.Caption = "Lesson Learned Originators";
+    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedOriginatorsPartial" };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedAddOriginatorsPartial" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedDeleteOriginatorsPartial" };
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+    settings.EditFormLayoutProperties.ColumnCount = 4;
+
+    settings.EditFormLayoutProperties.Items.Add("PassportId");
+
+
+
+    settings.Columns.Remove(settings.Columns["ID"]);
+
+
+    if (Ensco.Utilities.UtilitySystem.Settings.RigId == 1) // Corporate IRMA
+    {
+        settings.EditFormLayoutProperties.Items.Add("RigFacility");
+    }
+
+    settings.CommandColumn.Caption = " ";
+     
+    settings.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    }); 
+}).Bind(Model).GetHtml()

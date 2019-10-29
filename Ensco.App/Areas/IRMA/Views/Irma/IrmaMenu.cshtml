@@ -1,0 +1,28 @@
+﻿@Html.DevExpress().Menu(
+                 settings =>
+                 {
+                     settings.Name = "mainMenu";
+                     settings.EnableHotTrack = true;
+                     settings.EnableAnimation = true;
+                     settings.AllowSelectItem = true;
+                     settings.ShowPopOutImages = DefaultBoolean.True;
+                     settings.Styles.Style.BackColor = System.Drawing.Color.Transparent;
+                     settings.Styles.Style.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+                     settings.EnableAdaptivity = true;
+                     settings.Orientation = System.Web.UI.WebControls.Orientation.Horizontal;
+                     settings.ControlStyle.Font.Bold = true;
+                     settings.Styles.SubMenuItem.Font.Size = 10;
+                     settings.Styles.SubMenuItem.Font.Bold = true;
+
+                     settings.DataBound += (s, e) =>
+                     {
+                         ASPxMenu menu = s as ASPxMenu;
+
+                         // Go through all the items and hide the ones with 'visible=false'
+                         foreach (var item in menu.Items)
+                         {
+                             Html.EnscoSetupMenu((DevExpress.Web.MenuItem)item);
+                         }
+                     };
+                 }
+         ).Bind(Ensco.Services.ServiceSystem.ApplicationMenu.Menu).GetHtml()

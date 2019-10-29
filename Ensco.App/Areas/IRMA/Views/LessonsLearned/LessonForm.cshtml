@@ -1,0 +1,381 @@
+﻿@using Ensco.OAP.Models
+@using Ensco.Irma.Models
+@model LessonLearnedModel
+@{
+    ViewBag.Title = "Lessons Learned";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                //AdjustMainGrid(grid_CrewChange); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            //var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            //grid.SetHeight(height);
+        }
+
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+            }
+        }
+
+        function submitForApprovalValidation() {
+            if ('@Model.Status' == 'Pending Review' && gvPreApproval.keys > 0) {
+                alert('Please have all pre-approvers sign the form before submitting for approval');
+                return false;
+            }
+            return true;
+        }
+    </script>
+}
+
+@using (Html.BeginForm("Save", "LessonsLearned", FormMethod.Post, new { Id = Model.Id }))
+{
+    <div style="float:right">
+        @{ 
+            if (Model.Status == "Approved")
+            {
+                Html.DevExpress().Button(button =>
+                {
+                    button.Name = "btClose";
+                    button.Text = "Close";
+                    button.RouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "Close", Id = Model.Id };
+                    button.ClientSideEvents.Click = "function (s,e) { e.processOnServer = confirm('Confirm closing this Lessons Learned form?'); }";
+                }).GetHtml();
+            }
+
+            if (Model.Status == "Open" || Model.Status == "Final Review")
+            {
+                Html.DevExpress().Button(button =>
+                {
+                    button.Name = "btSave";
+                    button.Text = "Save";
+                    button.UseSubmitBehavior = true;    
+                    button.ClientSideEvents.Click = "function (s,e) { if (gvOriginators.pageRowCount == 0) { e.processOnServer = false; alert('Must have at least one originator'); } }";
+                    button.RouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "Save", Id = Model.Id };
+                }).GetHtml();
+            }
+        }
+        @if (Model.Status == "Open" || Model.Status.Contains("Review") || Model.Status == "Rejected")
+        {
+            Html.DevExpress().Button(button =>
+            {
+                button.Name = "btnCancel";
+                button.Text = "Cancel";
+                button.RouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "Cancel", Id = Model.Id };
+                button.UseSubmitBehavior = false;
+                button.ClientSideEvents.Click = "function (s,e) { e.processOnServer = confirm('This will cancel the Lesson Learned form. Proceed?'); }";
+                button.Style.Add("margin-left", "5px");
+            }).GetHtml();
+        }
+    </div>
+
+
+                Html.DevExpress().PageControl(pc =>
+                {
+                    pc.Name = "pcLessons";
+                    pc.Width = Unit.Percentage(100);
+
+                    pc.TabPages.Add("Planning").SetContent(() =>
+                    {
+                        Html.DevExpress().FormLayout(layout =>
+                        {
+                            layout.Name = "lLessons";
+                            layout.ColumnCount = 4;
+                            layout.Width = Unit.Percentage(100);
+
+                            // Details
+                            layout.Items.AddGroupItem(group =>
+                            {
+                                group.Caption = "Details";
+                                group.ColumnCount = 4;
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Lesson Learned ID";
+                                    i.FieldName = "Id";
+                                    i.NestedExtension().TextBox(t =>
+                                    {
+                                        t.Name = "Id";
+                                        t.ReadOnly = true;
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Lesson Learned Type";
+                                    i.FieldName = "TypeId";
+                                    i.Width = Unit.Percentage(50);
+                                    i.SetNestedContent(() =>
+                                    {
+                                        Html.DevExpress().ComboBox(cb =>
+                                        {
+                                            cb.Name = "TypeId";
+                                            cb.Properties.TextField = "Name";
+                                            cb.Properties.ValueField = "Id";
+                                            cb.Properties.NullText = "[Select]";
+                                            cb.Properties.ValueType = typeof(int);
+                                            cb.Enabled = Model.IsEditable;
+
+                                            cb.PreRender = (sender, e) =>
+                                            {
+                                                if (Model.TypeId == null)
+                                                    return;
+                                                var combobox = (sender as MVCxComboBox);
+                                                var items = combobox.Items;
+                                                foreach (ListEditItem item in items)
+                                                {
+                                                    if (Model.TypeId == (int)item.Value)
+                                                        combobox.SelectedIndex = item.Index;
+                                                }
+                                            };
+                                        }).BindList(ViewBag.LessonTypes).GetHtml();
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Date / Time Created";
+                                    i.FieldName = "DateStarted";
+                                    i.NestedExtension().TextBox(t =>
+                                    {
+                                        t.Name = "DateStarted";
+                                        t.ReadOnly = true;
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Status";
+                                    i.FieldName = "Status";
+                                    i.NestedExtension().TextBox(t =>
+                                    {
+                                        t.Name = "Status";
+                                        t.ReadOnly = true;
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Title";
+                                    i.ColumnSpan = 4;
+                                    i.FieldName = "Title";
+                                    i.NestedExtension().TextBox(t =>
+                                    {
+                                        t.Name = "Title";
+                                        t.Width = Unit.Percentage(100);
+                                        t.ReadOnly = !Model.IsEditable;
+                                        t.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Source BU";
+                                    i.FieldName = "SourceBU";
+                                    Html.EnscoNestedEditor(i, lesson => lesson.SourceBU);
+                                    i.NestedExtensionType = FormLayoutNestedExtensionItemType.ComboBox;
+                                    var cbSettings = (ComboBoxSettings)i.NestedExtensionSettings;
+                                    //cbSettings.Enabled = Model.IsEditable;
+                                    cbSettings.ReadOnly = true;
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Source Rig / Facility";
+                                    i.FieldName = "SourceRigFacility";
+                                    Html.EnscoNestedEditor(i, lesson => lesson.SourceRigFacility);
+                                    var cbSettings = (ComboBoxSettings)i.NestedExtensionSettings;
+                                    //cbSettings.Enabled = Model.IsEditable;
+                                    cbSettings.ReadOnly = true;
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Source Form";
+                                    i.ColumnSpan = 2;
+
+                                    if (!string.IsNullOrEmpty(Model.SourceFormURL))
+                                    {
+                                        i.SetNestedContent(() =>
+                                        {
+                                            Session["isChecklistIdClick"] = true;
+                                            ViewContext.Writer.Write(
+                                                string.Format("<a href=\"{0}\" target='_blank'>{1} : {2}</a>", Model.SourceFormURL, Model.SourceForm.ToUpper(), Model.SourceFormId));
+                                        });
+                                    }
+                                    else
+                                    {
+                                        i.SetNestedContent(() =>
+                                        {                                            
+                                            ViewContext.Writer.Write(
+                                                string.Format("{0}",Model.SourceForm));
+                                        });
+                                    }
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Topic";
+                                    i.FieldName = "Topic";
+                                    Html.EnscoNestedEditor(i, lesson => lesson.Topic);
+                                    i.NestedExtensionType = FormLayoutNestedExtensionItemType.ComboBox;
+                                    var cbSettings = (ComboBoxSettings)i.NestedExtensionSettings;
+                                    cbSettings.Enabled = Model.IsEditable;
+
+                                    //i.NestedExtension().DropDownEdit(d =>
+                                    //{
+                                    //    d.Name = "Topic";
+                                    //    d.ReadOnly = !Model.IsEditable;
+                                    //});
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Impact Level";
+                                    i.FieldName = "ImpactLevel";
+
+                                    i.SetNestedContent(() =>
+                                    {
+                                        Html.DevExpress().ComboBox(cb =>
+                                        {
+                                            cb.Name = "ImpactLevel";
+                                            cb.Enabled = Model.IsEditable;
+                                            cb.PreRender = (sender, e) =>
+                                            {
+                                                if (!string.IsNullOrEmpty(Model.ImpactLevel))
+                                                {
+                                                    var comboBox = (ASPxComboBox)sender;
+                                                    comboBox.Value = Model.ImpactLevel;
+                                                }
+                                            };
+                                        }).BindList(ViewBag.ImpactLevels).GetHtml();
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "eMoc ID";
+                                    i.FieldName = "eMocId";
+                                    i.NestedExtension().TextBox(t =>
+                                    {
+                                        t.Name = "eMocId";
+                                        t.ReadOnly = true;
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "eMoc Status";
+                                    i.FieldName = "eMocStatus";
+                                    i.NestedExtension().TextBox(t =>
+                                    {
+                                        t.Name = "eMocStatus";
+                                        t.ReadOnly = true;
+                                    });
+                                });
+
+                                group.Items.Add(i =>
+                                {
+                                    i.Caption = "Description";
+                                    i.FieldName = "Description";
+                                    i.ColumnSpan = 4;
+                                    i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Required;
+                                    i.NestedExtension().Memo(t =>
+                                    {
+                                        t.Name = "Description";
+                                        t.Width = Unit.Percentage(100);
+                                        t.Height = Unit.Point(100);
+                                        t.ReadOnly = !Model.IsEditable;
+                                        t.Enabled = Model.IsEditable;
+                                        t.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                                    });
+                                });
+                            });
+
+                        }).GetHtml();
+
+                        // Originators gridview
+                        Html.RenderPartial("LessonLearnedOriginatorsPartial", Model.Originators);
+
+                        Html.DevExpress().FormLayout(layout =>
+                        {
+                            layout.Name = "lAttachments";
+                            layout.UseDefaultPaddings = false;
+                            layout.Style.Add("margin-top", "1em");
+                            layout.Width = Unit.Percentage(100);
+                            layout.Items.AddGroupItem(group =>
+                            {
+                                group.Caption = "Attachments";
+                                group.ColumnCount = 2;
+                                group.Width = Unit.Percentage(100);
+                                if (Model.IsEditable)
+                                {
+                                    group.Items.Add(item =>
+                                    {
+                                        item.FieldName = "Upload";
+                                        item.SetNestedContent(() =>
+                                        {
+                                            using (Html.BeginForm())
+                                            {
+                                                Html.RenderAction("MultiFileUploadPartial", new { Area = "Common", Controller = "Admin", SourceForm = "Lessons Learned", SourceFormId = Model.Id });
+                                            }
+                                        });
+                                    });
+                                }
+
+                                group.Items.Add(item =>
+                                {
+                                    item.ShowCaption = DefaultBoolean.False;
+                                    item.SetNestedContent(() =>
+                                    {
+                                        foreach (var attachment in Model.Attachments)
+                                        {
+                                            if (Model.IsEditable)
+                                            {
+                                                Html.DevExpress().HyperLink(l =>
+                                                {
+                                                    l.Properties.ImageUrl = "/Images/Delete.png";
+                                                    l.NavigateUrl = Url.Action("DeleteAttachment", new { Area="Common", Controller="Admin", Id=attachment.Id, returnUrl = HttpContext.Current.Request.Url.AbsolutePath });
+                                                    l.Properties.ImageWidth = Unit.Pixel(15);
+                                                    l.Style.Add("margin-right", "5px");
+                                                }).GetHtml();
+                                            }
+                                            Html.DevExpress().HyperLink(l =>
+                                            {
+                                                l.Properties.Text = attachment.FileName;
+                                                l.NavigateUrl = attachment.FilePath;
+                                            }).GetHtml();
+                                            ViewContext.Writer.Write("<br />");
+                                        }
+                                    });
+                                });
+                            });
+                        }).GetHtml();
+                    });
+
+
+                    // Approval tab
+                    pc.TabPages.Add("Approval").SetContent(() =>
+                    {
+                        // Pre apprival grid
+                        Html.RenderPartial("LessonsLearnedPreApprovalReviewPartial", Model.Approvals.Where(a => a.Type == (int)ApprovalModel.ApprovalType.LessonsLearnedPreApproval));
+
+                        // Approval grid
+                        Html.RenderPartial("LessonsLearnedApprovalPartial", Model.Approvals.Where(a => a.Type == (int)ApprovalModel.ApprovalType.LessonsLearnedApproval));
+                    });
+
+                }).GetHtml();
+            }
+
+
+

@@ -1,0 +1,36 @@
+﻿@model Ensco.Models.DataTableModel
+
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    string name = "gridRigAdminJobCodeList";
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name =name;
+    grid.KeyFieldName = Model.KeyFieldName;
+
+    grid.CallbackRouteValues = new {Area = "Common", Controller = "Admin", Action = "ManageJobCodePartial" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageJobCodeUpdate" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.Admin.JobCodeModel), options);
+
+    grid.SettingsPager.PageSize = 20;
+
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) => {
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+
+
+
+
+
+

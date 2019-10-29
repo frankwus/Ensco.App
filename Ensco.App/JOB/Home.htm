@@ -1,0 +1,305 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <table border="0"></table>
+    <table id="t" border="0">
+        <tr class="darkbluecolor" style="font-weight:bold;text-align:left">
+            <th>
+                Permit to Work and Basic Jobs
+            <th>
+                ESSoW Landing Pages
+            <th>
+                Job Management
+
+        <tr>
+            <td><a href="javascript:void(0)" onclick="on_CloneJob('')">Start a job by cloning a previous job</a>
+            <td><a href="LandingPermit.htm?id=0">Cold Work Permits</a>
+            <td><a href="Dashboard.htm">Job Dashboard</a>
+        <tr>
+            <td><a href="LandingWims.htm">Start a job from a WIMS Work Instruction</a>
+            <td><a href="LandingPermit.htm?id=1">Hot Work Permits</a>
+            <!--<td><a href="javascript:void(0)">	Summary of Operational Boundaries (SoOB)</a>-->
+        <tr>
+            <td>
+                <a href="javascript:void(0)" onclick="on_CloneJob('eams')">Start a maintenance job that needs a permit</a>
+            <td><a href="LandingPermit.htm?id=2"> Confined Space Entry Permits</a>
+            <td><a href="SCAL.htm">Safety-Critical Asset List</a>
+
+        <tr>
+            <td><a href="javascript:void(0)" onclick="on_JobBuilder()">Start a job using the Job Builder</a>
+            <td><a href="LandingEi.htm">Energy Isolation</a>
+            <!--<td><a href="javascript:void(0)">Permit Authorization Change Management</a>-->
+        <tr>
+            <td><a href="Job.htm?nopermit=1">Start a basic job</a>
+            <td><a href="LandingGas.htm">Gas Test</a>
+            <td><a href="Summary.htm">Daily Summary Page</a>
+        <tr class="darkbluecolor" style="font-weight:bold;text-align:left">
+            <th>
+                Job Safety Analysis (JSAs)
+            <th>
+                eSSoW Checklists
+            <th>  Work Instructions (WIMS)
+
+        <tr>
+            <td><a href="LandingJsa.htm">JSA without Work Instruction</a>
+            <td><a href="LandingHotWorkChecklist.htm">Hot Work Checklist</a>
+            <td><a target="_blank" href="https://wims.enscoplc.com">Work Instructions (WIMS)</a>
+        <tr>
+            <td><a href="LandingJsa.htm">JSA with Work Instruction</a>
+            <td><a href="LandingCrane.htm">Crane Personnel Lift Checklist</a>
+            <td><a href="LandingWims.htm">View Work Instructions</a>
+        <tr>
+            <td><a href="LandingJsa.htm">JSA with Work Instruction Checklist</a>
+            <td><a href="LandingLift.htm">Lift Plan</a>
+            <td><a href="javascript:void(0)"></a>
+        <tr>
+            <td><a href="LandingJsa.htm"> Hazard ID Prompt Card</a>
+            <td><a href="LandingRiding.htm">Man Riding Checklist</a>
+            <td><a href="javascript:void(0)"></a>
+        <tr>
+            <td><a href="javascript:void(0)"></a>
+            <td><a href="LandingConfined.htm">Confined Space Entry Log</a>
+            <td><a href="javascript:void(0)"></a>
+    </table>
+    <table id="tSearch" class="hidden marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="10">
+                Start a Job
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="10">
+                Job Clone
+        <tr>
+            <td>ID
+            <td><input />
+            <td>Job Title
+            <td colspan="3"><input />
+            <td>Job Category
+            <td><select />
+            <td>From Date
+            <td><input />
+        <tr>
+            <td>Permit Type
+            <td><select />
+            <td>Maintenance
+            <td><select />
+            <td>Work Instruction
+            <td><select />
+            <td>Location
+            <td>
+                <img src='../images/search icon.png' onclick="on_Location(this)" />
+                <span border="0" id="Location"></span>
+            <td>To Date
+            <td><input />
+        <tr>
+            <td colspan="11" style='padding-top:4px'>
+                <img src='../images/search icon.png' onclick="on_CommonSearch(this, 'usp_JobSearchJob', 1, Callback)" />
+                <img src='../images/cancel icon.png' onclick="on_Clear(this)" />
+    </table>
+    <table id="tSearchResult" class="hidden marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="29">
+                Search Result
+    </table>
+    <table id="tWims" class="hidden marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="10">
+                Start a Job
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="29">
+                WIMS Defined Job
+        <tr>
+            <td class="labelRight">Job Category
+            <td width="300"><select />
+            <td class="labelRight">Job Title
+            <td width="300"><select />
+            <td>
+                <img src="../Images/Submit icon.png" onclick="on_GoWims(this)" />
+                <img src="../Images/Cancel icon.png" onclick="on_ClearWims(this)" />
+    </table>
+    <table id="tMaintenance" class="hidden marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="10">
+                Start a Job
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="29">
+                Maintenance Job
+        <tr>
+            <td class="labelRight ">EAMS Work Order #
+            <td><input type="text" />
+
+            <td>
+                <img src="../Images/Submit icon.png" onclick="on_GoMaintenace(this)" />
+                <img src="../Images/Cancel icon.png" onclick="on_ClearMaintenace(this)" />
+    </table>
+    <table id="tOpenJob" class=" marginBottom"></table>
+    <table id="tNoPermitJob" class=" marginBottom"></table>
+    <table id="tCapa" class=" marginBottom"></table>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var tSearch = $('#tSearch')
+    var tSearchResult = $('#tSearchResult')
+    var tTime = $('#tTime')
+    var tWims = $('#tWims')
+    var tMaintenance = $('#tMaintenance')
+    var tOpenJob = $('#tOpenJob')
+    var tNoPermitJob = GetId('tNoPermitJob')
+    var tCapa = $('#tCapa')
+    $(document).ready(function () {
+        t.find('th').css('font-weight', 'bold').css('text-align', 'left').css('padding-top', 28)
+        t.find('td').css('border', 'none').css('padding-left', 20).css('padding-top', 8)
+
+        for (var i = 0; i < 3; i++)
+            InitGrid(null, i, 1)
+        CleanUp()
+    })
+    function InitGrid(a, group, index) {
+        var arr = [tOpenJob, tNoPermitJob,  tCapa]
+        var arr1 = ['Open Permits', 'Non-Permit Jobs', 'Open CAPA']
+        var t = arr[group]
+        var xml = GetArray(['usp_JobOpenJob', group, index, Lang ])
+        DataBind(t, xml)
+        if (!t.find('tr').length)
+            return 
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback)
+
+        AddGridSubHeader(t, arr1[group])
+        TdByName(t, 'Action', true).hide()
+        TdByName(t, 'Status').each(function () {
+            var td = $(this)
+            if (GetVal(td)=='Expired')
+                td.css('color', 'red')
+        })
+    }
+    function Callback(t1) {
+    }
+    function InitSearch() {
+        var t = tSearch
+        t.find('td:even').not(':last').addClass('labelRight')
+        t.find(':text, select').width('95%')
+        InitDate(t.find('td:last-child()').find(':text'))
+        AddSelectYesNo(t, 2)
+        AddSelectYesNo(t, 3)
+        var xml = GetArray(['usp_JobGet', 0, UserId, Lang  ])
+        BindSelect(xml, t.find('select').eq(0), 0)
+        var arr = ['Cold Work', 'Confined Space', 'Hot Work']
+        AddSelect(t, 1, arr)
+        NumberOnly([t.find(':text').first()])
+    }
+    function on_Submit(src) {
+        on_SearchBase('usp_JobSearch')
+        var t = tSearchResult
+        t.find('td:nth-child(1)').each(function () {
+            var td = $(this)
+            var id = td.text()
+            var url = 'job.htm?id=' + id + '&clone=1'
+            td.html('<a/>').find('a').attr('href', url).text(id)
+        })
+        // t.find('tr').eq(1).find('span').remove()
+    }
+    function on_Clear(src) {
+        src = $(src)
+        InitClear(src.closest('table'))
+    }
+    function on_CloneJob(type ) {
+        var r = Popup('popupClone.htm?type=' +type , screen.width - 100, screen.height - 100)
+        if (r == null)
+            return
+        var url = 'job.htm?clone=1&id=' + r
+        if (type == 'eams')
+            url ='job.htm?wo='+r 
+        window.location=url 
+        return 
+        HideTable()
+        tSearch.show()
+        InitSearch()
+        CleanUp()
+    }
+    function HideTable() {
+        var tables = tSearch.add(tSearchResult).add(tWims).add(tMaintenance)
+        tables.hide()
+    }
+    function on_WimsJob() {
+        HideTable()
+        var t = tWims
+        t.show()
+        var select = t.find('select').eq(0)
+        var xml = GetArray(['usp_JobGetJobCategory'])
+        BindSelect(xml, select)
+        select.on('change', function () {
+            var id = select.val()
+            xml = GetArray(['usp_JobGetJobCategory', id])
+            var sel = t.find('select').eq(1)
+            sel.find('option').remove()
+            BindSelect(xml, sel)
+        })
+
+    }
+    function on_GoWims() {
+        var id = tWims.find('select').eq(1).val()
+        if (id == null || id == '') {
+            alert('Please select a job title.')
+            return
+        }
+        window.location = 'job.htm?JobDescriptionId=' + id
+    }
+    function on_ClearWims() {
+        tWims.find('select').children().remove()
+    }
+    function on_MaintenaceJob() {
+        HideTable()
+        var t = tMaintenance
+        t.show()
+        var select = t.find('select').eq(0)
+        var xml = GetArray(['usp_JobGetJobCategory'])
+        BindSelect(xml, select)
+    }
+    function on_GoMaintenace() {
+        var wo = GetVal(tMaintenance.find(':text'))
+        if (wo == null || wo == '') {
+            alert('Please select a Work Order #.')
+            return
+        }
+        window.location = 'job.htm?wo=' + wo
+    }
+    function on_ClearMaintenace() {
+        tMaintenance.find('select').children().remove()
+    }
+    function on_JobBuilder() {
+        window.location = 'builder.htm'
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+    function on_Location(src) {
+        src = $(src)
+        var r = Popup('../common/PopupLocation.htm?a=1', 900, 900)
+
+        if (r == null)
+            return
+        AddLocation(src, r[0], r[1])
+    }
+    function AddLocation(src, id, name) {
+        var t = src.next()
+        t.text(name)
+        return
+        var tr = AddTr(t)
+        AddTd(tr, '') //'<img src="../Images//delete.png" width="16" onclick="on_Delete(this)" />').width(1)
+        AddTd(tr, name).attr('id', id)
+        t.find('td').css('border', 'none')
+    }
+</script>

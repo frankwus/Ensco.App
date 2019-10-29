@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body>
+    <table id="t" width="59%" border="0" style="text-align:center">
+        <tr>
+            <td>
+            <td colspan="2">
+                <input type="text" />
+        <tr>
+            <td>
+                <input type="button" value="Search" onclick="on_Search(this) " />
+            <td>
+                <input type="button" value="Cancel" onclick="window.close()" />
+            <td>
+                <input type="button" value="Save" onclick="on_Save(this)" />
+    </table>
+    <br />
+    <table id="tResult"></table>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var tResult = $('#tResult')
+    $(document).ready(function () {
+        t.width('10%').wrap('<center/>').find('td').css('border', 'none').find(':text').css('border', '1 solid black')
+        on_Search()
+        ConfigKeyPress()
+        CleanUp()
+    })
+    function on_Search(src) {
+        var xml = GetArray(['usp_JobSearchPosition'])
+        DataBind(tResult, xml)
+
+        $(':checkbox').on('change', function () {
+            on_Save()
+        })
+        // $(':checkbox').first().trigger('click')
+    }
+    function on_Save() {
+        var tr = tResult.find(':checkbox:checked').closest('tr').eq(0)
+        var arr = tr.children().eq(1).map(function () {
+            return $(this).text()
+        }).get()
+        window.returnValue = arr
+        window.close()
+    }
+</script>

@@ -1,0 +1,182 @@
+﻿@model Ensco.Models.IrmaCapaModel
+@using System.Data;
+@using System.Web.UI.WebControls
+@{
+    bool isCapaControl = (this.ViewBag.ReadOnly == null);
+    bool readOnly = (!isCapaControl && (bool)this.ViewBag.ReadOnly && Model.Id != 0);
+}
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formAssign";
+    form.Name = "formAssign";
+    form.ShowItemCaptionColon = false;
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+    form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+
+    form.Items.AddGroupItem(i => {
+        i.Caption = "";
+        i.ColCount = 5;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+
+        if(!readOnly || Model.Status != "Open") {
+            i.Items.Add(item => {
+                item.ShowCaption = DefaultBoolean.False;
+                item.SetNestedContent(() => {
+                    if(!readOnly) {
+                        Html.DevExpress().Button(s => {
+                            s.Name = "btnCapaSave";
+                            s.Text = "Save";
+                            InitButton(s, isCapaControl);
+                        }).Render();
+                        Html.ViewContext.Writer.Write("&nbsp;");
+                        Html.DevExpress().Button(s => {
+                            s.Name = "btnCapaSubmit";
+                            s.Text = "Submit";
+                            InitButton(s, isCapaControl);
+                        }).Render();
+                        if(Model.Status=="Open"  ) {
+                            Html.ViewContext.Writer.Write("&nbsp;");
+                            Html.DevExpress().Button(s => {
+                                s.Name = "btnCapaDelete";
+                                s.Text = "Delete";
+                                s.ClientSideEvents.Click = "function(s,e){ onCapaDelete(s, e) ; }";
+                            }).Render();
+                        }
+                        Html.ViewContext.Writer.Write("&nbsp;");
+                        Html.DevExpress().Button(s => {
+                            s.Name = "btnCapaCancel";
+                            s.Text = "Cancel";
+                            s.ClientSideEvents.Click = "function(s,e){ grid.CancelEdit(); }";
+                        }).Render();
+                    }
+                    if(Model.Status != "Open" && Model.Id != 0) {
+                        Html.ViewContext.Writer.Write("&nbsp;");
+                        Html.DevExpress().Button(s => {
+                            s.Name = "btnCapaClone";
+                            s.Text = "Clone";
+                            s.Text = "Clone";
+                            s.ClientSideEvents.Click = "function(s,e){ onClone(s, e); }";
+                        }).Render();
+                    }
+                });
+            });
+        }
+        if( Model.Status != "Open") {
+            i.Items.Add(item => {
+                item.ShowCaption = DefaultBoolean.False;
+                item.SetNestedContent(() => {
+                    Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "AssignedToClone", lookup = "SharedAndCorpAccount", multi = true, selected = 0 });
+                });
+            });
+        }
+    });
+    form.Items.AddGroupItem(i => {
+        i.Caption = "Details";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Percentage(100);
+        i.ColCount = 3;
+
+        //i.Items.Add(x => x.Id, item => {
+        //    item.FieldName = "Id";
+        //    item.Caption = "ID";
+        //    item.NestedExtension().TextBox(s => {
+        //        s.ClientEnabled = false;
+        //        if (isCapaControl) {
+        //            s.ReadOnly = true; 
+        //        }
+        //        s.Width = Unit.Percentage(100);
+        //    });
+        //});
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Id, true);
+        });
+        i.Items.Add(item => {
+            // Html.EnscoCapaEditor(item, x => x.Source, true);            
+            item.Caption = "Source*";
+            item.SetNestedContent(() => {
+                Html.DevExpress().HyperLink(s => {
+                    s.Properties.Text = Model.Source;
+                    s.NavigateUrl = Model.SourceUrl;
+                }).Render();
+            });
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Status, true);
+        });
+
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Criticality, readOnly);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.ActionType, readOnly);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.ControlHierarchy, readOnly);
+        });
+
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.DateAssigned, true);
+            item.Caption = item.Caption + "*";
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.DueDate, readOnly);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Topic, readOnly);
+
+        });
+
+        //string focusRowChangedEvent = " function (s, e) {focusRowChangedEvent(s, e)} ";
+        //string rowClick  = " function (s, e) {onRowClick(s, e)} ";
+        //Dictionary<EnscoHelper.EventHandlerType, string> handlers = new Dictionary<EnscoHelper.EventHandlerType, string>();
+        //handlers[EnscoHelper.EventHandlerType.FocusRowChanged] = focusRowChangedEvent;
+        //handlers[EnscoHelper.EventHandlerType.RowClick] = rowClick;
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.AssignedBy, readOnly  );
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Rig, true );
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Position, true );
+        });
+
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.AssignedTos, readOnly, null, null, true);
+            item.Caption = EnscoHelper.GetTranslation( "AssignedTo") ;
+        });
+        //i.Items.Add(item => {
+        //    item.ColumnSpan = 1;
+        //    Html.EnscoCapaEditor(item, x => x.RootCause, readOnly);
+        //});
+
+        if (isCapaControl) {
+            i.Items.Add(s => {
+                s.ShowCaption = DefaultBoolean.False;
+                s.SetNestedContent(() => {
+                    ViewContext.Writer.Write(Html.Hidden("hCapaControl").ToHtmlString());
+                });
+            });
+        }
+        i.Items.Add(item => {
+            item.ColumnSpan = 3;
+            Html.EnscoCapaEditor(item, x => x.ActionRequired, readOnly);
+        });
+    });
+}).GetHtml()
+@functions{
+    static void InitButton(ButtonSettings s, bool isCapaControl) {
+        string arr = "var arr=[ Criticality, ActionType, ControlHierarchy, DateAssigned, DueDate, Topic, AssignedBy, AssignedTos, ActionRequired]; GetId('hCapaControl').val('" + s.Name+"'); ";
+        // string arr = "var arr=[  ActionRequired]; GetId('hCapaControl').val('" + s.Name + "'); ";
+        string onSave = "function(s,e){ " + arr + " for(var i in arr){ if(! arr[i].GetIsValid() ) return };grid.UpdateEdit(); grid.CancelEdit();  }";
+        if (isCapaControl) {
+            s.ClientSideEvents.Click = onSave;
+        } else {
+            s.UseSubmitBehavior = true;
+            s.ClientSideEvents.Click = "function(s,e){ onSaveAssign(s, e) }";
+        }
+    }
+}

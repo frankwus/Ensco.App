@@ -1,0 +1,132 @@
+﻿<head>
+    <style>
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <table>
+            <tr><td class="right noborder"><a href=""> Create New CAPA Plan </a>
+        </table>
+        <table id="tSearch" >
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Search
+            <tr>
+                <td>Action ID
+                <td><input type="text" />
+                <td>Status
+                <td><select />
+                <td>Assigned By
+                <td><select />
+                <td>Assigned To
+                <td><select />
+            <tr>
+                <td> Source
+                <td><select />
+                <td>Criticality
+                <td><select />
+                <td>Control Hierarchy
+                <td><select />
+                <td>Action Type
+                <td><select />
+            <tr>
+                <td> Date Assigned
+                <td><input type="text" />
+                <td>Due Date
+                <td><input type="text" />
+                <td>Date Completed
+                <td><input type="text" />
+                <td>Reviewer
+                <td><img src="../Images/select_personnel.png" onclick="on_ADUser(this) "/><span ></span>
+            <tr>
+                <td> Description
+                <td colspan="3"><input type="text" />
+                <td>Action Required
+                <td colspan="3"><input type="text" />
+            <tr>
+                <td colspan="11" style='padding-top:4px'>
+                    <img src='../images/search.png' onclick="on_CommonSearch(this, 'usp_JobSearchCapa', 1, Callback)" />
+                    <img src='../images/cancel.png' onclick="on_Clear(this)" />
+        </table>
+        <table id="tSearchResult" style="display:none">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="29">
+                    Search Result
+        </table>
+    </form>
+</body>
+</html>
+<script>
+    var tSearch = $('#tSearch')
+    var tSearchResult = $('#tSearchResult')
+    var tCapa = $('#tCapa')
+
+    $(document).ready(function () {
+        InitFold()
+        //InitGrid(null, 0, 1)
+        InitSearch()
+        CleanUp()
+    })
+    function InitGrid(a, group, index) {
+        var arr = [tOpen, tUpcoming, tCapa]
+        var arr1 = ['Open Gas Tests', 'Upcoming Gas Tests', 'Gas Test Open CAPA']
+        var t = arr[group]
+        var xml = GetArray(['usp_JobLandingGas', group, index])
+        DataBind(t, xml)
+
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback)
+        if (group == 2)
+            AddGridHeader(t, arr1[group])
+        else
+            AddGridSubHeader(t, arr1[group])
+
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Confined Space Entry Permit Search Results')
+    }
+    function InitSearch() {
+        var arr = ['Open', 'Closed']
+        var t = tSearch
+        var xml = GetArray(['usp_JobFilterSearchCapa'])
+        AddSelect(t, 0, arr )
+        BindSelect(xml, t.find('tr').eq(2).find('select').eq(1), 0)
+        BindSelect(xml, t.find('tr').eq(2).find('select').eq(2), 1)
+        BindSelect(xml, t.find('tr').eq(2).find('select').eq(3), 2, 'Name', 'Name' )
+        t.find('tr:gt(0)').not(':last').find('td:even').addClass('label right')
+
+        AddSelect(t, 0, arr)
+
+        InitDate(t.find('tr').eq(3).find(':text').eq(0))
+        InitDate(t.find('tr').eq(3).find(':text').eq(1))
+        InitDate(t.find('tr').eq(3).find(':text').eq(2))
+
+        NumberOnly([t.find('tr').eq(1).find(':text').eq(0)])
+    }
+    function on_Clear(src) {
+        src = $(src)
+        InitClear(src.closest('table'))
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+    function on_ADUser(src) {
+        src = $(src)
+        var r = GetADUser()
+        if (r==null)
+            return
+        src.next().text(r[1]).attr('userId', r[0])
+    }
+</script>

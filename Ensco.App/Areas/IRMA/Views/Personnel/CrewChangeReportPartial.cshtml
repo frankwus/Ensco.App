@@ -1,0 +1,226 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+}
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formCrewChangeReport";
+    form.EncodeHtml = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+    form.RequiredMarkDisplayMode = RequiredMarkMode.None;
+
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Planning";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        i.Width = Unit.Percentage(100);
+        i.ColumnCount = 4;
+
+        i.Items.Add(item =>
+        {
+            item.Caption = "Crew Change No";
+            item.FieldName = "Id";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "Date";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "InboundCrewName";
+            item.Caption = "Inbound Crew";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "DateCreated";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "Title";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "StatusName";
+            item.Caption = "Status";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Flights";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        i.Width = Unit.Percentage(100);
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.SetNestedContent(() =>
+             {
+                 Html.RenderAction("CrewChangeReportFlightPartial", "Personnel", new { Area = "IRMA", Id = Model.Id });
+             });
+        });
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Personnel";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        i.Width = Unit.Percentage(100);
+        i.ColumnCount = 2;
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.Width = Unit.Percentage(50);
+            item.SetNestedContent(() =>
+            {
+                Html.RenderAction("CrewChangeReportInboundPartial", "Personnel", new { Area = "IRMA", Id = Model.Id });
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.Width = Unit.Percentage(50);
+            item.SetNestedContent(() =>
+            {
+                Html.RenderAction("CrewChangeReportOutboundPartial", "Personnel", new { Area = "IRMA", Id = Model.Id });
+            });
+        });
+    });
+    if(Model.Status == 1)
+    {
+        form.Items.AddGroupItem(i => {
+            i.Caption = "";
+            i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+            i.Width = Unit.Percentage(100);
+            i.Items.Add(item => {
+                item.ShowCaption = DefaultBoolean.False;
+                item.SetNestedContent(() => {
+                    Html.DevExpress().Button(s => {
+                        s.Name = "btnSave";
+                        s.Text = "Submit for Verification";
+                        // s.ClientSideEvents.Click = "function(s, e){window.location='CrewChangeReport?id=" + Model.Id.ToString() + "&status=Submit' }";
+                        s.UseSubmitBehavior = true;
+                    }).Render();
+                });
+            });
+        });
+    }
+    if(true ) {
+        form.Items.AddGroupItem(i => {
+            i.Caption = "Verification";
+            i.Name = "Verification";
+            i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+            i.Width = Unit.Percentage(100);
+            i.Items.Add(item => {
+                item.ShowCaption = DefaultBoolean.False;
+                item.SetNestedContent(() => {
+                    string sourceFormURL = "/IRMA/Personnel/CrewChangeReport?Id=" + Model.Id.ToString() ;
+                    Html.RenderPartial("~/Areas/IRMA/Views/Irma/IrmaHomeEnscoPassportTasksTaskPartial.cshtml", sourceFormURL);
+                    //Html.RenderAction("CrewChangeReportVerificationPartial", "Personnel", new { Area = "IRMA", Id = Model.Id });
+                });
+            });
+
+        });
+    }
+    form.Items.AddGroupItem(i =>
+{
+    i.Caption = "";
+    i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+    i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    i.Width = Unit.Percentage(100);
+    i.ColumnCount = 6;
+
+    i.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.NestedExtension().Button(btn =>
+        {
+            btn.Name = "btnCrewChangeReportOnboard";
+            btn.Text = "Onboard Personnel";
+            btn.Enabled = bPobEditor;
+            btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + Model.Id + "'}}", Url.Action("OnboardCrew", "Personnel", new { Area = "IRMA" }));
+        });
+    });
+    i.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.NestedExtension().Button(btn =>
+        {
+            btn.Name = "btnCrewChangeReportOffboard";
+            btn.Text = "Offboard Personnel";
+            btn.Enabled = bPobEditor;
+            btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + Model.Id + "'}}", Url.Action("OffboardCrew", "Personnel", new { Area = "IRMA" }));
+        });
+    });
+    i.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.NestedExtension().Button(btn =>
+        {
+            btn.Name = "btnCrewChangeReportArrivalDeparture";
+            btn.Text = "Print Arrival Departure Log";
+            btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + Model.Id + "'}}", Url.Action("CrewArrivalDepartureLogReport", "Report", new { Area = "IRMA" }));
+        });
+    });
+    i.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.NestedExtension().Button(btn =>
+        {
+            btn.Name = "btnCrewChangeReportArrival";
+            btn.Text = "Print Arrival Log";
+            btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + Model.Id + "'}}", Url.Action("CrewArrivalLogReport", "Report", new { Area = "IRMA" }));
+        });
+    });
+    i.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.NestedExtension().Button(btn =>
+        {
+            btn.Name = "btnCrewChangeReportDeparture";
+            btn.Text = "Print Departure Log";
+            btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + Model.Id + "'}}", Url.Action("CrewDepartureLogReport", "Report", new { Area = "IRMA" }));
+        });
+    });
+
+});
+}).GetHtml()
+
+@if (ViewData.ModelState.Values.Any(x => x.Errors.Count >= 1)) {
+    @Html.DevExpress().Label(lblsettings => {
+                                           lblsettings.Name = "ErrorMsg";
+                                           lblsettings.Text = ViewData.ModelState["CloseCrewChange"].Errors[0].ErrorMessage;
+                                           lblsettings.ControlStyle.ForeColor = System.Drawing.Color.Red;
+                                       }).GetHtml();
+}
+

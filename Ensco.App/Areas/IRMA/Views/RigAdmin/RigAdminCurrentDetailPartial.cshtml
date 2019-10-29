@@ -1,0 +1,63 @@
+﻿@model Ensco.Irma.Models.RigRequirementsModel
+
+@using System.Web.UI.WebControls
+
+@{
+    Html.DevExpress().GridView(grid =>
+    {
+        grid.Name = "gridRigAdminCurrentDetailPartial";
+        grid.SettingsDetail.MasterGridName = "gridRigAdminCurrentPartial";
+
+        grid.KeyFieldName = "Id";
+
+        grid.CallbackRouteValues = new { Area = "IRMA", Controller = "RigAdmin", Action = "RigAdminCurrentDetailPartial", Id = Model.Id };
+        grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminCurrentDetailAdd" };
+        grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminCurrentDetailUpdate" };
+        grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminCurrentDetailDelete" }; //Delete it, this is not a template
+        Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.RigSubRequirementsModel));
+
+        grid.SettingsEditing.Mode = GridViewEditingMode.Inline;
+        grid.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+        grid.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+        grid.SettingsCommandButton.NewButton.Image.Width = 16;
+        grid.SettingsCommandButton.NewButton.Image.Height = 16;
+        grid.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+        grid.SettingsCommandButton.EditButton.Image.Width = 16;
+        grid.SettingsCommandButton.EditButton.Image.Height = 16;
+        grid.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+        grid.SettingsCommandButton.DeleteButton.Image.Width = 16;
+        grid.SettingsCommandButton.DeleteButton.Image.Height = 16;
+        grid.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+        grid.SettingsCommandButton.UpdateButton.Image.Width = 16;
+        grid.SettingsCommandButton.UpdateButton.Image.Height = 16;
+        grid.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+        grid.SettingsCommandButton.CancelButton.Image.Width = 16;
+        grid.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+        grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        grid.SettingsPager.FirstPageButton.Visible = true;
+        grid.SettingsPager.LastPageButton.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+        grid.CommandColumn.Visible = true;
+        grid.CommandColumn.ShowNewButtonInHeader = true;
+        grid.CommandColumn.ShowDeleteButton = true;
+        grid.CommandColumn.ShowEditButton = true;
+        grid.CommandColumn.ShowUpdateButton = true;
+        grid.CommandColumn.ShowCancelButton = true;
+        grid.CommandColumn.Width = 50;
+        //grid.SettingsBehavior.ConfirmDelete = true;
+
+        //grid.EditFormLayoutProperties.Items.Add("Required");
+        //grid.EditFormLayoutProperties.Items.AddCommandItem(i =>
+        //{
+        //    i.ShowUpdateButton = true;
+        //    i.ShowCancelButton = true;
+        //    i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        //});
+    }).Bind(Model.SubRequirements).GetHtml();
+}
+
+

@@ -1,0 +1,176 @@
+﻿@model Ensco.Irma.Models.ManageCrewChangeModel
+@using System.Web.UI.WebControls
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var gridView = Html.DevExpress().GridView(gridCrew =>
+    {
+        gridCrew.Name = "gridView_CrewChangePobPartial";
+        gridCrew.KeyFieldName = Model.CrewChanges.KeyFieldName;
+        gridCrew.Settings.ShowTitlePanel = true;
+        gridCrew.SettingsText.Title = "Flight Manifests";
+
+        gridCrew.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangePobPartial" };
+        gridCrew.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeAddPartial" };
+        gridCrew.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeUpdatePartial" };
+        gridCrew.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeDeletePartial" }; //Disable internally
+
+        gridCrew.SettingsEditing.Mode = GridViewEditingMode.Inline;
+        gridCrew.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+        gridCrew.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+        gridCrew.SettingsCommandButton.NewButton.Image.Width = 16;
+        gridCrew.SettingsCommandButton.NewButton.Image.Height = 16;
+        gridCrew.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+        gridCrew.SettingsCommandButton.EditButton.Image.Width = 16;
+        gridCrew.SettingsCommandButton.EditButton.Image.Height = 16;
+        gridCrew.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+        gridCrew.SettingsCommandButton.DeleteButton.Image.Width = 16;
+        gridCrew.SettingsCommandButton.DeleteButton.Image.Height = 16;
+        gridCrew.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+        gridCrew.SettingsCommandButton.UpdateButton.Image.Width = 16;
+        gridCrew.SettingsCommandButton.UpdateButton.Image.Height = 16;
+        gridCrew.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+        gridCrew.SettingsCommandButton.CancelButton.Image.Width = 16;
+        gridCrew.SettingsCommandButton.CancelButton.Image.Height = 16;
+        gridCrew.Height = Unit.Percentage(100);/*(Ensco.Utilities.UtilitySystem.ContentPaneHeight != null) ? (int)Ensco.Utilities.UtilitySystem.ContentPaneHeight : Unit.Percentage(100);*/
+
+        Html.SetEnscoGridColumns(gridCrew, typeof(Ensco.Irma.Models.CrewChangeModel));
+
+        gridCrew.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        gridCrew.SettingsPager.FirstPageButton.Visible = true;
+        gridCrew.SettingsPager.LastPageButton.Visible = true;
+        gridCrew.SettingsPager.PageSizeItemSettings.Visible = true;
+        gridCrew.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        gridCrew.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+        gridCrew.CommandColumn.Visible = true;
+        gridCrew.CommandColumn.ShowEditButton = true;
+        gridCrew.CommandColumn.ShowNewButtonInHeader = true;
+        gridCrew.CommandColumn.ShowDeleteButton = true;
+        gridCrew.CommandColumn.ShowUpdateButton = true;
+        gridCrew.CommandColumn.ShowCancelButton = true;
+        gridCrew.CommandColumn.Width = 75;
+
+        gridCrew.Styles.Header.Wrap = DefaultBoolean.True;
+        gridCrew.SettingsPager.EnableAdaptivity = true;
+
+        gridCrew.Toolbars.Add(toolbar =>
+        {
+            toolbar.Name = "toolbarCrewChangePartial";
+            toolbar.Enabled = true;
+            toolbar.EnableAdaptivity = true;
+            toolbar.Position = GridToolbarPosition.Top;
+            toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Custom;
+                item.Name = "Schedule";
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Calendar.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(i =>
+            {
+                i.BeginGroup = true;
+                i.ItemStyle.HorizontalAlign = HorizontalAlign.Left;
+                i.SetTemplateContent(c =>
+                {
+                    Html.DevExpress().ButtonEdit(s =>
+                    {
+                        s.Name = "search";
+                        s.Properties.NullText = "Search...";
+                        s.Properties.Buttons
+                            .Add()
+                            .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                    }).Render();
+                });
+            });
+
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Refresh;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Refresh.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ExportToPdf;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Pdf.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ExportToCsv;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Excel.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+        });
+        gridCrew.SettingsSearchPanel.CustomEditorName = "search";
+
+        gridCrew.ClientSideEvents.ToolbarItemClick = "function(s,e){ if(e.item.name == \"Schedule\") popupControlScheduleCrewChange.Show(); }";
+        gridCrew.SettingsExport.EnableClientSideExportAPI = true;
+        gridCrew.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+        gridCrew.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+        gridCrew.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+        gridCrew.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+        gridCrew.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        gridCrew.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+        gridCrew.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+        gridCrew.InitNewRow = (s, e) =>
+        {
+            e.NewValues["DateCreated"] = DateTime.Now;
+        };
+
+        gridCrew.CellEditorInitialize = (s, e) =>
+        {
+            switch (e.Column.FieldName)
+            {
+                case "DateCreated":
+                    e.Editor.Value = DateTime.Now;
+                    break;
+            }
+        };
+
+
+        gridCrew.SetDetailRowTemplateContent(c =>
+        {
+            Ensco.Irma.Models.ManageCrewChangeModel.IsEditing = c.Grid.IsEditing;
+            Ensco.Irma.Models.ManageCrewChangeModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+            if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+            {
+                Html.RenderAction("CrewChangeTestPartial", new { Id = DataBinder.Eval(c.DataItem, Model.CrewChanges.KeyFieldName) });
+            }
+        });
+
+    }).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+    {
+        e.KeyExpression = Model.CrewChanges.KeyFieldName;
+        e.QueryableSource = Model.CrewChanges.Dataset;
+    }).GetHtml();
+}

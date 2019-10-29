@@ -1,0 +1,53 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@using Ensco.App.App_Start
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CapBookApproval";
+    grid.KeyFieldName = Model.CapBookApprovals.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Cap", Action = "CapBookApprovalPartial", passport = ViewData["SelectedCapApprovalPassport"] };
+
+    //Html.EnscoStandardGrid(grid, typeof(Ensco.TLC.Models.CAP_BookApprovalViewModel), options);
+
+    grid.CommandColumn.Width = Unit.Pixel(25);
+
+    MVCxGridViewColumn column = (MVCxGridViewColumn)grid.Columns["Compliant"];
+    column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    column.SortIndex = 0;
+    column.SortOrder = DevExpress.Data.ColumnSortOrder.Descending;
+    column.SetDataItemTemplateContent(c =>
+    {
+        object val = DataBinder.Eval(c.DataItem, "Compliant");
+        bool value = (val != null && (int)val == 100) ? true : false;
+        string yesUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/Yes.png"));
+        string noUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/No.png"));
+        ViewContext.Writer.Write(String.Format("<img src=\"{0}\" width=\"16\" height=\"16\" align=\"middle\" />", (value ? yesUrl : noUrl)));
+    });
+
+
+    grid.ClientSideEvents.RowClick = string.Format("function(s, e){{ var key= s.GetRowKey(e.visibleIndex); SelectedCapApprovalPassport.value = key; grid_CapBookApproval.PerformCallback(); gridView_CapBookVerification.PerformCallback(); }}");
+    grid.ClientSideEvents.BeginCallback = "function(s, e) { e.customArgs['passport'] = SelectedCapApprovalPassport.value; }";
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.CapBookApprovals.KeyFieldName;
+    e.QueryableSource = Model.CapBookApprovals.Dataset;
+}).GetHtml()
+
+

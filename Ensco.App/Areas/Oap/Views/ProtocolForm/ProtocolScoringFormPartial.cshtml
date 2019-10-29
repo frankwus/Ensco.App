@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Ensco.App.Areas.Oap.Models.OapProtocolScoringFlatModel>
+
+ 
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+    var genericListController = (dynamic)ViewContext.Controller; 
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        genericListController.ConfigureProtocolScoring(settings, Html, ViewContext);
+    });
+
+    grid.Bind(Model).GetHtml();
+}
+
+

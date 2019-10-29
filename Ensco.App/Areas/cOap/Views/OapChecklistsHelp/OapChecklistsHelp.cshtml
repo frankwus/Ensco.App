@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapChecklist>
+@{
+    ViewBag.Title = "Oap Checklist Help";
+}
+
+@section scripts
+{
+    
+}
+
+@*<h1 class="area-headers">@ViewBag.Title</h1>*@
+<div class="oap-master-grid">
+    <form>
+        @Html.Partial("OapChecklistsHelpPartial", Model)
+    </form>   
+</div>

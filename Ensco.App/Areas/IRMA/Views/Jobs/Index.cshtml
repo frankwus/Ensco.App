@@ -1,0 +1,46 @@
+﻿
+@model Ensco.Irma.Models.Jobs.JobsHomeModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(gridView_JobHomePermits); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 300; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+
+@Html.DevExpress().PageControl(settings =>
+{
+    settings.Name = "pcJobsHome";
+    settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+    settings.EnableHotTrack = true;
+    settings.SaveStateToCookies = true;
+    settings.TabAlign = TabAlign.Left;
+    settings.TabPosition = TabPosition.Top;
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.ControlStyle.CssClass = "dxtcFixed";
+
+    settings.TabPages.Add("Summary / Permits").SetContent(() =>
+    {
+        Html.RenderAction("JobHomeSummaryPermits");
+    });
+    settings.TabPages.Add("Active Isolations").SetContent(() =>
+    {
+        Html.RenderAction("JobHomeIsolations");
+    });
+    settings.TabPages.Add("Risk Management Authorities").SetContent(() =>
+    {
+        Html.RenderAction("JobHomeAuthorities");
+    });
+
+}).GetHtml()

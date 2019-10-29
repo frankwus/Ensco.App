@@ -1,0 +1,36 @@
+﻿@model Ensco.Models.DataTableModel
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = bPobEditor;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = bPobEditor;
+    options.ShowCommandColumn = bPobEditor;
+    options.AddButtonText = "Add Lock";
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridView_IsolationLock";
+    grid.KeyFieldName = "id";
+
+    grid.CallbackRouteValues = new { Controller = "RigAdmin", Action = "RigAdminIsolationLockPartial", Id = Model.Id };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminIsolationLockAdd" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminIsolationLockDelete" }; //Delete it, this is not a template
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.Admin.LockModel), options);
+
+    grid.InitNewRow = (s, e) =>
+    {
+        e.NewValues["dt"] = DateTime.Now;
+    };
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()

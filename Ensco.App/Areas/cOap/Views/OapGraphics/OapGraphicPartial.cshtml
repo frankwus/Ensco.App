@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapGraphic>
+ 
+
+@Html.DevExpress().GridView(settings =>
+{
+    var oapController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapGraphicsController;
+    oapController.Configure(settings, Html, ViewContext);
+
+}).Bind(Model).GetHtml()
+
+

@@ -1,0 +1,104 @@
+﻿@model Ensco.Irma.Models.PobBoardingModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).on('click', 'a', function () {
+            if ( $(this).attr('id') != 'gridView_PobBatchOnboardPartial_DXCTMenu0_DXI0_T')
+                return true 
+            var arr =Validate() 
+            if (arr.length==0)
+                return true  
+            if (arr[0] == 0)
+                s='Please make selection.'
+            else {
+                var s = 'Please fill out the required fields. \n' 
+                for (var i in arr)
+                    s+='\n'+arr[i].join(', ')
+            }
+            s= MyReplace(s, '\n,', '\n')
+            alert(s) 
+            return false 
+        })
+        function Validate() {
+            var arr1 = []
+            var selected=false 
+            GetId('gridView_PobBatchOnboardPartial_DXMainTable').children().children().slice(1).each(function () {
+                var tr = $(this)
+                var td = tr.children().eq(0)
+                if (td.find('.dxWeb_edtCheckBoxChecked_EnscoTheme').length > 0) {
+                    selected=true 
+                    var arr = ['DateOfArrival', 'PrimaryLifeBoat', 'Tour', 'Room', 'Bed', 'PersonnelType', 'CompanyType']
+                    //SecondaryLifeBoat, 
+                    var arr2 = [] 
+                    arr2.push( GetVal(tr.find('a').eq(1)) +'\n' )
+                    for (var i in arr) {
+                        var name = arr[i]
+                        var td = TdByColumn(tr, name)
+                        //Highlight(td, 'white')
+                        if (GetVal(td) == '') {
+                           // Highlight(td, 'yellow')
+                            arr2.push(name)
+                        }
+                    }
+                    if (arr2.length>1 ) 
+                        arr1.push(arr2)
+                }
+            })
+            if (!selected)
+                arr1.push(0 )
+            return arr1 
+        }
+        function GetIndex(tr, name) {
+            var index
+            tr.children().each(function () {
+                var td = $(this)
+                if (MyReplace( GetVal(td), ' ', '') == name) {
+                    index = td.index()
+                }
+            })
+            return index
+        }
+        function TdByColumn(tr, name) {
+            var t = tr.parent().parent()
+            var id = t.attr('id')
+            var tr0 = GetId(id.replace('_DXMainTable', '_DXHeadersRow0'))
+            var index = GetIndex(tr0, name)
+            return tr.children().eq(index)
+        }
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(gridView_PobBatchOnboardPartial); // grid is client side Id
+            }
+        );
+
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            AdjustMainGrid(gridView_PobBatchOnboardPartial); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+        function OnValueChanged(s, url, id, selected) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { id: id, selected: selected },
+                beforeSend: function () {
+                },
+                success: function (msg) {
+                }
+            });
+        }
+    </script>
+}
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("OnboardBatchPobPartial", Model);
+}

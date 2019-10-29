@@ -1,0 +1,96 @@
+﻿@model Ensco.Models.DataTableModel
+@{ 
+    string key = Model.KeyFieldName;
+    key = key.Replace(' ', '_');
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridView_ChangeHistory"+key;
+    grid.KeyFieldName = "Id";
+
+    grid.CallbackRouteValues = new
+    {
+        Area = "Common",
+        Controller = "Admin",
+        Action = "ChangeHistoryPartial"
+    };
+
+    foreach(var colAttrib in Model.GetColumnInfo())
+    {
+        grid.Columns.Add(col =>
+        {
+            col.Name = (colAttrib.DisplayName != null && colAttrib.DisplayName != "") ? colAttrib.DisplayName : colAttrib.Name;
+            col.FieldName = colAttrib.FieldName;
+            col.Visible = colAttrib.Visible;
+            if (colAttrib.DisplayFormat != null && colAttrib.DisplayFormat != "")
+                col.PropertiesEdit.DisplayFormatString = colAttrib.DisplayFormat;
+            if (!colAttrib.Editable)
+                col.ReadOnly = true;
+            col.Settings.FilterMode = ColumnFilterMode.DisplayText;
+            col.Settings.AllowHeaderFilter = DefaultBoolean.True;
+        });
+    }
+    //grid.Columns.Add(i => {
+    //    i.FieldName = "RigId";
+    //});
+    //grid.Columns.Add(i =>
+    //{
+    //    i.FieldName = "Module";
+    //});
+    //grid.Columns.Add(i =>
+    //{
+    //    i.FieldName = "Type";
+    //});
+    //grid.Columns.Add(i =>
+    //{
+    //    i.FieldName = "CreatedBy";
+    //});
+    //grid.Columns.Add(i =>
+    //{
+    //    i.FieldName = "CreatedDate";
+    //});
+    //grid.Columns.Add(i =>
+    //{
+    //    i.FieldName = "OldValues";
+    //});
+    //grid.Columns.Add(i =>
+    //{
+    //    i.FieldName = "NewValues";
+    //});
+    grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    grid.SettingsPager.FirstPageButton.Visible = true;
+    grid.SettingsPager.LastPageButton.Visible = true;
+    grid.SettingsPager.PageSizeItemSettings.Visible = true;
+    grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    grid.Styles.Header.Wrap = DefaultBoolean.True;
+    grid.SettingsPager.EnableAdaptivity = true;
+
+    grid.Toolbars.Add(toolbar =>
+    {
+        toolbar.Enabled = true;
+        toolbar.EnableAdaptivity = true;
+        toolbar.Position = GridToolbarPosition.Top;
+        toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+        toolbar.Items.Add(GridViewToolbarCommand.Refresh);
+        toolbar.Items.Add(GridViewToolbarCommand.ExportToPdf);
+        toolbar.Items.Add(GridViewToolbarCommand.ExportToCsv);
+
+    });
+    grid.SettingsExport.EnableClientSideExportAPI = true;
+    grid.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+    grid.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+    grid.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+    grid.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+    grid.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    grid.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+    grid.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Ensco.App.Areas.Oap.Controllers.OIMDashboardOAPGridViewModel>
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = ViewBag.GridName;
+    settings.KeyFieldName = "Id";
+
+    settings.Settings.ShowTitlePanel = true;
+    settings.SettingsText.Title = ViewBag.GridTitle;
+
+    // Routes
+    settings.CallbackRouteValues = new { Controller = "OIMOversightDashboard", Action = ViewBag.GridControllerCallBackAction };
+
+    // Columns
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Id";
+        c.Width = Unit.Percentage(5);
+        c.SetDataItemTemplateContent(container =>
+        {
+            Html.DevExpress().HyperLink(link =>
+            {
+                link.Name = string.Format("lnk_{0}_{1}",settings.Name,(int)DataBinder.Eval(container.DataItem, "Id"));
+                link.Properties.Text = DataBinder.Eval(container.DataItem, "Id").ToString();
+                link.NavigateUrl = Url.Action("List", ViewBag.GridLinkController , new { Id = DataBinder.Eval(container.DataItem, "ChecklistGuid") });
+            }).Render();
+        });
+    });
+    settings.Columns.Add("Title");
+    settings.Columns.Add("Assessor").Width = Unit.Percentage(15);
+    settings.Columns.Add("Position").Width = Unit.Percentage(15);
+    settings.Columns.Add("Location");
+    settings.Columns.Add(c => {
+        c.FieldName = "Date";
+        c.Width = Unit.Percentage(10);
+        c.PropertiesEdit.DisplayFormatString = "dd-MMM-yyyy";
+    });
+    settings.Columns.Add("NonConformity").Width = Unit.Percentage(5);
+
+    // Filter
+    settings.Settings.ShowHeaderFilterButton = true;
+
+    // Paging
+    settings.SettingsPager.FirstPageButton.Visible = true;
+    settings.SettingsPager.LastPageButton.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+
+    // Style
+    settings.Width = Unit.Percentage(100);
+
+}).Bind(Model).GetHtml()

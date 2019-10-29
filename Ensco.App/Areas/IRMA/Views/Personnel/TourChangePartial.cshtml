@@ -1,0 +1,81 @@
+﻿@model Ensco.Irma.Models.TourManagementModel
+
+@Html.DevExpress().FormLayout(settings =>
+{
+    settings.Name = "flMovePersonnel";
+    settings.EncodeHtml = false;
+    settings.UseDefaultPaddings = false;
+    settings.Width = Unit.Pixel(800);
+    settings.Enabled = true;
+
+    settings.ColCount = 3;
+
+    settings.Items.Add(x=>x.TourChangeNow, i =>
+    {
+        i.FieldName = "TourChangeNow";
+        i.Caption = "";
+        i.ColumnSpan = 3;
+        i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Hidden;
+        i.NestedExtension().RadioButton(chk =>
+        {
+            chk.Text = "Change Now";
+            chk.ClientEnabled = true;
+            chk.Properties.ClientSideEvents.CheckedChanged = "function(s, e){ if(s.GetChecked()){ TourChangeNow.SetChecked(true); TourChangeFrom.SetChecked(false);ShortChange.SetChecked(false); TourChangeDate.SetEnabled(false);ShortChangeBeginDate.SetEnabled(false);ShortChangeEndDate.SetEnabled(false); }}";
+        });
+    });
+
+    settings.Items.Add(x=>x.TourChangeFrom, i =>
+    {
+        i.FieldName = "TourChangeFrom";
+        i.Caption = "";
+        i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Hidden;
+        i.NestedExtension().RadioButton(chk =>
+        {
+            chk.Text = "Tour Change";
+            chk.ClientEnabled = true;
+            chk.Properties.ClientSideEvents.CheckedChanged = "function(s, e){ if(s.GetChecked()){ TourChangeNow.SetChecked(false); TourChangeFrom.SetChecked(true);ShortChange.SetChecked(false);TourChangeDate.SetEnabled(true);ShortChangeBeginDate.SetEnabled(false);ShortChangeEndDate.SetEnabled(false); }}";
+        });
+    });
+    settings.Items.Add(x => x.TourChangeDate, i =>
+    {
+        i.FieldName = "TourChangeDate";
+        i.Caption = "Date Start";
+        Html.EnscoNestedEditor(i, x => x.TourChangeDate);
+    });
+    settings.Items.AddEmptyItem();
+
+    settings.Items.Add(x=>x.ShortChange, i =>
+    {
+        i.FieldName = "ShortChange";
+        i.Caption = "";
+        i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Hidden;
+        i.NestedExtension().RadioButton(chk =>
+        {
+            chk.Text = "Short Change";
+            chk.ClientEnabled = true;
+            chk.Properties.ClientSideEvents.CheckedChanged = "function(s, e){ if(s.GetChecked()){ TourChangeNow.SetChecked(false); TourChangeFrom.SetChecked(false);ShortChange.SetChecked(true); TourChangeDate.SetEnabled(false);ShortChangeBeginDate.SetEnabled(true);ShortChangeEndDate.SetEnabled(true);}}";
+        });
+    });
+    settings.Items.Add(x => x.ShortChangeBeginDate, i =>
+    {
+        i.FieldName = "ShortChangeBeginDate";
+        i.Caption = "Date Start";
+        Html.EnscoNestedEditor(i, x => x.ShortChangeBeginDate);
+    });
+    settings.Items.Add(x => x.ShortChangeEndDate, i =>
+    {
+        i.FieldName = "ShortChangeEndDate";
+        i.Caption = "Date End";
+        Html.EnscoNestedEditor(i, x => x.ShortChangeEndDate);
+    });
+
+    settings.Items.AddEmptyItem();
+    settings.Items.Add(x => x.TourChange, i =>
+    {
+        i.FieldName = "TourChange";
+        i.Caption = "Change To";
+        i.ColumnSpan = 1;
+        Html.EnscoNestedEditor(i, x => x.TourChange);
+    });
+
+}).GetHtml()

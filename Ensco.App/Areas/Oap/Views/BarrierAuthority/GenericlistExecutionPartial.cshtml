@@ -1,0 +1,289 @@
+﻿@using Ensco.App.Areas.Oap.Models
+@using Ensco.App.Areas.Oap.Controllers
+@using Ensco.Irma.Oap.WebClient.Rig
+@using System.Reflection
+
+@model IList<OapGenericCheckListFlatModel>
+
+
+@{
+    var controller = (OIMOversightController)ViewContext.Controller;
+    var groups = Model.OrderBy(c => c.Group).Select(c => c.Group).Distinct();
+
+    RigOapChecklist rigOapChecklist = (RigOapChecklist)ViewBag.RigChecklist;
+    DateTime checklistDate = rigOapChecklist.ChecklistDateTime.Date;
+
+    var listItems = new List<SelectListItem>()
+{
+new SelectListItem() { Text = "Select..", Value = ""},
+new SelectListItem() { Text = "Yes", Value = "Y" },
+new SelectListItem() { Text = "No", Value = "N" },
+new SelectListItem() { Text = "N/A", Value = "NA" }
+};
+
+    OapChecklistClient oapChecklistClient = (OapChecklistClient)ViewBag.OapChecklistClient;
+}
+
+@using (Ajax.BeginForm("UpdateChecklistAnswers", "BarrierAuthority",
+    new AjaxOptions()
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        OnBegin = "ExecutionLoadingPanel.Show()",
+        OnComplete = "ExecutionLoadingPanel.Hide()",
+        OnFailure = "alert('An error has occurred when saving the checklist)"
+    }))
+{
+    @Html.DevExpress().FormLayout(settings =>
+    {
+        settings.Name = "ExecutionToolbar";
+        settings.UseDefaultPaddings = false;
+        settings.AlignItemCaptionsInAllGroups = true;
+        settings.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+        settings.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 600;
+
+        var item = settings.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "buttonToolbar";
+            i.Width = Unit.Percentage(100);
+            i.NestedExtension().Button(s =>
+            {
+                s.Name = "applyExecutionChanges";
+                s.Text = "Save";
+                s.UseSubmitBehavior = true;
+                s.Width = Unit.Pixel(100);
+                s.RouteValues = new { Controller = "BarrierAuthority", Action = "UpdateChecklistAnswers" };
+                s.ClientSideEvents.Click = "BACexecutionSaveClicked";
+            });
+        });
+    }).GetHtml()
+
+
+    <table class="dxgvTable_EnscoTheme dxgvControl_EnscoTheme dxgv oap-checklist-table" style="width:100%;">
+        <caption style="text-align: left">Checklist</caption>
+        <thead>
+            <tr>
+                <th class="dxgvHeader_EnscoTheme dx-wrap"></th>
+                <th class="dxgvHeader_EnscoTheme dx-wrap">@Html.Translate("Topic")</th>
+                <th class="dxgvHeader_EnscoTheme dx-wrap">@Html.Translate("I verify that I:")</th>
+                <th class="dxgvHeader_EnscoTheme dx-wrap" style="width:10%;">@Html.Translate("Frequency")</th>
+                @for (int i = 0; i < controller.Columns; i++)
+                {
+                    <th class="dxgvHeader_EnscoTheme dx-wrap">@Html.Translate("Day") @(i + 1)</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int overallAnswerCounter = 0;
+            }
+            @foreach (string group in groups)
+            {
+                <tr class="dxgvGroupRow_EnscoTheme">
+                    <td colspan="20" class="dxgv">@group</td>
+                </tr>
+                var questionsOrderedByTopic = Model.Where(c => c.Group == group).OrderBy(c => c.Topic).ThenBy(c => c.QuestionOrdinal);
+                int questionCounter = 0;
+                int groupCounter = 1;
+
+                foreach (var question in questionsOrderedByTopic)
+                {
+                    bool questionHasActiveNoAnswerControl = question.HasActiveNoAnswerControl(oapChecklistClient, question.ChecklistId, question.QuestionId);
+                    bool checklistIsSourceOrClosureNoAnswerChecklist = question.ChecklistIsRelatedToPreviousNoAnswer(oapChecklistClient, rigOapChecklist.Id, question.ChecklistId, question.QuestionId);
+
+                    // Sets all answers in future to no by default if No Control is present
+                    if (questionHasActiveNoAnswerControl)
+                    {
+                        int checklistDays = (int)(DateTime.Today - checklistDate).TotalDays;
+
+                        if (checklistDays < 7)
+                        {
+                            for (int i = checklistDays > 0 ? checklistDays - 1 : 0; i < 7; i++)
+                            {
+                                Type type = question.GetType();
+                                PropertyInfo property = type.GetProperty("YesNoNa" + i);
+
+                                if (property.GetValue(question) == null || string.IsNullOrEmpty(property.GetValue(question).ToString()))
+                                {
+                                    property.SetValue(question, "N", null);
+                                }
+
+                            }
+                        }
+                    }
+
+                    <tr class="dxgvDataRow_EnscoTheme" style="@(questionCounter % 2 == 0 ? "background-color: rgb(244, 244, 244);" : "" )">
+                        <td class="dxgv">@groupCounter</td>
+                        <td class="dxgv">@Html.Translate(question.Topic)</td>
+                        <td class="dxgv">@Html.Translate(question.Question)</td>
+                        <td class="dxgv">@Html.Translate(question.Frequency)</td>
+
+                        <td class="dxgv">
+                            <input type="hidden" name="[@overallAnswerCounter].QuestionId" value="@question.RigQuestionId" />
+                            <input type="hidden" name="[@overallAnswerCounter].AnswerOrdinal" value="0" />
+                            <input type="hidden" name="[@overallAnswerCounter].Test" value="@question.QuestionId" />
+                            <select name="@string.Format("[{0}].Value", overallAnswerCounter)"
+                                    @( DateTime.Now.Date >= checklistDate && DateTime.Now.Date <= checklistDate.AddDays(1) && rigOapChecklist.IsEditable() ? "" : "disabled" )
+                                    onchange="checklistAnswerChanged(this, @question.QuestionId, '@rigOapChecklist.Id', 'BAC')">
+                                @foreach (var item in listItems)
+                                {
+                                    <option value="@item.Value" @(item.Value == question.YesNoNa0 ? "selected" : "")>
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        @{
+                            overallAnswerCounter++;
+                        }
+
+                        <td class="dxgv">
+                            <input type="hidden" name="[@overallAnswerCounter].QuestionId" value="@question.RigQuestionId" />
+                            <input type="hidden" name="[@overallAnswerCounter].AnswerOrdinal" value="1" />
+                            <input type="hidden" name="[@overallAnswerCounter].Test" value="@question.QuestionId" />
+                            <select name="@string.Format("[{0}].Value", overallAnswerCounter)"
+                                    @( DateTime.Now.Date >= checklistDate.AddDays(1) && DateTime.Now.Date < checklistDate.AddDays(3) && rigOapChecklist.IsEditable() ? "" : "disabled" )
+                                    onchange="checklistAnswerChanged(this, @question.QuestionId, '@rigOapChecklist.Id', 'BAC')">
+                                @foreach (var item in listItems)
+                                {
+                                    <option value="@item.Value" @(item.Value == question.YesNoNa1 ? "selected" : "")>
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        @{
+                            overallAnswerCounter++;
+                        }
+                        <td class="dxgv">
+                            <input type="hidden" name="[@overallAnswerCounter].QuestionId" value="@question.RigQuestionId" />
+                            <input type="hidden" name="[@overallAnswerCounter].AnswerOrdinal" value="2" />
+                            <input type="hidden" name="[@overallAnswerCounter].Test" value="@question.QuestionId" />
+                            <select name="@string.Format("[{0}].Value", overallAnswerCounter)"
+                                    @( DateTime.Now.Date >= checklistDate.AddDays(2) && DateTime.Now.Date < checklistDate.AddDays(4) && rigOapChecklist.IsEditable() ? "" : "disabled" )
+                                    onchange="checklistAnswerChanged(this, @question.QuestionId, '@rigOapChecklist.Id', 'BAC')">
+                                @foreach (var item in listItems)
+                                {
+                                    <option value="@item.Value" @(item.Value == question.YesNoNa2 ? "selected" : "")>
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        @{
+                            overallAnswerCounter++;
+                        }
+                        <td class="dxgv">
+                            <input type="hidden" name="[@overallAnswerCounter].QuestionId" value="@question.RigQuestionId" />
+                            <input type="hidden" name="[@overallAnswerCounter].AnswerOrdinal" value="3" />
+                            <input type="hidden" name="[@overallAnswerCounter].Test" value="@question.QuestionId" />
+                            <select name="@string.Format("[{0}].Value", overallAnswerCounter)"
+                                    @( DateTime.Now.Date >= checklistDate.AddDays(3) && DateTime.Now.Date < checklistDate.AddDays(5) && rigOapChecklist.IsEditable() ? "" : "disabled" )
+                                    onchange="checklistAnswerChanged(this, @question.QuestionId, '@rigOapChecklist.Id', 'BAC')">
+                                @foreach (var item in listItems)
+                                {
+                                    <option value="@item.Value" @(item.Value == question.YesNoNa3 ? "selected" : "")>
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        @{
+                            overallAnswerCounter++;
+                        }
+
+                        <td class="dxgv">
+                            <input type="hidden" name="[@overallAnswerCounter].QuestionId" value="@question.RigQuestionId" />
+                            <input type="hidden" name="[@overallAnswerCounter].AnswerOrdinal" value="4" />
+                            <input type="hidden" name="[@overallAnswerCounter].Test" value="@question.QuestionId" />
+                            <select name="@string.Format("[{0}].Value", overallAnswerCounter)"
+                                    @( DateTime.Now.Date >= checklistDate.AddDays(4) && DateTime.Now.Date < checklistDate.AddDays(6) && rigOapChecklist.IsEditable() ? "" : "disabled" )
+                                    onchange="checklistAnswerChanged(this, @question.QuestionId, '@rigOapChecklist.Id', 'BAC')">
+                                @foreach (var item in listItems)
+                                {
+                                    <option value="@item.Value" @(item.Value == question.YesNoNa4 ? "selected" : "")>
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        @{
+                            overallAnswerCounter++;
+                        }
+
+                        <td class="dxgv">
+                            <input type="hidden" name="[@overallAnswerCounter].QuestionId" value="@question.RigQuestionId" />
+                            <input type="hidden" name="[@overallAnswerCounter].AnswerOrdinal" value="5" />
+                            <input type="hidden" name="[@overallAnswerCounter].Test" value="@question.QuestionId" />
+                            <select name="@string.Format("[{0}].Value", overallAnswerCounter)"
+                                    @( DateTime.Now.Date >= checklistDate.AddDays(5) && DateTime.Now.Date < checklistDate.AddDays(7) && rigOapChecklist.IsEditable() ? "" : "disabled" )
+                                    onchange="checklistAnswerChanged(this, @question.QuestionId, '@rigOapChecklist.Id', 'BAC')">
+                                @foreach (var item in listItems)
+                                {
+                                    <option value="@item.Value" @(item.Value == question.YesNoNa5 ? "selected" : "")>
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        @{
+                            overallAnswerCounter++;
+                        }
+
+                        <td class="dxgv">
+                            <input type="hidden" name="[@overallAnswerCounter].QuestionId" value="@question.RigQuestionId" />
+                            <input type="hidden" name="[@overallAnswerCounter].AnswerOrdinal" value="6" />
+                            <input type="hidden" name="[@overallAnswerCounter].Test" value="@question.QuestionId" />
+                            <select name="@string.Format("[{0}].Value", overallAnswerCounter)"
+                                    @( DateTime.Now.Date >= checklistDate.AddDays(6) && DateTime.Now.Date < checklistDate.AddDays(8) && rigOapChecklist.IsEditable() ? "" : "disabled" )
+                                    onchange="checklistAnswerChanged(this, @question.QuestionId, '@rigOapChecklist.Id', 'BAC')">
+                                @foreach (var item in listItems)
+                                {
+                                    <option value="@item.Value" @(item.Value == question.YesNoNa6 ? "selected" : "")>
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        @{
+                            overallAnswerCounter++;
+                        }
+                    </tr>
+                    <tr class="dxgvDataRow_EnscoTheme dxgvDetailRow_EnscoTheme" id="InlineNoAnswerContainer_@question.QuestionId">
+                        @if (questionHasActiveNoAnswerControl)
+                        {
+                            <td colspan="20" class="dxgv" style="padding:0;">
+                                <div>
+                                    @Html.Action("Control", new { Controller = "NoAnswer", oapChecklistQuestionId = question.QuestionId, oapChecklistId = question.ChecklistId, rigoapChecklistId = question.RigChecklistId })
+                                </div>
+                            </td>
+                        }
+                        else if (checklistIsSourceOrClosureNoAnswerChecklist)
+                        {
+                            <td colspan="20" class="dxgv" style="padding:0;">
+                                <div>
+                                    @Html.Action("Control", new { Controller = "NoAnswer", oapChecklistQuestionId = question.QuestionId, oapChecklistId = question.ChecklistId, rigoapChecklistId = question.RigChecklistId, showLastNoAnswerControl = true })
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                    questionCounter++;
+                    groupCounter++;
+                }
+            }
+        </tbody>
+    </table>
+}
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ExecutionLoadingPanel";
+    settings.Modal = true;
+    settings.ContainerElementID = "genericChecklistPage_CC";
+}).GetHtml()
+
+<style>
+    table.oap-checklist-table tr:nth-child(even) {
+        background-color: white;
+    }
+</style>

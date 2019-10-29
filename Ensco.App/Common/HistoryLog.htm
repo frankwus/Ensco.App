@@ -1,0 +1,56 @@
+﻿<head>
+    <style>
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <br />
+        <table class1="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    History Log
+        </table>
+        <table id="t"></table>
+    </form>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var Page = getParameterByName('Page')
+    var Id = getParameterByName('id')
+    $(document).ready(function () {
+        InitFold()
+        InitGrid(null, 0, 1)
+        CleanUp()
+    })
+    function InitGrid(a, group, index) {
+        if (index == -2) {
+            PostForm(['usp_HistoryLog', Page, Id, index])
+            return null
+        }
+        var xml = GetArray(['usp_HistoryLog', Page, Id, index])
+        var src = $(xml).find('Comment').remove()
+        DataBind(t, xml)
+
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback, null, true)
+
+        // AddGridSubHeader(t, arr1[group])
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+
+</script>

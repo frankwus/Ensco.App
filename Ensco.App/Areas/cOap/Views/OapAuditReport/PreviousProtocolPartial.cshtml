@@ -1,0 +1,135 @@
+﻿@using Westwind.Globalization;
+
+@model IEnumerable<Ensco.App.Areas.cOap.Models.OapPreviousProtocolsFlatModel>
+
+@{
+
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.PreviousProtocolErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gridPreviousProtocols";
+        settings.KeyFieldName = "ChecklistId";
+        settings.Caption = DbRes.T("Previous Protocols and Checklists", "OapResources");
+
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.Styles.SelectedRow.CssClass = "dvSelectedRow";
+
+        settings.CustomUnboundColumnData = (s, e) =>
+        {
+
+            if (e.Column.FieldName == "ChecklistId")
+            {
+                MVCxGridView gridProtocols = (MVCxGridView)s;
+                int rowKey = (int)e.GetListSourceFieldValue("ChecklistId");
+            }
+        };
+
+
+        // Routes
+        settings.CallbackRouteValues = new  { Action = "PreviousProtocolPartial" };
+
+        settings.ClientSideEvents.RowClick = string.Format("function(s, e){{ var key= s.GetRowKey(e.visibleIndex); SelectedCheckListId.value = key; gridPreviousProtocolsCAPAs.PerformCallback(); }}");
+
+        // Command columns
+        settings.CommandColumn.Visible = false;
+
+        //set alternate row color
+        settings.Styles.AlternatingRow.BackColor = ColorTranslator.FromHtml("#f4f4f4");
+
+        // Colums
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "ChecklistUniqueId";
+            c.Caption = DbRes.T("Protocol or Checklist ID");
+            c.Width = Unit.Percentage(10);
+            c.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "OapType";
+            c.Caption = DbRes.T("OAP Type");
+            c.Width = Unit.Percentage(10);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Title";
+            c.Caption =  DbRes.T("Title");
+            c.Width = Unit.Percentage(10);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Assessor";
+            c.Caption = DbRes.T("Assessor");
+            c.Width = Unit.Percentage(10);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "ChecklistDateTime";
+            c.Caption = DbRes.T("Date Started");
+            c.Width = Unit.Percentage(15);
+
+
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Findings";
+            c.Caption = DbRes.T("# Findings or 'No' Answers");
+            c.Width = Unit.Percentage(15);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Status";
+            c.Caption = DbRes.T("Status");
+            c.Width = Unit.Percentage(15);
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "Action";
+            column.Caption = "Action";
+            column.Width = Unit.Percentage(15);            
+            column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            column.SetDataItemTemplateContent(container =>
+            {
+                Html.DevExpress().HyperLink(link =>
+                {
+                    Session["isChecklistIdClick"] = true;
+                    link.Name = "lnk_" + DataBinder.Eval(container.DataItem, "ChecklistUniqueId").ToString();
+                    link.Properties.Text = DataBinder.Eval(container.DataItem, "Action").ToString();
+                    link.NavigateUrl = Url.Action("List", new { Area = "cOap", Controller = "OapProtocol", id = DataBinder.Eval(container.DataItem, "ChecklistId") });
+                }).GetHtml();
+            });
+        });
+
+        // Style
+        settings.Width = Unit.Percentage(100);
+
+        settings.PreRender = (sender, e) =>
+        {
+            MVCxGridView gridView = (MVCxGridView)sender;
+            gridView.SortBy(gridView.Columns["ChecklistUniqueId"], DevExpress.Data.ColumnSortOrder.Descending);
+        };
+
+
+        settings.ClientSideEvents.BeginCallback = "function(s,e) {  gridPreviousProtocolsOnBeginCallback (s,e); }";
+    });
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+    grid.Bind(Model).GetHtml();
+}

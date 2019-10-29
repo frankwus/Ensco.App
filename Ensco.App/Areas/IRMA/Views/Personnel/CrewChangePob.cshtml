@@ -1,0 +1,77 @@
+﻿@model Ensco.Irma.Models.ManageCrewChangeModel
+
+@{
+    ViewBag.Title = "CrewChangePob";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustSize();
+            }
+        );
+
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            AdjustMainGrid(gridView_CrewChangePartial); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            $("#MainLayoutPanel").css("height", height);
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("CrewChangePobPartial", Model);
+}
+
+@*@Html.DevExpress().Splitter(settings => {
+        settings.Name = "splitterCrewChangePob";
+        settings.AllowResize = false;
+        settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+        settings.SeparatorVisible = false;
+        settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+        settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+        settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+
+        settings.Panes.Add(pane =>
+        {
+            pane.Name = "paneCrewChangePob";
+            pane.AutoHeight = true;
+            pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+            pane.AutoWidth = false;
+            pane.Size = Unit.Pixel(100);
+
+            pane.SetContent(() =>
+            {
+                using(Html.BeginForm())
+                {
+                    Html.RenderPartial("CrewChangePobPartial", Model);
+                }
+            });
+        });
+        settings.Panes.Add(pane =>
+        {
+            pane.Name = "paneCrewChangePobFlights";
+            pane.AutoHeight = true;
+            pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+            pane.AutoWidth = false;
+            pane.Size = Unit.Pixel(100);
+
+            pane.SetContent(() =>
+            {
+                Html.RenderAction("CrewChangePobFlightPartial", "Personnel");
+            });
+        });
+    }).GetHtml()*@

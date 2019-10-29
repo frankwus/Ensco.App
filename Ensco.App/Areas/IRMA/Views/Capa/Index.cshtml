@@ -1,0 +1,433 @@
+﻿@model int
+@using Ensco.Models;
+@using System.Data;
+@{
+    DataTableModel ExtensionDataTable = (DataTableModel)this.ViewBag.Extension;
+    DataTableModel ReassignmentDataTable = (DataTableModel)this.ViewBag.Reassignment;
+
+}
+<style>
+    .centered {
+        position: absolute; /* or absolute */
+        top: 50%;
+        left: 50%;
+        z-index: 999;
+    }
+</style>
+<div style="text-align:right"><img style="text-align:right" src="~/Images/pdf.png" onclick="on_PDF('Capa', @Model , 'EN')" /> </div>
+
+@*<a href="1" onclick=" history.go(-1);return false">Go Back</a>*@
+<iframe hidden name="frame"></iframe>
+<img class="centered" id="Spinner" hidden src="~/Images/spinner.gif" />
+<div id="Debug" hidden>
+    <input type="text" />
+    <input type="button" id="Go" value="Go" onclick="on_Toggle(this)" />
+    <input type="button" id="022754" value="Assigned By" onclick="on_Toggle(this)" />
+    <input type="button" id="023468" value="Reviewer" onclick="on_Toggle(this)" />
+    <input type="button" id="022756" value="Reviewer" onclick="on_Toggle(this)" />
+    <input type="button" id="024163" value="Assigned To" onclick="on_Toggle(this)" />
+    <input type="button" id="024648" value="Assigned To" onclick="on_Toggle(this)" />
+    <input type="button" id="022610" value="Validator" onclick="on_Toggle(this)" />
+    <input type="button" id="019465" value="Validator" onclick="on_Toggle(this)" />
+    <input type="button" value="Reset" onclick="on_Reset(this)" />
+    <input type="text" id="UserId" value="@ViewBag.Userid" />
+</div>
+<br />
+@Html.DevExpress().PopupControl(settings => {
+    settings.Name = "pc";
+    settings.HeaderText = "";
+    settings.PopupHorizontalAlign =  PopupHorizontalAlign.WindowCenter;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.Width = Unit.Pixel(1000);
+
+    settings.SetContent(() => {
+        Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "AssignedByPopup", lookup = "Passport", multi = false, selected = 0  });
+        Html.DevExpress().Memo(s => {
+            s.Name = "CommentPopup";
+            s.Width = Unit.Percentage(100);
+            s.Properties.Rows = 5;
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ClientSideEvents.Validation = " function(s,e){ if (s.GetText()=='') e.isValid=false }";
+        }).GetHtml();
+        Html.DevExpress().Button(s => {
+            s.Name = "SubmitPopup";
+            s.Text = "Submit";
+            s.Width = Unit.Percentage(100);
+            s.ClientSideEvents.Click = " function (s, e) {onSubmitPopup(s, e)} ";
+        }).GetHtml();
+    });
+}).GetHtml()
+
+@Html.DevExpress().PageControl(settings => {
+    settings.Name = "pcCapa";
+    settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+    settings.EnableHotTrack = true;
+    settings.SaveStateToCookies = true;
+    settings.TabAlign = TabAlign.Left;
+    settings.TabPosition = TabPosition.Top;
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.ControlStyle.CssClass = "dxtcFixed";
+    settings.ClientSideEvents.ActiveTabChanged = "function(s,e){onActiveTabChanged(s, e) }";
+
+    DataSet ds =(DataSet)  this.ViewBag.DataSet;
+
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    settings.TabPages.Add("Create").SetContent(() => {
+        using (Html.BeginForm("AssignPartial", "capa", FormMethod.Post)) {
+            Html.RenderAction("AssignPartial", "Capa", new { id = Model } );
+        }
+        Html.RenderAction("ExtensionPartial", "capa", new { type = "Extension" });
+        Html.RenderAction("ReassignmentPartial", "capa", new { type = "Reassignment" });
+    });
+    settings.TabPages.Add("Review").SetContent(() => {
+        Html.RenderAction("GridPartial", "Capa", new { type = "" });
+    });
+    settings.TabPages.Add("Implementation").SetContent(() => {
+        using (Html.BeginForm("RespondPartial", "capa", FormMethod.Post)) {
+            Html.RenderAction("RespondPartial", "Capa", new { id = Model });
+        }
+    });
+    settings.TabPages.Add("Validate").SetContent(() => {
+    });
+    settings.TabPages.Add("Notify").SetContent(() => {
+    });
+    settings.TabPages.Add("History Log").SetContent(() => {
+            Html.RenderAction("HistoryLogPartial", "Capa", new { source = "Capa", sourceId = Model.ToString(), sourceUrl = "/irma/capa/index/"+Model.ToString() });
+    });
+}).GetHtml()
+@functions {
+}
+<script>
+    var Type = 'Create'// getCookie('Type')
+    $(document).ready(function () {
+        if (self !== top)
+            GetId('MainSplitter').children().children().eq(0).hide()
+        if (Id.GetValue() == 0)
+            GetId('Id_I').hide()
+        $('.dxflGroupBoxSys').eq(0).css('border', 'none')
+        $(document).on({
+            ajaxSend: function (event, jqxhr, settings) {
+            },
+            ajaxStop: function () {
+            }
+        });
+        // $('form').attr('target', 'frame')
+        pcCapa.SetActiveTab(pcCapa.GetTab(0))
+        GetId('pcCapa_C1').hide()
+        if (GetVal(GetId('UserLogin')) == 'Frank Wang')
+            GetId('Debug').show()
+        InitType()
+        ConfigSave()
+        Init()
+        if (!ExtensionGrid.GetVisibleRowsOnPage())
+            ExtensionGrid.SetVisible(false)
+        if (!ReassignmentGrid.GetVisibleRowsOnPage())
+            ReassignmentGrid.SetVisible(false)
+        InitTab()
+        try {
+            parent.onCapaChanged()
+        } catch (err) { }
+        // InitIframe()
+    })
+    function InitIframe() {
+        //$('iframe').on('load', function() {
+        //    Refresh()
+        //})
+    }
+    function InitTab() {
+        for (var i = 0; i < pcCapa.tabs.length; i++) {
+            var tab = pcCapa.tabs[i]
+            var name = tab.GetText()
+            var json = GetAjax('/irma/capa/GetTabTranslation?name=' + name)
+            tab.SetText(json[0][0])
+            $(tab).attr('name', name)
+        }
+    }
+    function ConfigSave() {
+        $(document).keydown(function (e) {
+            var k = e.keyCode
+            if (!e.ctrlKey)
+                return
+            if (k == 83 && e.ctrlKey)
+                Save.DoClick()
+            return false
+        });
+    }
+    function onToolbarItemClick(s, e) {
+        if (e.item.GetText() != 'Add New')
+            return
+        var tab = pcCapa.GetActiveTab().GetText()
+        ShowPopup()
+        if (tab == 'Implementation')
+            CommentPopup.SetVisible(true)
+        else
+            AssignedByPopup.SetVisible(true)
+    }
+    function ShowPopup() {
+        SetValid()
+        pc.Show()
+        var arr = [AssignedByPopup, CommentPopup]
+        for (i in arr)
+            arr[i].SetVisible(false)
+    }
+    function onClone(s, e) {
+        var arr = AssignedToClone.GetValue()
+        if (arr == null || !arr.length) {
+            AssignedToClone.SetIsValid(false)
+            return
+        }
+        data = arr.join(',')
+        GetAjax('/irma/capa/Clone?data=' + data)
+        Refresh()
+    }
+    function onEndCallback(s, e) {
+        if (s.GetVisibleRowsOnPage() > 0)
+            s.SetVisible(true)
+    }
+    function onSubmitPopup(s, e) {
+        var data
+        SetValid()
+        if (AssignedByPopup.IsVisible()) {
+            var arr = AssignedByPopup.GetValue()
+            if (arr == null || !arr.length) {
+                AssignedByPopup.SetIsValid(false)
+                return
+            }
+            data = arr[0]
+        } else {
+            data = CommentPopup.GetText()
+            if (data == '') {
+                CommentPopup.SetIsValid(false)
+                return
+            }
+        }
+        GetAjax('/irma/capa/AddCapaAction?data=' + data + '&type=' + Type)
+        Refresh()
+    }
+    function focusRowChangedEvent(s, e) {
+        var index = s.GetFocusedRowIndex()
+        var passportId = s.GetRowKey(index)
+
+        FillRigPosition(passportId)
+    }
+    function FillRigPosition(passportId) {
+        var json = GetAjax('/irma/capa/GetRigPosition/' + passportId)
+        if (json[0].length == 0)
+            return
+        var obj = json[0][0]
+        Rig.SetValue(obj.Rig)
+        Position.SetValue(obj.Position)
+    }
+    function onRowClick(s, e) {
+        if (s.GetRowKey(0) != null && s.GetRowKey(1) == null) {
+            FillRigPosition(s.GetRowKey(0))
+        }
+    }
+    function onBeginCallback(s, e) {
+        e.customArgs["Type"] = Type;
+    }
+    function Init() {
+
+        if (pcCapa.activeTabIndex != 0)
+            GetId('pcCapa_C1').show()
+        InitRespond()
+        GetId('pcCapa_C1').insertAfter(GetId('pcCapa_C2'))
+    }
+    function GetIndex(tr, name) {
+        var index
+        tr.children().each(function () {
+            var td = $(this)
+            if (GetVal(td) == name) {
+                index = td.index()
+            }
+        })
+        return index
+    }
+    function TdByColumn(tr, name) {
+        var t = tr.parent().parent()
+        var id = t.attr('id')
+        var tr0 = GetId(id.replace('_DXMainTable', '_DXHeadersRow0'))
+        var index = GetIndex(tr0, name)
+        return tr.children().eq(index)
+    }
+    function GetButton(name) {
+        return '<input style="margin-left:5px" id=' + name + ' value=' + name + ' class="button" type=button   onclick=on_Action(\'' + name + '\') />'
+    }
+    function on_Action(action) {
+        var tr = $(event.srcElement).closest('tr')
+        var id = GetVal(TdByColumn(tr, 'ID'))
+        id = id.split(String.fromCharCode(160))[0]
+        var comment = TdByColumn(tr, 'Comment').find(':text')
+        var commentText = GetVal(comment)
+
+        if (action == 'Reject' && commentText == '') {
+            return
+        }
+        if (action == 'Delete') {
+            id = id.split('Delete')[0].trim()
+        }
+        //Spin(true)
+        GetAjaxArr('irma/Capa/UpdateCapaAction', [id, action, commentText])
+        Refresh()
+        //Refresh()
+    }
+    function OnGetRowValues() {
+
+    }
+    function onActiveTabChanged(s, e) {
+        var tab = s.GetActiveTab()
+        Type = tab.GetText()
+        Type = $(tab).attr('name')
+        GetId('pcCapa_C1').hide()
+        if (Type == 'Create' || Type == 'History Log')
+            return
+        grid.PerformCallback()
+        GetId('pcCapa_C1').show()
+    }
+    function InitRespond() {
+        AssignedTo1.SetText(AssignedTos.GetText())
+        var passportId = AssignedTos.GetValue()
+        if (passportId == null || $.isArray(passportId))
+            return
+        var json = GetAjax('/irma/capa/GetRigPosition/' + passportId)
+        if (json[0].length == 0)
+            return
+        var obj = json[0][0]
+        Rig1.SetValue(obj.Rig)
+        Position1.SetValue(obj.Position)
+    }
+    function on_Toggle(src) {
+        src = $(src)
+        var userId = src.attr('id')
+        if (userId == 'Go')
+            userId = GetVal(src.prev())
+        setCookie('UserId', userId)
+        Refresh()
+    }
+    function on_Reset() {
+        var id = GetVal(GetId('Id_I'))
+        var json = GetAjaxArr('irma/Capa/Reset', [id])
+        Refresh()
+    }
+    function onRequestExtensionClick(s, e) {
+        SetValid()
+        if (Extension.GetValue() == null) {
+            Extension.SetIsValid(false)
+            return
+        }
+        var d = GetDate(Extension)
+        Spin(true)
+        GetAjaxArr('/irma/capa/RespondRequest', [Id.GetValue(), 'Extension', d, ''])
+        Refresh()
+        //Refresh()
+    }
+    function GetDate(obj) {
+        var date = new Date(obj.GetValue())
+        var day = date.getDate();
+        var month = date.getMonth() + 1
+        var year = date.getFullYear()
+        return month + "/" + day + "/" + year
+    }
+    function SetValid() {
+        DateCompleted.SetIsValid(true)
+        CompletionDescription.SetIsValid(true)
+        CommentPopup.SetIsValid(true)
+        AssignedByPopup.SetIsValid(true)
+    }
+    function onRequestReassignmentClick(s, e) {
+        SetValid()
+        var arr = ReassignedTo.GetValue()
+        if (arr == null || !arr.length) {
+            ReassignedTo.SetIsValid(false)
+            return
+        }
+        Spin(true)
+        GetAjaxArr('/irma/capa/RespondRequest', [Id.GetValue(), 'Reassignment', '', arr[0]])
+        Refresh()
+        //Refresh()
+    }
+    function onSaveAssign(s, e) {
+        $('[disabled]').prop('disabled', false)
+    }
+    function onValidationReject(s, e) {
+        var src = $(event.srcElement)
+        if (GetVal(src) == 'Sign')
+            return
+        var id = src.closest('tr').children().eq(0).text()
+        if (s.GetText() == '' && s.name == 'Row' + id)
+            e.isValid = false
+    }
+    function onFileUploadComplete(s, e) {
+        SubmitForm()
+    }
+    function onSubmitRespondClick(s, e) {
+        if (DateCompleted.GetValue() == null || CompletionDescription.GetText() == '')
+            return
+        var files = MultiFileUpload.GetSelectedFiles(0)
+        if (files != null && files.length > 0)
+            MultiFileUpload.Upload()
+        else
+            SubmitForm()
+        return false
+    }
+    function SubmitForm() {
+        var arr = [GetDate(DateCompleted), WO.GetText(), CompletionDescription.GetText()]
+        $('[name=Removed]').each(function () {
+            var src = $(this)
+            arr.push(encodeURIComponent(src.val()))
+        })
+        GetAjaxArr('/irma/capa/SubmitResponse', arr)
+        Refresh()
+        return
+
+        GetAjax('irma/capa/SubmitResponse?date=' + date + '')
+        $('form').eq(1).submit(); return
+        $('[disabled]').prop('disabled', false)
+        GetId('MultiFileUpload').closest('form').submit()
+        Spin(true)
+    }
+    function PageRefresh() {
+        FormRefresh('Assign')
+        FormRefresh('Respond')
+        ExtensionGrid.PerformCallback()
+        ReassignmentGrid.PerformCallback()
+        grid.PerformCallback()
+        Spin(false)
+    }
+    function FormRefresh(name) {
+        var url = '/irma/capa/' + name + 'Partial/' + Id.GetText()
+        $.get(url, function (data) {
+            GetId('form' + name).replaceWith(data)
+            if (name == 'Respond')
+                InitRespond()
+        });
+    }
+    function Spin(flag) {
+        return
+        if (flag)
+            GetId('Spinner').show()
+        else
+            GetId('Spinner').hide()
+    }
+    function onDelete(src) {
+        var a = $(src)
+        var path = a.next().attr('href')
+        a.nextAll().slice(0, 2).hide()
+        a.hide()
+        var f = $('form')
+        $('<input type=hidden name=Removed value ="' + path + '" />').appendTo(f)
+    }
+    function onCapaDelete(s, e) {
+        if (confirm('Are you sure you want to delete this CAPA?')) {
+            GetAjax('/irma/capa/DeleteCapa/')
+            window.location = '/irma/capa/home'
+        }
+
+    }
+</script>
+
+
+
+

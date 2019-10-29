@@ -1,0 +1,201 @@
+﻿@model Ensco.Irma.Models.ManageFlightManifestModel
+
+@using System.Web.UI.WebControls
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var gridView = Html.DevExpress().GridView(gridManifest =>
+    {
+        gridManifest.Name = "gridView_FlightManifestPartial";
+        gridManifest.KeyFieldName = Model.FlightManifests.KeyFieldName;
+
+        gridManifest.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "FlightManifestPartial" };
+        gridManifest.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestAddPartial" };
+        gridManifest.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestUpdatePartial" };
+        gridManifest.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestDeletePartial" }; //Disable internally
+        gridManifest.SettingsEditing.Mode = GridViewEditingMode.Inline;
+
+        gridManifest.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+        gridManifest.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+        gridManifest.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+        gridManifest.SettingsCommandButton.EditButton.Image.Width = 16;
+        gridManifest.SettingsCommandButton.EditButton.Image.Height = 16;
+        gridManifest.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+        gridManifest.SettingsCommandButton.DeleteButton.Image.Width = 16;
+        gridManifest.SettingsCommandButton.DeleteButton.Image.Height = 16;
+        gridManifest.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+        gridManifest.SettingsCommandButton.UpdateButton.Image.Width = 16;
+        gridManifest.SettingsCommandButton.UpdateButton.Image.Height = 16;
+        gridManifest.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+        gridManifest.SettingsCommandButton.CancelButton.Image.Width = 16;
+        gridManifest.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+        Html.SetEnscoGridColumns(gridManifest, typeof(Ensco.Irma.Models.CrewFlightModel));
+
+        // Make Id column visible in edit settings and hide Title
+        MVCxGridViewColumn colId = gridManifest.Columns["Id"] as MVCxGridViewColumn;
+        colId.EditFormSettings.Visible = DefaultBoolean.False;
+        colId.Visible = false;
+        colId.Caption = "Title";
+        MVCxGridViewColumn colTitle = gridManifest.Columns["Title"] as MVCxGridViewColumn;
+        colTitle.EditFormSettings.Visible = DefaultBoolean.True;
+        colTitle.Visible = true;
+
+        gridManifest.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        gridManifest.SettingsPager.FirstPageButton.Visible = true;
+        gridManifest.SettingsPager.LastPageButton.Visible = true;
+        gridManifest.SettingsPager.PageSizeItemSettings.Visible = true;
+        gridManifest.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        gridManifest.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+        gridManifest.CommandColumn.Visible = true;
+        gridManifest.CommandColumn.Width = 100;
+        gridManifest.CommandColumn.ShowEditButton = true;
+        gridManifest.CommandColumn.ShowNewButtonInHeader = true;
+        gridManifest.CommandColumn.ShowDeleteButton = true;
+        gridManifest.CommandColumn.ShowUpdateButton = true;
+        gridManifest.CommandColumn.ShowCancelButton = true;
+        //gridManifest.SettingsBehavior.ConfirmDelete = true;
+
+        gridManifest.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+        GridViewCommandColumnCustomButton rptBtn = new GridViewCommandColumnCustomButton();
+
+        rptBtn.Text = "";
+        rptBtn.ID = "ManifestReport";
+        rptBtn.Image.Url = "~/Images/Report.png";
+        rptBtn.Image.Width = 24;
+        rptBtn.Image.Height = 24;
+        gridManifest.CommandColumn.CustomButtons.Add(rptBtn);
+        //gridManifest.ClientSideEvents.CustomButtonClick = "function(s, e) { document.location='" + DevExpressHelper.GetUrl(new { Controller = "Personnel", Action = "FlightManifestReport" }) + "?Id=" + "s.GetRowKey(e.visibleIndex)' }";
+        gridManifest.ClientSideEvents.CustomButtonClick = string.Format("function(s, e){{ document.location = '{0}?Id=' + s.GetRowKey(e.visibleIndex);}}", Url.Action("FlightManifestReport", "Personnel", new { Area = "IRMA" }));
+
+        gridManifest.Styles.Header.Wrap = DefaultBoolean.True;
+        gridManifest.SettingsPager.EnableAdaptivity = true;
+
+        gridManifest.Toolbars.Add(toolbar =>
+        {
+            toolbar.Name = "toolbarCrewChangePartial";
+            toolbar.Enabled = true;
+            toolbar.EnableAdaptivity = true;
+            toolbar.Position = GridToolbarPosition.Top;
+            toolbar.ItemAlign = GridToolbarItemAlign.Right;
+            toolbar.Items.Add(i =>
+            {
+                i.BeginGroup = true;
+                i.ItemStyle.HorizontalAlign = HorizontalAlign.Left;
+                i.SetTemplateContent(c =>
+                {
+                    Html.DevExpress().ButtonEdit(s =>
+                    {
+                        s.Name = "search";
+                        s.Properties.NullText = "Search...";
+                        s.Properties.Buttons
+                            .Add()
+                            .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                    }).Render();
+                });
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.Command = GridViewToolbarCommand.Refresh;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Refresh.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ShowFilterRow;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Filter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ClearFilter;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/ClearFilter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            //toolbar.Items.Add(item =>
+            //{
+            //    item.Command = GridViewToolbarCommand.ExportToPdf;
+            //    item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            //    item.Image.Url = "~/Images/Pdf.png";
+            //    item.Image.Width = Unit.Pixel(24);
+            //    item.Image.Height = Unit.Pixel(24);
+            //    item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            //    item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            //    item.ClientEnabled = true;
+            //});
+            toolbar.Items.Add(item =>
+            {
+                item.Command = GridViewToolbarCommand.ExportToCsv;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Excel.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                //item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+        });
+        gridManifest.SettingsSearchPanel.CustomEditorName = "search";
+        gridManifest.SettingsExport.EnableClientSideExportAPI = true;
+        gridManifest.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+        gridManifest.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+        gridManifest.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+        gridManifest.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+        gridManifest.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        gridManifest.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+        gridManifest.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+        gridManifest.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+        gridManifest.SettingsDetail.ShowDetailRow = true;
+
+        gridManifest.FormatConditions.AddHighlight("Status", "[Status] = 3", GridConditionHighlightFormat.GreenFillWithDarkGreenText);
+        gridManifest.FormatConditions.AddHighlight("Status", "[Status] = 4", GridConditionHighlightFormat.LightRedFillWithDarkRedText);
+
+        gridManifest.SetDetailRowTemplateContent(c =>
+        {
+            Ensco.Irma.Models.ManageCrewChangeModel.IsEditing = c.Grid.IsEditing;
+            Ensco.Irma.Models.ManageCrewChangeModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+            if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+            {
+                using (Html.BeginForm())
+                {
+                    Html.RenderAction("FlightManifestDetailPartial", new { Id = DataBinder.Eval(c.DataItem, Model.FlightManifests.KeyFieldName) });
+                }
+            }
+        });
+
+    }).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+    {
+        e.KeyExpression = Model.FlightManifests.KeyFieldName;
+        e.QueryableSource = Model.FlightManifests.Dataset;
+    });
+
+    if (ViewData["EditError"] != null)
+    {
+        gridView.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+
+@gridView.GetHtml()
+
+

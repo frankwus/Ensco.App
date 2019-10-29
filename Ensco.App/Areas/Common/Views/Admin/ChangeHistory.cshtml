@@ -1,0 +1,23 @@
+﻿@model Ensco.Models.ManageChangeHistoryModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(grid_ChangeHistory); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+
+    </script>
+}
+
+@Html.Partial("ChangeHistoryPartial", Model)
+
+

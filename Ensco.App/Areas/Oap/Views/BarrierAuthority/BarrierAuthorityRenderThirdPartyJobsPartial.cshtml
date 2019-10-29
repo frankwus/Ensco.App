@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklistThirdPartyJob>
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+        var oapController = (dynamic) ViewContext.Controller;
+         
+        oapController.ConfigureThirdPartyJobActivities(settings, Html, ViewContext);
+
+    }).Bind(Model).GetHtml();
+}
+
+
+

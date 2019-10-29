@@ -1,0 +1,43 @@
+﻿@*@model Ensco.Irma.Models.PobBoardingModel*@
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formOnboardIndividualPartial";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+    form.ColumnCount = 4;
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Onboarding";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColumnCount = 4;
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.SetNestedContent(() =>
+            {
+                using (Html.BeginForm())
+                {
+                    Html.RenderAction("OnboardIndividualSelectPob", "Personnel");
+                }
+            });
+        });
+
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.ColumnSpan = 4;
+            item.SetNestedContent(() =>
+            {
+                using (Html.BeginForm("OnboardSaveIndividual","Personnel", FormMethod.Post))
+                {
+                    Html.RenderAction("OnboardInvidualPobPartial", "Personnel");
+                }
+            });
+        });
+    });
+
+}).GetHtml()
+

@@ -1,0 +1,63 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    options.EditButtonImage = "~/Images/BlueTick.png";
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CapBookKSAs";
+    grid.KeyFieldName = Model.KSAs.KeyFieldName;
+    grid.SettingsDetail.MasterGridName = "grid_CapBookKSACompetency";
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Cap", Action = "CapBookKSAsDetailPartial", compId = Model.CompId };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "Irma", Controller = "Cap", Action = "CapBookKSAsDetailUpdate", compId = Model.CompId };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.TLC.Models.CAP_BookModel), options);
+
+    grid.CommandColumn.Width = Unit.Pixel(100);
+    grid.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+    
+    grid.EditFormLayoutProperties.ColumnCount = 1;
+    grid.SettingsPopup.EditForm.AllowResize = true;
+    grid.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    grid.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+    grid.EditFormLayoutProperties.Items.Add("KSATitle");
+    grid.EditFormLayoutProperties.Items.Add("AssessedBy");
+    grid.EditFormLayoutProperties.Items.Add("Assessment");
+    grid.EditFormLayoutProperties.Items.Add("AssessmentMethod");
+    grid.EditFormLayoutProperties.Items.Add("AssessorComments");
+    grid.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+
+    grid.CellEditorInitialize = (s, e) =>
+    {
+        switch (e.Column.FieldName)
+        {
+            case "AssessedBy":
+                e.Editor.Value = Ensco.Utilities.UtilitySystem.CurrentUserName;
+                break;
+        }
+    };
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KSAs.KeyFieldName;
+    e.QueryableSource = Model.KSAs.Dataset;
+}).GetHtml()
+
+
+

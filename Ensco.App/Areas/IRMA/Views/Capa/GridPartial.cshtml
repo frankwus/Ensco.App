@@ -1,0 +1,44 @@
+﻿
+@using System.Data;
+@{
+    string type = this.ViewBag.Type;
+    bool readOnly = (bool)this.ViewBag.ReadOnly && type != "" && type != "Implementation";
+}
+
+@Html.BindCapaDataTable("grid", (DataTable)Model, readOnly, type)
+
+@*@Html.DevExpress().GridView(grid =>
+    {
+
+        Html.BindCapaDataTable("grid", (DataTable)  Model);
+        string[] arr =null ;
+
+        arr = new string[] { "ExtensionDate", "AssignedTo" };
+        // if (Type == "Review1")
+        arr = null;
+        //grid.DataBound = (s, e) => {
+        //    ASPxGridView g = (ASPxGridView)s;
+        //    foreach (GridViewColumn c in g.Columns) {
+        //        switch (Type) {
+        //            case "Extension":
+        //                if (c.Name == "AssignedTo")
+        //                    c.Visible = false;
+        //                break;
+        //            case "Reassignment":
+        //                if (c.Name == "ExtensionDate")
+        //                    c.Visible = false;
+        //                break;
+        //            default:
+        //                if (c.Name == "AssignedTo" || c.Name== "ExtensionDate")
+        //                    c.Visible = false;
+        //                break;
+        //        }
+        //    }
+        //};
+    }).Bind(Model).GetHtml()*@
+
+
+
+
+
+

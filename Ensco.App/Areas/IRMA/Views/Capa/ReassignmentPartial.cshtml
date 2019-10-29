@@ -1,0 +1,7 @@
+﻿
+@using System.Data;
+@{
+    bool readOnly = false;// (bool)this.ViewBag.ReadOnly;
+    string type = "Reassignment"; 
+}
+@Html.BindCapaDataTable(type , (DataTable)  Model, readOnly, type   )

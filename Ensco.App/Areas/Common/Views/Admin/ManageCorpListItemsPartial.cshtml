@@ -1,0 +1,29 @@
+﻿@model Ensco.Models.CorpAdminManageModel
+
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = true;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = true;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = true;
+    options.AddButtonText = "Add Item";
+    options.Title = Model.Type.ToString();
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridCorpAdminList";
+    grid.KeyFieldName = "Id";
+
+    grid.CallbackRouteValues = new {Area = "Common", Controller = "Admin", Action = "ManageCorpListItemsPartial" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageCorpListItemsUpdate" };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageCorpListItemsAdd" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageCorpListItemsDelete" };
+
+    Html.EnscoStandardGrid(grid, Model.List.ModelType, options);
+
+    grid.SettingsPager.PageSize = 20;
+
+}).Bind(Model.List.Items).GetHtml()

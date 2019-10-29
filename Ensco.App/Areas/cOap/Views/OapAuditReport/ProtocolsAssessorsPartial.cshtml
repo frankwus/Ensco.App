@@ -1,0 +1,66 @@
+﻿@using Ensco.Irma.Oap.WebClient.Corp
+@using Westwind.Globalization;
+
+@model IEnumerable<Ensco.App.Areas.Oap.Models.ChecklistAssessorGridViewModel>
+
+
+@{
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.AssessorsErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+
+
+        settings.Name = "gridProtocolsAssessors";
+        settings.KeyFieldName = "Id";
+        settings.Caption = DbRes.T("Assessors", "OapResources");
+
+        // Routes
+        settings.CallbackRouteValues = new { Action = "AssessorsPartial" };
+
+        // Command columns
+        settings.CommandColumn.Visible = false;
+
+        //set alternate row color
+        settings.Styles.AlternatingRow.BackColor = ColorTranslator.FromHtml("#f4f4f4");
+
+        // Colums
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Name";
+            c.Caption = "Assessor";
+            c.Width = Unit.Percentage(30);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Position";
+            c.Width = Unit.Percentage(20);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Department";
+            c.Width = Unit.Percentage(20);
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Tour";
+            c.Width = Unit.Percentage(15);
+        });
+
+        // Style
+        settings.Width = Unit.Percentage(100);
+
+    });
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+    grid.Bind(Model).GetHtml();
+}

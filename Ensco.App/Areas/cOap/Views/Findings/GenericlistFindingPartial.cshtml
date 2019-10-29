@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.RigOapChecklistQuestionFinding>
+
+@{ 
+    var findingsController = (dynamic) ViewContext.Controller;
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.RigFindingsErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString();
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        findingsController.Configure(settings, Html, ViewContext);
+    });
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }   
+    grid.Bind(Model.OrderByDescending(c=>c.RigChecklistFindingInternalId)).GetHtml();
+}

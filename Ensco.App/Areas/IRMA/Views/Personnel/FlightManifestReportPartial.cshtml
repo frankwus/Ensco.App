@@ -1,0 +1,122 @@
+﻿@model Ensco.Irma.Models.CrewFlightModel
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formFlightManifestReport";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Planning";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        i.Width = Unit.Percentage(100);
+        i.ColumnCount = 4;
+        i.Items.Add(item =>
+        {
+            item.Caption = "Flight Manifest No.";
+            item.FieldName = "Number";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.Caption = "Date / Time";
+            item.FieldName = "ScheduledTime";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "CrewChange";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "DateCreated";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "Title";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "MaxPeople";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.FieldName = "StatusName";
+            item.Caption = "Status";
+            item.NestedExtension().Label(s =>
+            {
+                s.Width = Unit.Percentage(100);
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.Caption = "";
+            item.NestedExtension().Button(btn =>
+            {
+                btn.Name = "btnArrivalDepartureLog";
+                btn.Text = "Arrival Departure Log";
+                btn.ClientSideEvents.Click = string.Format("function(s, e){{ document.location = '{0}?Id=" + Model.Id + "'}}", Url.Action("FlightArrivalDepartureLogReport", "Report", new { Area = "IRMA" }));
+            });
+        });
+    });
+
+    form.Items.AddEmptyItem();
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Arriving Personnel";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        i.Width = Unit.Percentage(100);
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.SetNestedContent(() =>
+            {
+                Html.RenderAction("FlightManifestArrivingPartial", "Personnel", new { Area = "IRMA", Id=Model.Id });
+            });
+        });
+    });
+    form.Items.AddEmptyItem();
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Departing Personnel";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        i.Width = Unit.Percentage(100);
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.SetNestedContent(() =>
+            {
+                Html.RenderAction("FlightManifestDepartingPartial", "Personnel", new { Area = "IRMA", Id = Model.Id });
+            });
+        });
+    });
+}).GetHtml()
+

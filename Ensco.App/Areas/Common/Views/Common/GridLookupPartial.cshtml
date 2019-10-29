@@ -1,0 +1,100 @@
+﻿@model Ensco.Models.LookupListModel<dynamic>
+@using Ensco.App.Helpers
+
+@{
+    bool IsRequired = (this.ViewBag.IsRequired != null && (bool)this.ViewBag.IsRequired);
+}
+@Html.DevExpress().GridLookup(settings =>
+{
+    if (Model == null) {
+        return;
+    }
+    settings.Name = Model.BoundFieldName;
+    settings.Width = Unit.Percentage(100);
+    settings.GridViewProperties.CallbackRouteValues = new { Area="Common", Controller = "Common", Action = "GridLookupPartial", name=Model.BoundFieldName, lookup=Model.Name, multi=Model.MultiSelect, selected = Model.Selected, IsRequired= IsRequired };
+    settings.KeyFieldName = Model.KeyFieldName;
+
+    Html.SetEnscoGridLookupColumns(settings, Model.ModelType);
+
+    settings.ShowModelErrors = true;
+    settings.Properties.TextFormatString = "{" + Model.DisplayFieldIndex.ToString() + "}";
+    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+    settings.ClientEnabled = !Model.ReadOnly;
+
+    if (Model.MultiSelect){
+        settings.Properties.SelectionMode = GridLookupSelectionMode.Multiple;
+        settings.Properties.MultiTextSeparator = ";";
+        settings.CommandColumn.ShowSelectCheckbox = true;
+        settings.CommandColumn.Visible = true;
+        // settings.GridViewProperties.Settings.ShowFilterRow = true;
+    }else{
+        settings.Properties.SelectionMode = GridLookupSelectionMode.Single;
+        if (Model.FocusedRowChanged != null)
+            settings.GridViewClientSideEvents.FocusedRowChanged = Model.FocusedRowChanged;
+        if (Model.RowClick != null)
+            settings.GridViewClientSideEvents.RowClick = Model.RowClick;
+        //else if (Model.SelectionChanged != null)
+        //   settings.GridViewClientSideEvents.SelectionChanged = Model.SelectionChanged;
+    }
+    settings.GridViewProperties.Settings.ShowFilterRow = true;
+
+    settings.Properties.ValidationSettings.Display = Display.Dynamic;
+    settings.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+    settings.GridViewProperties.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
+
+    if (IsRequired ) {
+        settings.Properties.ClientSideEvents.Validation = "function(s,e){ if(s.GetText() == '' ) e.isValid=false; else e.isValid=true ; } ";
+        // settings.Properties.ClientSideEvents.Validation = "function(s,e){ onValidation(s, e)   } ";
+    }
+
+    if (Model.MultiSelect)
+    {
+        settings.GridViewProperties.Settings.ShowStatusBar = GridViewStatusBarMode.Visible;
+        settings.GridViewProperties.SetStatusBarTemplateContent(c =>
+        {
+            ViewContext.Writer.Write("<div style=\"padding: 2px 8px 2px 0; float: right\">");
+            Html.DevExpress().Button(btnSettings =>
+            {
+                btnSettings.Name = "btnClose"+Model.BoundFieldName;
+                btnSettings.UseSubmitBehavior = false;
+                btnSettings.Text = "OK";
+                btnSettings.ClientSideEvents.Click = "function(s, e){  " + settings.Name + ".ConfirmCurrentSelection();" + settings.Name + ".HideDropDown(); }";
+            }).Render();
+            ViewContext.Writer.Write("</div>");
+        });
+    }
+    string valueChanged = "function(s,e){if(s.name!='AssignedBy'){ if (typeof onValueChanged == 'function' ) onValueChanged(s, e); return} ; var passportId=s.GetValue(); var json = GetAjax('/irma/capa/GetRigPosition/' + passportId);if (json[0].length == 0) return;  var obj = json[0][0]; Rig.SetValue(obj.Rig); Position.SetValue(obj.Position)}";
+    settings.Properties.ClientSideEvents.ValueChanged = valueChanged;
+    settings.PreRender = (s, e) =>
+    {
+        MVCxGridLookup l = s as MVCxGridLookup;
+        string[] selected = null;
+        if(Model.Selected != null)
+        {
+            if (Model.MultiSelect)
+            {
+                try {
+                    // selected = (Model.Selected != null && (int)Model.Selected != 0) ?  (string[])Model.Selected : null;
+                    selected = (Model.Selected != null && ((string[])Model.Selected).Length != 0) ? (string[])Model.Selected : null;
+                    if (selected != null) {
+                        for (int i = 0; i < selected.Length; i++) {
+                            l.GridView.Selection.SelectRowByKey(int.Parse(selected[i]));
+                        }
+                    }
+                }catch(Exception ex) {
+
+                }
+            }
+                else
+                {
+                l.GridView.Selection.SelectRowByKey((int)Model.Selected);
+            }
+        }
+    };
+}).BindToLINQ(String.Empty, String.Empty, (s,e)=>{
+    if (Model != null) {
+        e.KeyExpression = Model.KeyFieldName;
+        e.QueryableSource = Model.DataTable;
+    }
+}).GetHtml()
+

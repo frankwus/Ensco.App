@@ -1,0 +1,81 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+@using System.Web.UI.WebControls
+
+@{
+    Html.DevExpress().GridView(grid =>
+    {
+        grid.Name = "gridRigAdminFieldsVisiblePartial";
+
+        grid.KeyFieldName = "Id";
+
+        grid.CallbackRouteValues = new { Area = "IRMA", Controller = "RigAdmin", Action = "RigAdminFieldsVisiblePartial", RigId = Model.SelectedRigId };
+        grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminFieldsVisibleAdd" };
+        grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminFieldsVisibleUpdate" };
+        grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminFieldsVisibleDelete" }; //Delete it, this is not a template
+        Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.RigFieldVisibilityModel));
+
+        grid.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+        grid.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+        grid.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+        grid.SettingsCommandButton.NewButton.Image.Width = 16;
+        grid.SettingsCommandButton.NewButton.Image.Height = 16;
+        grid.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+        grid.SettingsCommandButton.EditButton.Image.Width = 16;
+        grid.SettingsCommandButton.EditButton.Image.Height = 16;
+        grid.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+        grid.SettingsCommandButton.DeleteButton.Image.Width = 16;
+        grid.SettingsCommandButton.DeleteButton.Image.Height = 16;
+        grid.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+        grid.SettingsCommandButton.UpdateButton.Image.Width = 16;
+        grid.SettingsCommandButton.UpdateButton.Image.Height = 16;
+        grid.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+        grid.SettingsCommandButton.CancelButton.Image.Width = 16;
+        grid.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+        grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        grid.SettingsPager.FirstPageButton.Visible = true;
+        grid.SettingsPager.LastPageButton.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+        grid.SettingsPager.PageSize = 20;
+
+        grid.CommandColumn.Visible = true;
+        grid.CommandColumn.ShowEditButton = true;
+        grid.CommandColumn.ShowUpdateButton = true;
+        grid.CommandColumn.ShowCancelButton = true;
+        grid.CommandColumn.Width = 50;
+
+        grid.EditFormLayoutProperties.Items.Add("Name");
+        grid.EditFormLayoutProperties.Items.Add("Visible");
+        grid.EditFormLayoutProperties.Items.AddCommandItem(i =>
+        {
+            i.ShowUpdateButton = true;
+            i.ShowCancelButton = true;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        });
+
+        grid.CellEditorInitialize = (s, e) =>
+        {
+            if (e.Column.Name == "Name")
+            {
+                //switch ((int)e.KeyValue)
+                //{
+                //    case 7:
+                //    case 8:
+                //    case 9:
+                //    case 10:
+                //        break;
+                //    default:
+                //        e.Editor.Visible = false;
+                //        break;
+                //}
+                e.Editor.ReadOnly = true;
+            }
+        };
+
+    }).Bind(Model.FieldsVisible).GetHtml();
+}
+
+
+

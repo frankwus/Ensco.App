@@ -1,0 +1,224 @@
+﻿@{
+    ViewBag.Title = "Header";
+    var applogo = Path.Combine("~/Images", Ensco.Services.ServiceSystem.ApplicationLogo);
+    var userSession = Ensco.Utilities.UtilitySystem.SessionInfo.GetSessionUser();
+    var culture = new System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName);
+    var langName = (userSession != null) ? userSession.LanguageName : culture.DisplayName;
+    var userName = (userSession != null) ? userSession.UserName : "[Login]";
+    var passportId = (userSession != null) ? userSession.UserId : 0;
+    var adUser = (userSession != null) ? userSession.ADUser : false;
+    var pobEditor = (userSession != null) ? userSession.IsPobEditor : false;
+}
+
+<style>
+    .gradient {
+        width: 500px;
+        height: 200px;
+        background: linear-gradient(110deg, #E76E1E 0%, #E76E1E 80%, #034577 20%, #034577 100%);
+    }
+
+    .crumb-trail {
+        background-color: #CCD2D8;
+        color: #62717C;
+        list-style: none;
+        padding: 0px;
+        margin: auto;
+        width: 80%;
+    }
+
+    .crumb {
+        padding: 4px 16px;
+        position: relative;
+    }
+
+
+        .crumb:not(:last-child):before,
+        .crumb:not(:last-child):after {
+            content: '';
+            display: inline-block;
+            height: 1px;
+            width: 17px;
+            position: absolute;
+            right: -7px;
+            background-color: #fff;
+        }
+
+        .crumb:before {
+            top: 6px;
+            -moz-transform: rotate(60deg);
+            -ms-transform: rotate(60deg);
+            -o-transform: rotate(60deg);
+            -webkit-transform: rotate(60deg);
+            transform: rotate(60deg);
+        }
+
+        .crumb:after {
+            bottom: 6px;
+            -moz-transform: rotate(120deg);
+            -ms-transform: rotate(120deg);
+            -o-transform: rotate(120deg);
+            -webkit-transform: rotate(120deg);
+            transform: rotate(120deg);
+        }
+</style>
+
+<table>
+    <tr>
+        <td style="float:left;"><img src='@Url.Content("~/Images/ensco.png")' style="width:150px;height:70px" /></td>
+        <td style="width:100%;padding-left:20px;padding-right:10px;">
+            @Html.Action("IrmaMenu", new { Area = "IRMA", Controller = "Irma" })            
+        </td>
+        <td style="float:right">
+            <table>
+                <tr>
+                    <td>
+                        @{
+                            Html.DevExpress().Menu(mnu1 => {
+                                mnu1.Name = "UserLogin";
+                                mnu1.AllowSelectItem = false;
+                                mnu1.EnableHotTrack = true;
+                                mnu1.EnableAnimation = true;
+                                mnu1.AppearAfter = 500;
+                                mnu1.DisappearAfter = 300;
+                                mnu1.MaximumDisplayLevels = 2;
+                                mnu1.AutoSeparators = AutoSeparatorMode.All;
+                                mnu1.ShowPopOutImages = DefaultBoolean.True;
+                                mnu1.ControlStyle.Paddings.Padding = 0;
+                                mnu1.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                                mnu1.ControlStyle.Font.Size = 10;
+                                mnu1.ControlStyle.Font.Bold = true;
+                                mnu1.ControlStyle.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+                                mnu1.ControlStyle.ForeColor = System.Drawing.Color.FromArgb(0x00467F);
+                                mnu1.Styles.SubMenu.BackColor = System.Drawing.Color.FromArgb(0x00467F);
+                                mnu1.Styles.SubMenu.ForeColor = System.Drawing.Color.White;
+                                mnu1.Height = System.Web.UI.WebControls.Unit.Pixel(25);
+                                mnu1.Width = System.Web.UI.WebControls.Unit.Percentage(7);
+                                mnu1.Items.Add(item => {
+                                    item.Text = userName;
+                                    item.Image.Url = "~/Images/User.png";
+                                    item.Image.Width = 24;
+                                    item.Image.Height = 24;
+                                    if (Ensco.Utilities.UtilitySystem.Settings.RigId != 1) {
+                                        item.Items.Add(subitem => {
+                                            subitem.Text = (string)HttpContext.GetGlobalResourceObject("Resources", "Ensco.Irma.MyPage");
+                                            subitem.NavigateUrl = DevExpressHelper.GetUrl(new { Area = "IRMA", Action = "MyPassport", Controller = "Irma" });
+                                        });
+                                    }
+                                    item.Items.Add(subitem => {
+                                        subitem.Text = (string)HttpContext.GetGlobalResourceObject("Resources", "Ensco.Common.Logout");
+                                        subitem.NavigateUrl = DevExpressHelper.GetUrl(new { Area = "Common", Action = "Logout", Controller = "Login" });
+                                    });
+                                    if (!adUser) {
+                                        item.Items.Add(subitem => {
+                                            subitem.Text = (string)HttpContext.GetGlobalResourceObject("Resources", "Ensco.Common.ChangePassword");
+                                            subitem.NavigateUrl = DevExpressHelper.GetUrl(new { Area = "Common", Action = "ChangePassword", Controller = "Login" });
+                                        });
+                                    }
+                                    if (pobEditor && (Ensco.Utilities.UtilitySystem.Settings.RigId != 1)) {
+                                        item.Items.Add(subitem => {
+                                            subitem.Text = (string)HttpContext.GetGlobalResourceObject("Resources", "Ensco.Common.ResetPassword");
+                                            subitem.NavigateUrl = DevExpressHelper.GetUrl(new { Area = "Common", Action = "ResetPassword", Controller = "Login" });
+                                        });
+                                    }
+                                });
+
+                            }).GetHtml();
+                        }
+                    </td>
+
+
+
+                    <td>
+                        @{
+
+                            Html.DevExpress().Menu(mnu1 => {
+                                mnu1.Name = "Language";
+                                mnu1.AllowSelectItem = false;
+                                mnu1.EnableHotTrack = true;
+                                mnu1.EnableAnimation = true;
+                                mnu1.AppearAfter = 500;
+                                mnu1.DisappearAfter = 300;
+                                mnu1.MaximumDisplayLevels = 2;
+                                mnu1.AutoSeparators = AutoSeparatorMode.All;
+                                mnu1.ShowPopOutImages = DefaultBoolean.True;
+                                mnu1.ShowAsToolbar = true;
+                                mnu1.ControlStyle.Paddings.Padding = 0;
+                                mnu1.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                                mnu1.ControlStyle.Font.Size = 10;
+                                mnu1.ControlStyle.Font.Bold = true;
+                                mnu1.ControlStyle.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+                                mnu1.ControlStyle.ForeColor = System.Drawing.Color.FromArgb(0x00467F);
+                                mnu1.Styles.SubMenu.BackColor = System.Drawing.Color.FromArgb(0x00467F);
+                                mnu1.Styles.SubMenu.ForeColor = System.Drawing.Color.White;
+                                mnu1.Height = System.Web.UI.WebControls.Unit.Pixel(25);
+                                mnu1.Width = System.Web.UI.WebControls.Unit.Percentage(7);
+                                mnu1.Items.Add(item => {
+                                    item.Text = langName;
+                                    item.Image.Url = "~/Images/World.png";
+                                    item.Image.Width = 24;
+                                    item.Image.Height = 24;
+                                    foreach (var lang in Ensco.Utilities.UtilitySystem.Settings.SupportedLanguages) {
+                                        item.Items.Add(subitem => {
+                                            subitem.Text = lang.DisplayName;
+                                            subitem.NavigateUrl = DevExpressHelper.GetUrl(new { Area = "Common", Action = "Language", Controller = "Common", lang = lang.TwoLetterISOLanguageName });
+                                        });
+                                    }
+                                });
+
+                            }).GetHtml();
+                        }
+                    </td>
+                    <td><img src='@Url.Content(applogo)' style="width:150px; height:70px;" /></td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" style="height:25px;width:100%;background-image:url('@Url.Content("~/Images/actionbar.png")');background-repeat:repeat-x;background-size:100% auto">
+    <tr>
+        <td style="width:79%;padding-left:5px" colspan="3" valign="middle">
+            <table>
+                <tr>
+                    <td>
+                        @{
+                            Html.MvcSiteMap().SiteMap.RootNode.Title = Ensco.Utilities.UtilitySystem.Settings.RigName;
+                        }
+
+                        @Html.MvcSiteMap().SiteMapPath()
+
+                    </td>
+                </tr>                
+            </table>
+        </td>
+        <td>
+            <label style="color:white;float:right;margin-right:10px;margin-top:5px;vertical-align:text-bottom;font-weight:700"></label>
+        </td>
+    </tr>
+</table>
+<input type="hidden" id="hPassportId" value="@passportId" />
+@Html.DevExpress().PopupControl(settings => {
+    settings.Name = "PopupAlert";
+    settings.HeaderText = "";
+
+    settings.AllowDragging = true;
+    settings.CloseAction = CloseAction.CloseButton;
+    settings.CloseOnEscape = true;
+    settings.PopupAnimationType = AnimationType.None;
+    settings.Modal = true;
+
+    settings.PopupHorizontalAlign =  PopupHorizontalAlign.WindowCenter;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.Width = System.Web.UI.WebControls.Unit.Pixel(1000);
+
+    settings.SetContent(() => {
+        Html.RenderPartial("~/Areas/IRMA/Views/Irma/IrmaHomeEnscoPassportTasksTaskPartial.cshtml", "Alert");
+    });
+}).GetHtml()
+
+
+
+
+
+
+

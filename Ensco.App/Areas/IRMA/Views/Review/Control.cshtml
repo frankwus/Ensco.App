@@ -1,0 +1,213 @@
+﻿@using Ensco.Models
+@using Ensco.Utilities
+@model IEnumerable<Ensco.OAP.Models.ReviewModel>
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = true;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.AddButtonText = DbRes.T("Add Review","Resources");
+    options.ShowTitle = true;
+    options.ShowToolbar = true;
+}
+
+
+@* THE BELOW MUST BE ADDED TO THE SCRIPTS SECTION OF THE CALLING PAGE *@
+
+ 
+    @*<script>
+
+        function signReview(s, e, reviewId, reviewTextBox) {
+        e.processOnServer = false;
+        $.post("@Url.Action("ControlSignReview", new { Area="IRMA",Controller="Review" })/" + reviewId,
+            {
+                Id: reviewId,
+                Comment: reviewTextBox.GetValue(),
+                returnUrl: window.location.href
+            })
+            .done(function (data) {
+                window.location.reload();
+            }).fail(function (request, status) {
+                alert('Failed to process request: ' + status);
+            });
+        }
+
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItemgvReviews":
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>*@
+ 
+
+@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gvReviews";
+    settings.Caption = DbRes.T("Reviews","Resources");
+    settings.KeyFieldName = "Id";
+
+    Html.EnscoStandardGrid(settings, typeof(Ensco.OAP.Models.ReviewModel), options);
+
+    settings.CallbackRouteValues = new { Area="IRMA", Controller="Review", Action="Control", SourceForm = ViewBag.SourceForm, SourceFormId = ViewBag.SourceFormId };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Area="IRMA", Controller="Review", Action="ControlAddReview", SourceForm = ViewBag.SourceForm, SourceFormId = ViewBag.SourceFormId };
+
+    MVCxGridViewColumn idColumn = new MVCxGridViewColumn();
+    idColumn.FieldName = "Id";
+    idColumn.Width = Unit.Percentage(5);
+    idColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    idColumn.SetDataItemTemplateContent(cont =>
+    {
+        var reviewId = DataBinder.Eval(cont.DataItem, "Id").ToString();
+        ViewContext.Writer.Write(Html.ActionLink(reviewId, "Edit", new { Controller = "Review", id = reviewId }).ToHtmlString());
+    });
+    settings.Columns.Insert(0, idColumn);
+    settings.Columns.Remove(settings.Columns["SourceForm"]);
+
+    var reviewerColumn = settings.Columns["ReviewerPassportId"];
+    reviewerColumn.VisibleIndex = 2;
+
+    var capaColumn = settings.Columns["CAPAId"];
+    capaColumn.VisibleIndex = 4;
+    capaColumn.Width = Unit.Percentage(10);
+    capaColumn.Caption = "CAPA";
+
+    var rigColumn = settings.Columns["RigId"];
+    rigColumn.Width = Unit.Percentage(10);
+
+    settings.Columns.Add(col =>
+    {
+        col.FieldName = "Comment";
+        col.Caption = DbRes.T("Comment", "Resources");
+        col.SetDataItemTemplateContent(container =>
+        {
+            DateTimeOffset? reviewDate = (DateTimeOffset?)DataBinder.Eval(container.DataItem, "ReviewDate");
+            string comment = (string)DataBinder.Eval(container.DataItem, "Comment");
+            int reviewId = (int)DataBinder.Eval(container.DataItem, "Id");
+            int reviewerId = (int)DataBinder.Eval(container.DataItem, "ReviewerPassportId");
+
+            // Displays textbox if not already reviewed and the logged in user is the reviewer
+            if (reviewDate == null && UtilitySystem.CurrentUserId == reviewerId)
+            {
+                Html.DevExpress().TextBox(txtBox =>
+                {
+                    txtBox.Name = "txtComment_" + reviewId;
+                    txtBox.Properties.NullText = "Enter a comment..";
+                    txtBox.Width = Unit.Percentage(100);
+                }).GetHtml();
+            } else
+            {
+                ViewContext.Writer.Write(comment);
+            }
+
+        });
+    });
+
+    settings.Columns.Add(col =>
+    {
+        col.Caption = DbRes.T("Signature","Resources");
+        col.Width = Unit.Percentage(15);
+        col.SetDataItemTemplateContent(cont =>
+        {
+            int reviewerId = (int)DataBinder.Eval(cont.DataItem, "ReviewerPassportId");
+            DateTimeOffset? reviewDate = (DateTimeOffset?)DataBinder.Eval(cont.DataItem, "ReviewDate");
+            if (reviewDate != null)
+            {
+                ViewContext.Writer.Write(Html.FormatDateTime(reviewDate.Value));
+
+            } else if (UtilitySystem.CurrentUserId == reviewerId)
+            {
+                int reviewId = (int)DataBinder.Eval(cont.DataItem, "Id");
+                using (Html.BeginForm("ControlSignReview", "Review", FormMethod.Post, new { id = "SignForm_" + reviewId }))
+                {
+                    Html.DevExpress().Button(button =>
+                    {
+                        button.Name = "btnSignReview_" + DataBinder.Eval(cont.DataItem, "Id");
+                        button.Text = "Sign";
+                        button.UseSubmitBehavior = true;
+                        button.EnableClientSideAPI = true;
+                        button.RouteValues = new { Area = "IRMA", Controller = "Review", Action = "ControlSignReview", Id = reviewId, returnUrl = Request.Url.PathAndQuery };
+                        button.ClientSideEvents.Click = string.Format("function (s,e) {{ signReview(s,e,{0},txtComment_{0}); }}", reviewId);
+                    }).GetHtml();
+                }
+                Html.EndForm();
+            }
+
+        });
+    });
+
+    settings.Columns.Add(col =>
+    {
+        col.Caption = DbRes.T("Evidence","Resources");
+
+        col.SetDataItemTemplateContent(cont =>
+        {
+            IEnumerable<AttachmentModel> attachments = (IEnumerable<AttachmentModel>)DataBinder.Eval(cont.DataItem, "Attachments");
+            int reviewerId = (int)DataBinder.Eval(cont.DataItem, "ReviewerPassportId");
+            string status = DataBinder.Eval(cont.DataItem, "Status").ToString();
+
+            foreach (var attachment in attachments)
+            {
+                if (status == "Pending" && UtilitySystem.CurrentUserId == reviewerId)
+                {
+                    Html.DevExpress().HyperLink(l =>
+                    {
+                        l.Properties.ImageUrl = "~/Images/Delete.png";
+                        l.NavigateUrl = Url.Action("DeleteAttachment", new { Area = "Common", Controller = "Admin", Id = attachment.Id, returnUrl = HttpContext.Current.Request.Url.AbsolutePath });
+                        l.Properties.ImageWidth = Unit.Pixel(15);
+                        l.Style.Add("margin-right", "5px");
+                    }).GetHtml();
+                }
+
+                Html.DevExpress().HyperLink(l =>
+                {
+                    l.Properties.Text = attachment.FileName;
+                    l.NavigateUrl = attachment.FilePath;
+                }).GetHtml();
+                ViewContext.Writer.Write("<br />");
+            }
+
+            if (attachments.Count() > 0)
+                ViewContext.Writer.Write("<br />");
+
+            if (status == "Pending" && UtilitySystem.CurrentUserId == reviewerId)
+            {
+                int reviewId = (int)DataBinder.Eval(cont.DataItem, "Id");
+                using (Html.BeginForm())
+                {
+                    Html.RenderAction("MultiFileUploadPartial", new { Area = "Common", Controller = "Admin", SourceForm = "Review", SourceFormId = reviewId, controlName = "MultiFileUpload_" + reviewId });
+                }
+            }
+
+        });
+    });
+
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+    settings.EditFormLayoutProperties.ColumnCount = 2;
+
+    settings.EditFormLayoutProperties.Items.Add(column =>
+    {
+        column.ColumnName = "ReviewerPassportId";
+        column.Caption = "Reviewer";
+        column.Width = Unit.Point(300);
+    });
+
+    settings.EditFormLayoutProperties.Items.AddCommandItem(command =>
+    {
+        command.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+
+
+    settings.PreRender = (sender, e) =>
+    {
+        MVCxGridView gridView = (MVCxGridView)sender;
+        gridView.SortBy(gridView.Columns["Id"], DevExpress.Data.ColumnSortOrder.Descending);
+    };
+
+
+}).Bind(Model).GetHtml()
+

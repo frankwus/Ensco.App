@@ -1,0 +1,127 @@
+﻿@model Ensco.Models.DataTableModel
+@using System.Data
+@using Ensco.Models
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsAdminEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = bPobEditor;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = bPobEditor;
+    options.ShowCommandColumn = true;
+    options.AddButtonText = "Add User";
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_AdminUserRole";
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.ClientSideEvents.EndCallback = "function(s, e){onEndCallback(s, e)}";
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "RigAdmin", Action = "RigAdminUserRolePartial", Role=Model.Id };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminUserRoleAdd" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Controller = "RigAdmin", Action = "RigAdminUserRoleDelete" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.Admin.AdminModel), options);
+    grid.InitNewRow = (s, e) =>
+    {
+        e.NewValues["dt"] = DateTime.Now;
+    };
+    grid.SettingsPager.PageSize = 20;
+
+    grid.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+    grid.EditFormLayoutProperties.ColumnCount = 1;
+    //grid.EditFormLayoutProperties.Items.Add("Passport");
+    //grid.EditFormLayoutProperties.Items.Add("RoleId");
+    //grid.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    //{
+    //    i.ShowUpdateButton = true;
+    //    i.ShowCancelButton = true;
+    //    i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    //});
+    grid.SetEditFormTemplateContent(c => {
+        Html.DevExpress().FormLayout(flSettings => {
+            flSettings.Name = "FormLayoutUserRole";
+            flSettings.Width = Unit.Percentage(100);
+            flSettings.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+            flSettings.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 700;
+            flSettings.ColCount =1;
+            LookupListModel<dynamic> list = Ensco.Utilities.UtilitySystem.GetLookupList("UserRole");
+            Html.ViewContext.Writer.Write("<div style='margin-left:13px'>User</div>");
+            //  Html.ViewContext.Writer.Write("Role");
+            flSettings.Items.Add(i => {
+                i.Caption = "Role1";
+                i.Width = Unit.Percentage(20);
+                i.ShowCaption = DefaultBoolean.False;
+                Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "Passport", lookup = "Passport", multi = false, selected = -1 });
+
+            });
+            flSettings.Items.Add(i => {
+                i.Caption = "Role";
+                // i.ShowCaption = DefaultBoolean.False;
+                i.CaptionSettings.Location = LayoutItemCaptionLocation.Top;
+                i.FieldName = "RoleId";
+                i.NestedExtension().ComboBox(s => {
+                    s.Properties.TextField = "Role";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.ValueType = typeof(int);
+                    s.Properties.DataSource = list.Items;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.Properties.ClientSideEvents.TextChanged = "function(s, e){onTextChanged(s, e)}    ";
+                    s.ShowModelErrors = true;
+                    s.Width = Unit.Percentage(20);
+                });
+            });
+            //Html.ViewContext.Writer.Write("Isolation Authority Type");
+            flSettings.Items.Add(i => {
+                i.Caption = "Isolation Authority Type";
+                //i.ShowCaption = DefaultBoolean.False;
+                i.CaptionSettings.Location = LayoutItemCaptionLocation.Top;
+                i.FieldName = "Position";
+                i.NestedExtension().ComboBox(s => {
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Name";
+
+                    s.Properties.DataSource = (DataTable) this.ViewBag.IaType;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.ShowModelErrors = true;
+                    s.Width = Unit.Percentage(20);
+                });
+                i.ClientVisible = false;
+            });
+
+            flSettings.Items.AddEmptyItem();
+            flSettings.Items.Add(i => {
+                i.ShowCaption = DefaultBoolean.False;
+            }).SetNestedContent(() => {
+                // ViewContext.Writer.Write("<div style='float:right'>");
+                Html.DevExpress().Button(btnSettings => {
+                    btnSettings.Name = "btnUpdate";
+                    btnSettings.Text = "Update";
+                    btnSettings.ClientSideEvents.Click = "function(s, e){ grid_AdminUserRole.UpdateEdit(); }";
+                }).Render();
+                Html.DevExpress().Button(btnSettings => {
+                    btnSettings.Name = "btnCancel";
+                    btnSettings.Text = "Cancel";
+                    btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+                    btnSettings.ClientSideEvents.Click = "function(s, e){ grid_AdminUserRole.CancelEdit(); }";
+                }).Render();
+                //  ViewContext.Writer.Write("</div>");
+            });
+
+        }).Render();
+
+    });
+
+    grid.FormatConditions.AddHighlight("LastOnboard", string.Format("[LastOnboard] <= '{0}'", DateTime.Now.AddMonths(-6)), GridConditionHighlightFormat.RedText);
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+
+

@@ -1,0 +1,13 @@
+﻿@model Ensco.Models.SystemInfoModel
+
+<table cellpadding="10" cellspacing="10" style="padding-top:20px">
+    @foreach(var key in Model.SystemInfo.Keys)
+    {
+        <tr>
+            <td>@key</td>
+            <td></td>
+            <td>@Model.SystemInfo[key]</td>
+        </tr>
+    }
+</table>
+

@@ -1,0 +1,39 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@using Ensco.App.App_Start
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CapBook";
+    grid.KeyFieldName = Model.PersonalSummary.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Cap", Action = "CapBookPartial", PersonalId = ViewData["SelectedCapBookPersonalId"] };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "Cap", Action = "CapBookUpdate" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.TLC.Models.TLC_PersonalSummaryModel), options);
+
+    grid.CommandColumn.Width = Unit.Pixel(25);
+
+    grid.ClientSideEvents.RowClick = string.Format("function(s, e){{ var key= s.GetRowKey(e.visibleIndex); SelectedCapBookPersonalId.value = key; grid_CapBook.PerformCallback(); grid_CapBookKSACompetency.PerformCallback(); grid_CapBookAssessorGuideCompetency.PerformCallback(); grid_CapBookExpirationCompetency.PerformCallback(); grid_CapBookAdditionalCompetency.PerformCallback(); grid_CapBook.SetFocusedRowIndex(e.visibleIndex);}}");
+    grid.ClientSideEvents.BeginCallback = "function(s, e) { e.customArgs['PersonalId'] = SelectedCapBookPersonalId.value; }";
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.PersonalSummary.KeyFieldName;
+    e.QueryableSource = Model.PersonalSummary.Dataset;
+}).GetHtml()
+

@@ -1,0 +1,87 @@
+﻿@using Westwind.Globalization
+@using Ensco.Utilities;
+@using Ensco.Services;
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = true;
+    options.ShowCommandColumn = false;
+    options.AddButtonText = "Add Checklist";
+    options.ShowTitle = false;
+    options.ShowToolbar = true;
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "gvOpenChecklists";
+    settings.KeyFieldName = "Id";
+    settings.Width = Unit.Percentage(100);
+    settings.Caption = DbRes.T("Open Safety Observations Checklists", "OapResources");
+
+    Html.EnscoStandardGrid(settings, typeof(Ensco.FSO.Models.OpenFSOGridModel), options);
+    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "FSODashboard", Action = "IndexOpenChecklistsPartial" };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Area = "IRMA", Controller = "FSODashboard", Action = "IndexOpenChecklistsAddPartial" };
+
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+    settings.EditFormLayoutProperties.ColumnCount = 4;
+    settings.EditFormLayoutProperties.UseDefaultPaddings = true;
+    settings.EditFormLayoutProperties.Items.Add("Title");
+    settings.EditFormLayoutProperties.Items.Add(i =>
+    {
+        i.Name = "OwnerId";
+        i.VisibleIndex = 2;
+        i.Caption = "Lead Assessor";
+        i.SetTemplateContent(container =>
+        {
+            var ownerId = Ensco.Utilities.UtilitySystem.CurrentUserId;
+            Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "OwnerId", lookup = "Passport", multi = false, selected = UtilitySystem.CurrentUserId });
+        });
+    });
+    settings.EditFormLayoutProperties.Items.Add("ChecklistDateTime");
+
+    settings.CellEditorInitialize = (s, e) =>
+    {
+        switch (e.Column.FieldName)
+        {
+            case "ChecklistDateTime":
+                e.Editor.Value = DateTime.Now;
+                break;
+            case "Title":
+                e.Editor.Value = "FSO Checklist by " + UtilitySystem.CurrentUserName;
+                break;
+        }
+    };
+
+    var commandColumn = settings.EditFormLayoutProperties.Items.AddCommandItem();
+    commandColumn.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+
+    settings.Columns.RemoveAt(0); // Remove rogue columns
+
+    settings.Columns.Remove(settings.Columns["ID"]);
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "RigChecklistUniqueId";
+        column.Caption = "Id";
+        column.Index = 0;
+        column.SortDescending();
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.SetDataItemTemplateContent(container =>
+        {
+            Html.DevExpress().HyperLink(link =>
+            {
+                Session["isChecklistIdClick"] = true;
+                link.Name = "lnk_" + DataBinder.Eval(container.DataItem, "RigChecklistUniqueId").ToString();
+                link.Properties.Text = DataBinder.Eval(container.DataItem, "RigChecklistUniqueId").ToString();
+                link.NavigateUrl = Url.Action("List", new { Area="OAP", Controller="Fso", id = DataBinder.Eval(container.DataItem, "Id") });
+            }).GetHtml();
+        });
+    });    
+
+    settings.Columns[0].Width = Unit.Percentage(3); // Id
+    settings.Columns[2].Width = Unit.Percentage(10); // ChecklistDateTime
+    settings.Columns[3].Width = Unit.Percentage(15); // Observer
+    settings.Columns[4].Width = Unit.Percentage(15); // Position
+
+    settings.Columns[5].Width = Unit.Percentage(10); // Company
+    settings.Columns[6].Width = Unit.Percentage(10); // Location
+
+}).Bind(Model).GetHtml()

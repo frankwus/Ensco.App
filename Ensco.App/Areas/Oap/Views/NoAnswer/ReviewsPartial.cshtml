@@ -1,0 +1,17 @@
+﻿@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gridReviewNoAnswers";
+
+    settings.SettingsText.Title = "Barrier Authority No Answers Pending Review";
+    settings.Settings.ShowTitlePanel = true;
+
+
+    // Columns
+    settings.Columns.Add("Teste");
+
+    // Style
+    settings.Width = Unit.Percentage(100);
+    settings.Style.Add("margin-top", "1em");
+
+}).Bind(Model).GetHtml()

@@ -1,0 +1,221 @@
+﻿@model Ensco.FSO.Models.FSOChecklistViewModel
+@{
+    ViewBag.Title = "FSO Checklist";
+}
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                //AdjustMainGrid(grid_CrewChange); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+
+        function OnToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+@{ Html.BeginForm(); }
+
+@Html.DevExpress().PageControl(pageControl =>
+{
+    pageControl.Name = "pcChecklist";
+    pageControl.Width = Unit.Percentage(100);
+
+
+    pageControl.TabPages.Add("Planning").SetContent(() =>
+    {
+
+        // Planning
+        Html.DevExpress().FormLayout(tabLayout =>
+        {
+            tabLayout.Name = "tabPlanning";
+            tabLayout.Width = Unit.Percentage(100);
+            tabLayout.UseDefaultPaddings = false;
+
+            tabLayout.Items.AddGroupItem(group =>
+            {
+                group.Caption = "Planning";
+                group.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                group.Height = Unit.Percentage(100);
+                group.ColumnCount = 4;
+
+                group.Items.Add(item =>
+                {
+                    item.FieldName = "Checklist.ChecklistId";
+                    item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+                    TextBoxSettings textBoxSettings = (TextBoxSettings)item.NestedExtensionSettings;
+                    textBoxSettings.ClientEnabled = false;
+
+                });
+
+                group.Items.Add(m => m.Checklist.LocationId, (options) =>
+                {
+                    options.NestedExtensionType = FormLayoutNestedExtensionItemType.DropDownEdit;
+                });
+
+                group.Items.Add(item =>
+                {
+                    item.FieldName = "Checklist.DateTimeObserved";
+                    item.NestedExtensionType = FormLayoutNestedExtensionItemType.DateEdit;
+                    DateEditSettings dateEditsettings = (DateEditSettings)item.NestedExtensionSettings;
+                    dateEditsettings.Properties.UseMaskBehavior = true;
+                    dateEditsettings.Properties.EditFormatString = "dd/MM/yyyy hh:mm tt";
+                    dateEditsettings.Properties.TimeSectionProperties.Visible = true;
+
+                    dateEditsettings.Date = DateTime.Now;
+                    dateEditsettings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+
+                });
+
+                group.Items.Add(m => m.Checklist.Status, item =>
+                {
+                    TextBoxSettings textBoxSettings = (TextBoxSettings)item.NestedExtensionSettings;
+                    textBoxSettings.ClientEnabled = false;
+                });
+
+                group.Items.Add(m => m.Checklist.JobId);
+                group.Items.Add(m => m.Checklist.Description, m =>
+                {
+                    m.ColumnSpan = 2;
+                    m.NestedExtension().TextBox(t =>
+                    {
+                        t.Width = Unit.Percentage(80);
+                    });
+                });
+
+                group.Items.Add(m => m.Checklist.CreatedAt, i => {
+                    i.NestedExtension().TextBox(t =>
+                    {
+                        t.Enabled = false;
+                    });
+                });
+
+            });
+
+
+            // Observers
+            tabLayout.Items.AddGroupItem(group =>
+            {
+                group.Caption = "Observers";
+                group.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                group.Height = Unit.Percentage(100);
+                group.ColumnCount = 1;
+
+                group.Items.Add(i =>
+                {
+                    i.ShowCaption = DefaultBoolean.False;
+                    i.SetNestedContent(() =>
+                    {
+                        Html.RenderAction("ChecklistObserversPartial", new { Area = "IRMA" });
+                    });
+                });
+
+            });
+
+
+
+        }).GetHtml();
+
+    });
+
+    // Observations of Actions
+    pageControl.TabPages.Add("Observations of Actions").SetContent(() =>
+    {
+        Html.RenderPartial("ChecklistObserversationOfActionsPartial", Model);
+    });
+
+    // Observations of Conditions
+    pageControl.TabPages.Add("Observations of Conditions").SetContent(() =>
+    {
+        Html.RenderPartial("ChecklistObserversationOfConditionsPartial", Model);
+    });
+
+    // Verification
+    pageControl.TabPages.Add("Verification").SetContent(() =>
+    {
+        Html.DevExpress().FormLayout(settings =>
+        {
+            settings.Name = "layoutVerification";
+            settings.Width = Unit.Percentage(100);
+            settings.Items.AddGroupItem(group =>
+            {
+                group.Caption = "Verification";
+                group.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                group.Height = Unit.Percentage(100);
+                group.ColumnCount = 4;
+
+                group.Items.Add(i => i.Checklist.LeadObserverPassport);
+                group.Items.Add(i => i.Checklist.LeadObserverComments, i =>
+                {
+                    i.ColumnSpan = 2;
+                });
+                group.Items.Add(i =>
+                {
+                    i.ShowCaption = DefaultBoolean.False;
+                    i.NestedExtension().Button(b =>
+                    {
+                        b.Name = "Sign";
+                        b.Text = "Sign";
+                    });
+                });
+
+                group.Items.Add(i => i.Checklist.OIMPassport);
+                group.Items.Add(i => i.Checklist.OIMComments);
+
+
+                group.Items.Add(i =>
+                {
+                    i.ShowCaption = DefaultBoolean.False;
+                    i.ColumnSpan = 2;
+                    i.SetNestedContent(() =>
+                    {
+                        Html.DevExpress().Button(b =>
+                        {
+                            b.Name = "Verify";
+                            b.Text = "Verify";
+                            b.Style.Add("margin-right", "10px");
+                        }).Render();
+
+
+                        Html.DevExpress().Button(b =>
+                        {
+                            b.Name = "Reject";
+                            b.Text = "Reject";
+                        }).Render();
+                    });
+                });
+
+            });
+
+        }).GetHtml();
+        // Verification
+
+    });
+}).GetHtml()
+
+@{ Html.EndForm(); }
+
+
+
+<script>
+
+    function handleClick(radio) {
+        $radio = $(radio);        
+    }
+
+</script>

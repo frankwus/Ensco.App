@@ -1,0 +1,98 @@
+﻿@model string
+@using Ensco.Utilities
+@using System.Data
+@{
+    DataTable dt = Ensco.App.Areas.IRMA.Controllers.PersonnelController.GetTasks(Model).Tables[0];
+    bool showApprovel = false;
+    if (Model != "" && Model != "Alert" ) {
+        showApprovel = true;
+    }
+}
+@Html.DevExpress().GridView(grid =>{
+    grid.Name = "grid_HomeTasksTask" +( Model=="Alert"?"1":"0")  ;
+    grid.Caption = "Open Tasks";
+    grid.Width = Unit.Percentage(100);
+    string[] arr = new string[] {"Id", "AssigneeUserId",  "SourceId", "SourceFormURL" };
+
+    foreach(DataColumn dc in dt.Columns) {
+        if(arr != null && arr.Contains(dc.ColumnName))
+            continue;
+        MVCxGridViewColumn column = grid.Columns.Add(dc.ColumnName);
+        Html.InitColumn(column, grid, dc);
+        // string status = DataBinder.Eval(c.DataItem, column.FieldName);
+        if(dc.DataType.Name.Contains("Date")) {
+            column.EditorProperties().DateEdit(s => {
+                s.DisplayFormatString = Ensco.Utilities.UtilitySystem.Settings.ConfigSettings["DateFormat"];
+            });
+        }
+        if(dc.ColumnName == "Source" ) {
+            column.SetDataItemTemplateContent(c => {
+                Html.DevExpress().HyperLink(s => {
+                    s.Properties.Text = FirstCharToUpper(DataBinder.Eval(c.DataItem, "Source").ToString());
+                    s.NavigateUrl = DataBinder.Eval(c.DataItem, "SourceFormURL").ToString();
+                }).Render();
+            });
+        }
+        if(dc.ColumnName == "AssignedTo" && showApprovel) {
+            column.SetDataItemTemplateContent(c => {
+                if(ShowButton(c)) {
+                    AddButton(Html, c, GetValue(c, "Id"), "Sign");
+                    AddButton(Html, c, GetValue(c, "Id"), "Reject");
+                } else
+                    Html.DevExpress().Label(settings => {
+                        settings.Text = DataBinder.Eval(c.DataItem, "AssignedTo").ToString();
+                    }).Render();
+            });
+        }
+        if(dc.ColumnName == "Message" && showApprovel) {
+            column.SetDataItemTemplateContent(c => {
+                if(ShowButton(c)) {
+                    Html.DevExpress().TextBox(settings => {
+                        string name = "Row" + DataBinder.Eval(c.DataItem, "Id");
+                        settings.Name = name;
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        //  settings.Properties.ClientSideEvents.Validation = " function(s,e){ onValidationReject(s, e) }";
+                        string s= "var src = $(event.srcElement); var id=src.closest('.dxbButton_EnscoTheme').attr('TaskId');  if(GetVal(src)=='Reject' && s.GetText() == '' && s.name=='Row'+id) e.isValid=false ";
+                        settings.Properties.ClientSideEvents.Validation = "function(s,e){"+s +"}";
+                    }).Render();
+                } else
+                    Html.DevExpress().Label(settings => {
+                        settings.Text = DataBinder.Eval(c.DataItem, "Message").ToString();
+                    }).Render();
+            });
+        }
+    }
+    if (Model=="Alert" )
+        grid.ClientSideEvents.EndCallback= "function(s,e) { onEndCallbackIrmaHomeEnscoPassportTasksJobPartial(s, e);}";
+    grid.CallbackRouteValues = new { Action = "IrmaHomeEnscoPassportTasksTaskPartial", Controller = "irma", Area="Irma" , sourceFormUrl= Model };
+}).Bind(dt).GetHtml()
+@functions{
+    public static bool ShowButton(GridViewDataItemTemplateContainer c) {
+        if (GetValue(c, "Status") == "Open" && GetValue(c, "AssigneeUserId") == UtilitySystem.CurrentUserId.ToString())
+            return true;
+        return false;
+    }
+    public static string FirstCharToUpper(string s) {
+        if (string.IsNullOrEmpty(s))
+            return string.Empty;
+        return char.ToUpper(s[0]) + s.Substring(1);
+    }
+    public static string GetValue(GridViewDataItemTemplateContainer c, string name) {
+        return DataBinder.Eval(c.DataItem, name).ToString();
+    }
+    public static void AddButton(HtmlHelper html, GridViewDataItemTemplateContainer c, string id, string action) {
+        html.DevExpress().Button(settings => {
+            settings.Name = Guid.NewGuid().ToString();
+            settings.Text = action;
+            settings.Attributes.Add("TaskId", id);
+            settings.UseSubmitBehavior = false;
+            string obj = "Row" + id;
+            string s = " if (s.GetText()=='Reject' && " + obj + ".GetText()=='' ){" + obj + ".isValid=false; return }; ";
+            settings.ClientSideEvents.Click = "function(s, e) { " + s + "; window.location='/irma/personnel/UpdateTask/" + id + "?flag=" + action + "&comment='+" + obj + ".GetText() }";
+            settings.RenderMode = ButtonRenderMode.Button;
+        }).Render();
+        html.ViewContext.Writer.Write("&nbsp;");
+    }
+}
+

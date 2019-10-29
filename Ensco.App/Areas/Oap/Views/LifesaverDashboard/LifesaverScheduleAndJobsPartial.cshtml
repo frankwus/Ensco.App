@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Ensco.OAP.Models.ViewModels.LifesaverComplianceViewModel>
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+        var oapScheduleController = ViewContext.Controller as Ensco.App.Areas.Oap.Controllers.LifesaverDashboardController;
+
+        settings.Name = "gridScheduledLifeSavers";
+        settings.Caption = DbRes.T("Life Savers Compliance","OapResources");
+        settings.Width = Unit.Percentage(100);
+        settings.KeyFieldName = "CSE";
+
+        settings.CallbackRouteValues = new { Controller = "LifesaverDashboard", Action = "DisplayLifeSaverScheduleAbdJobs" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "LifesaverDashboard", Action = "AddScheduledChecklist"  };
+
+        Dictionary<string, string> columns = new Dictionary<string, string>();
+        columns["CSE"] = "CSE";
+        columns["DO"] = "DO";
+        columns["EI"] = "EI";
+        columns["JSA"] = "JSA";
+        columns["LO"] = "LO";
+        columns["CM"] = "CM";
+        columns["PTW"] = "PTW";
+        columns["PS"] = "PS";
+        columns["SWA"] = "SWA";
+        columns["WH"] = "WH";
+
+        foreach (var columnName in columns.Keys)
+        {
+            settings.Columns.Add(c =>
+            {
+                c.FieldName = columns[columnName];
+                c.Caption = columnName;
+                c.Width = Unit.Percentage(4);
+
+                c.PropertiesEdit.EncodeHtml = false;
+                c.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            });
+        }
+
+        settings.Toolbars.Add(toolbar =>
+        {
+            toolbar.Name = "toolBarAutoSchedule";
+
+            toolbar.Position = GridToolbarPosition.Top;
+            toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+            toolbar.Items.Add(item =>
+            {
+                item.Name = "dividerAddItem" + settings.Name;
+                item.SetTemplateContent(c =>
+                {
+                    Html.ViewContext.Writer.Write("&nbsp;&nbsp;");
+                });
+            });
+
+            toolbar.Items.Add(item =>
+            {
+                item.Text = "Auto Schedule";
+                item.Name = "btnAutoGenerateChecklist";
+                item.ClientEnabled = true;
+                item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                item.ItemStyle.ForeColor = System.Drawing.Color.White;
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+        });
+
+        settings.ClientSideEvents.ToolbarItemClick = "function(s, e){if (typeof onToolbarItemClick === 'function' ) onToolbarItemClick(s, e); else s.AddNewRow() ;}";
+
+        settings.CommandColumn.Visible = false;
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "LifesaverDashboard", Action = "AddScheduledChecklist" };
+
+        settings.SetEditFormTemplateContent(container =>
+        {
+            Html.RenderPartial("LifeSaverAutoScheduleFormPartial");
+        });
+
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsPopup.EditForm.Modal = true;
+        settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.Center;
+        settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+        settings.SettingsPopup.EditForm.CloseOnEscape = AutoBoolean.True;
+        settings.SettingsText.PopupEditFormCaption = "Auto Schedule - Life Saver Checklist";
+
+
+        settings.SettingsSearchPanel.CustomEditorName = "search" + settings.Name;
+
+        settings.ClientSideEvents.EndCallback = "function (s,e) { gridLifeSavers.Refresh(); }";
+
+    }).Bind(Model).GetHtml();
+}

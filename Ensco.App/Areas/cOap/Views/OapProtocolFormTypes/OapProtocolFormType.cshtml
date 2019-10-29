@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapProtocolFormType>
+@{
+    ViewBag.Title = "Oap Protocol Form Types";
+}
+
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewProtocolFormType":
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+@*<h1 class="area-headers">@ViewBag.Title</h1>*@
+<div class="oap-master-grid">
+    <form>
+        @Html.Partial("OapProtocolFormTypePartial", Model)
+    </form>   
+</div>

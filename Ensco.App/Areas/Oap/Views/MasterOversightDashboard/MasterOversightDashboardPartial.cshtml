@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist>
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+        var oapController = ViewContext.Controller as Ensco.App.Areas.Oap.Controllers.MasterOversightDashboardController;
+         
+        oapController.Configure(settings, Html, ViewContext);
+
+    }).Bind(Model).GetHtml();
+}
+
+
+

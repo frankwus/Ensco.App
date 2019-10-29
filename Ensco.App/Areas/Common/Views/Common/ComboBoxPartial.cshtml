@@ -1,0 +1,30 @@
+﻿@model Ensco.Models.LookupListModel<dynamic>
+
+@using Ensco.App.Helpers
+
+@Html.DevExpress().ComboBox(s => {
+    s.Name = Model.BoundFieldName;
+    s.CallbackRouteValues = new { Area = "Common", Controller = "Common", Action = "ComboBoxPartial", name=Model.BoundFieldName, lookup = "", selected = Model.Selected, setreadonly = Model.ReadOnly };
+    s.ShowModelErrors = true;
+    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+    s.Properties.ValidationSettings.Display = Display.Dynamic;
+    s.Properties.ValidationSettings.SetFocusOnError = true;
+    s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    s.Properties.NullText = "[Select]";
+    s.Properties.TextField = Model.DisplayField;
+    s.Properties.ValueField = Model.KeyFieldName;
+    s.Properties.DataMember = Model.DisplayField;
+    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+    s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+    s.ReadOnly = Model.ReadOnly;
+
+    s.PreRender = (o, e) =>
+    {
+        MVCxComboBox c = o as MVCxComboBox;
+        if(Model.Selected != null)
+        {
+            object item = Model.GetDisplayValue(Model.Selected);
+            c.SelectedItem = c.Items.FindByText((string)item);
+        }
+    };
+}).BindList(Model.Items).GetHtml()

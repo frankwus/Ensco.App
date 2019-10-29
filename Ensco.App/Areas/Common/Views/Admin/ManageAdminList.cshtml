@@ -1,0 +1,38 @@
+﻿@{
+    string type = ViewBag.ListName; // this.Request.Cookies["ListName"].Value;
+}
+@model Ensco.Models.DataTableModel
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = true;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = true;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    string name = "gridRigAdminList";
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name =name;
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.SettingsPager.PageSize = 20;
+
+    grid.CallbackRouteValues = new {Area = "Common", Controller = "Admin", Action = "ManageAdminList"  };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageAdminListUpdate" };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageAdminListUpdate" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageAdminListDelete" };
+
+    Html.EnscoStandardGrid(grid, Ensco.Irma.Services.IrmaServiceSystem.GetModelType(type), options);
+
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) => {
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+
+
+
+
+

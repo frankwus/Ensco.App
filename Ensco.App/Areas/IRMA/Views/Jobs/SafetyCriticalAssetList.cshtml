@@ -1,0 +1,24 @@
+﻿@model Ensco.Irma.Models.Jobs.ManageAssetsModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(treeListCorpPersonnel); // grid is client side Id
+            }
+        );
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("SafetyCriticalAssetListPartial", Model);
+}

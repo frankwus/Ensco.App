@@ -1,0 +1,9 @@
+﻿@model IEnumerable<Ensco.App.Areas.cOap.Models.AuditPlanSummaryModel>
+
+@Html.DevExpress().GridView(settings =>
+{
+    var oapAuditPlanSummaryController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapAuditPlanController;
+    oapAuditPlanSummaryController.ConfigureSummaryDetails(settings, Html, ViewContext);
+}).Bind(Model).GetHtml()
+
+

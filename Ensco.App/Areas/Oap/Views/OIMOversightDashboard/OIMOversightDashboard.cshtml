@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist>
+@{
+    ViewBag.Title = "OIM Oversight Dashboard";
+    Layout = "~/Areas/Oap/Views/Shared/_OapLayout.cshtml";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewRigChecklist":
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+@section styles {
+<style>
+    .grid-spacing {
+        margin-bottom: 2em;
+    }
+</style>
+}
+
+@Html.DevExpress().FormLayout(s =>
+{
+
+    s.Name = "layoutOversight";
+    s.Width = Unit.Percentage(100);
+
+
+    s.Items.AddGroupItem(g =>
+    {
+        g.Caption = "Operational Assurance Program (OAP)";
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderPartial("OIMOversightDashboardPartial", Model));
+        });
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderAction("BACPendingReviewPartial"));
+        });
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderAction("CAVPendingReviewPartial"));
+        });
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderAction("LifeSaversPendingReviewPartial"));
+        });
+
+    });
+
+    s.Items.AddGroupItem(g =>
+    {
+        g.Caption = "Safe Systems of Work (eSSoW)";
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderAction("GetOpenWIs"));
+        });
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderAction("GetOpenJobs"));
+        });
+    });
+
+    s.Items.AddGroupItem(g =>
+    {
+        g.Caption = "Behavioral Based Safety (BBS)";
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderAction("FSOPendingReviewPartial"));
+        });
+
+        g.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.CssClass = "grid-spacing";
+            i.SetNestedContent(() => Html.RenderAction("GetOpenSWAs"));
+        });
+    });
+
+}).GetHtml()
+
+<div style="margin-top:2em;">
+    @Html.Action("GetOpenCAPAs")
+</div>

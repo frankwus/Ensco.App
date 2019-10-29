@@ -1,0 +1,42 @@
+﻿.oap-master-grid table tbody tr td .dxgvCSD {
+    min-height: 400px;
+}
+
+.hideCell {
+    display: none;
+}
+
+.buttonToolbar {
+    text-align: center !important;
+    margin-right: 80px;
+    float: right !important;
+    width: 50px !important;
+}
+
+.button {
+    text-align: center !important;
+    float: left !important;
+    width: 50px !important;
+}
+
+.dxgvHeader_EnscoTheme {
+    border-right-color: lightgray !important;
+}
+
+.dxgvControl_EnscoTheme td.dxgvBatchEditModifiedCell_EnscoTheme {
+    background: white !important;
+}
+
+.dvSelectedRow {
+    background-color: #E3ECFE !important;
+    color: black;
+}
+
+
+/*#checklistExecutionGrid_DXMainTable td.dxgv {       
+    border-bottom: 1px solid darkgray !important;     
+}*/
+
+#SearchBy {
+    width: 30% !important;
+}

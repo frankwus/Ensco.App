@@ -1,0 +1,16 @@
+﻿@model Ensco.Irma.Oap.WebClient.Corp.RigOapChecklist
+
+@using (Html.BeginForm("Update", "Generic"))
+{
+
+    @Html.HiddenFor(m => m.LocationId)
+
+    @Html.DevExpress().FormLayout(settings =>
+    {
+
+        var genericListController = (dynamic)ViewContext.Controller;
+        genericListController.ConfigurePlanning(settings, Html, ViewContext);
+
+    }).Bind(Model).GetHtml()
+
+}

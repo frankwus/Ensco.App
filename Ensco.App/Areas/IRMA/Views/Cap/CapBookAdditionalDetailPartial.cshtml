@@ -1,0 +1,347 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    options.EditButtonImage = "~/Images/BlueTick.png";
+
+    Ensco.Models.LookupListModel<dynamic> lkpDept = Ensco.Utilities.UtilitySystem.GetLookupList("Department");
+    Ensco.Models.LookupListModel<dynamic> lkpPos = Ensco.Utilities.UtilitySystem.GetLookupList("Position");
+    Ensco.Models.LookupListModel<dynamic> lkpAT = Ensco.Utilities.UtilitySystem.GetLookupList("AssessmentType");
+    Ensco.Models.LookupListModel<dynamic> lkpAM = Ensco.Utilities.UtilitySystem.GetLookupList("AssessmentMethod");
+    Ensco.Models.LookupListModel<dynamic> lkpCompetency = Ensco.Utilities.UtilitySystem.GetLookupList("Competency");
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CapBooAdditionals";
+    grid.KeyFieldName = Model.KSAs.KeyFieldName;
+    grid.SettingsDetail.MasterGridName = "grid_CapBookAdditionalCompetency";
+
+    grid.CallbackRouteValues = new {  Controller = "Cap", Action = "CapBookAdditionalDetailPartial", compId = Model.CompId };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Controller = "Cap", Action = "CapBookAdditonalDetailAdd", compId = Model.CompId };
+    grid.SettingsEditing.UpdateRowRouteValues = new {  Controller = "Cap", Action = "CapBookAdditonalDetailUpdate", compId = Model.CompId };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.TLC.Models.CAP_BookModel), options);
+
+    grid.CommandColumn.Width = Unit.Pixel(100);
+    grid.CommandColumn.ShowNewButtonInHeader = true;
+
+    grid.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+
+    grid.CellEditorInitialize = (s, e) =>
+    {
+        switch (e.Column.FieldName)
+        {
+            case "AssessedBy":
+                e.Editor.Value = Ensco.Utilities.UtilitySystem.CurrentUserName;
+                break;
+        }
+    };
+
+    grid.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    grid.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+    grid.SetEditFormTemplateContent(c =>
+    {
+        if (c.Grid.IsNewRowEditing)
+        {
+            grid.SettingsText.PopupEditFormCaption = "Select Additional Competency";
+
+            Html.DevExpress().FormLayout(form =>
+            {
+                form.Name = "formAddAdditionalUpdate";
+                form.EncodeHtml = false;
+                form.UseDefaultPaddings = false;
+                form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+                form.ColCount = 1;
+
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "RigId";
+                    item.Caption = "Rig";
+                    item.SetNestedContent(() =>
+                    {
+                        ViewContext.Writer.Write(string.Format("{0}", Ensco.Utilities.UtilitySystem.Settings.RigName));
+                    });
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                        s.Text = Ensco.Utilities.UtilitySystem.Settings.RigName;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "Department";
+                    item.NestedExtension().ComboBox(s=>
+                    {
+                        s.Name = item.FieldName;
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.Properties.NullText = "[Select Department]";
+                        s.Properties.TextField = lkpDept.DisplayField;
+                        s.Properties.ValueField = lkpDept.KeyFieldName;
+                        s.Properties.DataMember = lkpDept.KeyFieldName;
+                        s.Properties.DataSource = lkpDept.Items;
+                        s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                        s.Properties.AllowNull = false;
+                        //s.CallbackRouteValues = new { Controller = "Cap", Action = "CapBookComboBoxRefresh", name="Department" };
+                        //s.Properties.ClientSideEvents.SelectedIndexChanged = String.Format("function (s, e) {{ OnComboBoxValueChanged(s, '{0}', 'Department', s.GetValue()); }}", Url.Action("CapBookUpdateComboBoxItem", "Cap", new { Area = "IRMA" }));
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "PositionId";
+                    item.Caption = "Position";
+                    item.NestedExtension().ComboBox(s =>
+                    {
+                        s.Name = item.FieldName;
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.Properties.NullText = "[Select Position]";
+                        s.Properties.TextField = lkpPos.DisplayField;
+                        s.Properties.ValueField = lkpPos.KeyFieldName;
+                        s.Properties.DataMember = lkpPos.KeyFieldName;
+                        s.Properties.DataSource = lkpPos.Items;
+                        s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                        s.Properties.AllowNull = false;
+                        //s.CallbackRouteValues = new { Controller = "Cap", Action = "CapBookComboBoxRefresh", name="Department" };
+                        //s.Properties.ClientSideEvents.SelectedIndexChanged = String.Format("function (s, e) {{ OnComboBoxValueChanged(s, '{0}', 'Department', s.GetValue()); }}", Url.Action("CapBookUpdateComboBoxItem", "Cap", new { Area = "IRMA" }));
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "CompId";
+                    item.Caption = "Competency";
+                    item.NestedExtension().ComboBox(s =>
+                    {
+                        s.Name = item.FieldName;
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.Properties.NullText = "[Select Competency]";
+                        s.Properties.TextField = lkpCompetency.DisplayField;
+                        s.Properties.ValueField = lkpCompetency.KeyFieldName;
+                        s.Properties.DataMember = lkpCompetency.KeyFieldName;
+                        s.Properties.DataSource = lkpCompetency.Items;
+                        s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                        s.Properties.AllowNull = false;
+                        //s.CallbackRouteValues = new { Controller = "Cap", Action = "CapBookComboBoxRefresh", name="Department" };
+                        //s.Properties.ClientSideEvents.SelectedIndexChanged = String.Format("function (s, e) {{ OnComboBoxValueChanged(s, '{0}', 'Department', s.GetValue()); }}", Url.Action("CapBookUpdateComboBoxItem", "Cap", new { Area = "IRMA" }));
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "SelectedKSAs";
+                    item.Caption = "KSA";
+                    item.NestedExtensionType = FormLayoutNestedExtensionItemType.ComboBox;
+                    item.SetNestedContent(() =>
+                    {
+                        var lkp = Ensco.Utilities.UtilitySystem.GetLookupList("KSA");
+                        Html.DevExpress().ListBox(lb =>
+                        {
+                            lb.Name = "SelectedKSAs";
+                            lb.Width = Unit.Percentage(100);
+                            lb.Height = Unit.Pixel(300);
+                            lb.Properties.TextField = "KSATitle";
+                            lb.Properties.ValueField = "KSAId";
+                            lb.Properties.SelectionMode = ListEditSelectionMode.Multiple;
+
+                        }).BindList(lkp.Items).GetHtml();
+                        //Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = item.FieldName, lookup = "KSA", multi = true, selected = DataBinder.Eval(c.DataItem, "SelectedKSAs") });
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "AssessorComments";
+                    item.Caption = "Comments";
+                    item.NestedExtension().Memo(s =>
+                    {
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.ShowCaption = DefaultBoolean.False;
+                    item.SetNestedContent(() =>
+                    {
+                        ViewContext.Writer.Write("<div style = 'float:right; padding-right:30px' >");
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnUpdate";
+                            btnSettings.Text = "Save";
+                            btnSettings.UseSubmitBehavior = false;
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ grid_CapBooAdditionals.UpdateEdit(); }";
+                        }).GetHtml();
+                        ViewContext.Writer.Write("&nbsp;&nbsp;");
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnCancel";
+                            btnSettings.Text = "Cancel";
+                            btnSettings.UseSubmitBehavior = false;
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ grid_CapBooAdditionals.CancelEdit(); }";
+                        }).GetHtml();
+
+                        ViewContext.Writer.Write("</div>");
+                    });
+                });
+            }).GetHtml();
+        }
+        else if (c.Grid.IsEditing)
+        {
+            grid.SettingsText.PopupEditFormCaption = "Update CAP Assessment";
+            Html.DevExpress().FormLayout(form =>
+            {
+                form.Name = "formAddAdditionalAdd";
+                form.EncodeHtml = false;
+                form.UseDefaultPaddings = false;
+                form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+                form.ColCount = 1;
+
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "KSATitle";
+                    item.Caption = "Title";
+                    item.NestedExtension().Memo(s =>
+                    {
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "AssessedBy";
+                    item.Caption = "Assessor";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "AssessmentType";
+                    item.Caption = "Assessment";
+                    item.NestedExtension().ComboBox(s =>
+                    {
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.Properties.DataSource = lkpAT.Items;
+                        s.Properties.NullText = "[Select Department]";
+                        s.Properties.TextField = lkpAT.DisplayField;
+                        s.Properties.ValueField = lkpAT.KeyFieldName;
+                        s.Properties.DataMember = lkpAT.KeyFieldName;
+                        s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                        s.Properties.AllowNull = false;
+
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "AssessmentMethod";
+                    item.Caption = "Method";
+                    item.NestedExtension().ComboBox(s =>
+                    {
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.Properties.DataSource = lkpAM.Items;
+                        s.Properties.NullText = "[Select Method]";
+                        s.Properties.TextField = lkpAM.DisplayField;
+                        s.Properties.ValueField = lkpAM.KeyFieldName;
+                        s.Properties.DataMember = lkpAM.KeyFieldName;
+                        s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                        s.Properties.AllowNull = false;
+
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "AssessorComments";
+                    item.Caption = "Comments";
+                    item.NestedExtension().Memo(s =>
+                    {
+                        s.ShowModelErrors = true;
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.ShowCaption = DefaultBoolean.False;
+                    item.SetNestedContent(() =>
+                    {
+                        ViewContext.Writer.Write("<div style = 'float:right; padding-right:30px' >");
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnUpdate";
+                            btnSettings.Text = "Save";
+                            btnSettings.UseSubmitBehavior = false;
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ grid_CapBooAdditionals.UpdateEdit(); }";
+                        }).GetHtml();
+                        ViewContext.Writer.Write("&nbsp;&nbsp;");
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnCancel";
+                            btnSettings.Text = "Cancel";
+                            btnSettings.UseSubmitBehavior = false;
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ grid_CapBooAdditionals.CancelEdit(); }";
+                        }).GetHtml();
+
+                        ViewContext.Writer.Write("</div>");
+                    });
+                });
+            }).GetHtml();
+        }
+    });
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.Additional.KeyFieldName;
+    e.QueryableSource = Model.Additional.Dataset;
+}).GetHtml()

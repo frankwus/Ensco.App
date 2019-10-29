@@ -1,0 +1,33 @@
+﻿@model Ensco.Irma.Models.ScheduleCrewChangeModel
+
+@Html.DevExpress().PopupControl(settings => {
+    settings.Name = "popupControlScheduleCrewChange";
+    settings.CallbackRouteValues = new { Controller = "Personnel", Action = "ScheduleCrewChange" };
+    settings.CloseAction = CloseAction.OuterMouseClick;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.ShowFooter = true;
+    settings.AllowDragging = true;
+    settings.EnableHotTrack = true;
+    settings.Height = Unit.Percentage(100);
+    settings.Width = Unit.Percentage(100);
+    settings.HeaderText = "Schedule Crew Change";
+
+    settings.SetContent(() => {
+        using (Html.BeginForm())
+        {
+            Html.RenderAction("ScheduleCrewChangePartial", "Personnel");
+        }
+    });
+
+    settings.SetFooterTemplateContent(c => {
+        ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+        Html.DevExpress().Button(buttonsettings => {
+            buttonsettings.Name = "scheduleCrewChangeUpdate";
+            buttonsettings.Text = "Create";
+            buttonsettings.UseSubmitBehavior = true;
+        }).Render();
+        ViewContext.Writer.Write("</div>");
+    });
+
+}).GetHtml()

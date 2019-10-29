@@ -1,0 +1,72 @@
+﻿@model Ensco.FSO.Models.FSOChecklistViewModel
+
+@Html.DevExpress().FormLayout(layout =>
+{
+
+    layout.Name = "layoutActions";
+    layout.EncodeHtml = true;
+    layout.Width = Unit.Percentage(100);
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "1 Reactions to People";
+        group.ColumnCount = 5;
+
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.RenderPartial("ChecklistQuestionsPartial", Model.Questions.Where(q => q.Section.Name.Contains("Reactions to People")).ToList());
+
+            });
+        });
+    });
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "2 Personal Protective Equipment (PPE)";
+        group.ColumnCount = 5;
+
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.RenderPartial("ChecklistQuestionsPartial", Model.Questions.Where(q => q.Section.Name.Contains("Personal Protective Equipment")).ToList());
+
+            });
+        });
+    });
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "3 Positions of People";
+        group.ColumnCount = 5;
+
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.RenderPartial("ChecklistQuestionsPartial", Model.Questions.Where(q => q.Section.Name.Contains("Positions of People")).ToList());
+            });
+        });
+    });
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "4 Tools and Equipment";
+        group.ColumnCount = 5;
+
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.RenderPartial("ChecklistQuestionsPartial", Model.Questions.Where(q => q.Section.Name.Contains("Tools and Equipment")).ToList());
+            });
+        });
+    });
+
+}).GetHtml()

@@ -1,0 +1,36 @@
+﻿@model Ensco.TLC.Models.CAP_AdditionalModel
+
+@{
+    var lkpRig = Ensco.Utilities.UtilitySystem.GetLookupList("Rig");
+}
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formAddAdditional";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+
+    form.Items.Add(item =>
+    {
+        item.FieldName = "Rig";
+        item.NestedExtension().ComboBox(s =>
+        {
+            s.ShowModelErrors = true;
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.Properties.ValidationSettings.SetFocusOnError = true;
+            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            s.Properties.DataSource = lkpRig.Items;
+            s.Properties.NullText = "[Select Rig]";
+            s.Properties.TextField = "Name";
+            s.Properties.ValueField = "Name";
+            s.Properties.DataMember = "Name";
+            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+            s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+            s.Properties.AllowNull = false;
+
+        });
+    });
+}).GetHtml()

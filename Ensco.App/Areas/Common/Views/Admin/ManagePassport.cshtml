@@ -1,0 +1,53 @@
+﻿@model Ensco.Models.ManagePassportModel
+
+@{
+    //var entityId = Model.Id;
+}
+
+@section scripts
+    {
+        <script type="text/javascript">
+            MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+                function (s, e) {
+                    AdjustMainGrid(gridView_PassportPartial); // grid is client side Id
+                }
+            );
+
+            function AdjustSize() {
+                $.event.trigger("AdjustOtherElements");
+            }
+
+            $(document).on("AdjustOtherElements", function () {
+                AdjustMainGrid(gridView_PassportPartial); // grid is client side Id
+            });
+
+            function AdjustMainGrid(grid) {
+                var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+                $("#MainLayoutPanel").css("height", height);
+
+                grid.SetHeight(height);
+            }
+
+            function OnFilesUploadStart(s, e) {
+                $('#UserID').val(Text.GetValue());
+            }
+            function OnFileUploadComplete(s, e) {
+                var _object = JSON.parse(e.callbackData);
+                console.log(JSON.stringify(_object));
+            }
+
+            function OnFilesUploadComplete(s, e) {
+                //gridView_PassportPartialRecords.UpdateEdit();
+            }
+        </script>
+    }
+
+@{ Html.EnableClientValidation(); }
+@{ Html.EnableUnobtrusiveJavaScript(); }
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("PassportPartial", Model);
+}
+
+

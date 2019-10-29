@@ -1,0 +1,169 @@
+﻿@model Ensco.Models.DataTableModel
+
+@using System.Web.UI.WebControls
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var gridView = Html.DevExpress().GridView(grid =>
+    {
+        grid.Name = "gridView_PersonnelArchive";
+        grid.KeyFieldName = Model.KeyFieldName;
+        grid.Settings.ShowTitlePanel = true;
+        grid.SettingsText.Title = "Personnel Search";
+
+        grid.CallbackRouteValues = new { Area = "Irma", Controller = "RigAdmin", Action = "PersonnelArchivePartial" };
+
+        grid.Height = Unit.Percentage(100);
+
+        Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.RigPersonnelArchiveModel));
+
+        grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        grid.SettingsPager.FirstPageButton.Visible = true;
+        grid.SettingsPager.LastPageButton.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+        grid.CommandColumn.Visible = false;
+        grid.Styles.Header.Wrap = DefaultBoolean.True;
+        grid.SettingsPager.EnableAdaptivity = true;
+        grid.SettingsBehavior.EnableCustomizationWindow = true;
+        grid.CommandColumn.Width = Unit.Pixel(0);
+
+        grid.SettingsCustomizationDialog.ShowColumnChooserPage = true;
+        grid.SettingsCustomizationDialog.ShowFilteringPage = true;
+        grid.SettingsCustomizationDialog.ShowSortingPage = true;
+        grid.SettingsPopup.CustomizationWindow.Height = Unit.Pixel(400);
+        //grid.SettingsPopup.CustomizationWindow.Width = Unit.Percentage(30);
+        grid.SettingsPopup.CustomizationWindow.MinHeight = Unit.Pixel(400);
+        grid.SettingsPopup.CustomizationWindow.MinWidth = Unit.Pixel(100);
+        grid.StylesPopup.CustomizationWindow.Theme = "EnscoTheme";
+
+        grid.Toolbars.Add(toolbar =>
+        {
+            toolbar.Name = "toolbarCrewChangePartial";
+            toolbar.Enabled = true;
+            toolbar.EnableAdaptivity = true;
+            toolbar.Position = GridToolbarPosition.Top;
+            toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Custom;
+                item.Name = "btnCustomization";
+                item.Text = "Additional Filters";
+                item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                item.ItemStyle.ForeColor = System.Drawing.Color.White;
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+
+            toolbar.Items.Add(i =>
+            {
+                i.BeginGroup = true;
+                i.ItemStyle.HorizontalAlign = HorizontalAlign.Left;
+                i.SetTemplateContent(c =>
+                {
+                    Html.DevExpress().ButtonEdit(s =>
+                    {
+                        s.Name = "search";
+                        s.Properties.NullText = "Search...";
+                        s.Properties.Buttons
+                            .Add()
+                            .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                    }).Render();
+                });
+            });
+
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Refresh;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Refresh.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ShowFilterRow;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Filter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ClearFilter;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/ClearFilter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            //toolbar.Items.Add(item =>
+            //{
+            //    item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            //    item.Command = GridViewToolbarCommand.ExportToPdf;
+            //    item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            //    item.Image.Url = "~/Images/Pdf.png";
+            //    item.Image.Width = Unit.Pixel(24);
+            //    item.Image.Height = Unit.Pixel(24);
+            //    item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            //    item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            //    item.ClientEnabled = true;
+            //});
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ExportToCsv;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Excel.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+        });
+        grid.SettingsSearchPanel.CustomEditorName = "search";
+        grid.ClientSideEvents.ToolbarItemClick = "function(s,e){ if(e.item.name == \"btnCustomization\") { if (gridView_PersonnelArchive.IsCustomizationWindowVisible()) gridView_PersonnelArchive.HideCustomizationWindow(); else gridView_PersonnelArchive.ShowCustomizationWindow(); } }";
+
+        grid.SettingsExport.EnableClientSideExportAPI = true;
+        grid.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.WYSIWYG;
+        grid.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+        grid.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+        // Export all the columns
+        grid.SettingsExport.BeforeExport = (sender, e) =>
+        {
+            MVCxGridView gv = sender as MVCxGridView;
+            if (sender == null)
+                return;
+            foreach (MVCxGridViewColumn col in gv.Columns)
+                col.Visible = true;
+        };
+    }).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+    {
+        e.KeyExpression = Model.KeyFieldName;
+        e.QueryableSource = Model.Dataset;
+    }).GetHtml();
+}
+

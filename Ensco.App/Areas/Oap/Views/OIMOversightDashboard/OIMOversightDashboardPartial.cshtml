@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist>
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+        var oapController = ViewContext.Controller as Ensco.App.Areas.Oap.Controllers.OIMOversightDashboardController;
+         
+        oapController.Configure(settings, Html, ViewContext);
+
+    }).Bind(Model.OrderByDescending(c => c.RigChecklistUniqueId)).GetHtml();
+}

@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Ensco.App.Areas.Oap.Models.OapProtocolScoringFlatModel>
+@{
+    ViewBag.Title = "Oap Protocol Form";
+}
+
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewProtocolForm":
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+
+@*<h1 class="area-headers">@ViewBag.Title</h1>*@
+<div class="oap-master-grid">
+    @Html.Partial("ProtocolScoringFormPartial", Model)
+</div>
+

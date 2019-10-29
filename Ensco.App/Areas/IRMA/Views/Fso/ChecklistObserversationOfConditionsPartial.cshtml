@@ -1,0 +1,42 @@
+﻿@model Ensco.FSO.Models.FSOChecklistViewModel
+
+@Html.DevExpress().FormLayout(layout =>
+{
+
+    layout.Name = "layoutConditions";
+    layout.EncodeHtml = true;
+    layout.Width = Unit.Percentage(100);
+
+    var reactionsGroup = layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "7 Tools and Equipment";
+        group.ColumnCount = 5;
+
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.RenderPartial("ChecklistQuestionsPartial", Model.Questions.Where(q => q.Section.Name.Contains("Tools and Equipment")).ToList());
+
+            });
+        });
+    });
+
+    var ppeGroup = layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "8 Structures and Work Area";
+        group.ColumnCount = 1;
+
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.RenderPartial("ChecklistQuestionsPartial", Model.Questions.Where(q => q.Section.Name.Contains("Structures and Work Area")).ToList());
+
+            });
+        });
+    });
+
+}).GetHtml()

@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "SelectFlightManifest";
+}
+
+@Html.DevExpress().PopupControl(settings => {
+    settings.Name = "popupControlSelectFlightManifest";
+    settings.CallbackRouteValues = new { Controller = "Personnel", Action = "SelectFlightManifest" };
+    settings.CloseAction = CloseAction.OuterMouseClick;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.ShowFooter = true;
+    settings.AllowDragging = true;
+    settings.EnableHotTrack = true;
+    //settings.LoadContentViaCallback = LoadContentViaCallback.OnFirstShow;
+    settings.Height = Unit.Percentage(100);
+    settings.Width = Unit.Percentage(100);
+    settings.HeaderText = "Select Flight Manifests";
+
+    settings.SetContent(() => {
+        using (Html.BeginForm())
+        {
+            Html.RenderAction("SelectFlightManifestPartial", "Personnel");
+        }
+    });
+
+    settings.SetFooterTemplateContent(c => {
+        ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+        Html.DevExpress().Button(buttonsettings => {
+            buttonsettings.Name = "btnSelectFlightManifest";
+            buttonsettings.Text = "Add";
+            buttonsettings.UseSubmitBehavior = true;
+        }).Render();
+        ViewContext.Writer.Write("</div>");
+    });
+
+}).GetHtml()
+

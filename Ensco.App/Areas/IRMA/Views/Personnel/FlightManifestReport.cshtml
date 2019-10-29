@@ -1,0 +1,82 @@
+﻿@model Ensco.Irma.Models.CrewFlightModel
+<style>
+    .error {
+        background-color: pink;
+        color: black;
+        font-weight: 100;
+        height: 20px;
+    }
+</style>
+@section scripts
+{
+    <script type="text/javascript">
+        function Init() {
+            var arr = ['gridView_FlightManifestArrivingPob', 'gridView_FlightManifestDepartingPob'] 
+            for (var i in arr) {
+                var grid = arr[i]
+                GetId(grid + '_DXMainTable').children().children().slice(1).each(function () {
+                    var tr = $(this)
+                    var url = tr.children().eq(2).find('a').attr('href')
+                    if (url != null) {
+                        var passportId = url.split('=')[1]
+                        if (passportId != null) {
+                            var json = GetAjax('/irma/Personnel/GetDisplayName?passportId=' + passportId)
+                            var name = json[0][0].DisplayName
+                            tr.children().eq(1).html(name)
+                        }
+                    }
+                })
+            }
+        }
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                console.log( s +'testing '+e )
+                Init() 
+            //AdjustMainGrid(gridView_FlightManifestPartial); // grid is client side Id
+            }
+        );
+
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            //AdjustMainGrid(gridView_FlightManifestPartial); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+            }
+        }
+        function OnParkingLot(s, url, id, crewChangeId, crewFlightId, depart) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { id: id, CrewChangeId: crewChangeId, CrewFlightId: crewFlightId, departure: depart },
+                beforeSend: function () {
+                },
+                success: function (msg) {
+                    if (depart)
+                        gridView_FlightManifestDepartingPob.Refresh();
+                    else
+                        gridView_FlightManifestArrivingPob.Refresh();
+                }
+            });
+        }
+
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("FlightManifestReportPartial", Model);
+}
+

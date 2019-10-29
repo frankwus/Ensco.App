@@ -1,0 +1,15 @@
+﻿@model Ensco.Irma.Models.TourManagementModel
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formTourChange";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+
+    form.Items.AddGroupItem(i =>
+    {
+
+    });
+}).GetHtml()

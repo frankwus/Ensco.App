@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapChecklistTopic>
+@{
+    ViewBag.Title = "Oap Checklist Topics";
+}
+
+<script type="text/javascript">
+    var currentSubGroupId, currentChecklistId, startEdit = false;
+    function OnBeginCallback(s, e) {
+        startEdit = (e.command == "STARTEDIT");
+    }
+
+    function OnInit(s, e) {
+        var oapSubGroupId = OapChecklistTopicGrid.GetEditor("OapChecklistSubGroupId").GetValue();
+        if (oapSubGroupId) {
+            OapChecklistTopicGrid.GetEditor("OapChecklistSubGroupId").PerformCallback();
+        }
+    }
+
+    function OnEndCallback(s, e) {
+        currentSubGroupId = OapChecklistTopicGrid.GetEditor("OapChecklistSubGroupId").GetValue();
+        if (currentSubGroupId || startEdit) {
+            OapChecklistTopicGrid.GetEditor("OapChecklistSubGroupId").PerformCallback();
+        }
+
+        currentChecklistId = OapChecklistRelatedQuestionGrid.GetEditor("ChecklistId").GetValue();
+        if (currentChecklistId || startEdit) {
+            OapChecklistRelatedQuestionGrid.GetEditor("OapChecklistRelatedQuestionId").PerformCallback();
+        }
+    }
+
+    function OapChecklistGroupOnSelectedChanged() {
+        OapChecklistTopicGrid.GetEditor("OapChecklistSubGroupId").PerformCallback();
+    }
+    function OapChecklistSubGroupBeginCallback(s, e) {
+        e.customArgs["OapChecklistGroupId"] = OapChecklistTopicGrid.GetEditor("OapChecklistGroupId").GetValue();
+    }
+    function OapChecklistSubGroupEndCallback(s, e) {
+        if (startEdit) {
+            s.SetValue(currentSubGroupId);
+            startEdit = false;
+        }
+    }
+
+    function OapChecklistOnSelectedChanged() {
+        OapChecklistRelatedQuestionGrid.GetEditor("OapChecklistRelatedQuestionId").PerformCallback();
+    }
+    function OapChecklistQuestionsBeginCallback(s, e) {
+        e.customArgs["ChecklistId"] = OapChecklistRelatedQuestionGrid.GetEditor("ChecklistId").GetValue();
+    }
+    function OapChecklistQuestionsEndCallback(s, e) {
+        if (startEdit) {
+            s.SetValue(currentChecklistId);
+            startEdit = false;
+        }
+    }
+
+    function onToolbarItemClick(s, e) {
+        switch (e.item.name) {
+            case "AddNewChecklistTopic":
+            case "AddNewChecklistQuestion":
+            case "AddNewChecklistQuestionTag":
+            case "AddNewChecklistRelatedQuestion":
+                s.AddNewRow();
+                break;
+        }
+    }
+</script>
+
+<form>
+    @Html.Partial("OapChecklistTopicPartial", Model)
+</form>
+
+

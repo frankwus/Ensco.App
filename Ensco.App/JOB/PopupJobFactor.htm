@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<style>
+    body {
+        margin: 20px;
+        margin-right: 40px;
+    }
+</style>
+<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body>
+
+    <img src="../Images/Submit icon.png" onclick="on_Submit(this)" />
+    <img src="../Images/Cancel icon.png" onclick="window.close() " />
+    <table id="t" border="1" width="90%" style="border-collapse:collapse"></table>
+    <br>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var tResult = $('#tResult')
+    $(document).ready(function () {
+        t.width('100%').find('td').css('border', 'none').find(':text').addClass('border')
+        on_Search()
+        ConfigKeyPress()
+        CleanUp()
+    })
+    function on_Search(src) {
+        var xml = GetArray(['usp_JsaFactor'])
+        DataBind(t, xml)
+        RemoveWingDing(t)
+    }
+    function on_Submit() {
+        var tr = t.find(':checkbox:checked').closest('tr').eq(0)
+        var arr = t.find(':checked').map(function () {
+            return $(this).parent().next().text()
+        }).get()
+        if (arr.length) {
+            window.returnValue = arr
+            window.close()
+        } else
+            alert('Please make a selection.')
+    }
+</script>

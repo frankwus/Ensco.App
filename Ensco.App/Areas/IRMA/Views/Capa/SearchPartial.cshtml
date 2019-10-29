@@ -1,0 +1,35 @@
+﻿
+@using System.Data;
+@using Ensco.Models;
+@{
+    GridViewOptions options = new GridViewOptions();
+    DataTableModel dt = (DataTableModel)this.ViewBag.dt;
+    HttpCookie Toggle = this.Request.Cookies["Toggle"];
+}
+
+<div id="dvSearchPartial">
+    @Html.DevExpress().GridView(grid =>
+    {
+        grid.Name ="gridSearch";
+        grid.KeyFieldName = dt.KeyFieldName;
+        grid.SettingsPager.PageSize = 10;
+        string mType = "Ensco.Models.IrmaCapaModel";
+        grid.ClientSideEvents.BeginCallback = "function(s,e) { onBeginCallback(s, e);}";
+
+        Html.EnscoStandardGrid(grid, Ensco.Irma.Services.IrmaServiceSystem.GetModelType(mType), options, null);
+        // grid.CallbackRouteValues = new { Area = "Irma", Controller = "Capa", Action = "SearchPartial" , type="All"  };
+        string[] arr = new string[] {"Id", "Status", "ActionRequired", "Source", "DueDate", "AssignedBy", "AssignedTo", "ActionRequired"};
+        //if (Toggle != null && Toggle.Value == "1")
+        //    arr = null; 
+        grid.DataBound = (s, e) => {
+            ASPxGridView g = (ASPxGridView)s;
+            foreach (GridViewColumn c in g.Columns) {
+                if ( arr !=null && ! arr.Contains( c.Caption) )
+                    c.Visible = false;
+            }
+        };
+    }).BindToLINQ(string.Empty, string.Empty, (s, e) => {
+        e.KeyExpression = dt.KeyFieldName;
+        e.QueryableSource = dt.Dataset;
+    }).GetHtml()
+</div>

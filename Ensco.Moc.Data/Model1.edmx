@@ -1,0 +1,1994 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="EnscoMocModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ActionNotifications">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="DateNotified" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ActionReviews">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+          <Property Name="Reviewer" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="DateFinished" Type="datetime" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Actions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Assignor" Type="int" />
+          <Property Name="Assignee" Type="int" Nullable="false" />
+          <Property Name="DateAssigned" Type="datetime" Nullable="false" />
+          <Property Name="DateDue" Type="datetime" Nullable="false" />
+          <Property Name="DateCompleted" Type="datetime" />
+          <Property Name="Criticality" Type="int" Nullable="false" />
+          <Property Name="ControlHeirarchy" Type="int" Nullable="false" />
+          <Property Name="RequireReview" Type="bit" Nullable="false" />
+          <Property Name="ActionDescription" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CompletionNotes" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="Activity" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="RiskLevel" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Approvals">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="Comments" Type="varchar(max)" />
+          <Property Name="ApproverNotes" Type="varchar(max)" />
+          <Property Name="ApprovalActions" Type="varchar(max)" />
+          <Property Name="DateDue" Type="datetime" Nullable="false" />
+          <Property Name="DateCompleted" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="LinkId" Type="int" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="HyperLink" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="UploadedBy" Type="int" Nullable="false" />
+          <Property Name="UploadedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Barriers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HazardId" Type="int" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="HeirarchyType" Type="int" />
+          <Property Name="Barrier" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ClientInterfaceChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="ClientInterface" Type="int" Nullable="false" />
+          <Property Name="SpecificChange" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeviationFromStandard">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ControlNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Deviation" Type="int" Nullable="false" />
+          <Property Name="SubSection" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="DocumentChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="ChangeLevel" Type="int" />
+          <Property Name="Target" Type="int" />
+          <Property Name="Criticality" Type="int" />
+        </EntityType>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentChangeId" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ControlNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="ChangeType" Type="int" Nullable="false" />
+          <Property Name="Owner" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Hazards">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActivityId" Type="int" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="Hazard" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Moc">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocNumber" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="RiskAssessmentOnly" Type="bit" Nullable="false" />
+          <Property Name="TemporaryChange" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="AssignedTo" Type="int" Nullable="false" />
+          <Property Name="Location" Type="int" Nullable="false" />
+          <Property Name="RequireReview" Type="bit" Nullable="false" />
+          <Property Name="RequireApproval" Type="bit" Nullable="false" />
+          <Property Name="Priority" Type="int" />
+          <Property Name="DateCreated" Type="datetime" Nullable="false" />
+          <Property Name="DateUpdated" Type="datetime" />
+          <Property Name="DateExpired" Type="datetime" />
+          <Property Name="DateEffective" Type="datetime" />
+          <Property Name="DateClosed" Type="datetime" />
+          <Property Name="EamsCreated" Type="bit" Nullable="false" />
+          <Property Name="EamsUpdated" Type="bit" Nullable="false" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="HighestRiskLevel" Type="int" />
+          <Property Name="NotifyTeamId" Type="int" />
+          <Property Name="DateStarted" Type="datetime" />
+          <Property Name="NonEnscoAssessors" Type="nvarchar(max)" />
+          <Property Name="DeviationFromStandard" Type="int" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="OrgStructureChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="Structure" Type="int" Nullable="false" />
+          <Property Name="Change" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PersonnelChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="OnlyHitch" Type="bit" Nullable="false" />
+          <Property Name="PreviousPosition" Type="int" />
+          <Property Name="NewPosition" Type="int" />
+          <Property Name="PositionType" Type="int" />
+          <Property Name="PreviousLocation" Type="int" />
+          <Property Name="NewLocation" Type="int" />
+          <Property Name="LocationType" Type="int" />
+        </EntityType>
+        <EntityType Name="RegulatoryChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="Body" Type="int" Nullable="false" />
+          <Property Name="Name" Type="int" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RigModification">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" />
+          <Property Name="ReaName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReaHyperLink" Type="nvarchar(max)" />
+          <Property Name="MinorModification" Type="bit" Nullable="false" />
+          <Property Name="ReasonForModification" Type="int" Nullable="false" />
+          <Property Name="DisciplineLead" Type="int" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" />
+        </EntityType>
+        <EntityType Name="Risks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="ConsequenceType" Type="int" Nullable="false" />
+          <Property Name="SeverityType" Type="int" Nullable="false" />
+          <Property Name="ProbabilityType" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tasks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WorkOrderId" Type="int" Nullable="false" />
+          <Property Name="TaskNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AdmGroup" Type="int" Nullable="false" />
+          <Property Name="AdmSystem" Type="int" Nullable="false" />
+          <Property Name="AdmSubSystem" Type="int" Nullable="false" />
+          <Property Name="EamsCriticalitySC" Type="bit" Nullable="false" />
+          <Property Name="EamsCriticalityCC" Type="bit" Nullable="false" />
+          <Property Name="EamsCriticalityEC" Type="bit" Nullable="false" />
+          <Property Name="EamsCriticalityNC" Type="bit" Nullable="false" />
+          <Property Name="EamsCriticalityOC" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WorkOrders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MocId" Type="int" Nullable="false" />
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DateDue" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupAdmGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Code" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupAdmSubSystem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SystemId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Code" Type="nchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="XLookupAdmSystem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Code" Type="nchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="XLookupControlHeirarchy">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupCriticality">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupMocType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Code" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="RiskAssessment" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupPriority">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRigModDiscipline">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRigModReason">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRiskConsequence">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRiskProbability">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConsequenceId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRiskSeverity">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConsequenceId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="XLookupStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_ActionNotifications_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="ActionNotifications" Type="Self.ActionNotifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionNotifications">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionReviews_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="ActionReviews" Type="Self.ActionReviews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionReviews">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Actions_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Actions" Type="Self.Actions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Actions">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Approvals_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Approvals" Type="Self.Approvals" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Approvals">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Barriers_Hazards">
+          <End Role="Hazards" Type="Self.Hazards" Multiplicity="1" />
+          <End Role="Barriers" Type="Self.Barriers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hazards">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Barriers">
+              <PropertyRef Name="HazardId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientInterfaceChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="ClientInterfaceChange" Type="Self.ClientInterfaceChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientInterfaceChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeviationFromStandard_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="DeviationFromStandard" Type="Self.DeviationFromStandard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeviationFromStandard">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="DocumentChange" Type="Self.DocumentChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Documents_DocumentChange">
+          <End Role="DocumentChange" Type="Self.DocumentChange" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentChange">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="DocumentChangeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Hazards_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Hazards" Type="Self.Hazards" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Hazards">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrgStructureChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="OrgStructureChange" Type="Self.OrgStructureChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrgStructureChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonnelChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="PersonnelChange" Type="Self.PersonnelChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonnelChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RegulatoryChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="RegulatoryChange" Type="Self.RegulatoryChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RegulatoryChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RigModification_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="0..1" />
+          <End Role="RigModification" Type="Self.RigModification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RigModification">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Risks_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Risks" Type="Self.Risks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Risks">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tasks_WorkOrders">
+          <End Role="WorkOrders" Type="Self.WorkOrders" Multiplicity="1" />
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WorkOrders">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tasks">
+              <PropertyRef Name="WorkOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupAdmSubSystem_XLookupAdmSystem">
+          <End Role="XLookupAdmSystem" Type="Self.XLookupAdmSystem" Multiplicity="1" />
+          <End Role="XLookupAdmSubSystem" Type="Self.XLookupAdmSubSystem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupAdmSystem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupAdmSubSystem">
+              <PropertyRef Name="SystemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupAdmSystem_XLookupAdmGroup">
+          <End Role="XLookupAdmGroup" Type="Self.XLookupAdmGroup" Multiplicity="1" />
+          <End Role="XLookupAdmSystem" Type="Self.XLookupAdmSystem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupAdmGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupAdmSystem">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupRiskProbability_XLookupRiskConsequence">
+          <End Role="XLookupRiskConsequence" Type="Self.XLookupRiskConsequence" Multiplicity="1" />
+          <End Role="XLookupRiskProbability" Type="Self.XLookupRiskProbability" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupRiskConsequence">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupRiskProbability">
+              <PropertyRef Name="ConsequenceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupRiskSeverity_XLookupRiskConsequence">
+          <End Role="XLookupRiskConsequence" Type="Self.XLookupRiskConsequence" Multiplicity="1" />
+          <End Role="XLookupRiskSeverity" Type="Self.XLookupRiskSeverity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupRiskConsequence">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupRiskSeverity">
+              <PropertyRef Name="ConsequenceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EnscoMocModelStoreContainer">
+          <EntitySet Name="ActionNotifications" EntityType="Self.ActionNotifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActionReviews" EntityType="Self.ActionReviews" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Approvals" EntityType="Self.Approvals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Barriers" EntityType="Self.Barriers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientInterfaceChange" EntityType="Self.ClientInterfaceChange" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviationFromStandard" EntityType="Self.DeviationFromStandard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentChange" EntityType="Self.DocumentChange" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Hazards" EntityType="Self.Hazards" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Moc" EntityType="Self.Moc" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrgStructureChange" EntityType="Self.OrgStructureChange" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PersonnelChange" EntityType="Self.PersonnelChange" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegulatoryChange" EntityType="Self.RegulatoryChange" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RigModification" EntityType="Self.RigModification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Risks" EntityType="Self.Risks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WorkOrders" EntityType="Self.WorkOrders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupAdmGroup" EntityType="Self.XLookupAdmGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupAdmSubSystem" EntityType="Self.XLookupAdmSubSystem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupAdmSystem" EntityType="Self.XLookupAdmSystem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupControlHeirarchy" EntityType="Self.XLookupControlHeirarchy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupCriticality" EntityType="Self.XLookupCriticality" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupMocType" EntityType="Self.XLookupMocType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupPriority" EntityType="Self.XLookupPriority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupRigModDiscipline" EntityType="Self.XLookupRigModDiscipline" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupRigModReason" EntityType="Self.XLookupRigModReason" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupRiskConsequence" EntityType="Self.XLookupRiskConsequence" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupRiskProbability" EntityType="Self.XLookupRiskProbability" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupRiskSeverity" EntityType="Self.XLookupRiskSeverity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XLookupStatus" EntityType="Self.XLookupStatus" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ActionNotifications_Actions" Association="Self.FK_ActionNotifications_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionNotifications" EntitySet="ActionNotifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionReviews_Actions" Association="Self.FK_ActionReviews_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionReviews" EntitySet="ActionReviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Actions_Moc" Association="Self.FK_Actions_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="Actions" EntitySet="Actions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Moc" Association="Self.FK_Activity_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Approvals_Moc" Association="Self.FK_Approvals_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="Approvals" EntitySet="Approvals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Barriers_Hazards" Association="Self.FK_Barriers_Hazards">
+            <End Role="Hazards" EntitySet="Hazards" />
+            <End Role="Barriers" EntitySet="Barriers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientInterfaceChange_Moc" Association="Self.FK_ClientInterfaceChange_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="ClientInterfaceChange" EntitySet="ClientInterfaceChange" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeviationFromStandard_Moc" Association="Self.FK_DeviationFromStandard_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="DeviationFromStandard" EntitySet="DeviationFromStandard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentChange_Moc" Association="Self.FK_DocumentChange_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="DocumentChange" EntitySet="DocumentChange" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Documents_DocumentChange" Association="Self.FK_Documents_DocumentChange">
+            <End Role="DocumentChange" EntitySet="DocumentChange" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hazards_Activity" Association="Self.FK_Hazards_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Hazards" EntitySet="Hazards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Moc" Association="Self.FK_Notifications_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrgStructureChange_Moc" Association="Self.FK_OrgStructureChange_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="OrgStructureChange" EntitySet="OrgStructureChange" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonnelChange_Moc" Association="Self.FK_PersonnelChange_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="PersonnelChange" EntitySet="PersonnelChange" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RegulatoryChange_Moc" Association="Self.FK_RegulatoryChange_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="RegulatoryChange" EntitySet="RegulatoryChange" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RigModification_Moc" Association="Self.FK_RigModification_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="RigModification" EntitySet="RigModification" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Risks_Moc" Association="Self.FK_Risks_Moc">
+            <End Role="Moc" EntitySet="Moc" />
+            <End Role="Risks" EntitySet="Risks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tasks_WorkOrders" Association="Self.FK_Tasks_WorkOrders">
+            <End Role="WorkOrders" EntitySet="WorkOrders" />
+            <End Role="Tasks" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupAdmSubSystem_XLookupAdmSystem" Association="Self.FK_XLookupAdmSubSystem_XLookupAdmSystem">
+            <End Role="XLookupAdmSystem" EntitySet="XLookupAdmSystem" />
+            <End Role="XLookupAdmSubSystem" EntitySet="XLookupAdmSubSystem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupAdmSystem_XLookupAdmGroup" Association="Self.FK_XLookupAdmSystem_XLookupAdmGroup">
+            <End Role="XLookupAdmGroup" EntitySet="XLookupAdmGroup" />
+            <End Role="XLookupAdmSystem" EntitySet="XLookupAdmSystem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupRiskProbability_XLookupRiskConsequence" Association="Self.FK_XLookupRiskProbability_XLookupRiskConsequence">
+            <End Role="XLookupRiskConsequence" EntitySet="XLookupRiskConsequence" />
+            <End Role="XLookupRiskProbability" EntitySet="XLookupRiskProbability" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupRiskSeverity_XLookupRiskConsequence" Association="Self.FK_XLookupRiskSeverity_XLookupRiskConsequence">
+            <End Role="XLookupRiskConsequence" EntitySet="XLookupRiskConsequence" />
+            <End Role="XLookupRiskSeverity" EntitySet="XLookupRiskSeverity" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EnscoMocModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ActionNotification">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="DateNotified" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Action" Relationship="Self.FK_ActionNotifications_Actions" FromRole="ActionNotifications" ToRole="Actions" />
+        </EntityType>
+        <EntityType Name="ActionReview">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
+          <Property Name="Reviewer" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="DateFinished" Type="DateTime" Precision="3" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Action" Relationship="Self.FK_ActionReviews_Actions" FromRole="ActionReviews" ToRole="Actions" />
+        </EntityType>
+        <EntityType Name="Action">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Assignor" Type="Int32" />
+          <Property Name="Assignee" Type="Int32" Nullable="false" />
+          <Property Name="DateAssigned" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateDue" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateCompleted" Type="DateTime" Precision="3" />
+          <Property Name="Criticality" Type="Int32" Nullable="false" />
+          <Property Name="ControlHeirarchy" Type="Int32" Nullable="false" />
+          <Property Name="RequireReview" Type="Boolean" Nullable="false" />
+          <Property Name="ActionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CompletionNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ActionNotifications" Relationship="Self.FK_ActionNotifications_Actions" FromRole="Actions" ToRole="ActionNotifications" />
+          <NavigationProperty Name="ActionReviews" Relationship="Self.FK_ActionReviews_Actions" FromRole="Actions" ToRole="ActionReviews" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_Actions_Moc" FromRole="Actions" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="Activity1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RiskLevel" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_Activity_Moc" FromRole="Activity" ToRole="Moc" />
+          <NavigationProperty Name="Hazards" Relationship="Self.FK_Hazards_Activity" FromRole="Activity" ToRole="Hazards" />
+        </EntityType>
+        <EntityType Name="Approval">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ApproverNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ApprovalActions" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DateDue" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateCompleted" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_Approvals_Moc" FromRole="Approvals" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="Attachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="LinkId" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="HyperLink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UploadedBy" Type="Int32" Nullable="false" />
+          <Property Name="UploadedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Barrier">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HazardId" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="HeirarchyType" Type="Int32" />
+          <Property Name="Barrier1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Hazard" Relationship="Self.FK_Barriers_Hazards" FromRole="Barriers" ToRole="Hazards" />
+        </EntityType>
+        <EntityType Name="ClientInterfaceChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="ClientInterface" Type="Int32" Nullable="false" />
+          <Property Name="SpecificChange" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_ClientInterfaceChange_Moc" FromRole="ClientInterfaceChange" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="DeviationFromStandard">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ControlNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Deviation" Type="Int32" Nullable="false" />
+          <Property Name="SubSection" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_DeviationFromStandard_Moc" FromRole="DeviationFromStandard" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="DocumentChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="ChangeLevel" Type="Int32" />
+          <Property Name="Target" Type="Int32" />
+          <Property Name="Criticality" Type="Int32" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_DocumentChange_Moc" FromRole="DocumentChange" ToRole="Moc" />
+          <NavigationProperty Name="Documents" Relationship="Self.FK_Documents_DocumentChange" FromRole="DocumentChange" ToRole="Documents" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentChangeId" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ControlNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="ChangeType" Type="Int32" Nullable="false" />
+          <Property Name="Owner" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DocumentChange" Relationship="Self.FK_Documents_DocumentChange" FromRole="Documents" ToRole="DocumentChange" />
+        </EntityType>
+        <EntityType Name="Hazard">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActivityId" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="Hazard1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Hazards_Activity" FromRole="Hazards" ToRole="Activity" />
+          <NavigationProperty Name="Barriers" Relationship="Self.FK_Barriers_Hazards" FromRole="Hazards" ToRole="Barriers" />
+        </EntityType>
+        <EntityType Name="Moc">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocNumber" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="RiskAssessmentOnly" Type="Boolean" Nullable="false" />
+          <Property Name="TemporaryChange" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="AssignedTo" Type="Int32" Nullable="false" />
+          <Property Name="Location" Type="Int32" Nullable="false" />
+          <Property Name="RequireReview" Type="Boolean" Nullable="false" />
+          <Property Name="RequireApproval" Type="Boolean" Nullable="false" />
+          <Property Name="Priority" Type="Int32" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateUpdated" Type="DateTime" Precision="3" />
+          <Property Name="DateExpired" Type="DateTime" Precision="3" />
+          <Property Name="DateEffective" Type="DateTime" Precision="3" />
+          <Property Name="DateClosed" Type="DateTime" Precision="3" />
+          <Property Name="EamsCreated" Type="Boolean" Nullable="false" />
+          <Property Name="EamsUpdated" Type="Boolean" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="HighestRiskLevel" Type="Int32" />
+          <Property Name="NotifyTeamId" Type="Int32" />
+          <Property Name="DateStarted" Type="DateTime" Precision="3" />
+          <Property Name="NonEnscoAssessors" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DeviationFromStandard" Type="Int32" />
+          <NavigationProperty Name="Actions" Relationship="Self.FK_Actions_Moc" FromRole="Moc" ToRole="Actions" />
+          <NavigationProperty Name="Activities" Relationship="Self.FK_Activity_Moc" FromRole="Moc" ToRole="Activity" />
+          <NavigationProperty Name="Approvals" Relationship="Self.FK_Approvals_Moc" FromRole="Moc" ToRole="Approvals" />
+          <NavigationProperty Name="ClientInterfaceChanges" Relationship="Self.FK_ClientInterfaceChange_Moc" FromRole="Moc" ToRole="ClientInterfaceChange" />
+          <NavigationProperty Name="DeviationFromStandards" Relationship="Self.FK_DeviationFromStandard_Moc" FromRole="Moc" ToRole="DeviationFromStandard" />
+          <NavigationProperty Name="DocumentChanges" Relationship="Self.FK_DocumentChange_Moc" FromRole="Moc" ToRole="DocumentChange" />
+          <NavigationProperty Name="Notifications" Relationship="Self.FK_Notifications_Moc" FromRole="Moc" ToRole="Notifications" />
+          <NavigationProperty Name="OrgStructureChanges" Relationship="Self.FK_OrgStructureChange_Moc" FromRole="Moc" ToRole="OrgStructureChange" />
+          <NavigationProperty Name="PersonnelChanges" Relationship="Self.FK_PersonnelChange_Moc" FromRole="Moc" ToRole="PersonnelChange" />
+          <NavigationProperty Name="RegulatoryChanges" Relationship="Self.FK_RegulatoryChange_Moc" FromRole="Moc" ToRole="RegulatoryChange" />
+          <NavigationProperty Name="RigModifications" Relationship="Self.FK_RigModification_Moc" FromRole="Moc" ToRole="RigModification" />
+          <NavigationProperty Name="Risks" Relationship="Self.FK_Risks_Moc" FromRole="Moc" ToRole="Risks" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_Notifications_Moc" FromRole="Notifications" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="OrgStructureChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="Structure" Type="Int32" Nullable="false" />
+          <Property Name="Change" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_OrgStructureChange_Moc" FromRole="OrgStructureChange" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="PersonnelChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="OnlyHitch" Type="Boolean" Nullable="false" />
+          <Property Name="PreviousPosition" Type="Int32" />
+          <Property Name="NewPosition" Type="Int32" />
+          <Property Name="PositionType" Type="Int32" />
+          <Property Name="PreviousLocation" Type="Int32" />
+          <Property Name="NewLocation" Type="Int32" />
+          <Property Name="LocationType" Type="Int32" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_PersonnelChange_Moc" FromRole="PersonnelChange" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="RegulatoryChange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="Body" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_RegulatoryChange_Moc" FromRole="RegulatoryChange" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="RigModification">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" />
+          <Property Name="ReaName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReaHyperLink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MinorModification" Type="Boolean" Nullable="false" />
+          <Property Name="ReasonForModification" Type="Int32" Nullable="false" />
+          <Property Name="DisciplineLead" Type="Int32" Nullable="false" />
+          <Property Name="AttachmentId" Type="Int32" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_RigModification_Moc" FromRole="RigModification" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="Risk">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="ConsequenceType" Type="Int32" Nullable="false" />
+          <Property Name="SeverityType" Type="Int32" Nullable="false" />
+          <Property Name="ProbabilityType" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Moc" Relationship="Self.FK_Risks_Moc" FromRole="Risks" ToRole="Moc" />
+        </EntityType>
+        <EntityType Name="Task">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorkOrderId" Type="Int32" Nullable="false" />
+          <Property Name="TaskNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AdmGroup" Type="Int32" Nullable="false" />
+          <Property Name="AdmSystem" Type="Int32" Nullable="false" />
+          <Property Name="AdmSubSystem" Type="Int32" Nullable="false" />
+          <Property Name="EamsCriticalitySC" Type="Boolean" Nullable="false" />
+          <Property Name="EamsCriticalityCC" Type="Boolean" Nullable="false" />
+          <Property Name="EamsCriticalityEC" Type="Boolean" Nullable="false" />
+          <Property Name="EamsCriticalityNC" Type="Boolean" Nullable="false" />
+          <Property Name="EamsCriticalityOC" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="WorkOrder" Relationship="Self.FK_Tasks_WorkOrders" FromRole="Tasks" ToRole="WorkOrders" />
+        </EntityType>
+        <EntityType Name="WorkOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MocId" Type="Int32" Nullable="false" />
+          <Property Name="OrderNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DateDue" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Tasks" Relationship="Self.FK_Tasks_WorkOrders" FromRole="WorkOrders" ToRole="Tasks" />
+        </EntityType>
+        <EntityType Name="XLookupAdmGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="XLookupAdmSystems" Relationship="Self.FK_XLookupAdmSystem_XLookupAdmGroup" FromRole="XLookupAdmGroup" ToRole="XLookupAdmSystem" />
+        </EntityType>
+        <EntityType Name="XLookupAdmSubSystem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SystemId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="XLookupAdmSystem" Relationship="Self.FK_XLookupAdmSubSystem_XLookupAdmSystem" FromRole="XLookupAdmSubSystem" ToRole="XLookupAdmSystem" />
+        </EntityType>
+        <EntityType Name="XLookupAdmSystem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="XLookupAdmGroup" Relationship="Self.FK_XLookupAdmSystem_XLookupAdmGroup" FromRole="XLookupAdmSystem" ToRole="XLookupAdmGroup" />
+          <NavigationProperty Name="XLookupAdmSubSystems" Relationship="Self.FK_XLookupAdmSubSystem_XLookupAdmSystem" FromRole="XLookupAdmSystem" ToRole="XLookupAdmSubSystem" />
+        </EntityType>
+        <EntityType Name="XLookupControlHeirarchy">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupCriticality">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupMocType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="RiskAssessment" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupPriority">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRigModDiscipline">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRigModReason">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XLookupRiskConsequence">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="XLookupRiskProbabilities" Relationship="Self.FK_XLookupRiskProbability_XLookupRiskConsequence" FromRole="XLookupRiskConsequence" ToRole="XLookupRiskProbability" />
+          <NavigationProperty Name="XLookupRiskSeverities" Relationship="Self.FK_XLookupRiskSeverity_XLookupRiskConsequence" FromRole="XLookupRiskConsequence" ToRole="XLookupRiskSeverity" />
+        </EntityType>
+        <EntityType Name="XLookupRiskProbability">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConsequenceId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="XLookupRiskConsequence" Relationship="Self.FK_XLookupRiskProbability_XLookupRiskConsequence" FromRole="XLookupRiskProbability" ToRole="XLookupRiskConsequence" />
+        </EntityType>
+        <EntityType Name="XLookupRiskSeverity">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConsequenceId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="XLookupRiskConsequence" Relationship="Self.FK_XLookupRiskSeverity_XLookupRiskConsequence" FromRole="XLookupRiskSeverity" ToRole="XLookupRiskConsequence" />
+        </EntityType>
+        <EntityType Name="XLookupStatu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_ActionNotifications_Actions">
+          <End Role="Actions" Type="Self.Action" Multiplicity="1" />
+          <End Role="ActionNotifications" Type="Self.ActionNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionNotifications">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionReviews_Actions">
+          <End Role="Actions" Type="Self.Action" Multiplicity="1" />
+          <End Role="ActionReviews" Type="Self.ActionReview" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionReviews">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Actions_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Actions" Type="Self.Action" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Actions">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Hazards_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Hazards" Type="Self.Hazard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Hazards">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Approvals_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Approvals" Type="Self.Approval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Approvals">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Barriers_Hazards">
+          <End Role="Hazards" Type="Self.Hazard" Multiplicity="1" />
+          <End Role="Barriers" Type="Self.Barrier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hazards">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Barriers">
+              <PropertyRef Name="HazardId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientInterfaceChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="ClientInterfaceChange" Type="Self.ClientInterfaceChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientInterfaceChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeviationFromStandard_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="DeviationFromStandard" Type="Self.DeviationFromStandard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeviationFromStandard">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="DocumentChange" Type="Self.DocumentChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Documents_DocumentChange">
+          <End Role="DocumentChange" Type="Self.DocumentChange" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentChange">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="DocumentChangeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Notifications" Type="Self.Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrgStructureChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="OrgStructureChange" Type="Self.OrgStructureChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrgStructureChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonnelChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="PersonnelChange" Type="Self.PersonnelChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonnelChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RegulatoryChange_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="RegulatoryChange" Type="Self.RegulatoryChange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RegulatoryChange">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RigModification_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="0..1" />
+          <End Role="RigModification" Type="Self.RigModification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RigModification">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Risks_Moc">
+          <End Role="Moc" Type="Self.Moc" Multiplicity="1" />
+          <End Role="Risks" Type="Self.Risk" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Risks">
+              <PropertyRef Name="MocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tasks_WorkOrders">
+          <End Role="WorkOrders" Type="Self.WorkOrder" Multiplicity="1" />
+          <End Role="Tasks" Type="Self.Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WorkOrders">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tasks">
+              <PropertyRef Name="WorkOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupAdmSystem_XLookupAdmGroup">
+          <End Role="XLookupAdmGroup" Type="Self.XLookupAdmGroup" Multiplicity="1" />
+          <End Role="XLookupAdmSystem" Type="Self.XLookupAdmSystem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupAdmGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupAdmSystem">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupAdmSubSystem_XLookupAdmSystem">
+          <End Role="XLookupAdmSystem" Type="Self.XLookupAdmSystem" Multiplicity="1" />
+          <End Role="XLookupAdmSubSystem" Type="Self.XLookupAdmSubSystem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupAdmSystem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupAdmSubSystem">
+              <PropertyRef Name="SystemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupRiskProbability_XLookupRiskConsequence">
+          <End Role="XLookupRiskConsequence" Type="Self.XLookupRiskConsequence" Multiplicity="1" />
+          <End Role="XLookupRiskProbability" Type="Self.XLookupRiskProbability" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupRiskConsequence">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupRiskProbability">
+              <PropertyRef Name="ConsequenceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XLookupRiskSeverity_XLookupRiskConsequence">
+          <End Role="XLookupRiskConsequence" Type="Self.XLookupRiskConsequence" Multiplicity="1" />
+          <End Role="XLookupRiskSeverity" Type="Self.XLookupRiskSeverity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="XLookupRiskConsequence">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="XLookupRiskSeverity">
+              <PropertyRef Name="ConsequenceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EnscoMocEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ActionNotifications" EntityType="Self.ActionNotification" />
+          <EntitySet Name="ActionReviews" EntityType="Self.ActionReview" />
+          <EntitySet Name="Actions" EntityType="Self.Action" />
+          <EntitySet Name="Activities" EntityType="Self.Activity" />
+          <EntitySet Name="Approvals" EntityType="Self.Approval" />
+          <EntitySet Name="Attachments" EntityType="Self.Attachment" />
+          <EntitySet Name="Barriers" EntityType="Self.Barrier" />
+          <EntitySet Name="ClientInterfaceChanges" EntityType="Self.ClientInterfaceChange" />
+          <EntitySet Name="DeviationFromStandards" EntityType="Self.DeviationFromStandard" />
+          <EntitySet Name="DocumentChanges" EntityType="Self.DocumentChange" />
+          <EntitySet Name="Documents" EntityType="Self.Document" />
+          <EntitySet Name="Hazards" EntityType="Self.Hazard" />
+          <EntitySet Name="Mocs" EntityType="Self.Moc" />
+          <EntitySet Name="Notifications" EntityType="Self.Notification" />
+          <EntitySet Name="OrgStructureChanges" EntityType="Self.OrgStructureChange" />
+          <EntitySet Name="PersonnelChanges" EntityType="Self.PersonnelChange" />
+          <EntitySet Name="RegulatoryChanges" EntityType="Self.RegulatoryChange" />
+          <EntitySet Name="RigModifications" EntityType="Self.RigModification" />
+          <EntitySet Name="Risks" EntityType="Self.Risk" />
+          <EntitySet Name="Tasks" EntityType="Self.Task" />
+          <EntitySet Name="WorkOrders" EntityType="Self.WorkOrder" />
+          <EntitySet Name="XLookupAdmGroups" EntityType="Self.XLookupAdmGroup" />
+          <EntitySet Name="XLookupAdmSubSystems" EntityType="Self.XLookupAdmSubSystem" />
+          <EntitySet Name="XLookupAdmSystems" EntityType="Self.XLookupAdmSystem" />
+          <EntitySet Name="XLookupControlHeirarchies" EntityType="Self.XLookupControlHeirarchy" />
+          <EntitySet Name="XLookupCriticalities" EntityType="Self.XLookupCriticality" />
+          <EntitySet Name="XLookupMocTypes" EntityType="Self.XLookupMocType" />
+          <EntitySet Name="XLookupPriorities" EntityType="Self.XLookupPriority" />
+          <EntitySet Name="XLookupRigModDisciplines" EntityType="Self.XLookupRigModDiscipline" />
+          <EntitySet Name="XLookupRigModReasons" EntityType="Self.XLookupRigModReason" />
+          <EntitySet Name="XLookupRiskConsequences" EntityType="Self.XLookupRiskConsequence" />
+          <EntitySet Name="XLookupRiskProbabilities" EntityType="Self.XLookupRiskProbability" />
+          <EntitySet Name="XLookupRiskSeverities" EntityType="Self.XLookupRiskSeverity" />
+          <EntitySet Name="XLookupStatus" EntityType="Self.XLookupStatu" />
+          <AssociationSet Name="FK_ActionNotifications_Actions" Association="Self.FK_ActionNotifications_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionNotifications" EntitySet="ActionNotifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionReviews_Actions" Association="Self.FK_ActionReviews_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionReviews" EntitySet="ActionReviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Actions_Moc" Association="Self.FK_Actions_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="Actions" EntitySet="Actions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Moc" Association="Self.FK_Activity_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="Activity" EntitySet="Activities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hazards_Activity" Association="Self.FK_Hazards_Activity">
+            <End Role="Activity" EntitySet="Activities" />
+            <End Role="Hazards" EntitySet="Hazards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Approvals_Moc" Association="Self.FK_Approvals_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="Approvals" EntitySet="Approvals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Barriers_Hazards" Association="Self.FK_Barriers_Hazards">
+            <End Role="Hazards" EntitySet="Hazards" />
+            <End Role="Barriers" EntitySet="Barriers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientInterfaceChange_Moc" Association="Self.FK_ClientInterfaceChange_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="ClientInterfaceChange" EntitySet="ClientInterfaceChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeviationFromStandard_Moc" Association="Self.FK_DeviationFromStandard_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="DeviationFromStandard" EntitySet="DeviationFromStandards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentChange_Moc" Association="Self.FK_DocumentChange_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="DocumentChange" EntitySet="DocumentChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Documents_DocumentChange" Association="Self.FK_Documents_DocumentChange">
+            <End Role="DocumentChange" EntitySet="DocumentChanges" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Moc" Association="Self.FK_Notifications_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrgStructureChange_Moc" Association="Self.FK_OrgStructureChange_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="OrgStructureChange" EntitySet="OrgStructureChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonnelChange_Moc" Association="Self.FK_PersonnelChange_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="PersonnelChange" EntitySet="PersonnelChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RegulatoryChange_Moc" Association="Self.FK_RegulatoryChange_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="RegulatoryChange" EntitySet="RegulatoryChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RigModification_Moc" Association="Self.FK_RigModification_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="RigModification" EntitySet="RigModifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Risks_Moc" Association="Self.FK_Risks_Moc">
+            <End Role="Moc" EntitySet="Mocs" />
+            <End Role="Risks" EntitySet="Risks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tasks_WorkOrders" Association="Self.FK_Tasks_WorkOrders">
+            <End Role="WorkOrders" EntitySet="WorkOrders" />
+            <End Role="Tasks" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupAdmSystem_XLookupAdmGroup" Association="Self.FK_XLookupAdmSystem_XLookupAdmGroup">
+            <End Role="XLookupAdmGroup" EntitySet="XLookupAdmGroups" />
+            <End Role="XLookupAdmSystem" EntitySet="XLookupAdmSystems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupAdmSubSystem_XLookupAdmSystem" Association="Self.FK_XLookupAdmSubSystem_XLookupAdmSystem">
+            <End Role="XLookupAdmSystem" EntitySet="XLookupAdmSystems" />
+            <End Role="XLookupAdmSubSystem" EntitySet="XLookupAdmSubSystems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupRiskProbability_XLookupRiskConsequence" Association="Self.FK_XLookupRiskProbability_XLookupRiskConsequence">
+            <End Role="XLookupRiskConsequence" EntitySet="XLookupRiskConsequences" />
+            <End Role="XLookupRiskProbability" EntitySet="XLookupRiskProbabilities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XLookupRiskSeverity_XLookupRiskConsequence" Association="Self.FK_XLookupRiskSeverity_XLookupRiskConsequence">
+            <End Role="XLookupRiskConsequence" EntitySet="XLookupRiskConsequences" />
+            <End Role="XLookupRiskSeverity" EntitySet="XLookupRiskSeverities" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EnscoMocModelStoreContainer" CdmEntityContainer="EnscoMocEntities">
+          <EntitySetMapping Name="ActionNotifications">
+            <EntityTypeMapping TypeName="EnscoMocModel.ActionNotification">
+              <MappingFragment StoreEntitySet="ActionNotifications">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DateNotified" ColumnName="DateNotified" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActionReviews">
+            <EntityTypeMapping TypeName="EnscoMocModel.ActionReview">
+              <MappingFragment StoreEntitySet="ActionReviews">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="Reviewer" ColumnName="Reviewer" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DateFinished" ColumnName="DateFinished" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Actions">
+            <EntityTypeMapping TypeName="EnscoMocModel.Action">
+              <MappingFragment StoreEntitySet="Actions">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Assignor" ColumnName="Assignor" />
+                <ScalarProperty Name="Assignee" ColumnName="Assignee" />
+                <ScalarProperty Name="DateAssigned" ColumnName="DateAssigned" />
+                <ScalarProperty Name="DateDue" ColumnName="DateDue" />
+                <ScalarProperty Name="DateCompleted" ColumnName="DateCompleted" />
+                <ScalarProperty Name="Criticality" ColumnName="Criticality" />
+                <ScalarProperty Name="ControlHeirarchy" ColumnName="ControlHeirarchy" />
+                <ScalarProperty Name="RequireReview" ColumnName="RequireReview" />
+                <ScalarProperty Name="ActionDescription" ColumnName="ActionDescription" />
+                <ScalarProperty Name="CompletionNotes" ColumnName="CompletionNotes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activities">
+            <EntityTypeMapping TypeName="EnscoMocModel.Activity">
+              <MappingFragment StoreEntitySet="Activity">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Activity1" ColumnName="Activity" />
+                <ScalarProperty Name="RiskLevel" ColumnName="RiskLevel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Approvals">
+            <EntityTypeMapping TypeName="EnscoMocModel.Approval">
+              <MappingFragment StoreEntitySet="Approvals">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="ApproverNotes" ColumnName="ApproverNotes" />
+                <ScalarProperty Name="ApprovalActions" ColumnName="ApprovalActions" />
+                <ScalarProperty Name="DateDue" ColumnName="DateDue" />
+                <ScalarProperty Name="DateCompleted" ColumnName="DateCompleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="EnscoMocModel.Attachment">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="LinkId" ColumnName="LinkId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="HyperLink" ColumnName="HyperLink" />
+                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
+                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Barriers">
+            <EntityTypeMapping TypeName="EnscoMocModel.Barrier">
+              <MappingFragment StoreEntitySet="Barriers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="HazardId" ColumnName="HazardId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="HeirarchyType" ColumnName="HeirarchyType" />
+                <ScalarProperty Name="Barrier1" ColumnName="Barrier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientInterfaceChanges">
+            <EntityTypeMapping TypeName="EnscoMocModel.ClientInterfaceChange">
+              <MappingFragment StoreEntitySet="ClientInterfaceChange">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="ClientInterface" ColumnName="ClientInterface" />
+                <ScalarProperty Name="SpecificChange" ColumnName="SpecificChange" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviationFromStandards">
+            <EntityTypeMapping TypeName="EnscoMocModel.DeviationFromStandard">
+              <MappingFragment StoreEntitySet="DeviationFromStandard">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ControlNumber" ColumnName="ControlNumber" />
+                <ScalarProperty Name="Deviation" ColumnName="Deviation" />
+                <ScalarProperty Name="SubSection" ColumnName="SubSection" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentChanges">
+            <EntityTypeMapping TypeName="EnscoMocModel.DocumentChange">
+              <MappingFragment StoreEntitySet="DocumentChange">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="ChangeLevel" ColumnName="ChangeLevel" />
+                <ScalarProperty Name="Target" ColumnName="Target" />
+                <ScalarProperty Name="Criticality" ColumnName="Criticality" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="EnscoMocModel.Document">
+              <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DocumentChangeId" ColumnName="DocumentChangeId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ControlNumber" ColumnName="ControlNumber" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ChangeType" ColumnName="ChangeType" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Hazards">
+            <EntityTypeMapping TypeName="EnscoMocModel.Hazard">
+              <MappingFragment StoreEntitySet="Hazards">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ActivityId" ColumnName="ActivityId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Hazard1" ColumnName="Hazard" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mocs">
+            <EntityTypeMapping TypeName="EnscoMocModel.Moc">
+              <MappingFragment StoreEntitySet="Moc">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocNumber" ColumnName="MocNumber" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="RiskAssessmentOnly" ColumnName="RiskAssessmentOnly" />
+                <ScalarProperty Name="TemporaryChange" ColumnName="TemporaryChange" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="RequireReview" ColumnName="RequireReview" />
+                <ScalarProperty Name="RequireApproval" ColumnName="RequireApproval" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="DateUpdated" ColumnName="DateUpdated" />
+                <ScalarProperty Name="DateExpired" ColumnName="DateExpired" />
+                <ScalarProperty Name="DateEffective" ColumnName="DateEffective" />
+                <ScalarProperty Name="DateClosed" ColumnName="DateClosed" />
+                <ScalarProperty Name="EamsCreated" ColumnName="EamsCreated" />
+                <ScalarProperty Name="EamsUpdated" ColumnName="EamsUpdated" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="HighestRiskLevel" ColumnName="HighestRiskLevel" />
+                <ScalarProperty Name="NotifyTeamId" ColumnName="NotifyTeamId" />
+                <ScalarProperty Name="DateStarted" ColumnName="DateStarted" />
+                <ScalarProperty Name="NonEnscoAssessors" ColumnName="NonEnscoAssessors" />
+                <ScalarProperty Name="DeviationFromStandard" ColumnName="DeviationFromStandard" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="EnscoMocModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrgStructureChanges">
+            <EntityTypeMapping TypeName="EnscoMocModel.OrgStructureChange">
+              <MappingFragment StoreEntitySet="OrgStructureChange">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="Structure" ColumnName="Structure" />
+                <ScalarProperty Name="Change" ColumnName="Change" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PersonnelChanges">
+            <EntityTypeMapping TypeName="EnscoMocModel.PersonnelChange">
+              <MappingFragment StoreEntitySet="PersonnelChange">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="OnlyHitch" ColumnName="OnlyHitch" />
+                <ScalarProperty Name="PreviousPosition" ColumnName="PreviousPosition" />
+                <ScalarProperty Name="NewPosition" ColumnName="NewPosition" />
+                <ScalarProperty Name="PositionType" ColumnName="PositionType" />
+                <ScalarProperty Name="PreviousLocation" ColumnName="PreviousLocation" />
+                <ScalarProperty Name="NewLocation" ColumnName="NewLocation" />
+                <ScalarProperty Name="LocationType" ColumnName="LocationType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegulatoryChanges">
+            <EntityTypeMapping TypeName="EnscoMocModel.RegulatoryChange">
+              <MappingFragment StoreEntitySet="RegulatoryChange">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RigModifications">
+            <EntityTypeMapping TypeName="EnscoMocModel.RigModification">
+              <MappingFragment StoreEntitySet="RigModification">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="ReaName" ColumnName="ReaName" />
+                <ScalarProperty Name="ReaHyperLink" ColumnName="ReaHyperLink" />
+                <ScalarProperty Name="MinorModification" ColumnName="MinorModification" />
+                <ScalarProperty Name="ReasonForModification" ColumnName="ReasonForModification" />
+                <ScalarProperty Name="DisciplineLead" ColumnName="DisciplineLead" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Risks">
+            <EntityTypeMapping TypeName="EnscoMocModel.Risk">
+              <MappingFragment StoreEntitySet="Risks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ConsequenceType" ColumnName="ConsequenceType" />
+                <ScalarProperty Name="SeverityType" ColumnName="SeverityType" />
+                <ScalarProperty Name="ProbabilityType" ColumnName="ProbabilityType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tasks">
+            <EntityTypeMapping TypeName="EnscoMocModel.Task">
+              <MappingFragment StoreEntitySet="Tasks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="WorkOrderId" ColumnName="WorkOrderId" />
+                <ScalarProperty Name="TaskNumber" ColumnName="TaskNumber" />
+                <ScalarProperty Name="AdmGroup" ColumnName="AdmGroup" />
+                <ScalarProperty Name="AdmSystem" ColumnName="AdmSystem" />
+                <ScalarProperty Name="AdmSubSystem" ColumnName="AdmSubSystem" />
+                <ScalarProperty Name="EamsCriticalitySC" ColumnName="EamsCriticalitySC" />
+                <ScalarProperty Name="EamsCriticalityCC" ColumnName="EamsCriticalityCC" />
+                <ScalarProperty Name="EamsCriticalityEC" ColumnName="EamsCriticalityEC" />
+                <ScalarProperty Name="EamsCriticalityNC" ColumnName="EamsCriticalityNC" />
+                <ScalarProperty Name="EamsCriticalityOC" ColumnName="EamsCriticalityOC" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WorkOrders">
+            <EntityTypeMapping TypeName="EnscoMocModel.WorkOrder">
+              <MappingFragment StoreEntitySet="WorkOrders">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MocId" ColumnName="MocId" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="DateDue" ColumnName="DateDue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupAdmGroups">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupAdmGroup">
+              <MappingFragment StoreEntitySet="XLookupAdmGroup">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupAdmSubSystems">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupAdmSubSystem">
+              <MappingFragment StoreEntitySet="XLookupAdmSubSystem">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SystemId" ColumnName="SystemId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupAdmSystems">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupAdmSystem">
+              <MappingFragment StoreEntitySet="XLookupAdmSystem">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupControlHeirarchies">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupControlHeirarchy">
+              <MappingFragment StoreEntitySet="XLookupControlHeirarchy">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupCriticalities">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupCriticality">
+              <MappingFragment StoreEntitySet="XLookupCriticality">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupMocTypes">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupMocType">
+              <MappingFragment StoreEntitySet="XLookupMocType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="RiskAssessment" ColumnName="RiskAssessment" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupPriorities">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupPriority">
+              <MappingFragment StoreEntitySet="XLookupPriority">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupRigModDisciplines">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupRigModDiscipline">
+              <MappingFragment StoreEntitySet="XLookupRigModDiscipline">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupRigModReasons">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupRigModReason">
+              <MappingFragment StoreEntitySet="XLookupRigModReason">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupRiskConsequences">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupRiskConsequence">
+              <MappingFragment StoreEntitySet="XLookupRiskConsequence">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupRiskProbabilities">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupRiskProbability">
+              <MappingFragment StoreEntitySet="XLookupRiskProbability">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ConsequenceId" ColumnName="ConsequenceId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupRiskSeverities">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupRiskSeverity">
+              <MappingFragment StoreEntitySet="XLookupRiskSeverity">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ConsequenceId" ColumnName="ConsequenceId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XLookupStatus">
+            <EntityTypeMapping TypeName="EnscoMocModel.XLookupStatu">
+              <MappingFragment StoreEntitySet="XLookupStatus">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

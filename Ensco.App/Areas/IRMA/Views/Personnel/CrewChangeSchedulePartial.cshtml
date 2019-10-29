@@ -1,0 +1,99 @@
+﻿@model Ensco.Irma.Models.ScheduleCrewChangeModel
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formCrewChangeSchedule";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = false;
+    form.ColumnCount = 4;
+
+    form.Items.Add(x=>x.Title, i =>
+    {
+        i.FieldName = "Title";
+        i.ColumnSpan = 4;
+        i.NestedExtension().TextBox(s =>
+        {
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        });
+    });
+    form.Items.Add(x => x.Crew, item =>
+    {
+        Ensco.Models.LookupListModel<dynamic> lkpList = Ensco.Utilities.UtilitySystem.GetLookupList("RigCrew");
+
+        item.FieldName = "Crew";
+        item.NestedExtension().ComboBox(s =>
+        {
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            s.Properties.DataSource = lkpList.Items;
+            s.Properties.NullText = "[Select]";
+            s.Properties.TextField = lkpList.DisplayField;
+            s.Properties.ValueField = lkpList.KeyFieldName;
+            s.Properties.DataMember = lkpList.DisplayField;
+            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+        });
+    });
+    form.Items.Add(x => x.ScheduleType, item =>
+    {
+        Ensco.Models.LookupListModel<dynamic> lkpList = Ensco.Utilities.UtilitySystem.GetLookupList("ScheduleType");
+
+        item.FieldName = "ScheduleType";
+        item.NestedExtension().ComboBox(s =>
+        {
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            s.Properties.DataSource = lkpList.Items;
+            s.Properties.NullText = "[Select]";
+            s.Properties.TextField = lkpList.DisplayField;
+            s.Properties.ValueField = lkpList.KeyFieldName;
+            s.Properties.DataMember = lkpList.DisplayField;
+            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+        });
+    });
+    form.Items.Add(x => x.DateStart, item =>
+    {
+        item.FieldName = "DateStart";
+        item.NestedExtension().DateEdit(s =>
+        {
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        });
+    });
+    form.Items.Add(x => x.DateEnd, item =>
+    {
+        item.FieldName = "DateEnd";
+        item.NestedExtension().DateEdit(s =>
+        {
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        });
+    });
+
+    form.Items.AddEmptyItem();
+    form.Items.AddEmptyItem();
+    form.Items.AddEmptyItem();
+
+    form.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.SetNestedContent(() =>
+        {
+            ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "scheduleCrewChangeUpdate";
+                buttonsettings.Text = "Schedule";
+                buttonsettings.UseSubmitBehavior = true;
+            }).Render();
+            ViewContext.Writer.Write("</div>");
+        });
+    });
+}).GetHtml()

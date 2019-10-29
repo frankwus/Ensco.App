@@ -1,0 +1,28 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = false;    
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridRigAdminRigList";
+    grid.KeyFieldName = "Id";
+
+    grid.CallbackRouteValues = new {Area = "Common", Controller = "Admin", Action = "ManageRigsPartial" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageRigsUpdate" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.RigModel), options);
+
+    grid.SettingsPager.PageSize = 20;
+
+}).Bind(Model.Rigs).GetHtml()
+
+
+

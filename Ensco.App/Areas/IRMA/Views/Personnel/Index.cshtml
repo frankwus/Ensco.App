@@ -1,0 +1,40 @@
+﻿@using Ensco.Resources
+@model Ensco.Irma.Models.PobHomeModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(gridView_PobCurrent);
+            }
+        );
+
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            
+            AdjustMainGrid(gridView_PobCurrent);
+        });
+
+        function AdjustMainGrid(grid) {
+            if (grid === undefined)
+                return;
+            var height = $(window).height() - 250; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("PobRigHomePartial", Model);
+}

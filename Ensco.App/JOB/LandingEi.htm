@@ -1,0 +1,150 @@
+﻿<head>
+    <style>
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <div style="margin-bottom:5">
+            <a href="javascript:void(0)" onclick="on_Goback(this);">Go Back</a>
+        </div>
+        <table id="t1">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Isolation Management
+        </table>
+        <table id="tOpen"></table>
+        <table id="tLongTerm" class="marginBottom"></table>
+        <table id="tUpcoming"></table>
+        <table id="tLock" class="marginBottom"></table>
+        <table id="tCapa" class="marginBottom"></table>
+        <table id="tSearch" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Search
+            <tr>
+                <td>Certificate No.
+                <td><input type="text"/>
+                <td>Location
+                <td width="200">
+                    <img src='../images/search icon.png' onclick="on_Location(this)" />
+                    <span border="0" ></span>
+                <td>Status
+                <td><select  />
+                <td>From Date
+                <td><input  />
+            <tr>
+                <td>Job ID
+                <td><input type=text  />
+                <td>Isolation Method
+                <td><select id=IsolationMethod />
+                <td>Has CAPA
+                <td><select />
+                <td>To Date
+                <td><input  />
+            <tr>
+                <td>Equipment
+                <td>
+                <td>Long Term
+                <td><select  />
+                <td colspan=4>
+            <tr>
+                <td colspan="11" style='padding-top:4px'>
+                    <img src='../images/search icon.png' onclick="on_CommonSearch(this, 'usp_JobSearchEI' ,1, Callback )" />
+                    <img src='../images/cancel icon.png' onclick="on_Clear(this)" />
+        </table>
+        <table id="tSearchResult" class="marginBottom">
+        </table>
+    </form>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var tSearch = $('#tSearch')
+    var tSearchResult = $('#tSearchResult')
+    var tOpen = $('#tOpen')
+    var tLongTerm = $('#tLongTerm')
+    var tLock = $('#tLock')
+    var tCapa = $('#tCapa')
+    var Page = 'LandingEI'
+    var Id=0
+    $(document).ready(function () {
+        InitFold()
+        for (var i = 0; i < 4; i++)
+            InitGrid(null, i, 1)
+        InitSearch()
+        InsertCommonEquipment(tSearch, EquipmentRaw)
+        var t =$('#tEquipment')
+        t.find('img').appendTo(tSearch.find('tr').eq(3).children().eq(1))
+        t.hide()
+        tSearch.find('tr').last().css('border-bottom', '1 solid gray')
+        //tLock.find('.minus').trigger('click')
+        CleanUp()
+    })
+    function EquipmentRaw(arr) {
+        var img = tSearch.find('tr').eq(3).find('img').first()
+        if (!img.length)
+            return 
+        img.siblings().remove()
+        arr = arr[0]
+        for (var i in arr) {
+            var name = arr[i]
+            if (name !='' && i == 0 )
+                $('<div/>').appendTo(img.parent() ).text(name )
+        }
+    }
+    function InitGrid(a, group, index) {
+        var arr = [tOpen, tLongTerm, tLock, tCapa]
+        var arr1 = ['Active Short Term Isolations', 'Active Long Term Isolations', 'Energy Isolation Locks', 'Open CAPA']
+        var t = arr[group]
+        var xml = GetArray(['usp_JobLandingEi', group, index, Lang])
+        DataBind(t, xml)
+
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback)
+        if (t.find('tr').length)
+            AddGridSubHeader(t, arr1[group])
+        else 
+            t.removeClass()
+        TdByName(t, 'Type', true).hide()
+
+        if (group < 2) {
+            TdByName(t, 'JobTitle', true).hide()
+            TdByName(t, 'Job No').each(function () {
+                var td = $(this)
+                var a = td.children()
+                a.attr('title', td.next().text()) 
+            })
+        }
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+    function InitSearch() {
+        var arr = ['Open', 'Closed']
+        var t = tSearch
+        t.find('td:even').not(':last').addClass('labelRight')
+        InitDate(t.find('tr').slice(1, 3).find('td:last-child()').children())
+        AddSelect(t, 0, arr)
+        AddSelectYesNo(t, 2)
+        AddSelectYesNo(t, 3)
+        var xml = GetArray(['usp_JobFilterEI'])
+        BindSelect(xml, t.find('select').eq(1), 0, 'Name', 'Name')
+        NumberOnly([t.find('tr').eq(1).find(':text').eq(0), t.find('tr').eq(2).find(':text').eq(0)])
+    }
+    function on_Clear(src) {
+        src = $(src)
+        InitClear(src.closest('table'))
+    }
+</script>

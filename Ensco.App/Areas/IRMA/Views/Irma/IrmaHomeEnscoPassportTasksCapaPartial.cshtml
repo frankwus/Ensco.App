@@ -1,0 +1,34 @@
+﻿@model Ensco.Models.DataTableModel
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_HomeTasksCapa";
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.CallbackRouteValues = new { Action = "IrmaHomeEnscoPassportTasksCapaPartial", Controller = "Irma" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.IrmaCapaModel), options);
+    // Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.Irma.IrmaHomeTasksCapaModel), options);
+    string[] arr = new string[] { "Id",  "Status", "ActionRequired", "Source", "DueDate", "AssignedBy", "AssignedTo", "ActionRequired" };
+    grid.DataBound = (s, e) => {
+        ASPxGridView g = (ASPxGridView)s;
+        foreach (GridViewColumn c in g.Columns) {
+            if (arr != null && !arr.Contains(c.Caption.Replace(" ", ""), StringComparer.CurrentCultureIgnoreCase))
+                c.Visible = false;
+        }
+    };
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+

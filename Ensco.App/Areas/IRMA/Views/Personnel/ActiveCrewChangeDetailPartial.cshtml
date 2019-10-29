@@ -1,0 +1,91 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().GridView(gridFlight =>
+{
+    gridFlight.Name = "gridView_ActiveCrewChangeFlights";
+
+    gridFlight.KeyFieldName = Model.CrewFlightInfo.KeyFieldName;
+
+    gridFlight.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "ActiveCrewChangeDetailPartial", Id = Model.Id };
+    gridFlight.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "ActiveCrewChangeFlightAddPartial" };
+    gridFlight.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "ActiveCrewChangeFlightUpdatePartial" };
+    gridFlight.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "ActiveCrewChangeFlightDeletePartial" }; //Delete it, this is not a template
+    gridFlight.SettingsEditing.Mode = GridViewEditingMode.Inline;
+
+    gridFlight.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    gridFlight.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    gridFlight.SettingsCommandButton.NewButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.NewButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    gridFlight.SettingsCommandButton.EditButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.EditButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    gridFlight.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    gridFlight.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    gridFlight.SettingsCommandButton.CancelButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+    Html.SetEnscoGridColumns(gridFlight, typeof(Ensco.Irma.Models.CrewFlightModel));
+
+    gridFlight.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridFlight.SettingsPager.FirstPageButton.Visible = true;
+    gridFlight.SettingsPager.LastPageButton.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridFlight.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    //gridFlight.CommandColumn.Visible = true;
+    //gridFlight.CommandColumn.ShowEditButton = true;
+    gridFlight.CommandColumn.ShowNewButtonInHeader = true;
+    //gridFlight.CommandColumn.ShowDeleteButton = true;
+    //gridFlight.CommandColumn.ShowUpdateButton = true;
+    //gridFlight.CommandColumn.ShowCancelButton = true;
+    gridFlight.CommandColumn.Width = 25;
+    gridFlight.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    //if (Model.Status == 10) //Active
+    //{
+    //    GridViewCommandColumnCustomButton item = new GridViewCommandColumnCustomButton();
+    //    item.ID = "Onboard";
+    //    item.Image.Url = "~/Images/Onboard.png";
+    //    item.Image.Width = 24;
+    //    item.Image.Height = 24;
+    //    gridFlight.CommandColumn.CustomButtons.Add(item);
+
+    //    //item = new GridViewCommandColumnCustomButton();
+    //    //item.ID = "Offboard";
+    //    //item.Image.Url = "~/Images/Offboard.png";
+    //    //item.Image.Width = 24;
+    //    //item.Image.Height = 24;
+    //    //gridFlight.CommandColumn.CustomButtons.Add(item);
+    //}
+    //gridFlight.ClientSideEvents.CustomButtonClick = "function(s, e) { (e.buttonID == 'Onboard') ? document.location='" + DevExpressHelper.GetUrl(new { Controller = "Personnel", Action = "OnboardPersonnelFromFlight" }) + "?CrewId=" + Model.Id + "&FlightId=' + s.GetRowKey(e.visibleIndex) : document.location='" + DevExpressHelper.GetUrl(new { Controller = "Personnel", Action = "OffboardPersonnelFromFlight" }) + "?CrewId=" + Model.Id + "&FlightId=' + s.GetRowKey(e.visibleIndex); }";
+    //gridFlight.ClientSideEvents.CustomButtonClick = "function(s, e) { popupControl.Show(); }";
+
+    gridFlight.Styles.Header.Wrap = DefaultBoolean.True;
+    gridFlight.SettingsPager.EnableAdaptivity = true;
+    gridFlight.Styles.FilterRow.BackColor = System.Drawing.Color.LightSkyBlue;
+
+    gridFlight.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+    gridFlight.SettingsDetail.ShowDetailRow = true;
+
+    gridFlight.SetDetailRowTemplateContent(c =>
+    {
+        Ensco.Irma.Models.ManageCrewChangeModel.IsPobEditing = c.Grid.IsEditing;
+        Ensco.Irma.Models.ManageCrewChangeModel.IsNewRowPobEditing = c.Grid.IsNewRowEditing;
+        if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+        {
+            Html.RenderAction("ActiveCrewChangeDetailFlightPartial", new { FlightId = DataBinder.Eval(c.DataItem, Model.CrewFlightInfo.KeyFieldName) });
+        }
+    });
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.CrewFlightInfo.KeyFieldName;
+    e.QueryableSource = Model.CrewFlightInfo.Dataset;
+}).GetHtml()
+

@@ -1,0 +1,64 @@
+﻿@model string
+@using System.Data;
+@using System.Linq.DataExtensions
+
+@{
+    //GridViewOptions options = new GridViewOptions();
+
+    //options.ShowAddButton = false;
+    //options.ShowEditButton = false;
+    //options.ShowDeleteButton = false;
+    //options.ShowCommandColumn = false;
+    //options.ShowTitle = false;
+    //options.ShowToolbar = false;
+
+    DataSet ds = Ensco.Utilities.UtilitySystem.GetDataSet("exec usp_GetPobDuplicate '"+Model  +"'" );
+    Html.BindDataTable("grid", "Duplicate", ds.Tables[0], "common", "admin", "PassportSearch" , Model );
+    return;
+}
+
+@*@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridPassportSearch";
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.CallbackRouteValues = new { Action = "PassportSearch", Controller = "Admin", Area = "Common", filter = Model.Filter };
+    grid.Width = Unit.Percentage(100);
+    grid.Height = Unit.Pixel(400);
+
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.UserModel), options);
+    grid.Columns["FirstName"].Visible = true;
+    grid.Columns["LastName"].Visible = true;
+    grid.Columns["MiddleName"].Visible = true;
+    grid.Columns["Nationality"].Visible = true;
+
+    grid.Columns["UserType"].Visible = false;
+    grid.Columns["PrimaryPhone"].Visible = false;
+    grid.Columns["DateCreated"].Visible = false;
+    grid.Columns["Status"].Visible = false;
+
+    grid.ClientSideEvents.EndCallback = "function(s,e) { onEndCallback(s, e);}";
+
+    grid.SettingsSearchPanel.GroupOperator = GridViewSearchPanelGroupOperator.Or;
+
+    // Specify columns to search on
+    //grid.SettingsSearchPanel.ColumnNames = "";
+    grid.PreRender = (sender, e) =>
+    {
+        var gridView = (MVCxGridView)sender;
+        gridView.SearchPanelFilter = Model.Filter;
+    };
+
+    grid.AfterPerformCallback = (sender, e) =>
+    {
+        var gridView = (MVCxGridView)sender;
+        gridView.SearchPanelFilter = Model.Filter;
+    };
+
+    grid.ClientSideEvents.BeginCallback = "function(s, e) { e.customArgs['filter'] = PassportSearchFilter.value; }";
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()*@

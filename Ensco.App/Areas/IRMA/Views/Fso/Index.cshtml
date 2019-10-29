@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.AddButtonText = "Add Observer";
+    options.ShowTitle = true;
+    options.Title = "Open Safety Observation Checklists";
+}
+
+@Html.DevExpress().FormLayout(layout =>
+{
+    layout.Name = "layout";
+    layout.Width = Unit.Percentage(100);
+    layout.ColumnCount = 3;
+
+    var checklistGroup = layout.Items.AddGroupItem(i =>
+    {
+        i.Caption = "FSO Checklist";
+        i.Width = Unit.Percentage(20);
+    });
+
+    checklistGroup.Items.Add(i =>
+    {
+        i.ShowCaption = DefaultBoolean.False;
+        i.NestedExtension().Button(btn =>
+        {
+            btn.Name = "btnNewChecklist";
+            btn.Text = "Create new checklist";
+            btn.RouteValues = new { Area = "IRMA", Controller = "FSO", Action = "Checklist" };
+        });
+    });
+
+    var reportsGroup = layout.Items.AddGroupItem(i =>
+    {
+        i.Width = Unit.Percentage(40);
+        i.Caption = "Reports";
+    });
+
+    reportsGroup.Items.Add(i =>
+    {
+        i.ShowCaption = DefaultBoolean.False;
+        i.NestedExtension().Button(btn =>
+        {
+            btn.Width = Unit.Percentage(50);
+            btn.Name = "btnSafeUnsafeActs";
+            btn.Text = "Safe and Unsafe Acts";
+            btn.RouteValues = new { Area = "IRMA", Controller = "FSO", Action = "Checklist" };
+        });
+    });
+
+    reportsGroup.Items.Add(i =>
+    {
+        i.ShowCaption = DefaultBoolean.False;
+        i.NestedExtension().Button(btn =>
+        {
+            btn.Width = Unit.Percentage(50);
+            btn.Name = "btnParetoChart";
+            btn.Text = "Pareto Chart";
+            btn.RouteValues = new { Area = "IRMA", Controller = "FSO", Action = "Checklist" };
+        });
+    });
+
+    reportsGroup.Items.Add(i =>
+    {
+        i.ShowCaption = DefaultBoolean.False;
+        i.NestedExtension().Button(btn =>
+        {
+            btn.Width = Unit.Percentage(50);
+            btn.Name = "btnCompliance";
+            btn.Text = "Compliance";
+            btn.RouteValues = new { Area = "IRMA", Controller = "FSO", Action = "Checklist" };
+        });
+    });
+
+    var summaryGroup  = layout.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Summary";
+    });
+
+    summaryGroup.Items.Add(i =>
+    {        
+        i.ShowCaption = DefaultBoolean.False;
+        i.SetNestedContent(() => {
+            ViewContext.Writer.Write("Current # of Required FSOs Per Week: ");
+        });
+    });
+
+}).GetHtml()
+
+@Html.DevExpress().FormLayout(layout =>
+{
+
+    layout.Name = "layoutOpenChecklists";
+    layout.Width = Unit.Percentage(100);
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "Open Safety Observations Checklists";
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.DevExpress().GridView(settings =>
+                {
+                    settings.Name = "gvOpenChecklists";
+                    settings.KeyFieldName = "Id";
+                    settings.Width = Unit.Percentage(100);
+
+                    settings.Columns.Add("ID");
+                    settings.Columns.Add("DateTime");
+                    settings.Columns.Add("ObserverId");
+                    settings.Columns.Add("Observer");
+                    settings.Columns.Add("Position");
+                    settings.Columns.Add("Company");
+                    settings.Columns.Add("Location");
+
+
+                    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "Fso", Action = "OpenChecklistsPartial" };
+
+                    Html.EnscoStandardGrid(settings, typeof(Ensco.FSO.Models.FSOChecklist), null);
+
+
+                }).GetHtml();
+            });
+        });
+    });
+
+}).GetHtml()
+
+@Html.DevExpress().FormLayout(layout =>
+{
+
+    layout.Name = "layoutTrainedObservers";
+    layout.Width = Unit.Percentage(100);
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "Trained Observers Onboard";
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                Html.DevExpress().GridView(settings =>
+                {
+                    settings.Name = "gvTrainedObservers";
+                    settings.KeyFieldName = "Id";
+                    settings.Width = Unit.Percentage(100);
+
+                    settings.Columns.Add("ObserverId");
+                    settings.Columns.Add("Observer");
+                    settings.Columns.Add("Position");
+                    settings.Columns.Add("DaysOnboard");
+                    settings.Columns.Add("Observations");
+                    settings.Columns.Add("LastObservation");
+
+                    Html.EnscoStandardGrid(settings, typeof(Ensco.FSO.Models.FSOChecklist), null);
+
+                }).GetHtml();
+            });
+        });
+    });
+
+}).GetHtml()
+
+
+@Html.DevExpress().FormLayout(layout =>
+{
+    layout.Name = "frmSearch";
+    layout.Width = Unit.Percentage(100);
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "Search";
+        group.ColumnCount = 4;
+
+        group.Items.Add(i =>
+        {
+            i.ShowCaption = DefaultBoolean.False;
+            i.SetNestedContent(() =>
+            {
+                
+            });
+
+        });
+    });
+
+}).GetHtml()

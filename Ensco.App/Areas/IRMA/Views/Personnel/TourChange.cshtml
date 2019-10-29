@@ -1,0 +1,37 @@
+﻿@model Ensco.Irma.Models.TourManagementModel
+
+@Html.DevExpress().PopupControl(settings => {
+    settings.Name = "popupControlTourChange";
+    settings.CallbackRouteValues = new { Controller = "Personnel", Action = "TourChangePartial" };
+    settings.CloseAction = CloseAction.OuterMouseClick;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.ShowFooter = true;
+    settings.AllowDragging = true;
+    settings.EnableHotTrack = true;
+    settings.Height = Unit.Percentage(100);
+    settings.Width = Unit.Percentage(100);
+    settings.HeaderText = "Tour Change1";
+
+    settings.SetContent(() => {
+        using (Html.BeginForm("TourChangePartial", "Personnel", FormMethod.Post))
+        {
+            Html.RenderAction("TourChangePartial", "Personnel", new { Area = "IRMA" });
+        }
+    });
+
+    settings.SetFooterTemplateContent(c => {
+        ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+        Html.DevExpress().Button(buttonsettings => {
+            buttonsettings.Name = "btnTourChange";
+            buttonsettings.Text = "OK";
+            buttonsettings.UseSubmitBehavior = true;
+            buttonsettings.ClientSideEvents.Click = "function (s, e) { OnTourChange(s,e); }"; 
+            //buttonsettings.ClientSideEvents.Click = String.Format("function (s, e) {{ OnTourChange(s, '{0}'); }}", Url.Action("TourChangeForPersonnel", "Personnel", new { Area = "IRMA" }));
+        }).Render();
+        ViewContext.Writer.Write("</div>");
+    });
+
+}).GetHtml()
+
+

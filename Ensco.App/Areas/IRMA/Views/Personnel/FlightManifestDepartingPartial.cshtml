@@ -1,0 +1,118 @@
+﻿@model Ensco.Irma.Models.CrewFlightModel
+@using Ensco.App.App_Start
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = bPobEditor;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = bPobEditor;
+    options.ShowCommandColumn = bPobEditor;
+    options.AddButtonText = "Add Personnel";
+    options.ShowTitle = true;
+
+    if( this.ViewData["UpdateFlightManifestDepartingPartialError"] !=null  ) {
+        options.Title = "<div class=error >The record already exists</div> ";
+    }
+}
+@Html.DevExpress().GridView(gridPob =>
+{
+    gridPob.Name = "gridView_FlightManifestDepartingPob";
+    gridPob.KeyFieldName = "Id";
+
+    gridPob.CallbackRouteValues = new { Controller = "Personnel", Action = "FlightManifestDepartingPartial", Id = Model.Id };
+    gridPob.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestReportDepartureAddPartial" };
+    gridPob.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "FlightManifestReportDepartureDeletePartial" }; //Delete it, this is not a template
+
+    Html.EnscoStandardGrid(gridPob, typeof(Ensco.Irma.Models.CrewFlightPobModel), options);
+    gridPob.SettingsEditing.Mode = GridViewEditingMode.EditForm; // Change Inline to EditForm
+    gridPob.Columns["PassportIdDeparting"].Visible = true;
+
+    gridPob.CustomJSProperties = (s, e) =>
+    {
+        if (ViewData["ItemDeleted"] != null && ((bool)ViewData["ItemDeleted"] == true))
+        {
+            e.Properties["cpRefresh"] = true;
+        }
+    };
+    gridPob.ClientSideEvents.EndCallback = "function(s, e){ if(s.cpRefresh) {delete s.cpRefresh, gridView_FlightManifestDepartingPob.Refresh();} }";
+
+
+    // Hide Airport columns if set to not visible
+    gridPob.Columns["BodyWeight"].Visible = Model.ShowAirportInfo;
+    gridPob.Columns["BagWeight"].Visible = Model.ShowAirportInfo;
+    gridPob.Columns["Bags"].Visible = Model.ShowAirportInfo;
+    gridPob.Columns["HomeAirport"].Visible = Model.ShowAirportInfo;
+    gridPob.Columns["AirlineFlight"].Visible = Model.ShowAirportInfo;
+    gridPob.Columns["Terminal"].Visible = Model.ShowAirportInfo;
+
+    gridPob.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    GridViewCommandColumnCustomButton rptBtn = new GridViewCommandColumnCustomButton();
+    rptBtn.Text = "";
+    rptBtn.ID = "ManifestDeparting";
+    rptBtn.Image.Url = "~/Images/Parking.png";
+    rptBtn.Image.Width = 24;
+    rptBtn.Image.Height = 24;
+    gridPob.CommandColumn.CustomButtons.Add(rptBtn);
+    gridPob.ClientSideEvents.CustomButtonClick = String.Format("function (s, e) {{ OnParkingLot(s, '{0}', s.GetRowKey(e.visibleIndex), {1}, {2}, true); }}", Url.Action("MoveToParkingLot", "Personnel", new { Area = "IRMA" }), Model.CrewChangeId, Model.Id);
+    gridPob.CommandColumn.Width = 100;
+
+    MVCxGridViewToolbar toolbar = gridPob.Toolbars[0];
+    MVCxGridViewToolbarItem item = null;
+
+    if (bPobEditor)
+    {
+        item = new MVCxGridViewToolbarItem();
+        item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+        item.Command = GridViewToolbarCommand.Custom;
+        item.Name = "OffboardFlight";
+        item.Text = "Offboard Personnel";
+        item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+        item.ItemStyle.ForeColor = System.Drawing.Color.White;
+        item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+        item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+        item.ClientEnabled = true;
+        item.NavigateUrl = Url.Action("OffboardFlight", "Personnel", new { Area = "IRMA", Id = Model.Id });
+        toolbar.Items.Insert(0, item);
+
+        item = new MVCxGridViewToolbarItem();
+        item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+        item.Command = GridViewToolbarCommand.Custom;
+        item.Name = "SpaceDeparting2";
+        item.SetTemplateContent(c =>
+        {
+            ViewContext.Writer.Write("&nbsp;&nbsp;");
+        });
+        toolbar.Items.Insert(0, item);
+    }
+
+    item = new MVCxGridViewToolbarItem();
+    item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+    item.Command = GridViewToolbarCommand.Custom;
+    item.Name = "FlightDepartureLog";
+    item.Text = "Departure Log";
+    item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+    item.ItemStyle.ForeColor = System.Drawing.Color.White;
+    item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+    item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+    item.ClientEnabled = true;
+    item.NavigateUrl = Url.Action("FlightDepartureLogReport", "Report", new { Area = "IRMA", Id = Model.Id });
+    toolbar.Items.Insert(0, item);
+
+    gridPob.EditFormLayoutProperties.ColumnCount = 3;
+    gridPob.EditFormLayoutProperties.Items.Add("PassportIdDeparting");
+
+    gridPob.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+
+}).Bind(Model.DepartingPersonnel).GetHtml()
+
+
+
+

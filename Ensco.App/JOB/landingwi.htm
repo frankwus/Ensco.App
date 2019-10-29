@@ -1,0 +1,134 @@
+﻿<head>
+    <style>
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+
+        <table id="t1" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Work Instruction Management
+        </table>
+        <table id="tOpen"></table>
+        <table id="tCapa" class="marginBottom"></table>
+        <table id="tSearch" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Search
+            <tr>
+                <td>WI ID
+                <td><input type="text" />
+                <td>WI Job Title
+                <td width="200">
+                    <input type="text" />
+                <td>Permit
+                <td><select />
+                <td>Date Last Used<br />From
+                <td><input type="text" />
+            <tr>
+                <td> Job Category
+                <td><select />
+                <td>WI Type
+                <td><select />
+                <td>Location
+                <td width="200">
+                    <img src='../images/search icon.png' onclick="on_Location(this)" />
+                    <span border="0" id="Location"></span>
+                <td>To
+                <td><input type="text" />
+            <tr>
+                <td>Job Criticality
+                <td><select />
+                <td>Equipment Type
+                <td><select />
+                <td>Personnel
+                <td colspan="3"><img onclick="on_PobSelect(this)" src="../Images/Select Personnel icon.png"><span></span>
+            <tr>
+                <td colspan="11" style='padding-top:4px'>
+                    <img src='../images/search icon.png' onclick="on_CommonSearch(this, 'usp_JobSearchWi' ,1, Callback )" />
+                    <img src='../images/cancel icon.png' onclick="on_Clear(this)" />
+        </table>
+        <table id="tSearchResult" class="hidden"></table>
+    </form>
+</body>
+</html>
+<script>
+    var tOpen = $('#tOpen')
+    var tSearch = $('#tSearch')
+    var tSearchResult = $('#tSearchResult')
+    var tCapa = $('#tCapa')
+
+    $(document).ready(function () {
+        InitFold()
+        for (var i = 0; i < 2; i++)
+            InitGrid(null, i, 1)
+        InitSearch()
+        CleanUp()
+    })
+    function InitGrid(a, group, index) {
+        var arr = [tOpen, tCapa]
+        var arr1 = ['Open Work Instructions', 'Work Instruction Open CAPA']
+        var t = arr[group]
+        var xml = GetArray(['usp_JobLandingWi', group, index])
+        DataBind(t, xml)
+
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback)
+        if (group == 1)
+            AddGridHeader(t, arr1[group])
+        else
+            AddGridSubHeader(t, arr1[group])
+
+    }
+    function InitSearch() {
+        var xml = GetArray(['usp_JobFilterSearchWims'])
+        var t = tSearch
+        t.find('tr:gt(0)').not(':last').find('td:even').addClass('labelRight')
+        AddSelectYesNo(t, 0)
+
+        BindSelect(xml, t.find('select').eq(1))
+        BindSelect(xml, t.find('select').last(), 1)
+
+        AddSelect(t, 2, ['WI', 'WIS'])
+        AddSelect(t, 3, ['Low', 'Medium', 'High'])
+
+        InitDateTime(t.find('tr').eq(1).find(':text').last())
+        InitDateTime(t.find('tr').eq(2).find(':text').last())
+
+        NumberOnly([t.find('tr').eq(1).find(':text').eq(0), t.find('tr').eq(2).find(':text').eq(0), t.find('tr').eq(3).find(':text').eq(0)])
+    }
+    function on_Clear(src) {
+        src = $(src)
+        InitClear(src.closest('table'))
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var r
+        if (arr != null)
+            r = arr
+        else {
+            r = GetPobUser()
+            if (r == null)
+                return
+            r = r[0]
+        }
+
+        src.next().text(r[1]).attr('userId', r[0])
+    }
+</script>

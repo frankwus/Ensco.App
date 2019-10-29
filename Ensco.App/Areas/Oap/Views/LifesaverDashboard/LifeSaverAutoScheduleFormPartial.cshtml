@@ -1,0 +1,72 @@
+﻿@Html.DevExpress().FormLayout(fl =>
+{
+
+    fl.Name = "flAddScheduledChecklist";
+
+    fl.ColumnCount = 3;
+
+    fl.Width = Unit.Percentage(100);
+
+    fl.Items.Add(item =>
+    {
+        item.Caption = "Title";
+        item.Name = "Title";
+        item.Width = Unit.Percentage(100);
+        item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+        var settings = (TextBoxSettings)item.NestedExtensionSettings;
+        settings.Width = Unit.Percentage(100);
+        item.ColumnSpan = 3;
+    });
+
+    fl.Items.Add(item =>
+    {
+        item.Caption = "Description";
+        item.Name = "Description";
+        item.Width = Unit.Percentage(100);
+        item.ColumnSpan = 3;
+        item.NestedExtension().Memo(m =>
+        {
+            m.Properties.Rows = 5;
+            m.Width = Unit.Percentage(100);
+        });
+    });
+
+    fl.Items.Add(item =>
+    {
+        item.Caption = "Number of Days";
+        item.Name = "NumberOfDays";
+        //item.Width = Unit.Percentage(100);
+        item.NestedExtensionType = FormLayoutNestedExtensionItemType.SpinEdit;
+        var settings = (SpinEditSettings)item.NestedExtensionSettings;
+        settings.Properties.MaxValue = 365;
+        settings.Properties.MinValue = 1;
+        //settings.Width = Unit.Percentage(100);
+
+    });
+
+    fl.Items.Add(item =>
+    {
+        item.Caption = "Starting At";
+        item.Name = "StartingAt";
+        item.NestedExtensionType = FormLayoutNestedExtensionItemType.DateEdit;
+        var settings = (DateEditSettings)item.NestedExtensionSettings;
+        settings.Properties.NullText = "MMM-dd-yyyy";
+        settings.Properties.EditFormat = EditFormat.Date;
+        settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+        settings.Properties.MinDate = DateTime.Now.Date;
+    });
+
+    fl.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        item.ColumnSpan = 3;
+        item.NestedExtension().Button(button =>
+        {
+            button.Name = "btnSubmitSchedule";
+            button.Text = "SAVE";            
+            button.ClientSideEvents.Click = "function (s,e) { gridScheduledLifeSavers.UpdateEdit(); }";
+        });
+    });
+
+}).GetHtml()

@@ -1,0 +1,122 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().TreeList(settings =>
+    {
+        settings.Name = "treeListCorpPersonnel";
+        settings.CallbackRouteValues = new { Controller = "Admin", Action = "ManageCorpPersonnelRelationPartial" };
+
+        settings.SettingsEditing.AddNewNodeRouteValues = new { Controller = "Admin", Action = "CorpPersonnelRelationAdd" };
+        settings.SettingsEditing.UpdateNodeRouteValues = new { Controller = "Admin", Action = "CorpPersonnelRelationUpdate" };
+        settings.SettingsEditing.DeleteNodeRouteValues = new { Controller = "Admin", Action = "CorpPersonnelRelationDelete" };
+        settings.SettingsEditing.ConfirmDelete = true;
+
+        settings.Settings.ShowTreeLines = true;
+        settings.ControlStyle.Border.BorderStyle = BorderStyle.Groove;
+        settings.SettingsBehavior.AutoExpandAllNodes = true;
+        settings.Settings.ShowTreeLines = true;
+        settings.Settings.GridLines = System.Web.UI.WebControls.GridLines.Both;
+        settings.SettingsBehavior.ExpandCollapseAction = TreeListExpandCollapseAction.NodeDblClick;
+        settings.AutoGenerateColumns = false;
+        settings.Width = Unit.Percentage(100);
+
+        settings.KeyFieldName = "Id";
+        settings.ParentFieldName = "ParentId";
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButtonInHeader = true;
+        settings.CommandColumn.NewButton.Visible = true;
+        settings.CommandColumn.DeleteButton.Visible = true;
+        settings.CommandColumn.EditButton.Visible = true;
+        settings.CommandColumn.UpdateButton.Visible = true;
+        settings.CommandColumn.CancelButton.Visible = true;
+        settings.CommandColumn.NewButton.Image.Url = "~/Images/Create.png";
+        settings.CommandColumn.EditButton.Image.Url = "~/Images/Edit.png";
+        settings.CommandColumn.EditButton.Image.Width = 16;
+        settings.CommandColumn.EditButton.Image.Height = 16;
+        settings.CommandColumn.DeleteButton.Image.Url = "~/Images/Delete.png";
+        settings.CommandColumn.DeleteButton.Image.Width = 16;
+        settings.CommandColumn.DeleteButton.Image.Height = 16;
+        settings.CommandColumn.UpdateButton.Image.Url = "~/Images/Save.png";
+        settings.CommandColumn.UpdateButton.Image.Width = 16;
+        settings.CommandColumn.UpdateButton.Image.Height = 16;
+        settings.CommandColumn.CancelButton.Image.Url = "~/Images/Cancel.png";
+        settings.CommandColumn.CancelButton.Image.Width = 16;
+        settings.CommandColumn.CancelButton.Image.Height = 16;
+        settings.CommandColumn.ButtonType = ButtonType.Image;
+
+        List<Ensco.Utilities.ColumnAttribute> attribs = Ensco.Utilities.UtilitySystem.GetCustomAttributes(typeof(Ensco.Models.CorpPeronnelRelationModel));
+        foreach(Ensco.Utilities.ColumnAttribute attrib in attribs)
+        {
+            if (!attrib.Visible)
+                continue;
+
+            string typeName = attrib.PropInfo.PropertyType.Name;
+            if (typeName.Contains("Nullable"))
+            {
+                typeName = (attrib.PropInfo.PropertyType.UnderlyingSystemType.GenericTypeArguments != null) ? attrib.PropInfo.PropertyType.UnderlyingSystemType.GenericTypeArguments[0].Name : "";
+            }
+            Ensco.Models.LookupListModel<dynamic> lkpList = (attrib.LookupList != null) ? Ensco.Utilities.UtilitySystem.GetLookupList(attrib.LookupList) : null;
+
+            switch (typeName)
+            {
+                case "String":
+                    settings.Columns.Add(attrib.FieldName);
+                    break;
+                case "Int32":
+                    {
+                        if (lkpList != null)
+                        {
+                            settings.Columns.Add(col =>
+                            {
+                                col.FieldName = attrib.FieldName;
+                                col.EditorProperties().ComboBox(combo =>
+                                {
+                                    combo.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                                    combo.ValidationSettings.Display = Display.Dynamic;
+                                    combo.ValidationSettings.SetFocusOnError = true;
+                                    combo.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                                    combo.NullText = "[Select]";
+                                    combo.TextField = lkpList.DisplayField;
+                                    combo.ValueField = lkpList.KeyFieldName;
+                                    combo.DataMember = lkpList.DisplayField;
+                                    combo.DropDownStyle = DropDownStyle.DropDownList;
+                                    combo.DataSource = lkpList.Items;
+                                });
+                            });
+                        }
+                        else
+                        {
+                            settings.Columns.Add(col =>
+                            {
+                                col.FieldName = attrib.FieldName;
+                                col.EditorProperties().SpinEdit(s =>
+                                {
+                                    s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                                });
+                            });
+                        }
+                    }
+                    break;
+                case "Boolean":
+                    {
+                        settings.Columns.Add(col =>
+                        {
+                            col.FieldName = attrib.FieldName;
+                            col.EditorProperties().CheckBox(chk =>
+                            {
+                            });
+                        });
+                    }
+                    break;
+            }
+        }
+
+    }).Bind(Model.Personnel).GetHtml();
+}
+
+
+

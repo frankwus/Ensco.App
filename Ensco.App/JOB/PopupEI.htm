@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<style>
+    body {
+        margin: 20px;
+        margin-right: 40px;
+    }
+</style>
+<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body>
+    <span style="margin-left:1; margin-bottom:5;  font-weight:bold" class="orangecolor"> Temporarily De-Isolate </span>
+    <table id="t">
+        <tr>
+            <td>
+                <br /> Have you informed the Permit Issuer of your intention to temporarily de-isolate this equipment?
+                <br /><span>Yes</span><input type="radio" name="Radio1" value="1" style="margin-right:10" />
+                <span>No</span><input type="radio" name="Radio1" value="0" style="margin-right:10" />
+                <br /><br />
+        <tr>
+            <td>
+                <img src="../Images/Submit icon.png" onclick="on_Submit(this)" />
+                <img src="../Images/Cancel icon.png" onclick="window.close() " />
+
+    </table>
+
+    <br>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var Action=getParameterByName('action')
+    $(document).ready(function () {
+        t.width('100%').find('td').css('border', 'none').find(':text').addClass('border')
+        ConfigKeyPress()
+        if (Action == 'Suspend') {
+            return
+        }
+        var html = window.dialogArguments
+        var src = $(html)
+        src.find('tr').slice(0, 2).remove()
+        src.find('tr').last().remove()
+        GetTd(src, 2).each(function () {
+            var td = $(this)
+            if (GetVal(td) == 'Energy Isolation') {
+                td.nextAll().remove()
+                td.prevAll().last().html('<input type=radio name =1 />')
+            }else
+                td.parent().remove()
+        })
+        src.insertBefore(t)
+        CleanUp()
+    })
+    function on_Submit() {
+        if (['shortterm', 'suspend'].indexOf(Action) != -1 ) {
+            window.returnValue = $(':checked').val()
+            window.close()
+            return
+        }
+        var id = $(':checked').closest('tr').find('a').text()
+
+        if (id == null || id == '')  {
+            alert('Please make a selection.')
+            return
+        }
+        GetArray(['usp_JobCloneEI', Trim(id)])
+        window.returnValue =1
+        window.close()
+    }
+</script>

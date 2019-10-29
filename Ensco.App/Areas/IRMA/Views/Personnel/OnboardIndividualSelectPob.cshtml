@@ -1,0 +1,70 @@
+﻿@model Ensco.Irma.Models.SelectPobModel
+
+@Html.HiddenFor(x => x.SubmitAction)
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formOnboardIndividualSelectPob";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+    form.ColCount = 4;
+
+    form.Items.Add(x => x.PobCrewChange, item =>
+    {
+        //Ensco.Models.LookupListModel<dynamic> lkpList = Ensco.Utilities.UtilitySystem.GetLookupList("CrewPobArriving");
+
+        item.FieldName = "Id";
+        Html.EnscoNestedEditor(item, x => x.PobCrewChange);
+        //item.NestedExtension().ComboBox(s =>
+        //{
+        //    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+        //    s.Properties.ValidationSettings.Display = Display.Dynamic;
+        //    s.Properties.ValidationSettings.SetFocusOnError = true;
+        //    s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        //    s.Properties.DataSource = lkpList.Items;
+        //    s.Properties.NullText = "[Select]";
+        //    s.Properties.TextField = lkpList.DisplayField;
+        //    s.Properties.ValueField = lkpList.KeyFieldName;
+        //    s.Properties.DataMember = lkpList.DisplayField;
+        //    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+        //});
+    });
+    form.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.NestedExtension().Button(s =>
+        {
+            s.Name = "btnFromCrewSubmit";
+            s.Text = "";
+            s.Images.Image.Url = "~/Images/Submit.png";
+            s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+            s.UseSubmitBehavior = true;
+            s.ClientSideEvents.Click = "function(s, e){var item =  document.getElementById('SubmitAction'); item.value = 1;}";
+        });
+    });
+
+    form.Items.Add(x => x.PobPassport, item =>
+    {
+        item.FieldName = "PobPassport";
+        Html.EnscoNestedEditor(item, x => x.PobPassport);
+
+
+    });
+    form.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.NestedExtension().Button(s =>
+        {
+            s.Name = "btnFromDatabaseSubmit";
+            s.Text = "";
+            s.Images.Image.Url = "~/Images/Submit.png";
+            s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+            s.UseSubmitBehavior = true;
+            s.ClientSideEvents.Click = "function(s, e){ var item =  document.getElementById('SubmitAction'); item.value = 2; $('#SubmitAction').val(2);}";
+        });
+    });
+
+}).GetHtml()
+

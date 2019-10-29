@@ -1,0 +1,70 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<div style="margin-bottom:5">
+    <a href="javascript:void(0)" onclick="on_Goback(this);">Go Back</a> <a href="1" id="MyPob" >My PoB Record</a>
+</div>
+<table id="tCapa" ></table>
+<table id="tTask"  class="marginBottom"></table>
+<table id="tOpenJob" class="marginBottom"></table>
+<table id="tAfterField" class="marginBottom"></table>
+<script>
+    var tCapa = $('#tCapa')
+    var tTask = $('#tTask')
+	var tOpenJob = $('#tOpenJob')
+	var tAfterField = GetId('tAfterField') 
+    var Page ='summary'
+    $(document).ready(function () {
+        InitFold()
+        for (var i = 0; i < 4; i++)
+            InitGrid(null, i, 1)
+    })
+    function InitGrid(a, group, index) {
+		var arr = [tCapa, tTask, tOpenJob, tAfterField]
+        var arr1 = ['My CAPA', 'My Open Tasks', 'My Open Jobs', 'After Field Break']
+        var t = arr[group]
+        var xml = GetArray(['usp_ComMyPage', group, index, UserId, Lang ])
+        DataBind(t, xml)
+
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback)
+        AddGridSubHeader(t, arr1[group])
+        var a =  GetId('MyPob')
+        var id = Trim($(xml).find('Table2').text())
+		a.attr('href', '../pob/pob.htm?id=' + id)
+
+		if (tAfterField.find('tr').length == 1)
+			tAfterField.hide() 
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+    function Initgrid2() {
+        var arr = [ 'My CAPA', 'My Tasks',  'My Open Jobs']
+        var xml = GetArray(['usp_ComMyPage', UserId ])
+        for (var i in arr) {
+            var t =$('<table/>')
+            DataBind(t, xml, i)
+            t.addClass('marginBottom')
+            t.appendTo($('body'))
+            AddHeader(t, arr[i], 'darkblue')
+            if (i == 0) {
+                var a = t.prevAll('div').find('a').last()
+                t.css('margin-top', 5)
+                var id =Trim($(xml).find('Table3').text() ) 
+                a.attr('href', '../pob/pob.htm?id='+id )
+            }
+        }
+    }
+</script>

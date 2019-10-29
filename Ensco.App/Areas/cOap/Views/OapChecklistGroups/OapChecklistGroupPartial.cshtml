@@ -1,0 +1,9 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapChecklistGroup> 
+
+@Html.DevExpress().GridView(settings =>
+{
+    var oapGroupGroupController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapChecklistGroupsController;
+    oapGroupGroupController.Configure(settings, Html, ViewContext); 
+}).Bind(Model).GetHtml()
+
+

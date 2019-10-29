@@ -1,0 +1,103 @@
+﻿@model Ensco.Irma.Models.PobBoardingModel
+@using Ensco.Utilities;
+@try {
+    using (Html.BeginForm("OffboardPersonnelPartial", "Personnel", FormMethod.Post)) {
+        Html.DevExpress().FormLayout(form => {
+            form.Name = "formOffboardPersonnelPartial";
+            form.EncodeHtml = false;
+            form.UseDefaultPaddings = false;
+            form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            form.UseDefaultPaddings = true;
+
+            form.Items.AddGroupItem(i => {
+                i.Caption = "Offboarding";
+                i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                i.ColCount = 4;
+
+                i.Items.Add(x => x.FlightManifest, item => {
+                    Ensco.Models.LookupListModel<dynamic> lkpList = Ensco.Utilities.UtilitySystem.GetLookupList("CrewFlights");
+
+                    item.FieldName = "FlightId";
+                    item.NestedExtension().ComboBox(s => {
+                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                        s.Properties.ValidationSettings.SetFocusOnError = true;
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.Properties.DataSource = lkpList.Items;
+                        s.Properties.NullText = "[Select]";
+                        s.Properties.TextField = lkpList.DisplayField;
+                        s.Properties.ValueField = lkpList.KeyFieldName;
+                        s.Properties.DataMember = lkpList.DisplayField;
+                        s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        s.Properties.DisplayFormatString = string.Format("{{0}}", lkpList.DisplayFieldIndex);
+                        s.Properties.Columns.Add("CrewChange");
+                        s.Properties.Columns.Add("Manifest");
+                    });
+                });
+                i.Items.Add(item => {
+                    item.ShowCaption = DefaultBoolean.False;
+                    item.NestedExtension().Button(s => {
+                        s.Name = "btnFlightManifest";
+                        s.Text = "";
+                        s.Images.Image.Url = "~/Images/Submit.png";
+                        s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                        s.UseSubmitBehavior = true;
+                    });
+                });
+
+                //i.Items.Add(x => x.CrewChange, item =>
+                //{
+                //    Ensco.Models.LookupListModel<dynamic>
+                //    lkpList = Ensco.Utilities.UtilitySystem.LookupLists["CrewChange"];
+
+                //    item.FieldName = "CrewId";
+                //    item.NestedExtension().ComboBox(s =>
+                //    {
+                //        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                //        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                //        s.Properties.ValidationSettings.SetFocusOnError = true;
+                //        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                //        s.Properties.DataSource = lkpList.Items;
+                //        s.Properties.NullText = "[Select]";
+                //        s.Properties.TextField = lkpList.DisplayField;
+                //        s.Properties.ValueField = lkpList.KeyFieldName;
+                //        s.Properties.DataMember = lkpList.DisplayField;
+                //        s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                //    });
+                //});
+                //i.Items.Add(item =>
+                //{
+                //    item.ShowCaption = DefaultBoolean.False;
+                //    item.NestedExtension().Button(s =>
+                //    {
+                //        s.Name = "btnCrewChangeSubmit";
+                //        s.Text = "";
+                //        s.Images.Image.Url = "~/Images/Submit.png";
+                //        s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                //        s.UseSubmitBehavior = true;
+                //    });
+                //});
+            });
+
+            //form.Items.Add(i =>
+            //{
+            //    i.ShowCaption = DefaultBoolean.False;
+            //    i.SetNestedContent(() =>
+            //    {
+            //        Html.RenderPartial("OffboardPersonnelPobPartial", Model);
+            //    });
+            //});
+        }).GetHtml();
+    }
+} catch (Exception ex) {
+    UtilitySystem.GetDataSet("test" + ex.Message.ToString() + " " + ex.StackTrace.ToString());
+}
+}
+@try {
+    using (Html.BeginForm()) {
+        Html.RenderPartial("OffboardPersonnelPobPartial", Model);
+    }
+} catch (Exception ex) {
+    UtilitySystem.GetDataSet(ex.Message.ToString() + " " + ex.StackTrace.ToString());
+}
+}

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapAssetDataManagement>
+@{
+    ViewBag.Title = "OAP ADM List";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+         
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewADMChecklist": 
+                    s.AddNewRow();
+                    break; 
+            }
+        }
+    </script>
+}
+
+@*<h1 class="area-headers">@ViewBag.Title</h1>*@
+<div class="oap-master-grid">
+    <form>
+        @Html.Partial("OapChecklistAssetDataManagementPartial", Model)
+    </form>
+</div>

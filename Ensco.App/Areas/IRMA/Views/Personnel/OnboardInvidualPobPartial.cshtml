@@ -1,0 +1,518 @@
+﻿
+@model Ensco.Irma.Models.OnboardIndividualPobModel
+
+@{
+    var btnSubmitText = (Model != null && Model.Status != null && Model.Status == 1) ? "Save" : "Onboard";
+    Ensco.Models.LookupListModel<dynamic> lkpNationality = Ensco.Utilities.UtilitySystem.GetLookupList("Nationality");
+    Ensco.Models.LookupListModel<dynamic> lkpCompany = Ensco.Utilities.UtilitySystem.GetLookupList("Company");
+    Ensco.Models.LookupListModel<dynamic> lkpDept = Ensco.Utilities.UtilitySystem.GetLookupList("Department");
+    Ensco.Models.LookupListModel<dynamic> lkpPosition = Ensco.Utilities.UtilitySystem.GetLookupList("Position");
+    bool bOnboard = (Model != null) && (Model.Requirements != null);
+    bool bVantage = true;
+    bool bISN = true;
+    bool bEssential = true;
+    bool bLocker = true;
+    bool bPPE = true;
+    bool bVehicle = true;
+    bool bOpt1 = true;
+    bool bOpt2 = true;
+    bool bOpt3 = true;
+    bool bOpt4 = true;
+    bool bDOB = true;
+    bool bMuster1 = true;
+    bool bMuster2 = true;
+
+    try
+    {
+        bVantage = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 1) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 1).Visible : true;
+        bISN = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 2) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 2).Visible : true;
+        bEssential = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 3) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 3).Visible : true;
+        bLocker = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 4) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 4).Visible : true;
+        bPPE = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 5) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 5).Visible : true;
+        bVehicle = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 6) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 6).Visible : true;
+        bOpt1 = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 7) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 7).Visible : true;
+        bOpt2 = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 8) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 8).Visible : true;
+        bOpt3 = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 9) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 9).Visible : true;
+        bOpt4 = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 10) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 10).Visible : true;
+        bDOB = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 12) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 12).Visible : true;
+        bMuster1 = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 13) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 13).Visible : true;
+        bMuster2 = (Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == 14) != null) ? Model.Requirements.FirstOrDefault(x => x.Id == 14).Visible : true;
+    }
+    catch (Exception ex)
+    {
+    }
+
+    bool bSafety = bPPE || bVehicle;
+    // If Company is Ensco, then CompanyType should be Ensco and make it readonly
+    bool bCompanyTypeReadOnly = (Model != null) && (Model.Company == 1409) ? true : false;
+    // string focusRowChangedEvent = string.Format("function(s, e){{ var index = s.GetFocusedRowIndex(); document.location = '{0}?Id=' + s.GetRowKey(index);}}", Url.Action("OnboardIndividual", "Personnel", new { Area = "IRMA" }));
+    string focusRowChangedEvent = "function(s, e){onValueChanged(s, e) }";
+    string selectionChangedEvent = string.Format("function(s, e){{ document.location = '{0}?Id=' + s.GetValue();}}", Url.Action("OnboardIndividualCompanyChanged", "Personnel", new { Area = "IRMA" }));
+
+    Dictionary<EnscoHelper.EventHandlerType, string> handlers = new Dictionary<EnscoHelper.EventHandlerType, string>();
+    handlers[EnscoHelper.EventHandlerType.FocusRowChanged] = focusRowChangedEvent;
+    handlers[EnscoHelper.EventHandlerType.ComboBoxSelectionChanged] = selectionChangedEvent;
+
+    string selectionChangedEventCompanyType = "function(s, e){onValueChangedCompanyType(s, e)} ";
+    Dictionary<EnscoHelper.EventHandlerType, string> handlersCompanyType = new Dictionary<EnscoHelper.EventHandlerType, string>();
+    handlersCompanyType[EnscoHelper.EventHandlerType.ComboBoxSelectionChanged] = selectionChangedEventCompanyType;
+
+}
+
+
+@Html.DevExpress().PageControl(pc => {
+    pc.Name = "pcIndividualOnboard";
+    pc.ActivateTabPageAction = ActivateTabPageAction.Click;
+    pc.EnableHotTrack = true;
+    pc.SaveStateToCookies = true;
+    pc.TabAlign = TabAlign.Left;
+    pc.TabPosition = TabPosition.Top;
+    pc.Width = System.Web.UI.WebControls.Unit.Pixel(1200);
+    pc.ControlStyle.CssClass = "dxtcFixed";
+    pc.TabPages.Add("Onboarding").SetContent(() => {
+        Html.DevExpress().FormLayout(form =>
+        {
+            form.Name = "formIndividualOnboardingPob";
+            form.EncodeHtml = false;
+            form.UseDefaultPaddings = false;
+            form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            form.UseDefaultPaddings = true;
+            form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+            form.Items.AddGroupItem(i =>
+            {
+                i.Caption = "Ensco Passport Fields";
+                i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                i.Height = Unit.Percentage(100);
+                i.ColCount = 4;
+
+                i.Items.Add(x => x.SelectPoB, item =>
+                {
+                    item.FieldName = "SelectPoB";
+                    item.Caption = "Select PoB";
+                    item.ClientVisible = ((Model == null) || (!Model.BatchOnboard));
+                    Html.EnscoNestedEditor(item, x => x.SelectPoB, null, handlers);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Passport, true);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.FirstName, true);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.LastName, true);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.NationalityName, true);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.CompanyName, true);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.DepartmentName, true);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PositionName, true);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.DateOfBirth, true);
+                });
+            });
+            form.Items.AddGroupItem(i =>
+            {
+                i.Caption = "Onboarding Fields";
+                i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                i.Height = Unit.Percentage(100);
+                i.ColCount = 4;
+
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.CompanyType, bCompanyTypeReadOnly, handlersCompanyType);
+                });
+                i.Items.Add(item => {
+                    if (Model != null)
+                        Html.EnscoCapaEditor(item, x => x.PersonnelType, null, null,  (x => x.UserType == Model.CompanyType));
+                    else
+                        Html.EnscoCapaEditor(item, x => x.PersonnelType);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.ShortService);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Essential );
+                    item.ClientVisible = bEssential;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.VantageNumber);
+                    item.ClientVisible = bVantage;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.ISNNumber);
+                    item.ClientVisible = bISN;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Gender);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.LockerNumber);
+                    item.ClientVisible = bLocker;
+                });
+            });
+            form.Items.AddGroupItem(i =>
+            {
+                i.Caption = "Rig Specific Fields";
+                i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                i.Height = Unit.Percentage(100);
+                i.ColCount = 4;
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Tour);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Crew);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.DateOfArrival);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.RotationSchedule);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Room, null, null, null, false, false, "Current Room");
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Bed, null, null, null, false, false, "Current Bed");
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.UsualRoom);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.UsualBed);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PrimaryLifeBoat);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.SecondaryLifeBoat);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.MusterStation1);
+                    item.ClientVisible = bMuster1;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.MusterStation2);
+                    item.ClientVisible = bMuster2;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.DateEstimatedLeave);
+                    item.Visible = false ;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Optional1, null, null, null, false, false, GetCaption(7) );
+                    item.ClientVisible = bOpt1;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Optional2, null, null, null, false, false, GetCaption(8));
+                    item.ClientVisible = bOpt2;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Optional3, null, null, null, false, false, GetCaption(9));
+                    item.ClientVisible = bOpt3;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Optional4, null, null, null, false, false, GetCaption(10));
+                    item.ClientVisible = bOpt4;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EnscoAuthentication, null, null, null, false, false, "IRM+A Authentication" );
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.SharedAccountId);
+                });
+            });
+
+            form.Items.Add(x => x.PassportId, item =>
+            {
+                item.FieldName = "PassportId";
+                item.ShowCaption = DefaultBoolean.False;
+                item.ClientVisible = false;
+            });
+            form.Items.Add(x => x.Id, item =>
+            {
+                item.FieldName = "Id";
+                item.ShowCaption = DefaultBoolean.False;
+                item.ClientVisible = false;
+            });
+        }).GetHtml();
+    });
+    pc.TabPages.Add("User Information").SetContent(() => {
+        Html.DevExpress().FormLayout(form =>
+        {
+            form.Name = "formIndividualOnboardingPob2";
+            form.EncodeHtml = false;
+            form.UseDefaultPaddings = false;
+            form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            form.UseDefaultPaddings = true;
+            form.Items.AddGroupItem(i =>
+            {
+                i.Caption = "Identity Information";
+                i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                i.Height = Unit.Percentage(100);
+                i.ColCount = 3;
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PassportIssuer );
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PassportNumber);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PassportExpires);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.IdentificationIssuer);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Identification);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.IdentificationExpires);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Comment);
+                    item.ColumnSpan = 3;
+                });
+            });
+            form.Items.AddGroupItem(i =>
+            {
+                i.Caption = "Contact Information";
+                i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                i.Height = Unit.Percentage(100);
+                i.ColCount = 4;
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.AddressLine1);
+                    item.ColumnSpan = 2;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.AddressLine2);
+                    item.ColumnSpan = 2;
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.City);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.State);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.Country);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PostalCode);
+                });
+
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PrimaryPhone);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.SecondaryPhone);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.MaritalStatus);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.PersonalEmail);
+                });
+
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.HomeAirport);
+                });
+            });
+            form.Items.AddGroupItem(i =>
+            {
+                i.Caption = "Emergency Contact Information";
+                i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                i.Height = Unit.Percentage(100);
+                i.ColCount = 3;
+
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EmergencyContactFirstName);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EmergencyContactLastName);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EmergencyContactRelationship);
+                });
+
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EmergencyContactEmail);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EmergencyContactPrimaryPhone);
+                });
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EmergencyContactSecondaryPhone);
+                });
+
+                i.Items.Add(item => {
+                    Html.EnscoCapaEditor(item, x => x.EmergencyContactComment);
+                    item.ColumnSpan = 3;
+                });
+            });
+        }).GetHtml();
+    });
+
+    if (bSafety)
+    {
+        pc.TabPages.Add("Safety Information").SetContent(() =>
+        {
+            Html.DevExpress().FormLayout(form =>
+            {
+                form.Name = "formIndividualOnboardingPob3";
+                form.EncodeHtml = false;
+                form.UseDefaultPaddings = false;
+                form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                form.UseDefaultPaddings = true;
+                form.Items.AddGroupItem(i =>
+                {
+                    i.Caption = "PPE and Clothing Sizes";
+                    i.ClientVisible = bPPE;
+
+                    i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                    i.Height = Unit.Percentage(100);
+                    i.ColCount = 4;
+
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.WorkBoots);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.RubberBoots);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.Gloves);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.TShirt);
+                    });
+
+
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.CoverallTan);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.CoverallFRC);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.CoverallChemical);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.CoverallWinter);
+                    });
+
+
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.PPEComment);
+                        item.ColumnSpan = 4;
+                    });
+                });
+                form.Items.AddGroupItem(i =>
+                {
+                    i.Caption = "Vehicle Information";
+                    i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+                    i.ClientVisible = bVehicle;
+
+                    i.Height = Unit.Percentage(100);
+                    i.ColCount = 4;
+
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.VehicleMake);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.VehicleModel);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.VehicleColor);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.VehicleLocation);
+                    });
+
+
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.VehiclePlateIssuer);
+                    });
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.VehiclePlateNumber);
+                    });
+
+
+                    i.Items.Add(item => {
+                        Html.EnscoCapaEditor(item, x => x.VehicleComment);
+                        item.ColumnSpan = 4;
+                    });                    
+                });
+            }).GetHtml();
+
+        });
+    }
+}).GetHtml()
+
+<div style='float:right; padding-right:30px'>
+    @if (Model != null && Model.BatchOnboard)
+    {
+        //Html.DevExpress().Button(btnSettings =>
+        //{
+        //    btnSettings.Name = "btnUpdate";
+        //    btnSettings.Text = "Save";
+        //    btnSettings.ClientSideEvents.Click = "function(s, e){ gridView_PobBatchOnboardPartial.UpdateEdit();  }";
+        //}).Render();
+        //Html.DevExpress().Button(btnSettings =>
+        //{
+        //    btnSettings.Name = "btnCancel";
+        //    btnSettings.Text = "Cancel";
+        //    btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+        //    btnSettings.ClientSideEvents.Click = "function(s, e){ gridView_PobBatchOnboardPartial.CancelEdit(); }";
+        //}).Render();
+    }
+    else
+    {
+        Html.DevExpress().Button(btnSettings =>
+        {
+            btnSettings.Name = "btnUpdate";
+            btnSettings.Text = btnSubmitText;
+            btnSettings.UseSubmitBehavior = true;
+            btnSettings.Enabled = bOnboard;
+            //btnSettings.ClientSideEvents.Click = "function(s, e){ var item =  document.getElementById('SubmitAction'); item.value = 1;}";
+        }).GetHtml();
+        ViewContext.Writer.Write("&nbsp;&nbsp;");
+        Html.DevExpress().Button(btnSettings =>
+        {
+            btnSettings.Name = "btnCancel";
+            btnSettings.Text = "Cancel";
+            btnSettings.UseSubmitBehavior = false;
+            btnSettings.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("Index", "Personnel", new { Area = "IRMA" }));
+        }).GetHtml();
+    }
+</div>
+
+@if (ViewData.ModelState.Values.Any(x => x.Errors.Count >= 1))
+{
+    string errorMsg = "";
+    foreach(var item in ViewData.ModelState.Values)
+    {
+        foreach(var error in item.Errors)
+        {
+            errorMsg += string.Format("{0}\r\n", error.ErrorMessage);
+        }
+    }
+    @Html.DevExpress().Label(lblsettings => {
+                                           lblsettings.Name = "ErrorMsg";
+                                           lblsettings.Text = errorMsg;
+                                           lblsettings.ControlStyle.ForeColor = System.Drawing.Color.Red;
+                                       }).GetHtml();
+}
+@functions{
+    string GetCaption(int i) {
+        string caption = null; 
+        if ((Model != null) && (Model.Requirements != null) && (Model.Requirements.FirstOrDefault(x => x.Id == i) != null)) {
+            caption = Model.Requirements.FirstOrDefault(x => x.Id == i ).Name;
+        }
+        return caption; 
+    }
+}

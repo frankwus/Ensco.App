@@ -1,0 +1,34 @@
+﻿@model Ensco.Models.DataTableModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(gridView_CrewChangeSearch); // grid is client side Id
+            }
+        );
+
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            AdjustMainGrid(gridView_CrewChangeSearch); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("CrewChangeSearchPartial", Model);
+}
+
+
+

@@ -1,0 +1,125 @@
+﻿@model Ensco.Models.IrmaCapaModel
+@using System.Data;
+@using System.Web.UI.WebControls
+@{
+    bool readOnly = ((bool)this.ViewBag.ReadOnly || Model.Id == 0);
+    // readOnly = false;
+}
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formRespond";
+    form.ShowItemCaptionColon = false;
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+    form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+
+    form.Items.AddGroupItem(i => {
+        i.Caption = "Details";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Percentage(100);
+        i.ColCount = 3;
+
+        i.Items.Add(item => {
+            item.ColumnSpan = 3;
+            item.ShowCaption = DefaultBoolean.False;
+            item.NestedExtension().TextBox(s => {
+                s.Name = "CapaId";
+                s.Text = Model==null?"": Model.Id.ToString();
+                s.ClientVisible = false;
+            });
+        });
+        i.Items.Add(item => {
+            this.ConfigItem(item, "AssignedTo1", "AssignedTo", true );
+        }) ;
+        i.Items.Add(item => {
+            this.ConfigItem(item, "Rig1", "Rig", true );
+        });
+        i.Items.Add(item => {
+            this.ConfigItem(item, "Position1", "Position", true );
+        });
+
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.DateCompleted, readOnly, null, null, false, true);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.WO, readOnly, null, null, false );
+        });
+        i.Items.Add(item => {
+            item.ColumnSpan = 3;
+            Html.EnscoCapaEditor(item, x => x.CompletionDescription, readOnly, null, null, false, true);
+        });
+        i.Items.Add(item => {
+            item.Caption = "Attachments";
+            item.Name = "uc1";
+            item.ColumnSpan = 3;
+            item.SetNestedContent(() => {
+                Html.RenderAction("UploadPartial", new { Area = "irma", Controller = "capa", source="Capa", id = Model.Id , readOnly });
+            });
+        });
+        if (!readOnly) {
+            i.Items.Add(item => {
+                item.ColumnSpan = 3;
+                item.ShowCaption = DefaultBoolean.False;
+                item.NestedExtension().Button(s => {
+                    s.Name = "SubmitRespond";
+                    s.Text = "Submit";
+                    s.ClientSideEvents.Click = "function(s,e){ onSubmitRespondClick(s, e) }";
+                    //s.UseSubmitBehavior = true;
+                   // s.RouteValues = new {area="Irma", Controller = "Capa", Action = "RespondPartial" };
+                });
+            });
+        }
+    });
+    if (!readOnly) {
+        form.Items.AddGroupItem(i => {
+            i.Caption = "Options";
+            i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+            i.Height = Unit.Percentage(100);
+            i.ColCount = 3;
+            i.Items.Add(item => {
+                Html.EnscoCapaEditor(item, x => x.Extension );
+                item.Caption = "Date";
+            });
+            i.Items.Add(item => {
+                item.ColumnSpan = 2;
+                item.ShowCaption = DefaultBoolean.False;
+                item.NestedExtension().Button(s => {
+                    s.Name = "RequestExtension";
+                    s.Text = "Request Extension";
+                    s.UseSubmitBehavior = false;
+                    s.ClientSideEvents.Click = "function(s,e){ onRequestExtensionClick(s, e) }";
+                 //   s.RouteValues = new { area = "Irma", Controller = "Capa", Action = "RespondRequest", flag = "Extension" };
+                });
+            });
+            i.Items.Add(item => {
+                Html.EnscoCapaEditor(item, x => x.ReassignedTo);
+                item.Caption = "Reassign To";
+            });
+            i.Items.Add(item => {
+                item.ColumnSpan = 2;
+                item.ShowCaption = DefaultBoolean.False;
+                item.NestedExtension().Button(s => {
+                    s.Name = "RequestReassignment";
+                    s.Text = "Request Reassignment";
+                    s.UseSubmitBehavior = false ;
+                    s.ClientSideEvents.Click = "function(s,e){ onRequestReassignmentClick(s, e) }";
+                   // s.RouteValues = new { area = "Irma", Controller = "Capa", Action = "RespondRequest", flag = "Reassignment" };
+                });
+            });
+        });
+    }
+}).GetHtml()
+@functions{
+    void ConfigItem(MVCxFormLayoutItem item, string name, string caption, bool required = false) {
+        caption = EnscoHelper.GetTranslation(caption);
+        item.Caption = caption;
+        item.NestedExtension().TextBox(s => {
+            s.Name = name;
+            s.ClientEnabled = false;
+            s.Width = Unit.Percentage(100);
+            s.Properties.ValidationSettings.RequiredField.IsRequired = required;
+        });
+    }
+}

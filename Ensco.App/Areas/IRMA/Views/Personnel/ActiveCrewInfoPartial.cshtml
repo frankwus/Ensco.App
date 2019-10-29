@@ -1,0 +1,53 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+@using System.Web.UI.WebControls
+
+<br/>
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formActiveCrewChangeInfo";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Enabled = false;
+    form.Width = Unit.Percentage(50);
+    form.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+    form.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 700;
+
+    var groupItem = form.Items.AddGroupItem(group =>
+    {
+        group.Caption = "Active Crew Information";
+        group.Width = Unit.Percentage(100);
+        group.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        group.ColCount = 2;
+    });
+
+    groupItem.Items.Add(i =>
+    {
+        i.FieldName = "Title";
+        i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Hidden;
+        i.SetNestedContent(() => { Html.EnscoLabel(x => x.Title); });
+    });
+
+    groupItem.Items.Add(i =>
+    {
+        i.FieldName = "InboundCrew";
+        i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Hidden;
+        i.SetNestedContent(() => { Html.EnscoLabel(x => x.InboundCrew); });
+    });
+
+    groupItem.Items.Add(i =>
+    {
+        i.FieldName = "DateCrewChange";
+        i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Hidden;
+        i.SetNestedContent(() => { Html.EnscoLabel(x => x.DateCrewChange); });
+    });
+
+
+    groupItem.Items.Add(i =>
+    {
+        i.FieldName = "DateCreated";
+        i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Hidden;
+        i.SetNestedContent(() => { Html.EnscoLabel(x => x.DateCreated); });
+    });
+
+}).Bind(Model).GetHtml()
+

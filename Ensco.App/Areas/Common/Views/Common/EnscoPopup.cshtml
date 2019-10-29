@@ -1,0 +1,50 @@
+﻿@model Ensco.Models.PopupModel
+
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = Model.Name;
+    settings.CallbackRouteValues = new { Controller = "Personnel", Action = "FlightParkingLotAddArriving" };
+    settings.CloseAction = CloseAction.OuterMouseClick;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.ShowOnPageLoad = Model.ShowOnPageLoad;
+    settings.AllowDragging = true;
+    settings.EnableHotTrack = true;
+    settings.Height = Unit.Percentage(100);
+    settings.Width = Unit.Percentage(100);
+    settings.ShowMaximizeButton = Model.MaximizeBox;
+    settings.ShowSizeGrip = ShowSizeGrip.Auto;
+    settings.AllowResize = Model.AllowResize;
+    settings.HeaderText = Model.Title;
+    settings.ContentUrl = Model.ContentUrl;
+    settings.ShowFooter = false;
+    settings.ShowCloseButton = true;
+    if(Model.MaximizeBox)
+    {
+        settings.Maximized = true;
+    }
+
+    if (Model.ButtonSet != Ensco.Models.PopupModel.ButtonSetType.None)
+    {
+        settings.ShowFooter = true;
+        settings.SetFooterTemplateContent(c =>
+        {
+            ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "btnOk";
+                buttonsettings.Text = "OK";
+                buttonsettings.UseSubmitBehavior = true;
+            }).Render();
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "btnCancel";
+                buttonsettings.Text = "Cancel";
+                buttonsettings.EnableClientSideAPI = true;
+                buttonsettings.ClientSideEvents.Click = "function(s, e){s.Hide();}";
+            }).Render();
+            ViewContext.Writer.Write("</div>");
+        });
+    }
+}).GetHtml()
+

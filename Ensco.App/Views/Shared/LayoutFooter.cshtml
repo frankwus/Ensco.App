@@ -1,0 +1,8 @@
+﻿
+<div class="copyright">
+    @Html.DevExpress().Label(settings =>
+    {
+        settings.EncodeHtml = false;
+        settings.Text = DateTime.Now.Year + " &copy; Copyright by Ensco" ;
+    }).GetHtml()
+</div>

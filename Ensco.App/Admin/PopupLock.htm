@@ -1,0 +1,92 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <br />
+    <span style="margin-left:20; margin-bottom:5;  font-weight:bold" class="orangecolor center"> Energy Isolation Locks</span>
+    <br /> <br />
+    <table id="t" width="100%" border="0" styl1e="text-align:center">
+        <tr>
+
+            <td width="100">Lock No
+            <td>
+                <input type="text" />
+        <tr>
+
+            <td>Available
+            <td>
+                <input checked name="name" id="Yes" type="radio" /><span>Yes</span><input name="name" id="No" type="radio" /><span>No</span>
+        <tr>
+
+            <td>Isolation Type 
+            <td>
+                <select/>
+        <tr>
+            <td>Comment
+            <td>
+                <textarea rows="5"></textarea>
+        <tr>
+            <td class="noborder">
+
+
+                <img src="../Images/Submit icon.png" onclick="on_Submit(this)" />
+            <td class="noborder">
+                <img style="margin:10" src="../Images/Cancel icon.png" onclick="window.close()" />
+
+
+</table>
+    <br />
+    <table id="tResult"></table>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    $(document).ready(function () {
+        var xml = GetArray(['usp_JobGetIAType',  Lang])
+        BindSelect(xml, $('select') )
+        GetTd(t, 0).addClass('right ')
+        t.find('td').css('border1', 'none').find(':text').css('border', '1 solid black')
+    CleanUp()
+        //return 
+        //var arr = window.dialogArguments
+        //arr = JSON.parse(arr)
+        //t.find(':text').eq(0).val(arr[0]).prop('disabled', (arr[0] != ''))
+        //t.find('textarea').text(arr[2])
+        //GetTd(t, 0).addClass('right ')
+        //t.find('td').css('border', 'none').find(':text').css('border', '1 solid black')
+        //GetId(arr[1]).prop('checked', true)
+
+    })
+    function on_Submit(src) {
+        var lock = GetVal(t.find(':text').eq(0))
+        if (lock == '') {
+            alert('Please enter a lock. ')
+            return
+        }
+        //if ( IsEmpty( $('select') ) ) {
+
+        //    alert('Please select an Isolation Type. ')
+        //    return
+        //}
+        var comment = GetVal(t.find('textarea'))
+        var xml = GetArray(['usp_AdminSaveLock', lock, t.find(':checked').attr('id'), $('select').val(), comment])
+        if (Trim(GetXmlTable(xml).text()) == 1) {
+            alert('The lock already exists.')
+            return 
+        }
+        window.returnValue = [lock, t.find(':checked').attr('id'), $('select').val(), comment]
+        window.close()
+    }
+
+</script>

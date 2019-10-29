@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Ensco.App.Areas.Oap.Models.RigOapChecklistGroupAssetModel>
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+        var oapController = (dynamic) ViewContext.Controller;
+         
+        oapController.ConfigureAssets(settings, Html, ViewContext);
+
+    }).Bind(Model).GetHtml();
+}
+
+
+

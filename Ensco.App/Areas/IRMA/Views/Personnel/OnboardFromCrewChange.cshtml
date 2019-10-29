@@ -1,0 +1,37 @@
+﻿@model Ensco.Irma.Models.PobBoardingModel
+@{
+    ViewBag.Title = "OnboardFromCrewChange";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustSize();
+            }
+        );
+
+       function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+       $(document).on("AdjustOtherElements", function () {
+           AdjustMainGrid(gridView_PobCurrent); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 300; // see if we can calculate footer height dynamically
+
+            $("#MainLayoutPanel").css("height", height);
+
+            grid.SetHeight(height);
+        }
+    </script>
+}
+
+@using (Html.BeginForm("OnboardFromCrewChangePartial", "Personnel", FormMethod.Post))
+{
+    Html.RenderPartial("OnboardFromCrewChangePartial", Model);
+}
+

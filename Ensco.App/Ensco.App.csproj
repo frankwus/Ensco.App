@@ -1,0 +1,1847 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A5EEAABF-6428-4B21-A0D0-82B1193AB92D}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ensco.App</RootNamespace>
+    <AssemblyName>Ensco.App</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeIisSettings>false</IncludeIisSettings>
+    <PublishDatabaseSettings>
+      <Objects>
+      </Objects>
+    </PublishDatabaseSettings>
+    <DeployEncryptKey>Encryption password is used only if any deployment setting is marked as secure</DeployEncryptKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonMark, Version=0.1.0.0, Culture=neutral, PublicKeyToken=001ef8810438905d, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonMark.NET.0.15.1\lib\net45\CommonMark.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Charts.Designer.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Charts.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Dashboard.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Dashboard.v18.1.Web.WebForms, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Dashboard.v18.1.Web, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Dashboard.v18.1.Web.Mvc5, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Data.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.DataAccess.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Office.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Pdf.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.SpellChecker.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Spreadsheet.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.ASPxHtmlEditor.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.ASPxPivotGrid.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.ASPxSpellChecker.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.ASPxSpreadsheet.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.ASPxThemes.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.ASPxTreeList.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.Mvc5.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Workflow.Activities.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Workflow.Activities.v18.1.Design, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraCharts.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v18.1.Extensions, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v18.1.UI, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v18.1.Web, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v18.1.Wizard, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraDiagram.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraDialogs.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraGauges.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraGauges.v18.1.Presets, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraGauges.v18.1.Win, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraGrid.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraLayout.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraMap.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraNavBar.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Pdf.v18.1.Drawing, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraPdfViewer.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraPivotGrid.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraPrinting.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Sparkline.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.CodeParser.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v18.1.Extensions, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v18.1.Service, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v18.1.Web.WebForms, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v18.1.Web, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v18.1.Web.Azure, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraSpellChecker.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraSpreadsheet.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraTreeList.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraTreeMap.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraVerticalGrid.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraWizard.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="EnscoTheme, Version=18.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\3rdParty\EnscoTheme.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.Core, Version=1.6.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Core.1.6.20\lib\net45\Hangfire.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.SqlServer, Version=1.6.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.SqlServer.1.6.20\lib\net45\Hangfire.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\..\..\3rdParty\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker">
+      <HintPath>..\..\..\..\3rdParty\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationBlocks.Data.2.0.0\lib\net45\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.0\lib\net451\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.0\lib\net451\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.0.0\lib\net451\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.0.0\lib\net451\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="mUtilities.Data">
+      <HintPath>..\..\..\..\3rdParty\mUtilities.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcSiteMapProvider, Version=4.6.26.0, Culture=neutral, PublicKeyToken=1923abe4657913cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.6.26\lib\net45\MvcSiteMapProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcSiteMapProvider.WebActivator, Version=4.6.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSiteMapProvider.MVC5.4.6.26\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StructureMap, Version=4.4.2.472, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StructureMap.4.4.2\lib\net45\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\structuremap.web.4.0.0.315\lib\net40\StructureMap.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DataVisualization" />
+    <Reference Include="System.Web.DataVisualization.Design" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.6\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Westwind.Globalization, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Westwind.Globalization.3.0.0\lib\net45\Westwind.Globalization.dll</HintPath>
+    </Reference>
+    <Reference Include="Westwind.Globalization.Web, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Westwind.Globalization.Web.3.0.0\lib\net45\Westwind.Globalization.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Westwind.Utilities, Version=3.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Westwind.Utilities.3.0.10\lib\net45\Westwind.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Westwind.Web, Version=2.76.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Westwind.Web.2.76\lib\net45\Westwind.Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\ADAuthenticationService.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\EnscoHtmlExtensions.cs" />
+    <Compile Include="App_Start\EnscoLocalizationProvider.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\GridViewOptions.cs" />
+    <Compile Include="App_Start\HangfireAuthorizationFilter.cs" />
+    <Compile Include="App_Start\OAPScheduler.cs" />
+    <Compile Include="App_Start\Phase1\CustomSelect.cs" />
+    <Compile Include="App_Start\Phase1\HeaderFooter.cs" />
+    <Compile Include="App_Start\Phase1\PdfAndWord.cs" />
+    <Compile Include="App_Start\Phase1\PdfBa.cs" />
+    <Compile Include="App_Start\Phase1\PdfCapa.cs" />
+    <Compile Include="App_Start\Phase1\PdfCapaPlan.cs" />
+    <Compile Include="App_Start\Phase1\PdfCav.cs" />
+    <Compile Include="App_Start\Phase1\PdfConfined.cs" />
+    <Compile Include="App_Start\Phase1\PdfCrane.cs" />
+    <Compile Include="App_Start\Phase1\PdfOap.cs" />
+    <Compile Include="App_Start\Phase1\PdfEi.cs" />
+    <Compile Include="App_Start\Phase1\PdfFullRoster.cs" />
+    <Compile Include="App_Start\Phase1\PdfGas.cs" />
+    <Compile Include="App_Start\Phase1\PdfHotwork.cs" />
+    <Compile Include="App_Start\Phase1\PdfJsa.cs" />
+    <Compile Include="App_Start\Phase1\PdfLift.cs" />
+    <Compile Include="App_Start\Phase1\PdfPermit.cs" />
+    <Compile Include="App_Start\Phase1\PdfPobLifeboat.cs" />
+    <Compile Include="App_Start\Phase1\PdfRiding.cs" />
+    <Compile Include="App_Start\Phase1\PdfSwa.cs" />
+    <Compile Include="App_Start\Phase1\PdfWims.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\EnscoSchedulerService.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\Startup.cs" />
+    <Compile Include="App_Start\StructuremapMvc.cs" />
+    <Compile Include="App_Start\TreeVirtualModeHelper.cs" />
+    <Compile Include="Areas\cOap\cOapAreaRegistration.cs" />
+    <Compile Include="Areas\cOap\Controllers\FindingsController.cs" />
+    <Compile Include="Areas\cOap\Controllers\FindingsPageController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapAuditController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapAuditReportController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapAuditPlanController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistWorkInstructionController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistEquipmentController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistAssetDataManagementController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistCommentsController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistGroupsController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistQuestionsHelpController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistQuestionTagMapController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistsHelpController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistTopicsController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapChecklistQuestionTagController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapFrequencyTypesController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapGraphicsController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapProtocolController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapProtocolFormTypesController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapProtocolQuestionHeaderController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapTypesController.cs" />
+    <Compile Include="Areas\cOap\Controllers\OapProtocolsToAuditController.cs" />
+    <Compile Include="Areas\cOap\CorpWebApiClientCustom.cs" />
+    <Compile Include="Areas\cOap\CorpWebApiClientGenerated.cs" />
+    <Compile Include="Areas\cOap\Extensions\cOapExtensions.cs" />
+    <Compile Include="Areas\cOap\Models\AuditPlanCVTComplianceModel.cs" />
+    <Compile Include="Areas\cOap\Models\AuditPlanProtocolModel.cs" />
+    <Compile Include="Areas\cOap\Models\AuditPlanRACProtocolModel.cs" />
+    <Compile Include="Areas\cOap\Models\AuditPlanSummaryModel.cs" />
+    <Compile Include="Areas\cOap\Models\CorpWebClientModels.cs" />
+    <Compile Include="Areas\cOap\Models\OapCapaProtocolsFlatModel.cs" />
+    <Compile Include="Areas\cOap\Models\OapPreviousProtocolsFlatModel.cs" />
+    <Compile Include="Areas\cOap\Models\ReviewSearchModel.cs" />
+    <Compile Include="Areas\cOap\OapCorpController.cs" />
+    <Compile Include="Areas\Common\CommonAreaRegistration.cs" />
+    <Compile Include="Areas\Common\Controllers\AdminController.cs" />
+    <Compile Include="Areas\Common\Controllers\BaseController.cs" />
+    <Compile Include="Areas\Common\Controllers\CommonController.cs" />
+    <Compile Include="Areas\Common\Controllers\LoginController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\CapaController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\CapController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\CommentsController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\FSODashboardController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\LessonsLearnedController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\ReportController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\ReviewController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\RigAdminController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\IrmaController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\JobsController.cs" />
+    <Compile Include="Areas\IRMA\Controllers\PersonnelController.cs" />
+    <Compile Include="Areas\IRMA\IRMAAreaRegistration.cs" />
+    <Compile Include="Areas\Oap\CommonUtilities.cs" />
+    <Compile Include="Areas\Oap\Controllers\BarrierAuthorityDashboardController.cs" />
+    <Compile Include="Areas\Oap\Controllers\CriticalAreaVerificationController.cs" />
+    <Compile Include="Areas\Oap\Controllers\GridConstants.cs" />
+    <Compile Include="Areas\Oap\Controllers\LifesaverController.cs" />
+    <Compile Include="Areas\Oap\Controllers\MasterOversightController.cs" />
+    <Compile Include="Areas\Oap\Controllers\NoAnswerController.cs" />
+    <Compile Include="Areas\Oap\Controllers\FindingsController.cs" />
+    <Compile Include="Areas\Oap\Controllers\FindingsPageController.cs" />
+    <Compile Include="Areas\Oap\Controllers\ProtocolScoringDashboardController.cs" />
+    <Compile Include="Areas\Oap\Controllers\ProtocolFormController.cs" />
+    <Compile Include="Areas\Oap\Controllers\BarrierAuthorityController.cs" />
+    <Compile Include="Areas\Oap\Controllers\OIMOversightController.cs" />
+    <Compile Include="Areas\Oap\Controllers\FSOController.cs" />
+    <Compile Include="Areas\Oap\Controllers\GenericController.cs" />
+    <Compile Include="Areas\Oap\Controllers\CriticalAreaVerificationDashboard.cs" />
+    <Compile Include="Areas\Oap\Controllers\LifesaverDashboardController.cs" />
+    <Compile Include="Areas\Oap\Controllers\GenericDashboardController.cs" />
+    <Compile Include="Areas\Oap\Controllers\MasterOversightDashboardController.cs" />
+    <Compile Include="Areas\Oap\Controllers\OIMOversightDashboardController.cs" />
+    <Compile Include="Areas\Oap\Controllers\ProtocolController.cs" />
+    <Compile Include="Areas\Oap\Controllers\ProtocolDashboardController.cs" />
+    <Compile Include="Areas\Oap\Extensions\OapExtensions.cs" />
+    <Compile Include="Areas\Oap\Models\ChecklistAssessorGridViewModel.cs" />
+    <Compile Include="Areas\Oap\Models\KeyValueModel.cs" />
+    <Compile Include="Areas\Oap\Models\LifeSaverDashboardGridModel.cs" />
+    <Compile Include="Areas\Oap\Models\OapChecklistAnswerPostbackModel.cs" />
+    <Compile Include="Areas\Oap\Models\OIMBehavioralBasedSafetyFlatModel.cs" />
+    <Compile Include="Areas\Oap\Models\RigOapChecklistGroupAssetModel.cs" />
+    <Compile Include="Areas\Oap\Models\OapProtocolScoringFlatModel.cs" />
+    <Compile Include="Areas\Oap\Models\OapSearchCheckListQuestionFlatModel.cs" />
+    <Compile Include="Areas\Oap\Models\OapGenericCheckListFlatModel.cs" />
+    <Compile Include="Areas\Oap\Models\RelatedSearchQueryModel.cs" />
+    <Compile Include="Areas\Oap\Models\RigWebClientModelExtensions.cs" />
+    <Compile Include="Areas\Oap\OapAreaRegistration.cs" />
+    <Compile Include="Areas\Oap\OapRigController.cs" />
+    <Compile Include="Areas\Oap\OapRigGridController.cs" />
+    <Compile Include="Areas\Oap\RigWebApiClientCustomClientExtensions.cs" />
+    <Compile Include="Areas\Oap\RigWebApiClientGenerated.cs" />
+    <Compile Include="Areas\cOap\OapCorpGridController.cs" />
+    <Compile Include="Common\pdf.aspx.cs">
+      <DependentUpon>pdf.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Common\pdf.aspx.designer.cs">
+      <DependentUpon>pdf.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DependencyResolution\ControllerConvention.cs" />
+    <Compile Include="DependencyResolution\DefaultRegistry.cs" />
+    <Compile Include="DependencyResolution\IoC.cs" />
+    <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
+    <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
+    <Compile Include="Infrastructure\CustomAuthorizeAttribute.cs" />
+    <Compile Include="ModelBinders\OapChecklistAnswerBinder.cs" />
+    <Compile Include="ProjectUtilities\CommonMethods.cs" />
+    <Compile Include="Reports\IRMA\EmergencyTeamReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\PersonnelSearch.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\PobArrivalDepartureLogReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\LifeBoatComplianceReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Base.aspx.cs">
+      <DependentUpon>Base.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Common\Excel.aspx.cs">
+      <DependentUpon>Excel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="GuiHelper.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="HtmlHelpers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\IRMA\LifeBoatRosterListReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\PobArrivalLogReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\PobDepartureLogReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\PobSummaryReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\RoomBedSummaryReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\RosterSignInByLifeBoat.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\RosterSignInByMusterStation.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IRMA\RosterSignInSheet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\TLC\CapBookReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TLC\FleetSummaryModel.cs" />
+    <Compile Include="TLC\ManageCapBookModel.cs" />
+    <Compile Include="TLC\TlcManageLookupLists.cs" />
+    <Compile Include="TLC\TLCLookupListData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Admin\Admin.htm" />
+    <Content Include="Admin\DailySummary.vbs" />
+    <Content Include="Admin\List.htm" />
+    <Content Include="Admin\PopupLock.htm" />
+    <Content Include="Admin\PopupSearchPob.htm" />
+    <Content Include="App_Start\Phase1\webrun.vbs" />
+    <Content Include="Base.aspx" />
+    <Content Include="base.css" />
+    <Content Include="Base.js" />
+    <Content Include="Capa\Capa.htm" />
+    <Content Include="Capa\CapaPlan.htm" />
+    <Content Include="Capa\LandingCapa.htm" />
+    <Content Include="Capa\LandingCapaPlan.htm" />
+    <Content Include="Capa\PopupCapaClone.htm" />
+    <Content Include="Capa\PopupSmart.htm" />
+    <Content Include="Common\common.htm" />
+    <Content Include="Common\Crawl.htm" />
+    <Content Include="Common\emp.htm" />
+    <Content Include="Common\Equipment.htm" />
+    <Content Include="Common\Excel.aspx" />
+    <Content Include="Common\Header.htm" />
+    <Content Include="Common\HistoryLog.htm" />
+    <Content Include="Common\LandingCapa.htm" />
+    <Content Include="Common\MyPage.htm" />
+    <Content Include="Common\pdf.aspx" />
+    <Content Include="Common\Popup.htm" />
+    <Content Include="Common\PopupADM.htm" />
+    <Content Include="Common\PopupCapa.htm" />
+    <Content Include="Common\PopupCommon.htm" />
+    <Content Include="Common\PopupDefault.htm" />
+    <Content Include="Common\PopupLocation.htm" />
+    <Content Include="Common\PopupObervation.htm" />
+    <Content Include="Common\PopupPob.htm" />
+    <Content Include="Common\PopupPobCapa.htm" />
+    <Content Include="Common\PopupUser.htm" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\metro.css" />
+    <Content Include="Content\Oap.css" />
+    <Content Include="Content\themes\base\accordion.css" />
+    <Content Include="Content\themes\base\all.css" />
+    <Content Include="Content\themes\base\autocomplete.css" />
+    <Content Include="Content\themes\base\base.css" />
+    <Content Include="Content\themes\base\button.css" />
+    <Content Include="Content\themes\base\core.css" />
+    <Content Include="Content\themes\base\datepicker.css" />
+    <Content Include="Content\themes\base\dialog.css" />
+    <Content Include="Content\themes\base\draggable.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\menu.css" />
+    <Content Include="Content\themes\base\progressbar.css" />
+    <Content Include="Content\themes\base\resizable.css" />
+    <Content Include="Content\themes\base\selectable.css" />
+    <Content Include="Content\themes\base\selectmenu.css" />
+    <Content Include="Content\themes\base\slider.css" />
+    <Content Include="Content\themes\base\sortable.css" />
+    <Content Include="Content\themes\base\spinner.css" />
+    <Content Include="Content\themes\base\tabs.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Images\080417_CORP_ICN_Select-Personnel_RGB_white.png" />
+    <Content Include="Images\actionbar.png" />
+    <Content Include="Images\Add Attachment icon.png" />
+    <Content Include="Images\Add Comment icon.png" />
+    <Content Include="Images\arrow-right.jpg" />
+    <Content Include="Images\Assess.png" />
+    <Content Include="Images\Assign CAPA icon 1 color.png" />
+    <Content Include="Images\Assign CAPA icon 2 color.png" />
+    <Content Include="Images\assign.PNG" />
+    <Content Include="Images\attachment.png" />
+    <Content Include="Images\bar.png" />
+    <Content Include="Images\bar_RGB3.PNG" />
+    <Content Include="Images\BlueTick.PNG" />
+    <Content Include="Images\calendar.gif" />
+    <Content Include="Images\Calendar.png" />
+    <Content Include="Images\Cancel icon.png" />
+    <Content Include="Images\Cancel.png" />
+    <Content Include="Images\CAPA-Center_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\CAPA-Center_RGB_PRESS.PNG" />
+    <Content Include="Images\CapBook1.png" />
+    <Content Include="Images\CapBook2.png" />
+    <Content Include="Images\CapBookPage1.png" />
+    <Content Include="Images\CapBookPage10.png" />
+    <Content Include="Images\CapBookPage2.png" />
+    <Content Include="Images\CapBookPage3.png" />
+    <Content Include="Images\CapBookPage4.png" />
+    <Content Include="Images\CapBookPage5.png" />
+    <Content Include="Images\CapBookPage6.png" />
+    <Content Include="Images\CapBookPage7.png" />
+    <Content Include="Images\CapBookPage8.png" />
+    <Content Include="Images\CapBookPage9.png" />
+    <Content Include="Images\CapEnscoLogo.PNG" />
+    <Content Include="Images\Capture.PNG" />
+    <Content Include="Images\checkbox.png" />
+    <Content Include="Images\clear.png" />
+    <Content Include="Images\ClearFilter.png" />
+    <Content Include="Images\Clone icon.png" />
+    <Content Include="Images\Clone RA icon.png" />
+    <Content Include="Images\Clone.png" />
+    <Content Include="Images\Close icon.png" />
+    <Content Include="Images\collapse.jpg" />
+    <Content Include="Images\Create.png" />
+    <Content Include="Images\Crumb.png" />
+    <Content Include="Images\delete.jpg" />
+    <Content Include="Images\Delete.png" />
+    <Content Include="Images\delete1.jpg" />
+    <Content Include="Images\delete1.png" />
+    <Content Include="Images\Down.png" />
+    <Content Include="Images\downArrow.png" />
+    <Content Include="Images\Edit icon.png" />
+    <Content Include="Images\Edit.png" />
+    <Content Include="Images\Email.png" />
+    <Content Include="Images\Emergency-Management_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\Emergency-Management_RGB_PRESS.PNG" />
+    <Content Include="Images\emoc.PNG" />
+    <Content Include="Images\ems.PNG" />
+    <Content Include="Images\ENSCO-8503-French-Guiana.jpeg" />
+    <Content Include="Images\ensco.png" />
+    <Content Include="Images\Excel.png" />
+    <Content Include="Images\expand.jpg" />
+    <Content Include="Images\Fast-forward.png" />
+    <Content Include="Images\Filter.png" />
+    <Content Include="Images\Go_forward.png" />
+    <Content Include="Images\green.PNG" />
+    <Content Include="Images\Help-icon.png" />
+    <Content Include="Images\Help.png" />
+    <Content Include="Images\History Log icon.png" />
+    <Content Include="Images\HistoryLog.png" />
+    <Content Include="Images\Home.png" />
+    <Content Include="Images\Info.png" />
+    <Content Include="Images\IRMA-Logo-Final 04.png" />
+    <Content Include="Images\irma.png" />
+    <Content Include="Images\Job-Central_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\Job-Central_RGB_PRESS.PNG" />
+    <Content Include="Images\JsaEvent\1.png" />
+    <Content Include="Images\JsaEvent\2.png" />
+    <Content Include="Images\JsaEvent\3.png" />
+    <Content Include="Images\JsaEvent\4.png" />
+    <Content Include="Images\JsaEvent\5.png" />
+    <Content Include="Images\JsaEvent\6.png" />
+    <Content Include="Images\JsaEvent\7.png" />
+    <Content Include="Images\JsaEvent\8.png" />
+    <Content Include="Images\JsaEvent\9.png" />
+    <Content Include="Images\JsaFactor\1.png" />
+    <Content Include="Images\JsaFactor\2.png" />
+    <Content Include="Images\JsaFactor\3.png" />
+    <Content Include="Images\JsaFactor\4.png" />
+    <Content Include="Images\JsaHazard\1.png" />
+    <Content Include="Images\JsaHazard\10.png" />
+    <Content Include="Images\JsaHazard\2.png" />
+    <Content Include="Images\JsaHazard\3.png" />
+    <Content Include="Images\JsaHazard\4.png" />
+    <Content Include="Images\JsaHazard\5.png" />
+    <Content Include="Images\JsaHazard\6.png" />
+    <Content Include="Images\JsaHazard\7.png" />
+    <Content Include="Images\JsaHazard\8.png" />
+    <Content Include="Images\JsaHazard\9.png" />
+    <Content Include="Images\JsaLife\1.png" />
+    <Content Include="Images\JsaLife\10.png" />
+    <Content Include="Images\JsaLife\2.png" />
+    <Content Include="Images\JsaLife\3.png" />
+    <Content Include="Images\JsaLife\4.png" />
+    <Content Include="Images\JsaLife\5.png" />
+    <Content Include="Images\JsaLife\6.png" />
+    <Content Include="Images\JsaLife\7.png" />
+    <Content Include="Images\JsaLife\8.png" />
+    <Content Include="Images\JsaLife\9.png" />
+    <Content Include="Images\Key.png" />
+    <Content Include="Images\kpi.png" />
+    <Content Include="Images\left.png" />
+    <Content Include="Images\Link icon.png" />
+    <Content Include="Images\logos_previews_ensco_3.gif" />
+    <Content Include="Images\minus.gif" />
+    <Content Include="Images\Next icon.png" />
+    <Content Include="Images\No.png" />
+    <Content Include="Images\Note.png" />
+    <Content Include="Images\Offboard.png" />
+    <Content Include="Images\Onboard.png" />
+    <Content Include="Images\OpenFile.png" />
+    <Content Include="Images\Operational-Assurance-Program_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\Operational-Assurance-Program_RGB_PRESS.PNG" />
+    <Content Include="Images\Operations-Management_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\Operations-Management_RGB_PRESS.PNG" />
+    <Content Include="Images\OrangeTick.PNG" />
+    <Content Include="Images\outlook.png" />
+    <Content Include="Images\Parking.png" />
+    <Content Include="Images\pdf.png" />
+    <Content Include="Images\Personnel-Management_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\Personnel-Management_RGB_PRESS.PNG" />
+    <Content Include="Images\plus.gif" />
+    <Content Include="Images\PotatoHead.gif" />
+    <Content Include="Images\print.png" />
+    <Content Include="Images\red.PNG" />
+    <Content Include="Images\Refresh.png" />
+    <Content Include="Images\Report.png" />
+    <Content Include="Images\respond.PNG" />
+    <Content Include="Images\Review icon.png" />
+    <Content Include="Images\review.PNG" />
+    <Content Include="Images\Rewind.png" />
+    <Content Include="Images\right.png" />
+    <Content Include="Images\Safety,-Health-and-Environment_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\Safety,-Health-and-Environment_RGB_PRESS.PNG" />
+    <Content Include="Images\Save icon.png" />
+    <Content Include="Images\Save.png" />
+    <Content Include="Images\Search icon.png" />
+    <Content Include="Images\Search.png" />
+    <Content Include="Images\Select Personnel icon.png" />
+    <Content Include="Images\select_personnel.png" />
+    <Content Include="Images\Settings.png" />
+    <Content Include="Images\spinner.gif" />
+    <Content Include="Images\Stop.png" />
+    <Content Include="Images\Submit icon.png" />
+    <Content Include="Images\Submit.png" />
+    <Content Include="Images\swa1.png" />
+    <Content Include="Images\swa2.png" />
+    <Content Include="Images\swa3.png" />
+    <Content Include="Images\Sync.png" />
+    <Content Include="Images\test.png" />
+    <Content Include="Images\tick.png" />
+    <Content Include="Images\TileBackgound.PNG" />
+    <Content Include="Images\TLCLogo.png" />
+    <Content Include="Images\Tools_Highlighted_RGB_PRESS.PNG" />
+    <Content Include="Images\Tools_RGB_PRESS.PNG" />
+    <Content Include="Images\User.png" />
+    <Content Include="Images\Users.png" />
+    <Content Include="Images\Warning.png" />
+    <Content Include="Images\WIMS.png" />
+    <Content Include="Fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Areas\IRMA\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\Common\Views\web.config" />
+    <Content Include="Areas\Common\Views\Common\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Login\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Login\AccessDenied.cshtml" />
+    <Content Include="Images\World.png" />
+    <Content Include="Images\yellow.png" />
+    <Content Include="Images\Yes.png" />
+    <Content Include="IRMA.js" />
+    <Content Include="JOB\Builder.htm" />
+    <Content Include="JOB\calendar.htm" />
+    <Content Include="JOB\CapaPlan.htm" />
+    <Content Include="JOB\Confined.htm" />
+    <Content Include="JOB\Crane.htm" />
+    <Content Include="JOB\Dashboard.htm" />
+    <Content Include="JOB\Default.htm" />
+    <Content Include="JOB\EI.htm" />
+    <Content Include="JOB\EiSystem.htm" />
+    <Content Include="JOB\Gas.htm" />
+    <Content Include="JOB\Home.htm" />
+    <Content Include="JOB\Hotwork.htm" />
+    <Content Include="JOB\Job.htm" />
+    <Content Include="JOB\Jsa.htm" />
+    <Content Include="JOB\LandingCapa.htm" />
+    <Content Include="JOB\LandingColdwork.htm" />
+    <Content Include="JOB\LandingColdworkOld.htm" />
+    <Content Include="JOB\LandingConfined.htm" />
+    <Content Include="JOB\LandingCrane.htm" />
+    <Content Include="JOB\LandingEi.htm" />
+    <Content Include="JOB\LandingGas.htm" />
+    <Content Include="JOB\LandingHotwork.htm" />
+    <Content Include="JOB\LandingHotWorkChecklist.htm" />
+    <Content Include="JOB\LandingJsa.htm" />
+    <Content Include="JOB\LandingLift.htm" />
+    <Content Include="JOB\LandingPermit.htm" />
+    <Content Include="JOB\LandingRiding.htm" />
+    <Content Include="JOB\LandingSwa.htm" />
+    <Content Include="JOB\landingwi.htm" />
+    <Content Include="JOB\LandingWims.htm" />
+    <Content Include="JOB\Lift.htm" />
+    <Content Include="JOB\Permit.htm" />
+    <Content Include="JOB\PopupAutoCloseoutEI.htm" />
+    <Content Include="JOB\PopupClone.htm" />
+    <Content Include="JOB\PopupDashboard.htm" />
+    <Content Include="JOB\PopupEI.htm" />
+    <Content Include="JOB\PopupEiClone.htm" />
+    <Content Include="JOB\PopupJob.htm" />
+    <Content Include="JOB\PopupJobFactor.htm" />
+    <Content Include="JOB\PopupJobPacket.htm" />
+    <Content Include="JOB\PopupJobTitle.htm" />
+    <Content Include="JOB\PopupListener.htm" />
+    <Content Include="JOB\PopupLockLookup.htm" />
+    <Content Include="JOB\PopupLongTerm.htm" />
+    <Content Include="JOB\PopupOpenEI.htm" />
+    <Content Include="JOB\PopupPermitClone.htm" />
+    <Content Include="JOB\PopupPermitRenew.htm" />
+    <Content Include="JOB\PopupPosition.htm" />
+    <Content Include="JOB\PopupSelect.htm" />
+    <Content Include="JOB\Riding.htm" />
+    <Content Include="JOB\SCAL.htm" />
+    <Content Include="JOB\Smart.htm" />
+    <Content Include="JOB\Start.htm" />
+    <Content Include="JOB\Summary.htm" />
+    <Content Include="JOB\Suspend.htm" />
+    <Content Include="JOB\WI.htm" />
+    <Content Include="JOB\Wims.htm" />
+    <Content Include="JSA\Home.htm" />
+    <Content Include="JSA\NonWi.htm" />
+    <Content Include="JSA\PopupSelect.htm" />
+    <Content Include="js\10\jquery-1.10.2.js" />
+    <Content Include="js\10\jquery-ui.css" />
+    <Content Include="js\10\jquery-ui.js" />
+    <Content Include="js\12\jquery-ui.css" />
+    <Content Include="js\12\jquery-ui.js" />
+    <Content Include="js\12\jquery-ui.min.css" />
+    <Content Include="js\12\jquery-ui.min.js" />
+    <Content Include="js\12\jquery-ui.structure.css" />
+    <Content Include="js\12\jquery-ui.structure.min.css" />
+    <Content Include="js\12\jquery-ui.theme.css" />
+    <Content Include="js\12\jquery-ui.theme.min.css" />
+    <Content Include="js\combodate.js" />
+    <Content Include="js\datetimepicker\jquery.simple-dtpicker.css" />
+    <Content Include="js\datetimepicker\jquery.simple-dtpicker.js" />
+    <Content Include="js\dt\.gitignore" />
+    <Content Include="js\dt\.travis.yml" />
+    <Content Include="js\dt\bower.json" />
+    <Content Include="js\dt\CHANGES" />
+    <Content Include="js\dt\CONTRIBUTORS.md" />
+    <Content Include="js\dt\design\dtpicker_mock.png" />
+    <Content Include="js\dt\design\dtpicker_mock.svg" />
+    <Content Include="js\dt\design\dtpicker_screenshot.png" />
+    <Content Include="js\dt\Gruntfile.js" />
+    <Content Include="js\dt\jquery.simple-dtpicker.css" />
+    <Content Include="js\dt\jquery.simple-dtpicker.html" />
+    <Content Include="js\dt\jquery.simple-dtpicker.js" />
+    <Content Include="js\dt\LICENSE.txt" />
+    <Content Include="js\dt\package.json" />
+    <Content Include="js\dt\README.md" />
+    <Content Include="js\dt\simple-dtpicker.jquery.json" />
+    <Content Include="js\dt\t\test.html" />
+    <Content Include="js\dt\t\test.js" />
+    <Content Include="js\grid-2.2.0\angular\ng.pqgrid.dev.js" />
+    <Content Include="js\grid-2.2.0\angular\ng.pqgrid.min.js" />
+    <Content Include="js\grid-2.2.0\array.htm" />
+    <Content Include="js\grid-2.2.0\bower.json" />
+    <Content Include="js\grid-2.2.0\ChangeLog.txt" />
+    <Content Include="js\grid-2.2.0\GPL-LICENSE.txt" />
+    <Content Include="js\grid-2.2.0\images\horiz-bg.png" />
+    <Content Include="js\grid-2.2.0\images\horiz-slider-bg.png" />
+    <Content Include="js\grid-2.2.0\images\loading.gif" />
+    <Content Include="js\grid-2.2.0\images\sprite.png" />
+    <Content Include="js\grid-2.2.0\images\square_dirty.gif" />
+    <Content Include="js\grid-2.2.0\images\vert-bg.png" />
+    <Content Include="js\grid-2.2.0\images\vert-slider-bg.png" />
+    <Content Include="js\grid-2.2.0\index.htm" />
+    <Content Include="js\grid-2.2.0\jquery-ui.css" />
+    <Content Include="js\grid-2.2.0\jquery-ui.min.js" />
+    <Content Include="js\grid-2.2.0\jquery.min.js" />
+    <Content Include="js\grid-2.2.0\json.htm" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-de.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-en.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-es.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-fr.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-hu.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-it.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-ja.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-nl.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-pl.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-pt-br.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-pt.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-ru.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-tr.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-zh.js" />
+    <Content Include="js\grid-2.2.0\localize\pq-localize-zh_TW.js" />
+    <Content Include="js\grid-2.2.0\php\array\index.php" />
+    <Content Include="js\grid-2.2.0\php\array\remote.php" />
+    <Content Include="js\grid-2.2.0\php\conf.php" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\cross.png" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\horiz-bg.png" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\horiz-slider-bg.png" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\loading.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\page-first-gray.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\page-last-gray.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\page-next-gray.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\page-prev-gray.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\Refresh.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\sort_asc.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\sort_desc.gif" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\sprite.png" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\tick.png" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\vert-bg.png" />
+    <Content Include="js\grid-2.2.0\php\Content\css\images\vert-slider-bg.png" />
+    <Content Include="js\grid-2.2.0\php\Content\css\pqgrid.min.css" />
+    <Content Include="js\grid-2.2.0\php\Content\js\pqgrid.min.js" />
+    <Content Include="js\grid-2.2.0\php\database\index.php" />
+    <Content Include="js\grid-2.2.0\php\database\remote.php" />
+    <Content Include="js\grid-2.2.0\php\error_handling\index.php" />
+    <Content Include="js\grid-2.2.0\php\error_handling\remote.php" />
+    <Content Include="js\grid-2.2.0\php\filtering\index.php" />
+    <Content Include="js\grid-2.2.0\php\filtering\remote.php" />
+    <Content Include="js\grid-2.2.0\php\filter_paging\index.php" />
+    <Content Include="js\grid-2.2.0\php\filter_paging\remote.php" />
+    <Content Include="js\grid-2.2.0\php\filter_sort_paging\index.php" />
+    <Content Include="js\grid-2.2.0\php\filter_sort_paging\remote.php" />
+    <Content Include="js\grid-2.2.0\php\include.php" />
+    <Content Include="js\grid-2.2.0\php\paging\index.php" />
+    <Content Include="js\grid-2.2.0\php\paging\remote.php" />
+    <Content Include="js\grid-2.2.0\php\sorting\index.php" />
+    <Content Include="js\grid-2.2.0\php\sorting\remote.php" />
+    <Content Include="js\grid-2.2.0\php\sort_filtering\index.php" />
+    <Content Include="js\grid-2.2.0\php\sort_filtering\remote.php" />
+    <Content Include="js\grid-2.2.0\php\sort_paging\index.php" />
+    <Content Include="js\grid-2.2.0\php\sort_paging\remote.php" />
+    <Content Include="js\grid-2.2.0\pqgrid.dev.css" />
+    <Content Include="js\grid-2.2.0\pqgrid.dev.js" />
+    <Content Include="js\grid-2.2.0\pqgrid.jquery.json" />
+    <Content Include="js\grid-2.2.0\pqgrid.min.css" />
+    <Content Include="js\grid-2.2.0\pqgrid.min.js" />
+    <Content Include="js\grid-2.2.0\README.md" />
+    <Content Include="js\grid-2.2.0\themes\Office\images\header-hover.gif" />
+    <Content Include="js\grid-2.2.0\themes\Office\pqgrid.css" />
+    <Content Include="js\images\Thumbs.db" />
+    <Content Include="js\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
+    <Content Include="js\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
+    <Content Include="js\images\ui-bg_flat_10_000000_40x100.png" />
+    <Content Include="js\images\ui-bg_glass_100_f6f6f6_1x400.png" />
+    <Content Include="js\images\ui-bg_glass_100_fdf5ce_1x400.png" />
+    <Content Include="js\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="js\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
+    <Content Include="js\images\ui-bg_highlight-soft_100_eeeeee_1x100.png" />
+    <Content Include="js\images\ui-bg_highlight-soft_75_ffe45c_1x100.png" />
+    <Content Include="js\images\ui-icons_222222_256x240.png" />
+    <Content Include="js\images\ui-icons_228ef1_256x240.png" />
+    <Content Include="js\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="js\images\ui-icons_ffd27a_256x240.png" />
+    <Content Include="js\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="js\jquery-dialog.css" />
+    <Content Include="js\jquery-simple-datetimepicker-1.12.0.zip" />
+    <Content Include="js\jquery-ui-sliderAccess.js" />
+    <Content Include="js\jquery-ui-timepicker-addon.js" />
+    <Content Include="js\jquery-ui.css" />
+    <Content Include="js\jquery-ui.js" />
+    <Content Include="js\jquery-ui.min.css" />
+    <Content Include="js\jquery-ui.min.js" />
+    <Content Include="js\jquery-ui.structure.css" />
+    <Content Include="js\jquery-ui.structure.min.css" />
+    <Content Include="js\jquery-ui.theme.css" />
+    <Content Include="js\jquery-ui.theme.min.css" />
+    <Content Include="js\jquery.js" />
+    <Content Include="js\jquery.timepicker.css" />
+    <Content Include="js\jquery.timepicker.js" />
+    <Content Include="js\moment.js" />
+    <Content Include="js\spin.js" />
+    <Content Include="js\spin.min.js" />
+    <Content Include="js\TempImages\charts_0\chart_0_0.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_1.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_10.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_11.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_2.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_3.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_4.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_5.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_6.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_7.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_8.png" />
+    <Content Include="js\TempImages\charts_0\chart_0_9.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_0.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_1.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_10.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_11.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_2.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_3.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_4.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_5.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_6.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_7.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_8.png" />
+    <Content Include="js\TempImages\charts_1\chart_1_9.png" />
+    <Content Include="js\TempImages\charts_2\chart_2_0.png" />
+    <Content Include="js\TempImages\msc_cntr_1.txt" />
+    <Content Include="js\TempImages\msc_cntr_2.txt" />
+    <Content Include="js\w3.js" />
+    <Content Include="js\wwwroot - Shortcut.lnk" />
+    <Content Include="LocalizationAdmin\app\app.js" />
+    <Content Include="LocalizationAdmin\app\createClassController.js" />
+    <Content Include="LocalizationAdmin\app\headerController.js" />
+    <Content Include="LocalizationAdmin\app\importExportResxController.js" />
+    <Content Include="LocalizationAdmin\app\listController.js" />
+    <Content Include="LocalizationAdmin\app\localizationservice.js" />
+    <Content Include="LocalizationAdmin\app\resourceController.js" />
+    <Content Include="LocalizationAdmin\app\resourceProviderInfoController.js" />
+    <Content Include="LocalizationAdmin\app\translateController.js" />
+    <Content Include="LocalizationAdmin\css\localizationAdmin.css" />
+    <Content Include="LocalizationAdmin\favicon.ico" />
+    <Content Include="LocalizationAdmin\images\vsizegrip.png" />
+    <Content Include="LocalizationAdmin\images\Westwind.Localization_128.png" />
+    <Content Include="LocalizationAdmin\index.html" />
+    <Content Include="LocalizationAdmin\Partials\AddResourceDialog.html" />
+    <Content Include="LocalizationAdmin\Partials\CommentDialog.html" />
+    <Content Include="LocalizationAdmin\Partials\CreateClassDialog.html" />
+    <Content Include="LocalizationAdmin\Partials\ImportExportResxDialog.html" />
+    <Content Include="LocalizationAdmin\Partials\Menubar.html" />
+    <Content Include="LocalizationAdmin\Partials\RenameResourceDialog.html" />
+    <Content Include="LocalizationAdmin\Partials\ResourceEditor.html" />
+    <Content Include="LocalizationAdmin\Partials\ResourceGrid.html" />
+    <Content Include="LocalizationAdmin\Partials\ResourceList.html" />
+    <Content Include="LocalizationAdmin\Partials\ResourceProviderInfoDialog.html" />
+    <Content Include="LocalizationAdmin\Partials\ResourceSetList.html" />
+    <Content Include="LocalizationAdmin\Partials\TranslateDialog.html" />
+    <Content Include="LocalizationAdmin\scripts\vendor\angular-sanitize.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\angular-sanitize.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\angular.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\angular.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\css\bootstrap-theme.css" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\css\bootstrap-theme.min.css" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\css\bootstrap.css" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\css\bootstrap.min.css" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\js\bootstrap.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\js\bootstrap.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\js\npm.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\css\font-awesome.css" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\css\font-awesome.min.css" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="LocalizationAdmin\scripts\vendor\jquery.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\jquery.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\lodash.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\lodash.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\angular-file-upload-all.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\angular-file-upload-all.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\angular-file-upload-shim.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\angular-file-upload-shim.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\angular-file-upload.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\angular-file-upload.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\FileAPI.flash.swf" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\FileAPI.min.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\ng-file-upload-all.js" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\ng-file-upload-all.min.js" />
+    <Content Include="LocalizationAdmin\scripts\ww.angular.js" />
+    <Content Include="LocalizationAdmin\scripts\ww.jquery.js" />
+    <Content Include="LocalizationAdmin\scripts\ww.jquery.min.js" />
+    <Content Include="LocalizationAdmin\scripts\ww.resourceEditor.js" />
+    <Content Include="LocalizationAdmin\touch-icon.png" />
+    <Content Include="Scripts\ace.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Areas\Common\Views\Login\ChangePassword.cshtml" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Areas\IRMA\Views\Irma\SystemInfo.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\About.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\Capa.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\PermitToWork.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\ColdWorkPermit.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\HotWorkPermit.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\ConfinedSpaceEntryPermit.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\ConfinedSpaceEntryLog.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\CranePersonnelLiftChecklist.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\EnergyIsolationCertificate.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\GasCertificate.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\HotWorkChecklist.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\LiftPlanChecklist.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\ManRidingChecklist.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\WorkInstructionsAll.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\WorkInstructions.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\WimsApplication.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobSafetyAnalysis.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JsaWithoutWorkInstruction.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JsaWithWorkInstruction.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JsaForWorkInstructionChecklist.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\HazardIdPromptCard.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\SummaryOfOperationalBoundaries.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\SafetyCriticalAssetList.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\PermitAuthorizationChangeManagement.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobSuspension.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\DailySummaryPage.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManagePassport.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\MyPassport.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\PassportPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\PassportDetailPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\PassportDetailPartialRecord.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\PassportDetailPartialRecords.cshtml" />
+    <Content Include="Areas\Common\Views\Common\ReportProblem.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoCapPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPobPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoRecordsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportTrainingPartial.cshtml" />
+    <Content Include="Scripts\cldr.js" />
+    <Content Include="Scripts\cldr\event.js" />
+    <Content Include="Scripts\cldr\supplemental.js" />
+    <Content Include="Scripts\cldr\unresolved.js" />
+    <Content Include="Scripts\coap\oapauditchklist.js" />
+    <Content Include="Scripts\enscoApp.js" />
+    <Content Include="Scripts\ext-language_tools.js" />
+    <Content Include="Scripts\globalize.js" />
+    <Content Include="Scripts\globalize\currency.js" />
+    <Content Include="Scripts\globalize\date.js" />
+    <Content Include="Scripts\globalize\message.js" />
+    <Content Include="Scripts\globalize\number.js" />
+    <Content Include="Scripts\globalize\plural.js" />
+    <Content Include="Scripts\globalize\relative-time.js" />
+    <Content Include="Scripts\globalize\unit.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-3.4.2.debug.js" />
+    <Content Include="Scripts\knockout-3.4.2.js" />
+    <Content Include="Scripts\ww.jquery.js" />
+    <Content Include="Scripts\ww.jquery.min.js" />
+    <Content Include="Views\Shared\Language.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ChangeHistory.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ChangeHistoryPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ChangeHistoryDetailPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Common\GridLookupPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageLists.cshtml" />
+    <Content Include="Common\PassportPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\PobCorpHomePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\PobRigHomePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightManifest.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightManifestDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightManifestPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\ScheduleCrewChange.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\ScheduleCrewChangePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigRequirements.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\SelectFlightManifest.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\SelectFlightManifestPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\PobDashboardPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\PobOverviewPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\PobCurrentPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardIndividual.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardIndividualPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TeamManagementPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardInvidualPobPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OffboardPersonnelPobPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardIndividualSelectPob.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeSchedulePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TeamManagementDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightParkingLot.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightParkingLotPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\RosterSignInByMusterStation.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\RosterSignInByMusterStationPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageCorpListPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageCorpListItemsPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageRigsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminCompliancePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminPersonnelPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminCurrentPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageCorpPersonnelRelationPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Report\ShowReport.cshtml" />
+    <Content Include="Areas\IRMA\Views\Report\ShowReportPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardBatchPobPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\VerifyCrewChange.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\VerifyCrewChangePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightManifestReport.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightManifestReportPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightManifestArrivingPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightManifestDepartingPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeReport.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeReportPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeReportFlightPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeReportInboundPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeReportOutboundPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeReportVerificationPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardFlight.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OffboardFlight.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TourManagement.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TourManagementPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\MovePersonnel.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\MovePersonnelPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminAssetsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigCompliance.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\UploadPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminFieldsVisiblePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminCurrentDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\PersonnelArchive.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\PersonnelArchivePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigCompliancePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigComplianceDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminListsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeSearch.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeSearchPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardBatchPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OnboardBatch.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OffboardPersonnelPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OffboardBatch.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\CreatePassport.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\CreatePassportPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TourManagementChangePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TourChange.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TourChangePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightParkingLotAddArriving.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightParkingLotAddArrivingPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightParkingLotAddDeparting.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\FlightParkingLotAddDepartingPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChange.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\CrewChangeManifestsPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Common\ComboBoxPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\FSODashboard\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\SafetyCriticalAssetListPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobsHomePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomeSummaryPermits.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomeIsolations.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomeAuthorities.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomeSummaryPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomePermitsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomeShortTermIsolations.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomeLongTermIsolations.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomePermitAuthorities.cshtml" />
+    <Content Include="Areas\IRMA\Views\Jobs\JobHomeIsolationAuthorities.cshtml" />
+    <Content Include="App_Start\Phase1\ARIALUNI.TTF" />
+    <Content Include="Areas\Common\Views\Common\EnscoPopup.cshtml" />
+    <Content Include="Areas\IRMA\Views\Shared\ShowJobWindow.cshtml" />
+    <Content Include="Admin\web1.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Images\Ensco Risk Assessment Matrix.pdf" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminUserRolePartial.cshtml" />
+    <Content Include="Areas\Common\Views\Login\ResetPassword.cshtml" />
+    <Content Include="Areas\IRMA\Views\RigAdmin\RigAdminIsolationLockPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\PassportSearch.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportInfoPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportTasksPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportTasksCapaPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportTasksTaskPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportTasksJobPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Common\TreeLookupPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportTasksIsolationPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaCorpPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaRigHome.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaCorpHome.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\ReconcilePassport.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\ReconcilePassportPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBook.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookKSAsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAdditionalPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookExpirationPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAssessorGuidePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookKSAsDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAdditionalDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookExpirationDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAssessorGuideDetailPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageJobCodePartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageJobCodeUpdate.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAdditionalAddNewPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAdditionalAddNew.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookApproval.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\FleetSummary.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookApprovalDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAdditionalAdd.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookAdditionalUpdate.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\CapBookApprovalPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\FleetSummaryRigPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\FleetSummaryEmployeePartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\FleetSummaryRigDetailPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Cap\FleetSummaryEmployeeDetailPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageAdminListPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\Oap\Views\Shared\_OapLayout.cshtml" />
+    <Content Include="Areas\Oap\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\cOap\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\cOap\Views\OapChecklistComments\OapChecklistComment.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistComments\OapChecklistCommentPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistGroups\OapChecklistGroup.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistGroups\OapChecklistGroupPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistGroups\OapChecklistSubGroupPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistQuestionsHelp\OapChecklistQuestionsHelp.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistQuestionsHelp\OapChecklistQuestionsHelpPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistsHelp\OapChecklistsHelp.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistsHelp\OapChecklistsHelpPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklists\OapChecklist.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklists\OapChecklistPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistTopics\OapChecklistQuestionsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistTopics\OapChecklistTopic.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistTopics\OapChecklistTopicPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapFrequencyTypes\OapFrequencyType.cshtml" />
+    <Content Include="Areas\cOap\Views\OapFrequencyTypes\OapFrequencyTypePartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapGraphics\OapGraphic.cshtml" />
+    <Content Include="Areas\cOap\Views\OapGraphics\OapGraphicPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocolFormTypes\OapProtocolFormType.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocolFormTypes\OapProtocolFormTypePartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocolQuestionHeaders\OapProtocolQuestionHeader.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocolQuestionHeaders\OapProtocolQuestionHeaderPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapTypes\OapTypesDetailsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapTypes\OapTypesMaster.cshtml" />
+    <Content Include="Areas\cOap\Views\OapTypes\OapTypesMasterPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\Shared\_COapLayout.cshtml" />
+    <Content Include="Areas\IRMA\Views\Comments\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\LessonsLearned\Control.cshtml" />
+    <Content Include="Areas\IRMA\Views\LessonsLearned\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\LessonsLearned\IndexLessonsGridView.cshtml" />
+    <Content Include="Areas\IRMA\Views\LessonsLearned\LessonForm.cshtml" />
+    <Content Include="Areas\IRMA\Views\LessonsLearned\LessonLearnedOriginatorsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\LessonsLearned\LessonsLearnedApprovalPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\LessonsLearned\LessonsLearnedPreApprovalReviewPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\GridPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistQuestionTag\OapQuestionTag.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistQuestionTag\OapQuestionTagPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistQuestionTagMap\OapQuestionTagMap.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistQuestionTagMap\OapQuestionTagMapPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistTopics\OapChecklistQuestionTagMapPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\ManageAdminList.cshtml" />
+    <Content Include="Areas\Common\Views\Admin\MultiFileUploadPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Oap\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\Comments\Control.cshtml" />
+    <Content Include="Areas\IRMA\Views\Comments\InlineControl.cshtml" />
+    <Content Include="Areas\IRMA\Views\Review\Control.cshtml" />
+    <Content Include="Areas\IRMA\Views\Review\Edit.cshtml" />
+    <Content Include="Areas\IRMA\Views\Review\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\FSODashboard\IndexOpenChecklistsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\FSODashboard\TrainedObserversOnboardPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\AssignPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\ReviewPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\GridPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\RespondPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\Home.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\OpenPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\SearchPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\CapaPlan.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\ExecutionPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistAssetDataManagement\OapChecklistAssetDataManagement.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistAssetDataManagement\OapChecklistAssetDataManagementPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistEquipment\OapChecklistEquipment.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistEquipment\OapChecklistEquipmentPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistWorkInstruction\OapChecklistWorkInstruction.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistWorkInstruction\OapChecklistWorkInstructionPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\OffboardPersonnel.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\OpenCapaPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Shared\ActionMenu.cshtml" />
+    <Content Include="Areas\cOap\Views\OapChecklistTopics\OapChecklistRelatedQuestionMapPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\CapaPlanHome.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\ExtensionPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\OpenCapaPlanPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\ReassignmentPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\UploadPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaHomeEnscoPassportCareerDevPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Common\GridMultiLookupPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Review\GetAllReviews.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditPlan\OapSummaryDetailsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditPlan\Index.cshtml" />
+    <Content Include="Areas\IRMA\Views\Comments\GetAllComments.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditPlan\OapProtocolPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditPlan\OapCVTCompliancePartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditPlan\OapRegulatoryAuditProtocolsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditPlan\OapRegulatoryAuditMissingProtocolsPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\SummaryPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Capa\HistoryLogPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditReport\Index.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAudit\Index.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocolsToAudit\ProtocolsToAuditPartial.cshtml" />
+    <Content Include="Areas\IRMA\Views\Irma\IrmaMenu.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAudit\OapAuditPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAudit\OapAuditSearchPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditReport\AuditVerificationPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditReport\AuditVerificationToolbarPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditReport\CapaFromPreviousProtocolPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditReport\PreviousProtocolPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditReport\ProtocolsAssessorsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapAuditReport\ReviewSearchPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\Genericlist.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistAssessorsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistCommentPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistExecutionPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\Findings\GenericlistFindingPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistPageControlPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistPlanningPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericListRelatedCAPAsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistRelatedSearchPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\OapProtocol\GenericlistRelatedSearchQueryPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\Findings\Findings.cshtml" />
+    <Content Include="Areas\cOap\Views\FindingsPage\FindingPage.cshtml" />
+    <Content Include="Areas\cOap\Views\FindingsPage\FindingPageFindingPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\FindingsPage\FindingPageFindingSubTypeComboPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\FindingsPage\FindingPagePartial.cshtml" />
+    <Content Include="Areas\cOap\Views\FindingsPage\FindingPagePreviousFindingsPartial.cshtml" />
+    <Content Include="Areas\cOap\Views\FindingsPage\FindingPageVerificationPartial.cshtml" />
+    <None Include="Areas\Oap\RigWebApiClient.nswag" />
+    <Content Include="Areas\cOap\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Oap\Views\LifesaverDashboard\LifesaverDashboard.cshtml" />
+    <Content Include="Areas\Oap\Views\LifesaverDashboard\LifesaverDashboardPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\Genericlist.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistAssessorsPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistCommentPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistExecutionPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistExecutionToolbarPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistFindingPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistFindingToolbarPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistMonitoringPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistPageControlPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistPlanningPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistRelatedSearchPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistVerificationPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistVerificationToolbarPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericDashboard.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericDashboardPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistRelatedSearchQueryPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\LifesaverDashboard\LifesaverScheduleAndJobsPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\BarrierAuthorityDashboard\BarrierAuthorityDashboard.cshtml" />
+    <Content Include="Areas\Oap\Views\BarrierAuthorityDashboard\BarrierAuthorityDashboardPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\MasterOversightDashboard\MasterOversightDashboard.cshtml" />
+    <Content Include="Areas\Oap\Views\MasterOversightDashboard\MasterOversightDashboardPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\CriticalAreaVerificationDashboard\CriticalAreaVerificationDashboard.cshtml" />
+    <Content Include="Areas\Oap\Views\CriticalAreaVerificationDashboard\CriticalAreaVerificationDashboardPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\OIMOversightDashboard.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\OIMOversightDashboardPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\ProtocolDashboard\Index.cshtml" />
+    <Content Include="Areas\Oap\Views\ProtocolDashboard\ProtocolDashboardPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericlistQuestionCommentPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\Findings\Findings.cshtml" />
+    <Content Include="Areas\Oap\Views\FindingsPage\FindingPageVerificationPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\FindingsPage\FindingPage.cshtml" />
+    <Content Include="Areas\Oap\Views\FindingsPage\FindingPagePreviousFindingsPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\NoAnswer\NoAnswerCommentPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\FindingsPage\FindingPagePartial.cshtml" />
+    <Content Include="Areas\Oap\Views\FindingsPage\FindingPageFindingTypeComboPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\FindingsPage\FindingPageFindingSubTypeComboPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\FindingsPage\FindingPageFindingPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\ProtocolForm\ProtocolScoringFormPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\ProtocolForm\ProtocolScoringForm.cshtml" />
+    <Content Include="Areas\Oap\Views\Shared\GenericListRelatedCAPAsPartial.cshtml" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\README.md" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\bower.json" />
+    <Content Include="LocalizationAdmin\scripts\vendor\ng-file-upload\.bower.json" />
+    <Content Include="LocalizationAdmin\scripts\vendor\jquery.min.map" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="LocalizationAdmin\scripts\vendor\font-awesome\css\font-awesome.css.map" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\css\bootstrap.css.map" />
+    <Content Include="LocalizationAdmin\scripts\vendor\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <Content Include="LocalizationAdmin\scripts\vendor\angular.min.js.map" />
+    <Content Include="LocalizationAdmin\scripts\vendor\angular.min.js.gzip" />
+    <Content Include="LocalizationAdmin\scripts\vendor\angular-sanitize.min.js.map" />
+    <Content Include="LocalizationAdmin\LocalizationService.ashx" />
+    <Content Include="LocalizationAdmin\bower.json" />
+    <Content Include="Areas\Oap\Views\BarrierAuthority\BarrierAuthorityRenderAssetsPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\BarrierAuthority\BarrierAuthorityRenderThirdPartyJobsPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\BarrierAuthority\BarrierAuthorityRenderWorkInstructionsPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\LifesaverDashboard\LifeSaverAutoScheduleFormPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversight\GenericlistExecutionPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversight\GenericlistExecutionToolbarPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversight\GenericlistVerificationPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\CAPAGridPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\ChecklistPendingReviewPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\BarrierAuthorityPendingReviewPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\SWAGridPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\WIGridPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\BarrierAuthority\GenericlistExecutionPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\BarrierAuthority\GenericlistExecutionToolbarPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\OIMOversightDashboard\JobGridPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\NoAnswer\ReviewsPartial.cshtml" />
+    <Content Include="Mvc.sitemap">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\Oap\Views\MasterOversight\GenericlistExecutionToolbarPartial.cshtml" />
+    <Content Include="Areas\Oap\Views\MasterOversight\GenericlistExecutionPartial.cshtml" />
+    <None Include="MvcSiteMapSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\PublishProfiles\CORP UAT %28Devweb02%29.pubxml" />
+    <None Include="Properties\PublishProfiles\IRMA-RIG-DEV.pubxml" />
+    <None Include="Properties\PublishProfiles\IRMA-RIG-UAT Publish Profile.pubxml" />
+    <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.3.1.js" />
+    <Content Include="Scripts\jquery-3.3.1.min.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Views\Shared\LayoutFooter.cshtml" />
+    <Content Include="Areas\IRMA\Views\Personnel\TeamManagement.cshtml" />
+    <None Include="Scripts\jquery-3.2.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.3.1.min.map" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapPathHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModelList.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MetaRobotsHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.cshtml" />
+    <None Include="Web.Corp-UAT.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.IRMA-RIG-DEV.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <Content Include="_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\LayoutHeader.cshtml" />
+    <Content Include="Views\Shared\LayoutLeft.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Decimal.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EmailAddress.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\MultilineText.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Password.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\String.cshtml" />
+    <None Include="Web.IrmaDeployDev.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.RIG-UAT.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Areas\IRMA\Views\FSOChecklist\" />
+    <Folder Include="Areas\Oap\Views\CriticalAreaVerification\" />
+    <Folder Include="Areas\Oap\Views\FSO\" />
+    <Folder Include="Areas\Oap\Views\Generic\" />
+    <Folder Include="Upload\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.2.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Ensco.Models\Ensco.Models.csproj">
+      <Project>{a540798d-bf18-486b-9c38-2aea1a7335aa}</Project>
+      <Name>Ensco.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Ensco.Resources\Ensco.Resources.csproj">
+      <Project>{afd3a5c8-2140-4fee-b3e1-d28bdd3b6917}</Project>
+      <Name>Ensco.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Ensco.Services\Ensco.Services.csproj">
+      <Project>{0e50c336-c978-41ad-ab2c-3d951d04f929}</Project>
+      <Name>Ensco.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Ensco.Utilities\Ensco.Utilities.csproj">
+      <Project>{e8b301a0-d57f-42ae-9b87-da32d0dfc258}</Project>
+      <Name>Ensco.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ensco.TLC.App\Ensco.TLC.Models\Ensco.TLC.Models.csproj">
+      <Project>{3a02c55b-eac6-4c25-8a56-36bbbb70fbc2}</Project>
+      <Name>Ensco.TLC.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ensco.TLC.App\Ensco.TLC.Services\Ensco.TLC.Services.csproj">
+      <Project>{E1D1D9EB-A927-420F-8B99-BCEEF22A0A05}</Project>
+      <Name>Ensco.TLC.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.FSO.Models\Ensco.FSO.Models.csproj">
+      <Project>{FF53932F-2CEF-40DA-B2D1-F951869CF6C3}</Project>
+      <Name>Ensco.FSO.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.FSO.Services\Ensco.FSO.Services.csproj">
+      <Project>{BA70A80F-7E1A-4E6A-9A9F-537BA9841791}</Project>
+      <Name>Ensco.FSO.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.Irma.Data\Ensco.Irma.Data.csproj">
+      <Project>{9f5630de-5ccd-425d-8262-c3ba93803690}</Project>
+      <Name>Ensco.Irma.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.Irma.Models\Ensco.Irma.Models.csproj">
+      <Project>{11951d8a-e825-432d-95ff-01d715ce6ebf}</Project>
+      <Name>Ensco.Irma.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.Irma.Services\Ensco.Irma.Services.csproj">
+      <Project>{C42B9B73-4A9B-46D9-A47E-2ED718793B2D}</Project>
+      <Name>Ensco.Irma.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.Oap.Common\Ensco.Irma.Oap.Common.csproj">
+      <Project>{5a4a43b0-0f77-46ff-a269-f2f2bba05b04}</Project>
+      <Name>Ensco.Irma.Oap.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.OAP.Models\Ensco.OAP.Models.csproj">
+      <Project>{9d824d72-7721-4dbc-986b-27d6314b4b93}</Project>
+      <Name>Ensco.OAP.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.OAP.Services\Ensco.OAP.Services.csproj">
+      <Project>{f977169f-cc86-4a8c-9966-5866b960480e}</Project>
+      <Name>Ensco.OAP.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ensco.Scheduler\Ensco.Scheduler.csproj">
+      <Project>{3dbc81ac-58a9-44d7-a2d5-e9d57617dfe1}</Project>
+      <Name>Ensco.Scheduler</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\IRMA\EmergencyTeamReport.resx">
+      <DependentUpon>EmergencyTeamReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\PersonnelSearch.resx">
+      <DependentUpon>PersonnelSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\PobArrivalDepartureLogReport.resx">
+      <DependentUpon>PobArrivalDepartureLogReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\LifeBoatComplianceReport.resx">
+      <DependentUpon>LifeBoatComplianceReport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Reports\IRMA\LifeBoatRosterListReport.resx">
+      <DependentUpon>LifeBoatRosterListReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\PobArrivalLogReport.resx">
+      <DependentUpon>PobArrivalLogReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\PobDepartureLogReport.resx">
+      <DependentUpon>PobDepartureLogReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\PobSummaryReport.resx">
+      <DependentUpon>PobSummaryReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\RoomBedSummaryReport.resx">
+      <DependentUpon>RoomBedSummaryReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\RosterSignInByLifeBoat.resx">
+      <DependentUpon>RosterSignInByLifeBoat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\RosterSignInByMusterStation.resx">
+      <DependentUpon>RosterSignInByMusterStation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\IRMA\RosterSignInSheet.resx">
+      <DependentUpon>RosterSignInSheet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\TLC\CapBookReport.resx">
+      <DependentUpon>CapBookReport.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RIG-UAT|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Corp-UAT|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'IRMA-RIG-DEV|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>50062</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/Ensco.App</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <UserProperties UseCdnSupport="False" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

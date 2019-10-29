@@ -1,0 +1,55 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+    <form>
+        <div style="margin-bottom:5">
+            <a href="javascript:void(0)" onclick="on_Goback(this);">Go Back</a>
+        </div>
+    <table id="t0" class1="marginBottom"></table>
+    <table id="t1" class="marginBottom"></table>
+    <table id="t2" class="marginBottom"></table>
+</form>
+<script>
+    var tRisk = $('#tRisk')
+    var Page ='summary'
+    $(document).ready(function () {
+        InitFold()
+        for (var i = 0; i < 3; i++)
+            InitGrid(null, i, 1)
+        CleanUp()
+    })
+    function InitGrid(a, group, index) {
+        var arr = ['Safety-Critical Assets in Long Term Isolation'
+            , 'Safety-Critical Assets in Current Jobs'
+            , 'All Safety-Critical Assets Per Asset Data Management (ADM) Hierarchy in EAMS']
+        var t = $('#t' + group)
+        if (index == -2) {
+            PostForm(['usp_JobScal', group, index, Lang ] )
+            return null
+        }
+        var xml = GetArray(['usp_JobScal', group, index, Lang ])
+        if (index == -2) {
+
+        }
+        DataBind(t, xml)
+
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback, null, true )
+
+        AddGridSubHeader(t, arr[group])
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+</script>

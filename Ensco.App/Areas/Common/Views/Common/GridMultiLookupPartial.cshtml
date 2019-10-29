@@ -1,0 +1,58 @@
+﻿
+@using Ensco.App.Helpers
+
+@{
+    bool IsRequired = (this.ViewBag.IsRequired != null && (bool)this.ViewBag.IsRequired);
+    bool readOnly = (this.ViewBag.readOnly != null && (bool)this.ViewBag.readOnly);
+
+    string name = this.ViewBag.Name;
+    string lookup = this.ViewBag.lookup;
+    string [] selected = (string[])this.ViewBag.Selected;
+    if(selected == null) {
+        selected = new string[] { "" };
+    }
+    string displayName = "Email";
+    if(lookup == "Passport") {
+        displayName = "Name";
+    }
+}
+@Html.DevExpress().GridLookup(settings => {
+
+    settings.KeyFieldName = "Id";
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowSelectCheckbox = true;
+    settings.Name = name;// "PassportEmail";
+    settings.Width = Unit.Percentage(100);
+    settings.GridViewProperties.CallbackRouteValues = new { Area = "Common", Controller = "Common", Action = "GridMultiLookupPartial"
+        , name, lookup, selected
+    };
+
+    string[] arr = new string[] { "Id", "PositionId" };
+    Ensco.Irma.Data.Master_UserLookupView type=new Ensco.Irma.Data.Master_UserLookupView();
+    int i = 0;
+    int index = 0;
+    foreach( System.Reflection.PropertyInfo pi in  type.GetType().GetProperties()) {
+        if(arr.Contains(pi.Name)) {
+            continue;
+        }
+        MVCxGridViewColumn column = settings.Columns.Add(pi.Name);
+        column.Settings.AllowHeaderFilter = DefaultBoolean.True;
+        column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        if(pi.Name == displayName)
+            index = i;
+        i++;
+
+    }
+    settings.ShowModelErrors = true;
+    //settings.Properties.TextFormatString = "{" + Model.DisplayFieldIndex.ToString() + "}";
+    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+    settings.ClientEnabled = !readOnly; 
+    settings.GridViewProperties.Settings.ShowFilterRow = true;
+    settings.GridViewProperties.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
+
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowSelectCheckbox = true;
+    settings.Properties.SelectionMode = GridLookupSelectionMode.Multiple;
+    settings.Properties.TextFormatString = "{"+index.ToString()+" }";
+}).BindList(Model ).Bind(selected).GetHtml()
+

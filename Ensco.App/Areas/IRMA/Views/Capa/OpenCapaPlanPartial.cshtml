@@ -1,0 +1,36 @@
+﻿@using Ensco.Utilities
+@using System.Data
+@{
+    DataTable dt = (DataTable)Model;
+}
+@Html.DevExpress().GridView(grid =>{
+    grid.Caption = "Open CAPA Plan";
+    grid.Name = "grid"; 
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    Html.EnscoStandardGrid(grid, null, options);
+
+    string[] arr = new string[] { "SourceId" };
+
+    foreach (DataColumn dc in dt.Columns) {
+        if (arr != null && arr.Contains(dc.ColumnName ))
+            continue;
+        MVCxGridViewColumn column=   grid.Columns.Add(dc.ColumnName);
+        Html.InitColumn(column, grid, dc );
+
+        if (dc.ColumnName == "Id") {
+            column.SetDataItemTemplateContent(c => {
+                Html.DevExpress().HyperLink(s => {
+                    string Id = DataBinder.Eval(c.DataItem, "Id").ToString();
+                    s.Properties.Text = Id;
+                    string url = "/irma/capa/CapaPlan/" + Id;
+                    s.NavigateUrl = url;
+                }).Render();
+            });
+        }
+    }
+    // grid.ClientSideEvents.BeginCallback = "function(s, e){onBeginCallback(s, e );}";
+    grid.CallbackRouteValues = new { Action = "OpenCapaPlanPartial", Controller = "Capa", Area="Irma"    };
+}).Bind(Model).GetHtml()

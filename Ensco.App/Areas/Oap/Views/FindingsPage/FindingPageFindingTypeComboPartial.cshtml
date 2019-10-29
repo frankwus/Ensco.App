@@ -1,0 +1,9 @@
+﻿@model Ensco.Irma.Oap.WebClient.Rig.RigOapChecklistQuestionFinding
+
+@Html.DevExpress().ComboBox(settings => {
+
+    var controller = (dynamic) ViewContext.Controller;
+    controller.ConfigureFindingType(settings, Html, ViewContext);
+
+}).Bind(Model).GetHtml()
+

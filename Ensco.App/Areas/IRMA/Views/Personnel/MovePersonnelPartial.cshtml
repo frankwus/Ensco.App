@@ -1,0 +1,35 @@
+﻿@model Ensco.Irma.Models.MovePersonnelModel
+
+
+@Html.DevExpress().FormLayout(settings =>
+{
+    settings.Name = "flMovePersonnel";
+    settings.EncodeHtml = false;
+    settings.UseDefaultPaddings = false;
+    settings.Width = Unit.Pixel(500);
+    settings.Enabled = true;
+
+    settings.ColCount = 2;
+    settings.Items.Add(x => x.FlightManifest, i =>
+    {
+        Ensco.Models.LookupListModel<dynamic> lkpList = Ensco.Utilities.UtilitySystem.GetLookupList("CrewFlights");
+
+        i.FieldName = "FlightManifest";
+        i.NestedExtension().ComboBox(s =>
+        {
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.Properties.ValidationSettings.SetFocusOnError = true;
+            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            s.Properties.DataSource = lkpList.Items;
+            s.Properties.NullText = "[Select]";
+            s.Properties.TextField = lkpList.DisplayField;
+            s.Properties.ValueField = lkpList.KeyFieldName;
+            s.Properties.DataMember = lkpList.DisplayField;
+            s.Properties.TextFormatString = string.Format("{{0}}", lkpList.DisplayFieldIndex);
+            s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+            s.Properties.Columns.Add("CrewChange");
+            s.Properties.Columns.Add("Manifest");
+        });
+    });
+}).GetHtml()

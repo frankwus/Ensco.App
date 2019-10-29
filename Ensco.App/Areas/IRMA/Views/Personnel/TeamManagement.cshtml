@@ -1,0 +1,47 @@
+﻿@model Ensco.Irma.Models.TeamManagementModel
+<style>
+    .error {
+        background-color: pink;
+        color: black;
+        font-weight: 100;
+        height: 20px;
+    }
+</style>
+
+@section scripts
+{
+    <script type="text/javascript">     
+        var Command
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+            AdjustMainGrid(gridView_TeamManagementPartial); // grid is client side Id
+            }
+        );
+        function onBeginCallback(s, e) {
+            Command=e.command
+        }
+        function onEndCallback(s, e) {
+            if (Command == "UPDATEEDIT" || Command == "DELETEROW") {
+                if (GetVal(GetId('gridView_TeamManagementMembers_DXTitle').find('td').eq(0) )=="Add Member")
+                    gridView_TeamManagementPartial.Refresh()
+            }
+        }
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("TeamManagementPartial", Model);
+}

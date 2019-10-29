@@ -1,0 +1,218 @@
+﻿@model IEnumerable<Ensco.App.Areas.Oap.Models.LifeSaverDashboardGridModel>
+
+@{
+
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+
+        settings.Name = "gridLifeSavers";
+        settings.KeyFieldName = "Id";
+        
+        settings.Caption = DbRes.T("Life Savers Checklists","OapResources");
+
+        // Routes
+        settings.CallbackRouteValues = new { Controller = "LifeSaverDashboard", Action = "RigChecklists" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "LifeSaverDashboard", Action = "CreateRigChecklist" };
+
+        // Columns
+        settings.Columns.Add(c =>
+        {
+            c.Caption = "Id";
+            c.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            c.Settings.AllowAutoFilter = DefaultBoolean.True;
+
+            c.UnboundType = DevExpress.Data.UnboundColumnType.Integer;
+
+            c.SetDataItemTemplateContent(container =>
+            {
+                var checklistId = DataBinder.Eval(container.DataItem, "Id").ToString();
+                var uniqueId = DataBinder.Eval(container.DataItem, "RigChecklistUniqueId").ToString();
+                Html.DevExpress().HyperLink(link =>
+                {
+                    link.Properties.Text = uniqueId;
+                    link.NavigateUrl = Url.Action("List", new { Controller = "LifeSaver", Id = checklistId });
+                }).Render();
+            });
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Title";
+        });
+
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Location";
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "LeadAssessor";
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Position";
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Status";
+        });
+
+        settings.CellEditorInitialize = (s, e) =>
+        {
+            if (e.Column.FieldName == "LocationId")
+            {
+                e.Editor.Width = Unit.Percentage(100);
+            }
+        };
+
+        // Popup form customization
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.EditFormLayoutProperties.ColumnCount = 2;
+        settings.SettingsPopup.EditForm.Modal = true;
+        settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.Center;
+        settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+        settings.SettingsPopup.EditForm.CloseOnEscape = AutoBoolean.True;
+        settings.SettingsText.PopupEditFormCaption = "Add/Edit " + settings.SettingsText.Title;
+
+        // Edit form fields
+        settings.EditFormLayoutProperties.Items.Add(i =>
+        {
+            i.ColumnName = "Title";
+            i.ColumnSpan = 2;
+        });
+
+        settings.EditFormLayoutProperties.Items.Add(i =>
+        {
+            i.ColumnName = "Description";
+            i.Caption = "Description";
+            i.ColumnSpan = 2;
+            i.SetTemplateContent(container =>
+            {
+                Html.DevExpress().Memo(m =>
+                {
+                    m.Name = "Description";
+                    m.Width = Unit.Percentage(100);
+                    m.Properties.Rows = 5;
+                }).Render();
+            });
+        });
+
+        settings.EditFormLayoutProperties.Items.Add(i =>
+        {
+            i.Caption = "Lead Assessor";
+            i.SetTemplateContent(cont =>
+            {
+                int ownerId = Ensco.Utilities.UtilitySystem.CurrentUserId;
+                Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "LeadAssessorLookup", lookup = "Passport", multi = false, selected = ownerId });
+            });
+        });
+
+        settings.EditFormLayoutProperties.Items.Add(i =>
+        {
+            i.Caption = "Checklist Date";
+            i.SetTemplateContent(cont =>
+            {
+                Html.DevExpress().DateEdit(d =>
+                {
+                    d.Name = "ChecklistDateTime";
+                    d.Date = DateTime.UtcNow;
+                }).Render();
+            });
+        });        
+
+        settings.EditFormLayoutProperties.Items.AddCommandItem(i =>
+        {
+            i.ShowUpdateButton = true;
+            i.ShowCancelButton = true;
+            i.ColumnSpan = 2;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        });
+
+        settings.SettingsText.CommandUpdate = "Save";
+
+        // Style
+        settings.Width = Unit.Percentage(100);
+
+        // Filter
+        settings.Settings.ShowHeaderFilterButton = true;
+
+        // Paging
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+
+        // Toolbar
+        settings.SettingsSearchPanel.CustomEditorName = "search_Lifesavers";
+        settings.Toolbars.Add(t =>
+        {
+
+            t.ItemAlign = GridToolbarItemAlign.Right;
+
+            t.Items.Add(i =>
+            {
+                i.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                i.Command = GridViewToolbarCommand.Custom;
+                i.Name = "AddNewRigChecklist";
+                i.Text = DbRes.T("Add Checklist", "Resources");
+                i.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                i.ItemStyle.ForeColor = System.Drawing.Color.White;
+                i.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                i.ClientEnabled = true;
+                i.BeginGroup = true;
+            });
+
+            t.Items.Add(i =>
+            {
+                i.ClientEnabled = false;
+                i.SetTemplateContent("&nbsp;&nbsp;&nbsp;");
+            });
+
+            t.Items.Add(i =>
+            {
+                i.SetTemplateContent(cont =>
+                {
+                    Html.DevExpress().ButtonEdit(s =>
+                    {
+                        s.Name = "search_Lifesavers";
+                        s.Properties.NullText = "Search";
+                        s.Properties.Buttons.Add().Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                    }).Render();
+                });
+            });
+
+            t.Items.Add(i =>
+            {
+                i.Command = GridViewToolbarCommand.Refresh;
+                i.DisplayMode = GridToolbarItemDisplayMode.Image;
+                i.Image.Url = "~/Images/Refresh.png";
+                i.Image.Height = Unit.Pixel(24);
+                i.Image.Width = Unit.Pixel(24);
+                i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+
+            t.Items.Add(i =>
+            {
+                i.Command = GridViewToolbarCommand.ShowFilterRow;
+                i.DisplayMode = GridToolbarItemDisplayMode.Image;
+                i.Image.Url = "~/Images/Filter.png";
+                i.Image.Height = Unit.Pixel(24);
+                i.Image.Width = Unit.Pixel(24);
+                i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            });
+
+        });
+
+        settings.ClientSideEvents.ToolbarItemClick = "function (s,e) { onToolbarItemClick(s, e); }";
+        settings.ClientSideEvents.BeginCallback = "function (s,e) { if (e.command == 'UPDATEEDIT') { e.customArgs['OwnerId'] = LeadAssessorLookup.GetValueString(); e.customArgs['OapChecklistId'] = " + ViewBag.OapChecklistId + "; } }";
+
+    }).Bind(Model).GetHtml();
+}

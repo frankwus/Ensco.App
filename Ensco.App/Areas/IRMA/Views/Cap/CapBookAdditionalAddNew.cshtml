@@ -1,0 +1,50 @@
+﻿@model Ensco.TLC.Models.CAP_AdditionalModel
+
+@{
+    var lkpRig = Ensco.Utilities.UtilitySystem.GetLookupList("Rig");
+}
+
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popupControlAddAdditional";
+    settings.CallbackRouteValues = new { Controller = "Cap", Action = "CapBookAdditionalAddNew" };
+    settings.CloseAction = CloseAction.OuterMouseClick;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.ShowFooter = true;
+    settings.AllowDragging = true;
+    settings.EnableHotTrack = true;
+    settings.Modal = true;
+    settings.Height = Unit.Percentage(100);
+    settings.Width = Unit.Percentage(100);
+    settings.HeaderText = "Add Additional KSA";
+
+    settings.SetContent(() =>
+    {
+        using (Html.BeginForm("CapBookAdditionalAddNewPartial", "Cap", FormMethod.Post))
+        {
+            Html.RenderAction("CapBookAdditionalAddNewPartial", "Cap");
+
+            ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "btnAddKSA";
+                buttonsettings.Text = "Save";
+                buttonsettings.UseSubmitBehavior = true;
+            }).Render();
+            ViewContext.Writer.Write("</div>");
+        }
+    });
+
+    //settings.SetFooterTemplateContent(c =>
+    //{
+    //    ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+    //    Html.DevExpress().Button(buttonsettings =>
+    //    {
+    //        buttonsettings.Name = "btnAddKSA";
+    //        buttonsettings.Text = "Save";
+    //        buttonsettings.UseSubmitBehavior = true;
+    //    }).Render();
+    //    ViewContext.Writer.Write("</div>");
+    //});
+}).GetHtml()

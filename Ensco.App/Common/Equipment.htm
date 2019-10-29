@@ -1,0 +1,134 @@
+﻿<table id="tEquipment" border="1">
+    <tr >
+        <td class="Hazard" colspan="12"><span class="minus">- </span><span>Equipment</span>
+    <tr class="labelCenter">
+        <td colspan="2">Equipment Worked On
+        <td colspan="5">
+            EAMS Criticality
+            <!--<tr class="labelCenter"><td><td >Group<td>System<td>Sub1 <td>Sub 2 <td>Sub 3 <td>Sub 4<td>Sub 5<td>SC<td>	CC	<td>EC<td>	OC<td>	NC-->
+    <tr class="labelCenter"><td><td class="left">System<td>SC<td>	CC	<td>EC<td>	OC<td>	NC
+    <tr>
+        <td colspan="18">
+            <img src="../Images/Search icon.png" onclick="on_AddEquipment(this)" />
+            <!--<a href=# onclick="on_AddEquipment(this); return false">+ Add Equipment</a>-->
+</table>
+<script>
+    var fnEquipmentCallback 
+    function on_AddEquipment(src, arr) {
+        src = $(src)
+        var admId = src.attr('admId')
+        var self = src.attr('self')
+        if (admId == null)
+            admId=0
+        var r
+        if (arr != null)
+            r = arr
+        else
+            r = Popup('../common/popupADM.htm?admId=' + admId + '&self=' + self, 1200, 1000)
+        if (r == null)
+            return
+        r = JSON.parse(r)
+        if (r.length == 0)
+            return
+        if (fnEquipmentCallback != null && fnEquipmentCallback.toString().indexOf('function EquipmentRaw') > -1) {
+            fnEquipmentCallback(r )
+            return 
+        }
+        var root = $('<r />')
+        for (var j in r) {
+            var r1 = r[j]
+            var s = ''
+            for (var i = 0; i < 7; i++)
+                s += '<td/>'
+            var tr = $('<tr/>')
+            tr.html(s)
+            var index = 1
+            var admId=r1[r1.length - 1]
+            var el = $.createElement('adm')
+            el.addAttr('id',  admId  )
+            for (var i = 0 ; i < r1.length-1; i++) {
+                var name = r1[i]               
+                tr.children().eq(index++).html(name)
+                    
+            }
+            root.append(el)
+
+            tr.attr('AdmId', admId  )
+            tr.insertBefore(src.closest('tr'))
+            var html = (tr.index() - 2) + GetDelete()
+            tr.children().first().html(html)
+            if ( tr.find('td:gt(1):contains(1)').length)
+                tr.children().last().html(0)
+            else 
+                tr.children().last().html(1)
+            tr.find('td:gt(1):contains(1)').html(WingDing()).addClass('center')
+            tr.find('td:gt(1):contains(0)').html('')
+
+        }
+        if (fnEquipmentCallback != null)
+            fnEquipmentCallback()
+        if (Page == 'permit') {
+            var xml = GetArray(['usp_JobValidateSystemEquipment', Id, GetCleanXml(root ), 0, 0 ])
+            var text = Trim( $(xml).text()) 
+            if ( text !='') 
+                alert(text )
+        }
+    }
+    function SaveEquipment() {
+        var root = $('<r />')
+        $('#tEquipment').find('tr:gt(2)').not(':last').each(function () {
+            var tr = $(this)
+            var el = $.createElement('Equipment')
+            var arr = ['System', 'SC', 'CC', 'EC', 'OC', 'NC']
+            for (var i = 0; i < arr.length; i++) {
+                var value = GetVal( tr.children().eq(i + 1)) 
+                if (i > 0) {
+                    if (value !='')
+                        value = 1
+                    else 
+                        value = 0 
+                }
+                el.addAttr(arr[i], value)
+            }
+            el.addAttr('Page', Page)
+            el.addAttr('id', Id)
+            el.addAttr('AdmId', tr.attr('AdmId') )
+            root.append(el)
+        })
+        var xml = GetCleanXml(root ) 
+        GetArray(['usp_JobSaveEquipment', Page, Id,  xml])
+    }
+    function InitEquipment(fn) {
+        var t = $('#tEquipment')
+        var arr = ['Safety Critical', 'Client Critical', 'Environmental Critical', 'Operational Critical', 'Non-Critical ']
+        for (var i in arr)
+            t.find('tr').eq(1).children().eq(parseInt(i)+2).attr('title', arr[i])
+        GetArray(['usp_JobGetEquipment', Page, Id], function (data) {
+            var xml = data.xml
+            var t1 = $('<table/>')
+            DataBind(t1, xml)
+            GetTd(t1, 7).each(function () {
+                var td = $(this)
+                td.parent().attr('AdmId', td.text())
+                td.remove()
+            })
+            GetTd(t1, 0).each(function () {
+                var td = $(this)
+                var html = td.parent().index() 
+                td.html(html + (Page =='job'?'': GetDelete()))
+            })
+            t1.find('tr:gt(0)').insertBefore(t.find('tr').last())
+            if (Page == 'job')
+                t.find('tr').last().remove()
+
+            t.find('td:contains(False)').text('')
+            t.find('td:contains(True)').html( WingDing() ).addClass('center')
+
+        })
+
+        fnEquipmentCallback=fn     
+    }
+    function WingDing() {
+        return '<span  style="margin:5; font-family:wingdings;color: green">&#252;</span>'
+    }
+</script>

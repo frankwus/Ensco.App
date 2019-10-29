@@ -1,0 +1,618 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<form>
+    <table border="0">
+        <tr style="border:none">
+            <td width="99%" style="border:none">
+
+            <td><a id="Close" class="hidden" href="javascript:void(0)" onclick="on_Close(this)">Close</a>
+            <td><img id="Clone" src="../Images/Clone icon.png" onclick="on_Clone(this)" />
+            <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+            <td><img src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+            <td><img src="../Images/print.png" onclick="on_Print(this)" Title="Print Webpage" />
+            <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+
+            <td><img src="../Images/Help icon.png" onclick="on_Help()" Title="Help" />
+    </table>
+
+    <table id="tPlanning">
+
+        <tr>
+            <th class="header" style="text-align: left;" colspan="24">
+                Planning
+        <tr style="display:none">
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+            <td>
+        <tr>
+            <td colspan="2">Lift Plan No.
+            <td colspan="2" style="width:40"><span id="id"></span>
+            <td>Job
+            <td colspan="4"><span id="JobId"></span>
+            <td colspan="1">Permit
+            <td><select id="PermitId"></select>
+            <td>Date/Time Performed
+            <td><input id="DateDone" type="text" />
+
+        <tr>
+            <td colspan="2">Location
+            <td colspan="7">
+                <img src='../images/search icon.png' onclick="on_Location(this)" />
+                <span border="0" id="Location"></span>
+                <span class="hidden" id="LocationId"></span>
+            <td>Status
+            <td><span id="Status"></span>
+            <td>Date/Time Created
+            <td id="Date">
+        <tr>
+            <td colspan="3">Description of Lift
+            <td colspan="12"><textarea id="Description" style="width:100%" rows="4"></textarea>
+    </table>
+    <table id="tCommunication">
+        <tr>
+            <td>Communication Method
+            <td>Radio
+            <td><input id="Radio" type="checkbox" />
+            <td>Verbal
+            <td>  <input id="Verbal" type="checkbox" />
+            <td>Hand Signals
+            <td> <input id="HandSignals" type="checkbox" />
+        <tr>
+            <td>Potential for conflicting operation<br /> (ballast control, other cranes, etc.)
+            <td>Yes
+            <td><input id="Yes" type="radio" name="mitigations" />
+            <td>No
+            <td>  <input id="No" type="radio" name="mitigations" />
+            <td><span>specify mitigations</span>
+            <td colspan="3"> <textarea id="Mitigations" rows="5"></textarea>
+    </table>
+    <table id="tLift" class="marginBottom">
+        <tr>
+            <th colspan="23" class="darkblue">Type of Lift – Check all that apply
+        <tr>
+            <td>Blind
+            <td><input id="Blind" type="checkbox" />
+            <td>Deck
+            <td><input id="Deck" type="checkbox" />
+            <td> Marine
+            <td><input id="Marin" type="checkbox" />
+            <td>Personnel
+            <td><input id="Personnel" type="checkbox" />
+            <td>Subsea
+            <td><input id="Subsea" type="checkbox" />
+            <td>Tandem
+            <td><input id="Tandem" type="checkbox" />
+            <td>Other
+            <td width="400"><input id="Other" type="checkbox" style1="width:100" /><input id="OtherComment" type="text" style="width:300" />
+    </table>
+    <table id="tEnvironmental" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                Environmental Conditions
+        <tr>
+            <td class="labelCenter">  Wind Speed & Direction
+            <td class="labelCenter">Sea State
+            <td class="labelCenter">Sky Conditions (Visibility)
+            <td class="labelCenter">Comments
+        <tr>
+            <td> <input type="text" id="Wind" />
+            <td> <input type="text" id="Sea" />
+            <td> <input type="text" id="Sky" />
+            <td> <input type="text" id="Comment" />
+    </table>
+    <table id="tPersonnel" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                Personnel Required
+        <tr>
+            <td>  Role
+            <td>Name
+            <td>Role
+            <td>
+                Name
+    </table>
+    <table id="tOther" />
+    <table id="tJob" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                Job Planning
+        <tr>
+            <td class="label">  Lift Sequence: Step-by-Step and Sketch (include material list)
+        <tr>
+            <td>  <textarea id="LiftSequence" style="width:100%" rows="7"></textarea>
+    </table>
+
+    <table id="tExecution" border="1" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                Execution
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                Pre-Lift Checks
+    </table>
+    <a onclick="on_Submit(this)" href="javascript:void(0)"> Submit for Verification </a>
+    <table id="tVerification" class="marginBottom"></table>
+</form>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tCommunication = $('#tCommunication')
+    var tGeneral = $('#tGeneral')
+    var tLift = $('#tLift')
+    var tEnvironmental = $('#tEnvironmental')
+    var tPersonnel = $('#tPersonnel')
+    var tAuthorization = $('#tAuthorization')
+    var tExecution = $('#tExecution')
+    var tVerification = $('#tVerification')
+    var tOther = $('#tOther')
+    var Id = getParameterByName('id')
+    var Status
+    var Page = 'Lift'
+    var IsPaperView
+    
+    var Clone = getParameterByName('clone')
+    var ARR = ['id', 'LiftPlanNo', 'JobId', 'PermitId', 'Date', 'DateDone', 'LocationId', 'Location', 'PermitHolder', 'Status', 'Description', 'Radio', 'Verbal', 'HandSignals', 'Yes', 'No', 'Mitigations', 'Blind', 'Deck', 'Marin', 'Personnel', 'Subsea', 'Tandem', 'Other', 'Wind', 'Sea', 'Sky', 'Comment', 'PH', 'LiftSequence', 'OtherComment']
+    $(document).ready(function () {
+        if (Id == '')
+            Id=0 
+        InitDateTime(['DateDone'])
+        var xml = GetArray(['usp_JobGetLift', Id, UserId, Lang ])
+        BindSelect(xml, $('#PermitId'))
+        InsertCommon()
+        InitFold()
+        InitPlanning(xml)
+        Status = $('#Status').text()
+        InitVerification(xml)
+        InitEvent()
+        LoadJobPacket(tLift)
+
+        InitStatus(xml )
+        InitPaperView(tPlanning)
+        if (IsPaperView) {
+            var t = tPlanning
+            t.find('tr:gt(2)').hide()
+            $('#Status').closest('tr').children().slice(-4).appendTo(t.find('tr').eq(2))
+            tPersonnel.show()
+            var xml = GetArray(['usp_AdminGetOIM', UserId])
+            if ($(xml).text() != '' && Status != 'Closed')
+                GetId('Close').show()
+        }
+        CleanUp()
+        tExecution.find(':text').css('border', '1 solid gray').css('border-bottom', 'none')
+        tLift.find(':text').css('border', '1 solid gray')
+
+    })
+    function on_Close() {
+        var ok = true
+        var arr = ['PermitId', 'DateDone']
+        for (var i in arr) {
+            if (IsEmpty(GetId(arr[i])))
+                ok = false
+        }
+        if (!ok) {
+            alert(RequiredMessage)
+            return
+        }
+        on_Save(0, true)
+        GetArray(['usp_JobAction', Page, 'Verification', Id, '', 'Close', UserId])
+        Refresh()
+    }
+    function InitStatus(xml) {
+        if (Status != 'Open' || $(GetXmlTable(xml, 1).text()).attr('IsJobOwner') == 0)
+            LockPage()
+        if (Status == 'Verification')
+            tVerification.find(':button').prop('disabled', false)
+    }
+    function on_Action(src) {
+        src = $(src)
+        var action = src.val()
+        var role = src.closest('tr').children().first().text()
+        GetArray(['usp_JobAction', Page, 'Verification', Id, role, action, UserId])
+        Refresh()
+    }
+    function InitVerification(xml) {
+        var t = tVerification
+        DataBind(t, xml, 4)
+        HideColumn(t, 1)
+
+        RemoveWingDing(t)
+        AddGridHeader(t, 'Verification')
+
+        if (Status != 'Verification')
+            return
+        t.find('td:contains("' + UserId + '")').each(function () {
+            var td = $(this).nextAll().last()
+            if (GetVal(td) == '' && td.prev().text() == 'Pending Approval') {
+                td.html('<input type=button onclick=on_Action(this) value =Verify /><input type=button onclick=on_Action(this) value =Reject />')
+            }
+        })
+    }
+    function InitPlanning(xml) {
+        var t = tPlanning
+        t.find('tr').eq(2).find('td:even').addClass('labelRight')
+        t.find('tr').eq(3).find('td:even').addClass('labelRight')
+        t.find('tr').eq(4).find('td:even').addClass('labelRight')
+        t.find('tr').slice(5, 7).find('td:odd').addClass('labelRight')
+        t.find('td:nth-child(1)').addClass('labelRight')
+        t.find('tr').last().find('td:even').addClass('labelRight')
+        // t.find('tr').slice(-2, -1).children().removeClass().addClass('darkblue')
+        tCommunication.find('td').width('5%')
+            .addClass('labelRight')
+            .find('input').parent().removeClass()
+        tCommunication.find('td:nth-child(1), td:nth-last-child(2), td:last()').width('10%')
+        tCommunication.find('tr').first().children().css('border-top', 'none')
+        tLift.find('tr').eq(1).find('td:even').addClass('labelRight')
+        tLift.find(':text').css('border', '1 solid gray')
+        tEnvironmental.find('tr').eq(1).addClass('labelCenter')
+        tPersonnel.find('tr').eq(1).addClass('labelCenter')
+        tPersonnel.find('tr:gt(1)').find('td:even').addClass('labelRight')
+        InitPersonnel(xml)
+        InitExecution(xml)
+        var xml1 = $(xml).find('Table1').text()
+        if (Id == 0)
+            return 
+        var src = $(xml1)
+        if (src == null  )
+            return
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), src.attr(id))
+        }
+        tCommunication.find('td').slice(-2).children().hide()
+        if (tCommunication.find(':radio').first().prop('checked'))
+            tCommunication.find('td').slice(-2).children().show()
+        src.find('Location').each(function () {
+            var element = $(this)
+            AddLocation($('#Location').prev(), element.attr('id'), element.attr('Name'))
+        })
+        LockField('PermitId')
+    }
+    function InitExecution(xml) {
+        var t = tExecution
+        var xml1 = $(xml).find('Table3').text()
+        var src = $(xml1)
+        var i = 1
+        src.each(function () {
+            var s = $(this)
+            var section = s.attr('section')
+            AddTd(AddTr(t), section).addClass('darkblue').attr('colSpan', 5)
+
+            s.find('q').each(function () {
+                var q = $(this)
+                var tr = AddTr(t)
+                AddTd(tr, i++)
+                var input = ''
+                var html = q.attr('Q')
+                var comment = q.attr('comment')
+                if (comment != null)
+                    html += '<br><span>Explain:</span><input style="width:90%;" type=text value="' + comment + '" />'
+                AddTd(tr, html)
+
+                html = '<input type=radio name=' + q.attr('id') + ' />'
+                for (var j = 0; j < 3; j++) {
+                    AddTd(tr, html).addClass('center').css('padding', 0)
+                }
+                var answer = q.attr('answer')
+                if (!isNaN(answer) && answer > -1)
+                    tr.find(':radio').eq(answer).prop('checked', true)
+            })
+        })
+        t.find('tr').eq(2).append($('<td>Yes<td> No <td>N/A</td>')).children().first().attr('colspan', 2).nextAll().addClass('center')
+    }
+    function GetHtmlExecution(tr, arr, i) {
+        if (i > arr.length - 1)
+            return
+        var src = arr[i]
+        if (!$.isArray(src)) {
+            AddTd(tr, src).addClass('darkblue').attr('colSpan', 5)
+            return
+        }
+        AddTd(tr, src[2])
+        var td = AddTd(tr, src[1])
+        if (td.text() == 'Other')
+            td.html('<input type=text />').find(':text').val(src[4]).width('97%')
+
+        // return
+        html = '<input type=radio name=' + src[0] + ' />'
+        for (var j = 0; j < 3; j++) {
+            AddTd(tr, html)
+        }
+        var answer = src[3]
+        if (!isNaN(answer) && answer > -1)
+            tr.find(':radio').eq(answer).prop('checked', true)
+    }
+    function GetSelect() {
+        var arr = ['', 'Yes', 'No', 'N/A']
+        var select = $('<select/>')
+        for (var i in arr) {
+            var name = arr[i]
+            $('<option/>').text(name).val(name).appendTo(select)
+        }
+        return select[0].outerHTML // '<select ><option></option><option>Yes</option><option>No</option><option>N/A</option></select>'
+    }
+    function on_AddPersonnel(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var tr1 = tr.clone().insertAfter(tr)
+        tr1.children().slice(-2).text('')
+        tr1.find('span').text('').attr('userId', '')
+        tr1.children().eq(1).text('Other')
+        var td = tr1.children().first()
+        td.html((td.parent().index() - 1) + GetDelete())
+
+    }
+    function InitPersonnel(xml) {
+        var t = tPersonnel
+        DataBind(t, xml, 2)
+        RemoveWingDing(t)
+
+        AddTd(AddTr(t), '<a href=# onclick="on_AddPersonnel (this); return false">Add </a>', 'td', 11)
+
+        AddHeader(t, 'Personnel Required', 'darkblue')
+        t.find('tr:gt(0)').not(':last').find('td:nth-child(1),  td:nth-child(2)').addClass('label nolang')
+        t.find('td:nth-child(2):contains(Other)').each(function () {
+            var td = $(this).prev()
+            td.html(td.text() + GetDelete())
+        })
+        TdByName(t, 'en', true).hide()
+    }
+    function InitPersonnel091017(xml) {
+        var t = tPersonnel
+        var src = $(xml).find('Table2')
+        var arr = []
+        for (var i = 0; i < 2; i++) {
+            arr[i] = []
+            //if (i == 0)
+            //    arr[0].push()
+            src.find('Seq:contains(' + (i + 1) + ')').each(function () {
+                var ele = $(this)
+                arr[i].push([ele.prev().prev().text(), ele.prev().text(), ele.next().text(), ele.next().next().text()])
+            })
+        }
+        var html = ''
+        for (var i in arr[1]) {
+            if (i == 0) {
+                html += '<tr><td>Person In Charge (Permit Holder) <td id=PH>' + GetHtml(arr[1], 0)
+            } else {
+                html += '<tr>' + GetHtml(arr[0], i - 1) + GetHtml(arr[1], i) + '</tr>'
+            }
+        }
+        t.append($(html))
+    }
+    function GetHtml(arr, i) {
+        var src = arr[i]
+        var id = src[0]
+        var name = src[1]
+        var userId = src[2]
+        var userName = src[3]
+
+        return '<td>' + name + '<td><img onclick="on_PobSelect(this)" src="../Images/Select Personnel icon.png"><span id=' + id + ' UserId=' + userId + '>' + userName + '</span></td>'
+    }
+    function ValidateSave() {
+        //return true
+        var ok = true
+        Highlight(GetId('Mitigations'), 'white')
+        Highlight(GetId('OtherComment'), 'white')
+
+        $('#OtherComment').addClass('white')
+        if ($('#Yes').prop('checked') && IsEmpty($('#Mitigations')))
+            ok = false
+        //if ($('#Other').prop('checked') && IsEmpty($('#OtherComment')))
+        //    ok = false
+        return ok
+    }
+    function on_Save(submit) {
+        //if (!ValidateSave()) {
+        //    alert('Please fill the required fields.')
+        //    return
+        //}
+        if (!Validate()) {
+            return
+        }
+        SaveXmlAttachment()
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        root.addAttr('submit', submit)
+        XmlGeneral(root)
+        tVerification.find('tr:gt(1)').each(function () {
+            var tr = $(this)
+            var element = $.createElement('Verification')
+            element.addAttr('Role', tr.children().eq(0).text())
+            element.addAttr('Name', GetVal(tr.children().eq(1)))
+            root.append(element)
+        })
+        XmlPersonnel(root)
+        if (!XmlExecution(root)) {
+            alert('Please fill the required fields.')
+            return
+        }
+        var xml = root[0].outerHTML
+        xml = GetArray(['usp_JobSaveLift', xml])
+        Id = Trim($(xml).text())
+        window.location = 'Lift.htm?id=' + Id 
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            element.addAttr(id, value)
+        }
+        $('#Location').find('td:odd').each(function () {
+            var td = $(this)
+            var Location = $.createElement('Location')
+            Location.addAttr('id', td.attr('id'))
+            Location.addAttr('Name', td.text())
+            element.append(Location)
+        })
+        root.append(element)
+    }
+    function XmlPersonnel(element) {
+        var t = tPersonnel
+        t.find('tr:gt(0)').find('span').each(function () {
+            var span = $(this)
+            var td = span.parent().next()
+            var el = $.createElement('personnel')
+            el.addAttr('id', span.closest('tr').index() - 1) //.attr('id'))
+            el.addAttr('UserId', span.attr('userId'))
+            el.addAttr('Name', GetVal(span))
+            el.addAttr('Position', td.text())
+            el.addAttr('Company', td.next().text())
+            element.append(el)
+        })
+    }
+    function XmlExecution(element) {
+        var t = tExecution
+        var ok = true
+        t.find(':radio').closest('tr').each(function () {
+            var tr = $(this)
+            var el = $.createElement('checklist')
+            el.addAttr('id', tr.find(':radio').eq(0).attr('name'))
+            var index = tr.find(':checked').parent().index() - 2
+            el.addAttr('Answer', index)
+            if (index == 1) {
+                if (IsEmpty(tr.find(':text')))
+                    ok = false
+                el.addAttr('Comment', GetVal(tr.find(':text')))
+            }
+            element.append(el)
+        })
+        return ok
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+    }
+    function on_AuthoritySelect(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var type = GetVal( tr.children().first()) 
+        var r = showModal('../common/popupPob.htm', type, 800, 400)
+        if (r == null)
+            return
+
+        src.next().text(r[1]).attr('userId', r[0])
+        src.parent().next().text(r[2])
+    }
+    function on_Clone() {
+        var xml = GetArray(['usp_JobCloneLift', Id , GetVal(GetId('PermitId')), null ])
+        Id = $(xml).text()
+        window.location = 'Lift.htm?id=' + Trim(Id)
+    }
+    function InitEvent() {
+        tCommunication.find(':radio').on('change', function () {
+            var src = $(this)
+            var tr = src.closest('tr')
+            var td = tr.children().eq(1) // src.parent().prev()
+            if (src.parent().index() == 2) {
+                tr.children().slice(-2).children().show()
+            } else
+                tr.children().slice(-2).children().val('').hide()
+        })
+        tExecution.find(':radio').on('change', function () {
+            var src = $(this)
+            var tr = src.closest('tr')
+            var td = tr.children().eq(1) // src.parent().prev()
+            if (src.parent().index() == 3) {
+                if (td.children().length)
+                    td.children().show()
+                else
+                    $('<br><span> Explain:</span><input style="width:90%" type=text />').appendTo(td)
+            } else
+                td.children().hide()
+        })
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var role = src.parent().prev().text()
+        if (role.indexOf('Banksman') != -1)
+            role = 'Dedicated Banksman'
+        else
+            role = null
+        var r = GetPobUser(role)
+        if (r == null)
+            return
+        r = r[0]
+        src.next().text(r[1]).attr('userId', r[0])
+        var td = src.parent().next()
+        td.text(r[2]).next().text(r[3])
+    }
+    function on_Submit(src) {
+        if (!Validate()) {
+            return
+        }
+        on_Save(1)
+    }
+    function Validate() {
+        if (IsPaperView)
+            return true
+        var ok = true
+        var arr = ['DateDone', 'PermitId', 'Description', 'LiftSequence']
+        for (var i in arr) {
+            var id = arr[i]
+            if (IsEmpty(GetId(id)))
+                ok = false
+        }
+        $(':radio, :checkbox').closest('tr').each(function () {
+            var tr = $(this)
+            if (GetVal(tr.children().eq(1)) == 'Other')
+                return
+            if (!tr.find(':checked').length) {
+                tr.find(':radio, :checkbox').parent().css('background-color', 'yellow')
+                ok = false
+            }
+        })
+        var t = tEnvironmental
+        t.find('tr').eq(2).find(':text').slice(0, 3).each(function () {
+            var tb = $(this)
+            if (IsEmpty(tb)) {
+                ok = false
+            }
+        })
+         tPersonnel.find('tr').eq(2).children().eq(3).each(function () {
+            var td = $(this)
+            if (IsEmpty(td.find('span') ))
+                ok = false
+        })
+        //TdByName(tPersonnel, 'Name').each(function () {
+        //    var td = $(this)
+        //    if (GetVal(td.prev()).indexOf('applicable') == -1) {
+        //        if (IsEmpty(td))
+        //            ok=false
+        //    }
+        //})
+        if (!ValidateSave())
+            ok = false
+        if (!ok)
+            alert('Please fill out the required fields.')
+        return ok
+    }
+</script>

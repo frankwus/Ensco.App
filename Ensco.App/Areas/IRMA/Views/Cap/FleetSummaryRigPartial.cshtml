@@ -1,0 +1,134 @@
+﻿@model Ensco.App.TLC.FleetSummaryModel
+
+@Html.DevExpress().Splitter(settings =>
+{
+    settings.Name = "splitterCapBook";
+    settings.AllowResize = false;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+    settings.SeparatorVisible = false;
+    settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+    settings.ClientSideEvents.PaneResized = "function(s, e){ if(e.pane.name == \"panelFleetSummaryRigDetail\") { grid_FleetSummaryRigDetail.SetWidth(e.pane.GetClientWidth()); grid_FleetSummaryRigDetail.SetHeight(e.pane.GetClientHeight());}}";
+
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelFleetSummaryRig";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            Html.DevExpress().FormLayout(form =>
+            {
+                form.Name = "formFleetSummaryInfo";
+                form.EncodeHtml = false;
+                form.UseDefaultPaddings = false;
+                form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                form.ColumnCount = 4;
+                form.RequiredMarkDisplayMode = RequiredMarkMode.None;
+
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "RigName";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "TotalCapBooks";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "CapBooksApproved";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "CapBooksInProgress";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "CapBooksPendingApproval";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "CapBooksOverdue";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "CapBooksNotStarted";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+                form.Items.Add(item =>
+                {
+                    item.FieldName = "CapBooksExpiringNext3Months";
+                    item.NestedExtension().TextBox(s =>
+                    {
+                        s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        s.ReadOnly = true;
+                    });
+                });
+            }).GetHtml();
+        });
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelFleetSummaryEmpty1";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+        pane.SetContent(() =>
+        {
+            ViewContext.Writer.Write("<br/>");
+        });
+
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelFleetSummaryRigDetail";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            Html.RenderAction("FleetSummaryRigDetailPartial", "Cap", new { Area="IRMA" });
+        });
+    });
+}).GetHtml()

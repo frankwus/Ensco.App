@@ -1,0 +1,18 @@
+﻿@model Nullable<int>
+
+@Html.DevExpress().UploadControl(settingsUpload => {
+    settingsUpload.Name = "FilesUpload";
+    settingsUpload.CallbackRouteValues = new { Action = "ImageUpload", Controller = "Admin", Area="Common", Id=Model };
+    settingsUpload.ShowAddRemoveButtons = false;
+    settingsUpload.ShowProgressPanel = true;
+    settingsUpload.ShowClearFileSelectionButton = true;
+    settingsUpload.ShowUploadButton = false;
+    settingsUpload.AutoStartUpload = true;
+    settingsUpload.AdvancedModeSettings.EnableMultiSelect = true;
+    settingsUpload.AdvancedModeSettings.EnableFileList = true;
+    settingsUpload.AdvancedModeSettings.EnableDragAndDrop = true;
+    settingsUpload.UploadMode = UploadControlUploadMode.Advanced;
+    //settingsUpload.ClientSideEvents.FilesUploadStart = "OnFilesUploadStart";
+    //settingsUpload.ClientSideEvents.FileUploadComplete = "OnFileUploadComplete";
+    //settingsUpload.ClientSideEvents.FilesUploadComplete = "OnFilesUploadComplete";
+}).GetHtml()

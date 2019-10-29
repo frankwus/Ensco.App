@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapChecklist>
+@{
+    ViewBag.Title = "Oap Checklist Question Help";
+}
+
+<script type="text/javascript">
+  function CheckListComboOnSelectedIndexChanged() {
+     OapChecklistQuestionsHelpGrid.PerformCallback();
+  }
+
+  function OnBeginCallback(s, e) {
+            e.customArgs['checklistId'] = CheckListCombo.GetValue();
+  }
+</script> 
+ 
+<div class="oap-checklist-question-help-combo">
+    @Html.DevExpress().ComboBox(settings =>
+{
+    var oapChecklistQuestionHelpController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapChecklistQuestionsHelpController;
+    oapChecklistQuestionHelpController.Configure(settings, Html, ViewContext);
+}).BindList(Model).GetHtml()
+</div>
+<div class="oap-checklist-question-help-grid">
+    <form>
+        @Html.Partial("OapChecklistQuestionsHelpPartial", new List<Ensco.Irma.Oap.WebClient.Corp.OapChecklistQuestion>())
+    </form>   
+</div>

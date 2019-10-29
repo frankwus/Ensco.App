@@ -1,0 +1,12 @@
+﻿@model Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist
+ 
+@{
+    var genericListController = (dynamic) ViewContext.Controller;
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+    genericListController.ConfigureMonitoring(settings, Html, ViewContext);
+}).Bind(Model).GetHtml()
+
+

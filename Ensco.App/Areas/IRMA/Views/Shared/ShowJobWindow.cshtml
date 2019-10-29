@@ -1,0 +1,60 @@
+﻿@{ 
+    ViewBag.Title = Model.Title;
+}
+@model Ensco.Models.PopupModel
+
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = Model.Name;
+    settings.CallbackRouteValues = new { Controller = "Jobs", Action = "ShowJobWindow" };
+    settings.CloseAction = CloseAction.OuterMouseClick;
+    settings.PopupVerticalAlign = PopupVerticalAlign.NotSet;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.NotSet;
+    settings.Top = 105;
+    settings.Left = 5;
+    settings.ShowOnPageLoad = Model.ShowOnPageLoad;
+    settings.AllowDragging = true;
+    settings.EnableHotTrack = true;
+    settings.Height = Unit.Percentage(100);
+    settings.Width = Unit.Percentage(100);
+    settings.ShowMaximizeButton = false;
+    settings.ShowSizeGrip = ShowSizeGrip.False;
+    settings.AllowResize = false;
+    settings.HeaderText = Model.Title;
+    settings.ContentUrl = Model.ContentUrl;
+    settings.ShowFooter = false;
+    settings.ShowHeader = false;
+    settings.ShowCloseButton = true;
+    if(Model.MaximizeBox)
+    {
+        settings.Maximized = true;
+    }
+
+    settings.ClientSideEvents.Shown= "function(s, e){s.SetWidth(document.documentElement.clientWidth); s.SetHeight(document.documentElement.clientHeight-110); /*s.UpdatePosition();*/ }";
+
+    if (Model.ButtonSet != Ensco.Models.PopupModel.ButtonSetType.None)
+    {
+        settings.ShowFooter = true;
+        settings.SetFooterTemplateContent(c =>
+        {
+            ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "btnOk";
+                buttonsettings.Text = "OK";
+                buttonsettings.UseSubmitBehavior = true;
+            }).Render();
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "btnCancel";
+                buttonsettings.Text = "Cancel";
+                buttonsettings.EnableClientSideAPI = true;
+                buttonsettings.ClientSideEvents.Click = "function(s, e){s.Hide();}";
+            }).Render();
+            ViewContext.Writer.Write("</div>");
+        });
+    }
+}).GetHtml()
+
+
+

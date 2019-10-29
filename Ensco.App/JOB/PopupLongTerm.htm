@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<style>
+    body {
+        margin: 20px;
+        margin-right: 40px;
+    }
+</style>
+<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body>
+    <br />
+    <span style="margin-left:20; margin-bottom:5;  font-weight:bold" class="orangecolor center">Make Equipment Long Term Isolated</span>
+    <br /> <br />
+    <table id="t">
+        <tr>
+            <td>Has the Permit Issuer been given the key
+            <td>
+                Yes<input name="radio1" style="margin-right:10" value="1" type="radio" />
+                No<input name="radio1" style="margin-right:10" value="0" type="radio" />
+        <tr>
+            <td>Reason for Long Term Isolation
+            <td><textarea rows="5"></textarea>
+        <tr>
+            <td>Note the following
+            <td>
+                <li>Will move equipment to Long Term Isolation</li>
+                <li>Once done, cannot be undone on this certificate</li>
+                <li>To move out of Long Term Isolation, must open a new Energy Isolation Certificate and Permit</li>
+        <tr>
+            <td>
+                Are you sure you want to do this?
+            <td>
+                <a href="javascript:void(0) " style="color:green" onclick="on_Submit()">Yes, Submit   </a>
+                <a href="javascript:void(0) " style="color:red" onclick="window.close()">No, Go Back</a>
+
+    </table>
+
+    <br>
+</body>
+</html>
+<script>
+    var t = $('#t')
+    $(document).ready(function () {
+        t.width('100%').find('td').css('border1', 'none').find(':text').addClass('border')
+        GetTd(t, 0).addClass('label')
+        ConfigKeyPress()
+        CleanUp()
+    })
+    function on_Submit() {
+        var ok = true
+        $('textarea, :radio').each(function () {
+            var src = $(this)
+            if (IsEmpty(src))
+                ok = false
+        })
+        var s = GetVal($('textarea'))
+        var val = $(':radio:checked').val()
+        if (val == null) {
+            Highlight($(':radio').parent(), 'yellow')
+            ok = false
+        }
+        if (ok) {
+            window.returnValue = JSON.stringify([val, s])
+            window.close()
+        } else
+            alert('Please fill the required fields.')
+    }
+</script>

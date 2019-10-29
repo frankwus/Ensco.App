@@ -1,0 +1,80 @@
+﻿@model Ensco.Models.CorpCapaModel
+@using Ensco.Models;
+@using System.Data;
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+               // AdjustMainGrid(grid); // grid is client side Id
+            }
+        );
+    </script>
+}
+<br /><div id="dvRadio"></div><br />
+@Html.DevExpress().Button(s => {
+    s.Name = "btnCapa";
+    s.Text = "CAPA Plan Home";
+    s.ClientSideEvents.Click= "function(s,e){ window.location='CapaPlanHome' } ";
+}
+).GetHtml()
+
+    @Html.DevExpress().PageControl(settings => {
+    settings.Name = "pcCapa";
+    settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+    settings.EnableHotTrack = true;
+    settings.SaveStateToCookies = true;
+    settings.TabAlign = TabAlign.Left;
+    settings.TabPosition = TabPosition.Top;
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.ControlStyle.CssClass = "dxtcFixed";
+    settings.ClientSideEvents.ActiveTabChanged = "function(s,e){onActiveTabChanged(s, e) }";
+    using(Html.BeginForm( FormMethod.Post)) {
+        Html.RenderAction("OpenCapaPartial", "Capa", new { source = "Home", sourceId = "0", sourceUrl = "My" , gridName="grid" });
+    }
+}).GetHtml()
+
+    @functions {
+    }
+    <script>
+        var Type = 'My'
+        $(document).ready(function () {
+            InitType()
+            InitRadio()
+            if (GetVal(GetId('UserLogin')) != 'Frank Wang')
+                GetId('Debug').hide()
+        })
+        function InitRadio() {
+            var arr = [['My', 'My Open CAPA']
+                , ['Rig', 'My Rig Open CAPA']
+                , ['All', 'All CAPA']
+            ]
+            for (var i in arr) {
+                var name = arr[i][0]
+                var label = arr[i][1]
+                var html = '<span style="margin-left:10px" >' + label + '</span><input type =radio onclick=on_Radio(this) name=OpenCapa value=' + name + (name == 'My' ? ' checked ' : '') + ' /> '
+                $(html).appendTo(GetId('dvRadio'))
+            }
+        }
+        function on_Radio(src) {
+            src = $(src)
+            Type = src.val()
+            grid.PerformCallback()
+        }
+        function onBeginCallbackOpenCapaPartial(s, e) {
+            e.customArgs["sourceUrl"] = Type;
+        }
+        function on_Toggle(src) {
+            src = $(src)
+            var userId = src.attr('id')
+            if (userId == 'Go')
+                userId = GetVal(src.prev())
+            setCookie('UserId', userId)
+            Refresh()
+        }
+    </script>
+
+
+
+
+

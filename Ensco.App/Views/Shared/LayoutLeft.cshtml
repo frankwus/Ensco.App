@@ -1,0 +1,24 @@
+﻿
+<div class="leftPanel">
+    @Html.DevExpress().Menu(
+         settings =>
+         {
+             settings.Name = "mainMenu";
+             settings.EnableHotTrack = true;
+             settings.EnableAnimation = true;
+             settings.AllowSelectItem = false;
+             settings.ShowPopOutImages = DefaultBoolean.True;
+             settings.Styles.Style.BackColor = System.Drawing.Color.Transparent;
+             settings.Styles.Style.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+             settings.EnableAdaptivity = true;
+             settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+             settings.ControlStyle.BackColor = System.Drawing.Color.FromArgb(0x00467F);
+             settings.ControlStyle.ForeColor = System.Drawing.Color.White;
+             settings.ControlStyle.Font.Bold = true;
+             settings.Styles.SubMenu.BackColor = System.Drawing.Color.FromArgb(0x00467F);
+             settings.Styles.SubMenu.ForeColor = System.Drawing.Color.White;
+             settings.Styles.SubMenuItem.Font.Size = 12;
+             settings.Styles.SubMenuItem.Font.Bold = true;
+         }
+     ).Bind(Ensco.Services.ServiceSystem.ApplicationMenu.Menu).GetHtml()
+</div>

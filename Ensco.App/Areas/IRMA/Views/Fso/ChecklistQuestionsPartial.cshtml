@@ -1,0 +1,68 @@
+﻿@model List<Ensco.FSO.Models.FSOQuestion>
+
+<table>
+    <thead>
+        <tr>
+            <th>Observation</th>
+            <th>Safe</th>
+            <th>Unsafe</th>
+            <th>Description/Comment</th>
+        </tr>        
+    </thead>
+    <tbody>
+        @foreach (var question in Model)
+        {
+        <tr>
+            <td>
+                @Html.Hidden("data-question-id", question.Id)
+                @Html.Label(question.Question)
+            </td>
+            <td><input type="radio" @(question.Safe == true ? "checked='checked'" : "") value="true"
+                       data-question-id="@question.Id" name="safe-@question.Id"  onclick="handleClick(this);"/> 
+            </td>
+            <td><input type="radio" @(question.Safe != true ? "checked='checked'" : "") value="false"
+                       data-question-id="@question.Id" name="safe-@question.Id" onclick="handleClick(this);" /> </td>
+            <td><input type="text" data-question-id="@question.Id" name="description-@question.Id" /></td>
+        </tr>
+            
+        }
+    </tbody>
+</table>
+
+
+@*@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "gvReactionsToPeople";
+    settings.KeyFieldName = "Id";
+    settings.Width = Unit.Percentage(100);
+
+    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "Fso", Action = "ReactionsToPeopleBatchEditingPartial" };
+    settings.SettingsEditing.BatchUpdateRouteValues = new { Area = "IRMA", Controller = "Fso", Action = "ReactionsToPeopleBatchEditingUpdateModel" };
+
+    settings.SettingsEditing.Mode = GridViewEditingMode.Batch;
+    settings.SettingsEditing.BatchEditSettings.EditMode = GridViewBatchEditMode.Cell;
+    settings.SettingsEditing.BatchEditSettings.StartEditAction = GridViewBatchStartEditAction.Click;
+    settings.SettingsEditing.BatchEditSettings.HighlightDeletedRows = true;
+
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowDeleteButton = true;
+    settings.CommandColumn.ShowNewButtonInHeader = true;
+    settings.CommandColumn.Width = Unit.Point(50);
+
+    settings.Columns.Add(q =>
+    {
+        q.FieldName = "Question";
+        q.Width = Unit.Percentage(50);
+    });
+
+    settings.Columns.Add(c => {
+        c.FieldName = "Safe";
+        c.Caption = "Safe / Unsafe";
+        c.ColumnType = MVCxGridViewColumnType.CheckBox;
+    });
+    settings.Columns.Add(c => {
+        c.FieldName = "Description";
+        c.Width = Unit.Percentage(30);
+    });
+
+}).Bind(Model.BaselineQuestions.Where(q => q.Section.Name == "Reactions to People")).GetHtml()*@

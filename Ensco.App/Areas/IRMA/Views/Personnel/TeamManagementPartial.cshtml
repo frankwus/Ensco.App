@@ -1,0 +1,63 @@
+﻿@model Ensco.Irma.Models.TeamManagementModel
+
+@using System.Web.UI.WebControls
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.Title = "Emergency Teams";
+}
+
+@Html.DevExpress().GridView(gridManifest =>
+{
+    gridManifest.Name = "gridView_TeamManagementPartial";
+    gridManifest.KeyFieldName = Model.Teams.KeyFieldName;
+
+    gridManifest.CallbackRouteValues = new {Area = "Irma",Controller = "Personnel", Action = "TeamManagementPartial" };
+
+    Html.EnscoStandardGrid(gridManifest, typeof(Ensco.Irma.Models.TeamModel), options);
+
+    gridManifest.Columns["Required"].CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    gridManifest.Columns["Actual"].CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    MVCxGridViewColumn column = (MVCxGridViewColumn)gridManifest.Columns["Compliance"];
+    column.SetDataItemTemplateContent(c =>
+    {
+        bool value = (bool)DataBinder.Eval(c.DataItem, "Compliance");
+        string yesUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/Yes.png"));
+        string noUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/No.png"));
+        ViewContext.Writer.Write(String.Format("<img src=\"{0}\" width=\"16\" height=\"16\" />", (value ? yesUrl : noUrl)));
+    });
+
+    gridManifest.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+    gridManifest.SettingsDetail.ShowDetailRow = true;
+
+    gridManifest.SetDetailRowTemplateContent(c =>
+    {
+        if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+        {
+            Html.RenderAction("TeamManagementDetailPartial", new { Id = DataBinder.Eval(c.DataItem, Model.Teams.KeyFieldName) });
+        }
+    });
+
+    gridManifest.EditFormLayoutProperties.ColumnCount = 3;
+    gridManifest.EditFormLayoutProperties.Items.Add("Team");
+    gridManifest.EditFormLayoutProperties.Items.Add("Required");
+    gridManifest.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.Teams.KeyFieldName;
+    e.QueryableSource = Model.Teams.Dataset;
+}).GetHtml()
+
+
+
+

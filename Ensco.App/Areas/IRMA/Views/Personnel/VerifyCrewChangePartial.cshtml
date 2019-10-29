@@ -1,0 +1,72 @@
+﻿@model Ensco.Irma.Models.ApprovalModel
+
+@{ 
+    var lkpCrewChange = Ensco.Utilities.UtilitySystem.GetLookupList("CrewChange");
+    var lkpPassport = Ensco.Utilities.UtilitySystem.GetLookupList("Passport");
+}
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formVerifyCrewChange";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Verify Crew Change";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 3;
+
+        i.Items.Add(x => x.RequestItemId, item =>
+        {
+            item.Caption = "Crew Change";
+
+            item.FieldName = "CrewId";
+            item.NestedExtension().ComboBox(s =>
+            {
+                s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                s.Properties.ValidationSettings.Display = Display.Dynamic;
+                s.Properties.ValidationSettings.SetFocusOnError = true;
+                s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                s.Properties.DataSource = lkpCrewChange.Items;
+                s.Properties.NullText = "[Select]";
+                s.Properties.TextField = lkpCrewChange.DisplayField;
+                s.Properties.ValueField = lkpCrewChange.KeyFieldName;
+                s.Properties.DataMember = lkpCrewChange.DisplayField;
+                s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+            });
+        });
+        i.Items.Add(x => x.ApprovedBy, item =>
+        {
+            item.FieldName = "ApprovedBy";
+            item.NestedExtension().ComboBox(s =>
+            {
+                s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                s.Properties.ValidationSettings.Display = Display.Dynamic;
+                s.Properties.ValidationSettings.SetFocusOnError = true;
+                s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                s.Properties.DataSource = lkpPassport.Items;
+                s.Properties.NullText = "[Select]";
+                s.Properties.TextField = lkpPassport.DisplayField;
+                s.Properties.ValueField = lkpPassport.KeyFieldName;
+                s.Properties.DataMember = lkpPassport.DisplayField;
+                s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+            });
+        });        
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.NestedExtension().Button(s =>
+            {
+                s.Name = "btnSubmitVerifyCrewChangeRequest";
+                s.Text = "";
+                s.Images.Image.Url = "~/Images/Submit.png";
+                s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                s.UseSubmitBehavior = true;
+            });
+        });
+    });
+
+}).GetHtml()

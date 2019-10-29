@@ -1,0 +1,333 @@
+﻿
+
+    var isDirty = false;
+    var initialState = {};
+    var isExecutionGridDetailRowExpanded = new Array();
+
+    function onControlsInitialized() {
+        ASPxClientEdit.AttachEditorModificationListener(onEditorsChanged, function (control) {
+            return control.GetParentControl() === planningLayout // Gets standalone editors nested inside the form layout control
+        });
+    
+    ASPxClientUtils.AttachEventToElement(window, "beforeunload", onBeforeUnload);
+    initialState = ASPxClientUtils.GetEditorValuesInContainer(planningLayout.GetMainElement());
+    }
+
+    function onEditorsChanged(s, e) {
+        Save.SetEnabled(true);
+    //Cancel.SetEnabled(true);
+    isDirty = true;
+}
+
+    function cancelChanges(s, e) {
+        ASPxClientUtils.SetEditorValues(initialState);
+    isDirty = false;
+    SaveButton.SetEnabled(false);
+    CancelButton.SetEnabled(false);
+    }
+   
+    function onBeforeUnload(e) {
+        if (!isDirty)
+        return;
+    var confirmMessage = "Are you sure you want to close the form? Any unsaved data will be lost.";
+    e.returnValue = confirmMessage;
+    return confirmMessage;
+    }
+
+    function onSubmitForm() {
+        isDirty = false;
+    }
+
+
+    function onTabToolBarClick(s, e) {
+        switch (s.name) {
+            case "applyExecutionChanges":
+        if (checklistExecutionGrid.batchEditApi.HasChanges())
+            checklistExecutionGrid.UpdateEdit();
+        else
+            checklistExecutionGrid.PerformCallback();
+        break;
+}
+}
+
+    function savePlanningLayout(s, e) {
+            if(isDirty) {
+        checklistAssessorsGrid.PerformCallback();
+    }
+    e.processOnServer = true;
+}
+
+var currentSubGroupId, assessorsGridStartEdit = false;
+var commandName = null;
+var checklistQuestionArgs = '';
+
+    function checklistAssessorGridBeginCallback(s, e) {
+
+            if (e.command === "UPDATEEDIT" || e.command === "CUSTOMCALLBACK") {
+        commandName = e.command;
+    e.customArgs["planning"] = getPlanning();
+    e.customArgs["locationId"] = $('#LocationId').val();
+    assessorsGridStartEdit = true;
+}
+}
+
+    function checklistAssessorGridEndCallback(s, e) {
+        if (isDirty && assessorsGridStartEdit) {
+        isDirty = false;
+    assessorsGridStartEdit = false;
+    location.reload();
+    }
+            if (commandName == "CUSTOMCALLBACK") {
+        location.reload();
+    }
+    commandName = null;
+}
+
+    function checklistExecutionGridBeginCallback(s, e) {
+        if (e.command === "UPDATEEDIT" || e.command === "CUSTOMCALLBACK") {
+            var cell = checklistExecutionGrid.GetFocusedCell();
+    //var val = checklistExecutionGrid.batchEditApi.getCellValue(cell.rowVisibleIndex, cell.Column.name);
+    e.customArgs["args"] = checklistQuestionArgs;
+    e.customArgs["comments"] = getComments();
+}
+}
+
+    function constructQuestionData(val, index, newval) {
+        let pos = (val== null) ? -1 : val.search(index + ":");
+
+        if ((pos >= 0)) {
+        let ar = val.split(',');
+            ar.forEach(function (x) {
+        let v = x.split(":");
+                if (parseInt(v[0]) === index) {
+        let searchStr = v[0] + ":" + v[1];
+    let replaceStr = index + ":" + newval;
+    val = val.replace(searchStr, replaceStr);
+
+}
+});
+}
+        else {
+            if (val && val.length > 0) {
+        val = val + "," + index + ":" + newval
+    }
+    else {
+        val = index + ":" + newval;
+    }
+}
+return val;
+}
+
+    function getPlanning() {
+        return MVCxClientUtils.GetSerializedEditorValuesInContainer("planningLayout");
+ }
+
+    function getComments() {
+        var comments = $(".comments").map(function () { return MVCxClientUtils.GetSerializedEditorValuesInContainer($(this).attr("id")); }).get();
+        return comments.map(function (x) { var idv = Object.keys(x)[0]; return {id: idv, value: x[idv] }; });
+}
+
+    function isLeadCheckboxValueChanged(sender, fieldName) {
+        if (sender.GetChecked()) {
+        rigChecklistAssessorGrid.Rows
+            switch (fieldName) {
+                case COL_PRIMARY: grdClientConflicts.SetEditValue(COL_ALIAS, false); grdClientConflicts.SetEditValue(COL_DUPLICATE, false); break;
+}
+}
+}
+
+    function questionAnswerBatchEditComplexValueChanged(s, e) {
+      //  debugger;
+    var val = s.GetValue();
+}
+
+//Related Search
+    function rigChecklistRelatedSearchGridOnBeginCallback(s, e) {
+            if (e.command === "UPDATEEDIT" || e.command === "CUSTOMCALLBACK") {
+        e.customArgs["searchModel"] = MVCxClientUtils.GetSerializedEditorValuesInContainer("relatedSearchLayout");
+    }
+}
+
+    function onRelatedQuestionSearchClick(s, e) {
+        rigChecklistRelatedSearchGrid.PerformCallback();
+    }
+
+       //Finding Types
+   var currentFindingSubTypeId, findingGridStartEdit = false;
+    function checklistFindingGridOnBeginCallback(s, e) {
+        findingGridStartEdit = (e.command == "STARTEDIT");
+    }
+
+    function checklistFindingGridOnEndCallback(s, e) {
+        currentFindingSubTypeId = checklistFindingGrid.GetEditor("FindingSubTypeId").GetValue();
+    if (currentFindingSubTypeId || findingGridStartEdit) {
+        checklistFindingGrid.GetEditor("FindingSubTypeId").PerformCallback();
+    }
+}
+
+    function findingTypeOnSelectedeChanged() {
+        checklistFindingGrid.GetEditor("FindingSubTypeId").PerformCallback();
+    }
+
+    function findingSubTypeBeginCallback(s, e) {
+        e.customArgs["FindingTypeId"] = checklistFindingGrid.GetEditor("FindingTypeId").GetValue();
+    }
+
+    function findingSubTypeEndCallback(s, e) {
+       if (findingGridStartEdit) {
+        s.SetValue(currentFindingSubTypeId);
+    findingGridStartEdit = false;
+}
+}
+
+
+
+        function checklistAnswerChanged(sender, questionId, rigOapChecklistId, checklistType) {
+            var value = $(sender).val();
+            if (value == "N") {
+                switch (checklistType) {
+                    case "BAC":
+        renderNoAnswerControl(sender, questionId, rigOapChecklistId, Model.OapchecklistId);
+        break;
+    default:
+        renderCommentsControl(sender, questionId, rigOapChecklistId);
+        break;
+}
+            } else if (value == "Y") {
+                switch (checklistType) {
+                    case "BAC":
+        var noAnswerContainer = "#InlineNoAnswerContainer_" + questionId;
+        var noControlStatus = $('#NoAnswerStatus_' + questionId + '_I').val();
+
+                        if (noAnswerControlIsRendered(noAnswerContainer) && noControlStatus == "Open") {
+
+                            if (validateNoAnswerFields(questionId) && confirm('Changing this answer to YES will close the No Answer case and you will not be able to edit it anymore. Do you want to proceed?')) {
+
+
+        $("#btnCloseNoAnswer_" + questionId).click(); // Dispatches click event on "Close case" hidden button to close case and refresh control
+
+    setTimeout(function () {
+        $('#applyExecutionChanges').click();
+    }, 300); // Saves checklist
+
+                            } else {
+        $(sender).val("N"); // Sets value back to No
+    }
+
+}
+break;
+}
+}
+}
+
+        function renderNoAnswerControl(sender, questionId, rigOapChecklistId, oapChecklistId, forceRefresh, showLastNoAnswerControl) {
+             //Set default values compatible with IE
+            var forceRefresh = forceRefresh || false;
+    var showLastNoAnswerControl = showLastNoAnswerControl || false;
+
+    var divName = "#InlineNoAnswerContainer_" + questionId;
+
+    if (forceRefresh)
+        clearNoAnswerContainer(questionId);
+
+            if (!noAnswerControlIsRendered(divName) || forceRefresh == true) {
+        ExecutionLoadingPanel.Show();
+
+    $.get('@(Url.Action("Control","NoAnswer"))' + "?oapChecklistId=" + oapChecklistId + "&oapChecklistQuestionId=" + questionId + "&rigOapChecklistId=" + rigOapChecklistId + "&showLastNoAnswerControl=" + showLastNoAnswerControl, function (data) {
+                    var $tdColumn = $("<td colspan='20' class='dxgv' style='padding:0;'></td>");
+    $tdColumn.append(data);
+    $(divName).append($tdColumn);
+
+    ExecutionLoadingPanel.Hide();
+});
+}
+}
+
+        function noAnswerControlIsRendered(divName) {
+            return $(divName).children().length != 0;
+}
+
+        function validateNoAnswerFields(questionId) {
+            var response = false;
+    var fields = [
+                {name: 'IsStopWorkAuthorityExercised_', display: 'Stop Work Authority Exercised' },
+                {name: 'WasAbletoCorrectImmediately_', display: 'Was Able to Correct Immediately' },
+                {name: 'Comment_', display: 'Describe' },
+                {name: 'Correction_', display: 'Correction' },
+];
+var invalidFields = [];
+
+            for (var i = 0; i < fields.length; i++) {
+                if (window[fields[i].name + questionId].GetValue() == undefined)
+        invalidFields.push(fields[i].display);
+}
+
+if (invalidFields.length > 0)
+    alert('The following fields in the No Answer are missing information: \n' + invalidFields.join(',\n'));
+else
+    response = true;
+
+return response;
+}
+
+        function clearNoAnswerContainer(questionId) {
+        $('#InlineNoAnswerContainer_' + questionId + ' > td').remove();
+    }
+
+        function updateNoAnswer(noAnswerId, questionId) {
+            var data = {
+        Id: noAnswerId,
+    Comment: window["Comment_" + questionId].GetValue(),
+    IsStopWorkAuthorityExercised: window["IsStopWorkAuthorityExercised_" + questionId].GetValue(),
+    WasAbletoCorrectImmediately: window["WasAbletoCorrectImmediately_" + questionId].GetValue(),
+    Correction: window["Correction_" + questionId].GetValue()
+};
+
+ExecutionLoadingPanel.Show();
+$.post('@Url.Action("Update","NoAnswer")', data)
+                .fail(function (err) {alert('An error has occurred when saving to database'); })
+                .always(function () {ExecutionLoadingPanel.Hide(); });
+}
+
+
+        function closeNoAnswer(noAnswerId, oapChecklistQuestionId) {
+
+        ExecutionLoadingPanel.Show();
+    var rigOapChecklistId = '@Model.Id';
+    var oapChecklistId = Model.OapchecklistId;
+
+            var data = {
+        noAnswerId: noAnswerId,
+    oapChecklistQuestionId: oapChecklistQuestionId,
+    rigOapChecklistId: rigOapChecklistId,
+    Correction: window["Correction_" + oapChecklistQuestionId].GetValue(),
+    Comment: window["Comment_" + oapChecklistQuestionId].GetValue(),
+    IsStopWorkAuthorityExercised: window["IsStopWorkAuthorityExercised_" + oapChecklistQuestionId].GetValue(),
+    WasAbletoCorrectImmediately: window["WasAbletoCorrectImmediately_" + oapChecklistQuestionId].GetValue(),
+}
+
+$.post('@Url.Action("Close","NoAnswer")', data)
+                .fail(function (err) {alert('There was an error when closing the case: ' + err); })
+                .done(function (data) {renderNoAnswerControl(null, oapChecklistQuestionId, rigOapChecklistId, oapChecklistId, true, true); })
+                .always(function () {ExecutionLoadingPanel.Hide(); });
+}
+
+        function renderCommentsControl(sender, questionId, rigOapChecklistId) {
+
+            var divName = "#InlineCommentContainer_" + questionId;
+
+            if ($(divName).children().length == 0) {
+        ExecutionLoadingPanel.Show();
+
+    $.get('@(Url.Action("InlineControl", new {Controller = "Comments", Area = "IRMA", SourceForm = "OAP" }) )' + "&SourceFormId=" + rigOapChecklistId + "&QuestionId=" + questionId, function (data) {
+                    var $tdColumn = $("<td colspan='20' class='dxgv'></td>");
+    $tdColumn.append(data);
+    $(divName).append($tdColumn);
+
+    ExecutionLoadingPanel.Hide();
+});
+}
+}
+
+
+

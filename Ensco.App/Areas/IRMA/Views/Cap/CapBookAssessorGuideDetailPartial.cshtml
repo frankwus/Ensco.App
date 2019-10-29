@@ -1,0 +1,49 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@using Ensco.App.App_Start
+
+@{
+    /**/
+
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CapBookAssessorGuideKSAs";
+    grid.KeyFieldName = Model.AssessorGuide.KeyFieldName;
+    grid.SettingsDetail.MasterGridName = "grid_CapBookKSACompetency";
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Cap", Action = "CapBookAssessorGuideDetailPartial", compId = Model.CompId };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.TLC.Models.CAP_BookModel), options);
+
+    grid.Columns["AssessedBy"].Visible = false;
+    grid.Columns["Assessment"].Visible = false;
+    grid.Columns["AssessmentMethod"].Visible = false;
+    grid.Columns["AssessedBy"].Visible = false;
+    grid.Columns["AssessorComments"].Visible = false;
+    grid.Columns["AssessedDate"].Visible = false;
+
+    grid.Columns["AccessorGuidance"].Visible = true;
+    grid.Columns["FormalDocumentName"].Visible = true;
+    grid.Columns["FormalTrainingName"].Visible = true;
+
+    grid.CommandColumn.Width = Unit.Pixel(25);
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.AssessorGuide.KeyFieldName;
+    e.QueryableSource = Model.AssessorGuide.Dataset;
+}).GetHtml()
+
+
+
+
+

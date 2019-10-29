@@ -1,0 +1,48 @@
+﻿@model Ensco.Models.LookupListModel<dynamic>
+
+@{
+    Html.HiddenFor(g => g.Id);
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+    Html.DevExpress().TreeList(settings =>
+    {
+        settings.Name = Model.BoundFieldName + "_treeListPartial";
+        settings.CallbackRouteValues = new { Area = "Common", Controller = "Common", Action = "TreeLookupPartial", name = Model.BoundFieldName, lookup = Model.Name, multi = Model.MultiSelect, selected = Model.Selected };
+
+        Html.SetEnscoTreeLookupColumns(settings, Model.ModelType);
+
+        settings.KeyFieldName = Model.KeyFieldName;
+        settings.ParentFieldName = "ParentId";
+
+        settings.Width = Unit.Percentage(100);
+
+        settings.SettingsSelection.AllowSelectAll = true;
+        settings.SettingsBehavior.AutoExpandAllNodes = true;
+        settings.SettingsBehavior.AllowFocusedNode = true;
+        settings.SettingsBehavior.ExpandCollapseAction = TreeListExpandCollapseAction.Button;
+        settings.SettingsSelection.Enabled = false;
+        settings.SettingsSelection.Recursive = false;
+        settings.SettingsPager.Mode = DevExpress.Web.ASPxTreeList.TreeListPagerMode.ShowAllNodes;
+
+        settings.SettingsLoadingPanel.Delay = 0;
+        settings.Settings.ShowColumnHeaders = true;
+        settings.Settings.GridLines = System.Web.UI.WebControls.GridLines.Both;
+        settings.Settings.ShowTreeLines = true;
+
+        settings.AutoGenerateColumns = true;
+
+        settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        settings.RootValue = null;
+        settings.Styles.AlternatingNode.Enabled = DefaultBoolean.True;
+        settings.Styles.AlternatingNode.BackColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+        settings.Styles.Node.BackColor = System.Drawing.ColorTranslator.FromHtml("#f5f3f4");
+
+        //settings.ClientSideEvents.FocusedNodeChanged = "function (s, e) { var focusedKey = " + Model.BoundFieldName + "_treeListPartial" + ".GetFocusedNodeKey(); $('#Id').val(focusedKey);" + "  " + Model.BoundFieldName + "_treeListPartial" + ".GetNodeValues(focusedKey, '" + Model.KeyFieldName + "', function(values) { " + Model.BoundFieldName + ".SetText(values); }); " + "  " + Model.BoundFieldName + "_treeListPartial" + ".GetNodeValues(focusedKey, '" + Model.DisplayField + "', function(values) { " + Model.Name + ".SetText(values); }); " + " }";
+        settings.ClientSideEvents.FocusedNodeChanged = Model.FocusedRowChanged ?? "function (s, e) { var focusedKey = " + Model.BoundFieldName + "_treeListPartial" + ".GetFocusedNodeKey(); $('#Id').val(focusedKey);" + "  " + Model.BoundFieldName + "_treeListPartial" + ".GetNodeValues(focusedKey, '" + Model.DisplayField + "', function(values) { " + Model.BoundFieldName + ".SetText(values); }); " + "  " + Model.BoundFieldName + "_treeListPartial" + ".GetNodeValues(focusedKey, '" + Model.KeyFieldName + "', function(values) { " + Model.Name + ".SetText(values); }); " + " }";
+
+    }).Bind(Model.Items).GetHtml();
+}
+
+
+
+

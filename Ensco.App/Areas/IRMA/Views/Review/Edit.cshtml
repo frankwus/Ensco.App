@@ -1,0 +1,202 @@
+﻿@using Ensco.Utilities
+@model Ensco.OAP.Models.ReviewModel
+@{ 
+    ViewBag.Title = "Review";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.DevExpress().FormLayout(layout =>
+{
+
+    layout.Name = "layoutReview";
+    layout.Width = Unit.Percentage(100);
+
+    layout.Items.Add(item =>
+    {
+        item.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        item.ShowCaption = DefaultBoolean.False;
+        item.SetNestedContent(() =>
+        {
+
+            if (!Model.IsSigned && UtilitySystem.CurrentUserId == Model.ReviewerPassportId)
+            {
+                using (Html.BeginForm())
+                {
+                    Html.DevExpress().Button(button =>
+                    {
+                        button.Name = "btnSignReview_" + Model.Id;
+                        button.Text = "Sign";
+                        button.UseSubmitBehavior = true;
+                        button.RouteValues = new { Area = "IRMA", Controller = "Review", Action = "ControlSignReview", Id = Model.Id, returnUrl = Request.Url.PathAndQuery };
+                        button.Style.Add("margin-right", "5px");
+                    }).GetHtml();
+                }
+
+                Html.DevExpress().Button(button =>
+                {
+                    button.Name = "btnSave";
+                    button.Text = "Save";
+                    button.RouteValues = new { Area = "IRMA", Controller = "Review", Action = "Edit", Id = Model.Id };
+                    button.UseSubmitBehavior = true;
+                }).GetHtml();
+            }
+
+            
+            //Html.RenderPartial("ActionMenu");
+        });
+    });
+
+    layout.Items.Add(item =>
+    {
+        item.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        item.ShowCaption = DefaultBoolean.False;
+        item.SetNestedContent(() =>
+        {
+            //Html.RenderPartial("ActionMenu");
+        });
+    });
+
+    layout.Items.AddGroupItem(group =>
+    {
+        group.Caption = "Details";
+        group.ColumnCount = 4;
+        group.Width = Unit.Percentage(100);
+
+        group.Items.Add(m => m.Id, i =>
+        {
+            i.Caption = "Review Id";
+            i.NestedExtension().TextBox(t =>
+            {
+                t.ReadOnly = true;
+            });
+        });
+
+        group.Items.Add(m => m.Reviewer, item =>
+        {
+            item.Caption = "Reviewer";
+            item.NestedExtension().TextBox(t =>
+            {
+                t.ReadOnly = true;
+                t.Width = Unit.Percentage(100);
+            });
+        });
+
+        group.Items.Add(m => m.DateCreated, item =>
+        {
+            item.Caption = "Date / Time Created";
+            item.NestedExtension().TextBox(t =>
+            {
+                t.ReadOnly = true;
+            });
+        });
+
+        group.Items.Add(m => m.ReviewDate, item =>
+        {
+            item.Caption = "Date / Time Reviewed";
+            item.NestedExtension().TextBox(t =>
+            {                
+                t.ReadOnly = true;
+            });
+        });
+
+        group.Items.Add(m => m.SourceBU, item =>
+        {
+            item.Caption = "Source BU";
+            Html.EnscoNestedEditor(item, m => m.SourceBU);
+            ((ComboBoxSettings)item.NestedExtensionSettings).Enabled = false;
+
+        });
+
+        group.Items.Add(m => m.RigId, item =>
+        {
+            item.Caption = "Source Rig";
+            Html.EnscoNestedEditor(item, m => m.RigId);
+            ((ComboBoxSettings)item.NestedExtensionSettings).Enabled = false;
+        });
+
+        group.Items.Add(item =>
+        {
+            item.Caption = "Source Form";
+            item.ColumnSpan = 2;
+            item.NestedExtension().TextBox(t =>
+            {
+                t.ReadOnly = true;
+                t.Name = "SourceForm";
+                t.PreRender = (sender, e) =>
+                {
+                    MVCxTextBox textBox = (MVCxTextBox)sender;
+                    textBox.Value = string.Format("{0} : {1}", Model.SourceForm.ToUpper(), Model.SourceFormId);
+                };
+            });
+        });
+
+        group.Items.Add(item =>
+        {
+            item.Caption = "Evidences";
+            item.SetNestedContent(() =>
+            {
+                if (!Model.IsSigned && UtilitySystem.CurrentUserId == Model.ReviewerPassportId)
+                    Html.RenderAction("MultiFileUploadPartial", new { Area = "Common", Controller = "Admin", SourceForm = "Review", SourceFormId = Model.Id });
+            });
+        });
+
+        group.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.SetNestedContent(() =>
+            {
+                foreach (var attachment in Model.Attachments)
+                {
+                    Html.DevExpress().HyperLink(l =>
+                    {
+                        l.Properties.ImageUrl = "~/Images/Delete.png";
+                        l.NavigateUrl = Url.Action("DeleteAttachment", new { Area = "Common", Controller = "Admin", Id = attachment.Id, returnUrl = Request.Url.AbsolutePath });
+                        l.Properties.ImageWidth = Unit.Pixel(15);
+                        l.Style.Add("margin-right", "5px");
+                    }).GetHtml();
+                    Html.DevExpress().HyperLink(l =>
+                    {
+                        l.Properties.Text = attachment.FileName;
+                        l.NavigateUrl = attachment.FilePath;
+                    }).GetHtml();
+                    ViewContext.Writer.Write("<br />");
+                }
+            });
+        });
+
+        group.Items.Add(m => m.Comment, item =>
+        {
+            item.Caption = "Comment";
+            item.ColumnSpan = 4;
+            item.Width = Unit.Percentage(100);
+            item.NestedExtension().Memo(memo =>
+            {
+                memo.Width = Unit.Percentage(100);
+                memo.Properties.Rows = 5;
+                memo.Enabled = !Model.IsSigned && UtilitySystem.CurrentUserId == Model.ReviewerPassportId;
+            });
+        });
+
+    });
+
+
+
+
+    //layout.Items.AddGroupItem(capaGroup =>
+    //{ 
+    // capaGroup.GroupBoxDecoration = GroupBoxDecoration.None;
+    // capaGroup.ShowCaption = DefaultBoolean.False;
+    // capaGroup.Items.Add(i =>
+    //  {
+    //    i.ShowCaption = DefaultBoolean.False;
+    //    i.SetNestedContent(() =>
+    //    {
+    //        Html.RenderAction("OpenCapaPartial", new { Controller = "Capa", Area = "IRMA", source = "Review", sourceId = Model.Id, sourceUrl = "/IRMA/Review/Edit/" + Model.Id });
+    //    });         
+    //  });
+    // });
+
+}).GetHtml()
+}
+

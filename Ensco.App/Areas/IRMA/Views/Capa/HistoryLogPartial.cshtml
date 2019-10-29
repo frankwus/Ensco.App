@@ -1,0 +1,76 @@
+﻿@using Ensco.Utilities
+@using System.Data
+@using System.Linq;
+@{
+    string source = this.ViewBag.source;
+    string sourceId = this.ViewBag.sourceId;
+    string sourceUrl = this.ViewBag.sourceUrl;
+    DataTable dt = (DataTable)Model;
+    string type = (this.ViewBag.Type == null ? "" : (string)this.ViewBag.Type);
+    string caption = "History Log";
+}
+@{
+    Html.DevExpress().GridView(grid => {
+        grid.Caption = EnscoHelper.GetTranslation(caption);
+        string gridName = (string)this.ViewBag.gridName ??  "g" + Guid.NewGuid().ToString().Replace("-", "");
+        grid.Name =  gridName;
+        grid.KeyFieldName = "Id";
+
+        GridViewOptions options = new GridViewOptions();
+        options.ShowAddButton = false;
+        options.ShowEditButton = false;
+        options.ShowDeleteButton = false;
+        Html.EnscoStandardGrid(grid, null, options);
+
+        string[] arr = new string[] { "SourceUrl" };
+ 
+        foreach(DataColumn dc in dt.Columns) {
+            if(arr != null && arr.Contains(dc.ColumnName))
+                continue;
+            MVCxGridViewColumn column = grid.Columns.Add(dc.ColumnName);
+            Html.InitColumn(column, grid, dc );
+
+            if(dc.ColumnName == "ActionRequired") {
+                column.SetDataItemTemplateContent(c => {
+                    ViewContext.Writer.Write(DataBinder.Eval(c.DataItem, "ActionRequired").ToString());
+                });
+            }
+            if(dc.DataType.Name.Contains("Date")) {
+                column.EditorProperties().DateEdit(s => {
+                    s.DisplayFormatString = Ensco.Utilities.UtilitySystem.Settings.ConfigSettings["DateFormat"];
+                });
+            }
+            if(dc.ColumnName == "Source") {
+                column.SetDataItemTemplateContent(c => {
+                    Html.DevExpress().HyperLink(s => {
+                        string source1 = DataBinder.Eval(c.DataItem, "Source").ToString();
+                        source1 = FirstCharToUpper(source1);
+                        source1 = source1.Replace("CapaPlan", "CAPA Plan");
+                        s.Properties.Text = source1;
+                        s.NavigateUrl = DataBinder.Eval(c.DataItem, "SourceUrl").ToString();
+                    }).Render();
+                });
+            }
+        }
+
+        grid.Columns.Remove(grid.Columns["SourceId"]);
+        grid.ClientSideEvents.BeginCallback = "function(s, e){ if (typeof onBeginCallbackOpenCapaPartial === 'function' ) onBeginCallbackOpenCapaPartial(s, e ) }";
+        //grid.ClientSideEvents.BeginCallback = "function(s, e){  e.customArgs['sourceUrl'] = '" + type+"'}";
+        grid.CallbackRouteValues = new { Action = "HistoryLogPartial", Controller = "Capa", Area = "Irma", source, sourceId, sourceUrl, gridName };
+
+        string script = " if(e.item.GetText()=='Add New'){ e.item.SetText('Close'); s.AddNewRow(); }  ";
+        // script += " if (text=='Add New'){ button.SetVisible(false); button.SetText('Close'); s.AddNewRow();}  ";
+        script += " else if(e.item.GetText()=='Close') { " + gridName + ".CancelEdit(); }";
+        grid.ClientSideEvents.ToolbarItemClick = "function(s, e){" + script + "}";
+        grid.ClientSideEvents.EndCallback = "function(s, e){ if (" + gridName + ".IsEditing()){" + gridName + ".GetToolbar(0).GetItem(1).SetText('Close');}  }";
+
+        // Html.ViewContext.Writer.Write(script);
+    }).Bind(dt).GetHtml();
+    }
+    @functions{
+        public static string FirstCharToUpper(string s) {
+            if(string.IsNullOrEmpty(s))
+                return string.Empty;
+            return char.ToUpper(s[0]) + s.Substring(1);
+        }
+    }

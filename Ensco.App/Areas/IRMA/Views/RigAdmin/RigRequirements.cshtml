@@ -1,0 +1,86 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+@{
+    ViewBag.Title = "RigRequirements";
+}
+@Html.DevExpress().PageControl(pc =>
+{
+    pc.Name = "pcManageRigReqs";
+    pc.ActivateTabPageAction = ActivateTabPageAction.Click;
+    pc.EnableHotTrack = true;
+    pc.SaveStateToCookies = true;
+    pc.TabAlign = TabAlign.Left;
+    pc.TabPosition = TabPosition.Top;
+    pc.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    pc.ControlStyle.CssClass = "dxtcFixed";
+
+    pc.TabPages.Add("Rig Settings").SetContent(() => {
+        using(Html.BeginForm()) {
+            Html.RenderAction("RigAdminListsPartial", "RigAdmin", new { Area = "IRMA" });
+        }
+    });
+    //return;
+    pc.TabPages.Add("PoB Settings").SetContent(() => {
+        using(Html.BeginForm()) {
+            Html.RenderAction("RigAdminFieldsVisiblePartial", "RigAdmin", new { Area = "IRMA" });
+        }
+    });
+    pc.TabPages.Add("Rig Admin Users").SetContent(() =>
+    {
+        using (Html.BeginForm())
+        {
+            Html.RenderAction("RigAdminUserRolePartial", "RigAdmin", new { Area = "IRMA" });
+        }
+    });
+    pc.TabPages.Add("Isolation Locks").SetContent(() => {
+        using(Html.BeginForm()) {
+            Html.RenderAction("RigAdminIsolationLockPartial", "RigAdmin", new { Area = "IRMA" });
+        }
+    });
+    pc.TabPages.Add("Asset Relation").SetContent(() => {
+        using(Html.BeginForm()) {
+            Html.RenderAction("RigAdminAssetsPartial", "RigAdmin", new { Area = "IRMA" });
+        }
+    });
+}).GetHtml()
+@section scripts{
+    <script type="text/javascript">
+        function onSaveAdminList(s, e) {
+            var arr = [DateFormat, DateTimeFormat]
+            var r = GetAjaxArr('irma/RigAdmin/ValidateDateFormat', [arr[0].GetText(), arr[1].GetText()])
+            var arr1 = r.split(',')
+            console.log(arr1)
+            var submit = true
+            for (var i in arr1) {
+                arr[i].GetInputElement().style.backgroundColor = "white";
+                if (arr1[i] == 'failed') {
+                    arr[i].GetInputElement().style.backgroundColor = "Yellow";
+                    submit = false
+                }
+            }
+            if (submit)
+                GetId(s.name).closest('form').submit()
+        }
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItem" + s.name:
+                    s.AddNewRow();
+                    break;
+            }
+        }
+        function onTextChanged(s, e) {
+            var src = GetId('FormLayoutUserRole_2')
+            if (s != null && s.GetText() == 'Isolation Authority')
+                src.show()
+            else
+                src.hide()
+        }
+        function onEndCallback(s, e) {
+            GetId('Passport').width('20%')
+            GetId('Passport_ET').css('margin-left', 13)
+            GetId('FormLayoutUserRole_0').children().eq(0).children().eq(0).html('')
+        }
+    </script>
+}
+
+
+

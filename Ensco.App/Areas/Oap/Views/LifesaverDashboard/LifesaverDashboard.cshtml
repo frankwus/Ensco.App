@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Rig Oap Checklists";
+    Layout = "~/Areas/Oap/Views/Shared/_OapLayout.cshtml";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewRigChecklist":
+                case "btnAutoGenerateChecklist":
+                    s.AddNewRow();
+                    break;                
+            }
+        }
+    </script>
+}
+
+@{
+    var controller = ViewContext.Controller as Ensco.App.Areas.Oap.Controllers.LifesaverDashboardController;
+}
+
+<div class="rig-oap-main-view">
+    @using (Html.BeginForm())
+    {
+        @Html.Action("RigChecklists")
+        <br />
+        @Html.Partial("LifesaverScheduleAndJobsPartial", controller.GetLifesaverCompliance())
+    }
+</div>
+

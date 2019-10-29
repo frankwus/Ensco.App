@@ -1,0 +1,121 @@
+﻿<table id="tFooter" class="marginBottom">
+    <tr>
+        <td>
+            <a href="javascript:void(0)" style="margin-right:15" onclick="on_AddFooter('Observation')"> + Add Observation, Comment or Lesson Learned </a>
+            <a href="javascript:void(0)" style="margin-right:15" onclick="on_AddFooter('Reviewer')"> + Add Reviewer </a>
+            <a href="javascript:void(0)" style="margin-right:5" onclick="on_AddFooter('Capa')">  + Assign CAPA </a>
+</table>
+<table id="tObservation" />
+<table id="tReviewer" />
+<table id="tCapa" />
+
+<script>
+    var PageId, PageName, PageParent
+    function InitFooter() {
+        var arrPage = GetPageInfo()
+        PageId = arrPage[0]
+        PageName = arrPage[1]
+        PageParent = arrPage[2]
+        var arr = ['Observation', 'Reviewer', 'Capa']
+        var arr1 = ['Observations &  Comments', 'Reviewers', 'Corrective Actions and Preventive Actions']
+        var done = false
+        GetArray(['usp_ComGetFooter', PageParent, PageName, PageId, '', Lang], function (data) {
+            var xml = data.xml
+            for (var i in arr) {
+                var type = arr[i]
+                var tr0 = $('#' + type)
+                var t = $('#t' + type)
+                DataBind(t, xml, i)
+                if (t.find('tr').length) {
+                    if (done)
+                        t.addClass('marginBottom')
+                    else
+                        done = true
+                    RemoveWingDing(t)
+                    t.find('th').css('border', 'solid').css('border-width', 1)
+
+                    AddGridHeader(t, arr1[i], 'darkblue')
+                }
+            }
+        })
+    }
+    function InitCrumb(xml) {
+        var element = $(xml).find('Table1')
+        var arr = ['Rig', 'Path', 'Name']
+        var crumb = $('#Crumb')
+
+        for (var i in arr) {
+            var name = arr[i]
+            var text = element.find(name).text()
+            crumb.find('a').eq(i).text(text).attr('href', 'home.htm')
+        }
+    }
+    function on_Capa(src) {
+        src = $(src)
+        on_AddFooter('Capa', src.text())
+    }
+    function on_AddFooter(type, id) {
+        if (id == null)
+            id = 0
+        var comment = 'Reviewed'
+        if (type == 'Observation') {
+            var r = showModal('../common/PopupObervation.htm', null, 800, 500)
+            if (r == null)
+                return
+            comment = r
+        }
+        if (type == 'Capa') {
+
+            var sourceUrl = '/irma/jobs/ShowJobWindow?name=popupJobsHome&title=Home&url=~%2FJOB%2F' + PageName + '.htm%3Fid%3D' + PageId
+            parent.window.location = '/irma/capa/index/0?source=' + PageName+'&sourceId='+PageId + '&sourceUrl=' + encodeURIComponent(sourceUrl)
+            return
+            var r = showModal('../Capa/capa.htm?page=' + PageName + '&pageId=' + PageId + '&id=' + id, '', screen.width - 10, screen.height - 100)
+        } else {
+            var s = GetUserProfile()
+            var arr = s.split(':')
+            GetArray(['usp_ComSaveFooter', PageId, UserId, UserName, arr[2], arr[3], comment, PageName, type])
+        }
+        InitFooter()
+    }
+    function on_Sign(index) {
+        var r = 1 // Verify
+        if (r == null)
+            return
+        if (r != '') {
+            var xml = GetArray(['usp_ComSign', Id, index, ChecklistType])
+            Refresh()
+        }
+    }
+    function on_PersonSelect(src) {
+        src = $(src)
+        var arr = Popup('../common/popupPob.htm', 500, 500)
+        if (arr == null)
+            return
+        var tr = src.closest('tr')
+        tr.children().eq(0).text(arr[4])
+        tr.children().eq(1).text(arr[1]).attr('userId', arr[0])
+
+    }
+    function InitReviewer() {
+        return
+        var tr0 = $('#Reviewer')
+        tr0.prevUntil('[type=Reviewer]').remove()
+        var xml = GetArray(['usp_ComGetFooter', PageId, PageName, 'Reviewer'])
+        var t = $('<table/>')
+        DataBind(t, xml)
+        var trs = t.find('tr:gt(0)')
+        if (trs.length) {
+            tVerification.find('[type=Reviewer]').show()
+            trs.insertBefore(tr0)
+        }
+        else {
+            tVerification.find('[type=Reviewer]').hide()
+        }
+    }
+    function on_AddReviewer() {
+        var tr0 = $('#Reviewer')
+        var tr = tr0.clone()
+        tr.insertBefore(tr0).show().removeAttr('id')
+    }
+</script>
+

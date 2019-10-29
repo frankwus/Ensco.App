@@ -1,0 +1,175 @@
+﻿@model Ensco.Irma.Models.PobBoardingModel
+
+@{ 
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridView_PobCurrent";
+    grid.Settings.ShowTitlePanel = true;
+    grid.SettingsText.Title = "Current PoB";
+    grid.KeyFieldName = "Id";
+
+    grid.CallbackRouteValues = new { Area="IRMA", Controller = "Personnel", Action = "OffboardPersonnelPobPartial" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "IRMA", Controller = "Personnel", Action = "OffboardPersonnelPobUpdatePartial" };
+
+    grid.Styles.Header.Wrap = DefaultBoolean.True;
+    grid.SettingsPager.EnableAdaptivity = true;
+    grid.SettingsExport.EnableClientSideExportAPI = true;
+    grid.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+    grid.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+    grid.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+    grid.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+    grid.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    grid.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+    grid.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+    grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    grid.SettingsPager.FirstPageButton.Visible = true;
+    grid.SettingsPager.LastPageButton.Visible = true;
+    grid.SettingsPager.PageSizeItemSettings.Visible = true;
+    grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.OffboardPobModel));
+
+    grid.CommandColumn.SelectAllCheckboxMode = GridViewSelectAllCheckBoxMode.None;
+    grid.CommandColumn.ShowSelectCheckbox = bPobEditor;
+    grid.ClientSideEvents.SelectionChanged = String.Format("function (s, e) {{ OnValueChanged(s, '{0}', s.GetRowKey(e.visibleIndex), e.isSelected); }}", Url.Action("OffboardSelected", "Personnel", new { Area = "IRMA" }));
+
+    grid.CommandColumn.Visible = true;
+    grid.SettingsEditing.Mode = GridViewEditingMode.Inline;
+    grid.EditFormLayoutProperties.ColumnCount = 3;
+
+    grid.CommandColumn.Width = 50;
+    grid.CommandColumn.ShowUpdateButton = bPobEditor;
+    grid.CommandColumn.ShowCancelButton = bPobEditor;
+    grid.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    grid.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    grid.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    grid.SettingsCommandButton.EditButton.Image.Width = 16;
+    grid.SettingsCommandButton.EditButton.Image.Height = 16;
+    grid.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    grid.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    grid.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    grid.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    grid.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    grid.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    grid.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    grid.SettingsCommandButton.CancelButton.Image.Width = 16;
+    grid.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+    grid.Toolbars.Add(toolbar =>
+    {
+        toolbar.Name = "toolbarCrewChangePartial";
+        toolbar.Enabled = true;
+        toolbar.EnableAdaptivity = true;
+        toolbar.Position = GridToolbarPosition.Top;
+        toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+        if (bPobEditor)
+        {
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Custom;
+                item.Name = "btnOnboardPersonnel";
+                item.Text = "Offboard Selected PoB";
+                item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                item.ItemStyle.ForeColor = System.Drawing.Color.White;
+                //item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                //item.Image.Url = "~/Images/Calendar.png";
+                //item.Image.Width = Unit.Pixel(24);
+                //item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+                item.NavigateUrl = Url.Action("OffboardPersonnelSelected", "Personnel", new { Area = "IRMA" });
+            });
+        }
+
+        toolbar.Items.Add(i =>
+        {
+            i.BeginGroup = true;
+            i.ItemStyle.HorizontalAlign = HorizontalAlign.Left;
+            i.SetTemplateContent(c =>
+            {
+                Html.DevExpress().ButtonEdit(s =>
+                {
+                    s.Name = "search";
+                    s.Properties.NullText = "Search...";
+                    s.Properties.Buttons
+                        .Add()
+                        .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                }).Render();
+            });
+        });
+
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.Refresh;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Refresh.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ShowFilterRow;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Filter.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ClearFilter;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/ClearFilter.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        // toolbar.Items.Add(item =>
+        //{
+        //    item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+        //    item.Command = GridViewToolbarCommand.ExportToPdf;
+        //    item.DisplayMode = GridToolbarItemDisplayMode.Image;
+        //    item.Image.Url = "~/Images/Pdf.png";
+        //    item.Image.Width = Unit.Pixel(24);
+        //    item.Image.Height = Unit.Pixel(24);
+        //    item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+        //    item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+        //    item.ClientEnabled = true;
+        //});
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ExportToCsv;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Excel.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            //item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+    });
+    grid.SettingsSearchPanel.CustomEditorName = "search";
+
+}).Bind(Model.OffboardPersons).GetHtml()
+

@@ -1,0 +1,27 @@
+﻿@model Ensco.Irma.Models.IrmaHomeModel
+
+@Html.DevExpress().PageControl(settings =>
+{
+    settings.Name = "pcMyPageOpenItems";
+    settings.ActivateTabPageAction = ActivateTabPageAction.Click;
+    settings.EnableHotTrack = true;
+    settings.SaveStateToCookies = true;
+    settings.TabAlign = TabAlign.Left;
+    settings.TabPosition = TabPosition.Top;
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.ControlStyle.CssClass = "dxtcFixed";
+
+    settings.TabPages.Add("Open CAPAs").SetContent(() =>
+    {
+        Html.RenderAction("IrmaHomeEnscoPassportTasksCapaPartial", "Irma");
+    });
+    settings.TabPages.Add("Open Tasks").SetContent(() =>
+    {
+         Html.RenderAction("IrmaHomeEnscoPassportTasksTaskPartial", "Irma");
+    });
+    settings.TabPages.Add("Open Jobs").SetContent(() =>
+    {
+         Html.RenderAction("IrmaHomeEnscoPassportTasksJobPartial", "Irma");
+    });
+
+}).GetHtml()

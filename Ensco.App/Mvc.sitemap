@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+
+  <mvcSiteMapNode title="Home" action="Home" controller="Irma" area="IRMA">
+
+    <!-- JOBS -->
+
+    <mvcSiteMapNode title="Job Central" action="ShowJobWindow" controller="Jobs" area="Irma" preservedRouteParameters="name"></mvcSiteMapNode>
+
+    <!-- END JOBS -->
+
+    <!-- POB -->
+
+    <mvcSiteMapNode title="Personnel Central" action="Index" controller="Personnel" area="Irma">
+      <mvcSiteMapNode title="Create Passport" action="CreatePassport" controller="Admin" area="Common"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Personnel Search" action="PersonnelArchive" controller="RigAdmin"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Emergency Teams" action="TeamManagement"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Tour Management" action="TourManagement"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Onboard Individual" action="OnboardIndividual"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Onboard Multiple" action="OnboardBatch"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Offboard" action="OffboardBatch"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Crew Changes" action="CrewChange"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Parking Lot" action="FlightParkingLot"></mvcSiteMapNode>
+      <mvcSiteMapNode title="Crew Change Search" action="CrewChangeSearch"></mvcSiteMapNode>
+      <mvcSiteMapNode title="POB Report" action="ShowReport" controller="Report"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <!-- END POB -->
+
+    <!-- CAPA -->
+    <mvcSiteMapNode title="CAPA Center" action="Home" controller="Capa" area="Irma">
+      <mvcSiteMapNode title="CAPA Plan" action="CapaPlanHome" controller="Capa" area="Irma"></mvcSiteMapNode>
+      <mvcSiteMapNode title="NewCapa Plan" action="CapaPlan" controller="Capa" area="Irma"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <!-- END CAPA -->
+
+    <!-- OAP -->
+
+    <mvcSiteMapNode title="FSO Dashboard" action="Index" controller="FSODashboard" area="Irma">
+      <mvcSiteMapNode title="FSO Checklist" action="List" controller="Fso" area="Oap" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Lessons Learned" action="Index" controller="LessonsLearned" area="Irma">
+      <mvcSiteMapNode title="Id" action="Edit" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="OAP Comments" action="Index" controller="Comments" area="Irma"></mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Barrier Authority Dashboard" action="Index" controller="BarrierAuthorityDashboard" area="Oap">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="List" controller="BarrierAuthority" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Life Saver Dashboard" action="Index" controller="LifesaverDashboard" area="Oap">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="List" controller="Lifesaver" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Critical Area Verification Dashboard" action="Index" controller="CriticalAreaVerificationDashboard" area="Oap">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="List" controller="CriticalAreaVerification" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="OIM Oversight Dashboard" action="Index" controller="OIMOversightDashboard" area="Oap">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="List" controller="OIMOversight" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Master Oversight Dashboard" action="Index" controller="MasterOversightDashboard" area="Oap">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="List" controller="MasterOversight" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Generic Checklist Dashboard" action="Index" controller="GenericDashboard" area="Oap">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="List" controller="Generic" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Protocol Scoring Dashboard" action="Index" controller="ProtocolScoringDashboard" area="Oap">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="List" controller="ProtocolScoring" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="OAP Reviews" action="Index" controller="Review" area="IRMA">
+      <mvcSiteMapNode title="Defined in Action Attribute" action="Edit" controller="Review" preservedRouteParameters="id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+
+    <!-- END OAP -->
+
+    <!-- TLC -->
+
+    <mvcSiteMapNode title="CAP Book" action="CapBook" controller="Cap" area="Irma"></mvcSiteMapNode>
+    <mvcSiteMapNode title="CAP Book Approval" action="CapBookApproval" controller="Cap" area="Irma"></mvcSiteMapNode>
+    <mvcSiteMapNode title="CAP Fleet Summary" action="CAPFleetSummary" controller="Cap" area="Irma"></mvcSiteMapNode>
+    <mvcSiteMapNode title="Training Fleet Summary" action="TRNFleetSummary" controller="Cap" area="Irma"></mvcSiteMapNode>
+    <mvcSiteMapNode title="Learning Enrollment" action="LearningEnrollment" controller="Cap" area="Irma"></mvcSiteMapNode>
+
+    <!-- END TLC -->
+
+    <!-- TOOLS -->
+
+    <mvcSiteMapNode title="Rig Admin Page" action="RigRequirements" controller="RigAdmin" area="Irma"></mvcSiteMapNode>
+    <mvcSiteMapNode title="System Info" action="SystemInfo" controller="Irma" area="Irma"></mvcSiteMapNode>
+
+    <!-- END TOOLS -->
+
+    <!-- CORP -->
+
+    <mvcSiteMapNode title="Manage Passport" action="ManagePassport" controller="Admin" area="Common"></mvcSiteMapNode>
+    <mvcSiteMapNode title="Reconcile Passport" action="ReconcilePassport" controller="Irma" area="Irma"></mvcSiteMapNode>
+    <mvcSiteMapNode title="Manage Lists" action="ManageLists" controller="Admin" area="Common"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklists" action="Index" controller="OapChecklists" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Graphics" action="Index" controller="OapGraphics" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Groups &amp; Subgroups" action="Index" controller="OapChecklistGroups" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Types &amp; SubTypes" action="Index" controller="OapTypes" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklist Topics" action="Index" controller="OapChecklistTopics" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklist Comments" action="Index" controller="OapChecklistComments" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklist Help" action="Index" controller="OapChecklistsHelp" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklist Question Help" action="Index" controller="OapChecklistQuestionsHelp" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklist Data Asset Management" action="Index" controller="OapChecklistAssetDataManagement" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklist Equipment" action="Index" controller="OapChecklistEquipment" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Checklist Work Instruction" action="Index" controller="OapChecklistWorkInstruction" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Protocol Form Types" action="Index" controller="OapProtocolFormTypes" area="cOap"></mvcSiteMapNode>
+    <mvcSiteMapNode title="OAP Frequency Types" action="Index" controller="OapFrequencyTypes" area="cOap"></mvcSiteMapNode>
+
+    <mvcSiteMapNode title="OAP Audits" action="Index" controller="OapAudit" area="cOap">
+      <mvcSiteMapNode title="Id" action="Index" controller="OapAuditReport" area="cOap">
+      </mvcSiteMapNode>
+
+      <mvcSiteMapNode title="Protocols" action="Index" controller="OapAuditReport" preservedRouteParameters="id" area="cOap">        
+        <mvcSiteMapNode title="Protocols Id" action="List" preservedRouteParameters="id"  controller="OapProtocol" area="cOap">
+          <mvcSiteMapNode title="Findings" action="Display" controller="Findings" preservedRouteParameters="id" area="cOap">
+            <mvcSiteMapNode title="Finding Id" action="List" controller="FindingsPage" preservedRouteParameters="id" area="cOap">
+            </mvcSiteMapNode>
+          </mvcSiteMapNode>
+        </mvcSiteMapNode>
+      </mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+
+
+    <!-- END CORP -->
+
+  </mvcSiteMapNode>
+</mvcSiteMap>
+<!--<mvcSiteMapNode title="Test" dynamicNodeProvider="Ensco.App.Infrastructure.SiteMapProvider, Ensco.App" parentKey=""></mvcSiteMapNode>-->

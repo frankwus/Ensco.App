@@ -1,0 +1,759 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+<form>
+    <table border="0">
+        <tr style="border:none">
+            <td width="99%" style="border:none">
+
+            <td><a id="Close" class="hidden" href="javascript:void(0)" onclick="on_Close(this)">Close</a>
+            <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+            <td><img src="../Images/print.png" onclick="on_Print(this)" Title="Print Webpage" />
+            <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+    </table>
+
+    <table id="tPlanning" class1="marginBottom">
+
+        <tr>
+            <th class="header" style="text-align: left;" colspan="24">
+                Planning
+        <tr>
+            <td>ID
+            <td class="noentry" style="width:40"><span id="id"></span>
+            <td>Location
+            <td>
+                <img src='../images/search icon.png' onclick="on_Location(this)" />
+                <span border="0" id="Location"></span>
+                <span class="hidden" id="LocationId"></span>
+            <td>Date/Time Observed
+            <td><input id="DateDone" type="text" />
+
+            <td>Date/Time Created
+            <td class="noentry"  id="Date">
+            <td>Status
+            <td class="noentry"  id="Status">
+        <tr>
+            <td>Drill
+            <td>
+                <span>Yes</span><input type="radio" name="Drill" id="Drill" />
+                <span>No</span><input type="radio" name="Drill" id="Drill" />
+            <td>Job
+            <td><select id="JobId"></select>
+            <td colspan="1">Job Title
+            <td colspan="5" class="noentry"  id="JobTitle" >
+    </table>
+    <table id="tPersonnel" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                Observers
+        <tr class="labelCenter">
+            <td width="100">
+            <td>Position
+            <td>Name
+            <td>Company
+            <td>Tour
+
+        <tr class="hidden">
+            <td>  <img src="../Images/delete.png" width="16" onclick="on_Delete(this)" />
+            <td>
+            <td>
+            <td>
+            <td>
+        <tr>
+            <td colspan="8"><img src="../Images/Select Personnel icon.png" onclick="on_AddPersonnel(this)" />
+    </table>
+
+    <table id="tExecution" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                Execution
+    </table>
+    <table id="tChecklist" class1="marginBottom"></table>
+    <table id="" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                General Information
+    </table>
+    <table id="tCause" class1="marginBottom"></table>
+    <table id="tFactor" class="marginBottom"></table>
+    <table id="tCardHazard" class="marginBottom"></table>
+    <table id="" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                General Comments
+        <tr>
+            <td class="labelRight" width="200"> Comments
+            <td><textarea id="Comment"></textarea>
+    </table>
+    <table id="tVerification" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                Verification
+        <tr class="labelCenter">
+            <td>Role
+            <td>Name
+            <td>Signature / Review
+            <td>Date / Time Completed
+        <tr>
+            <td class="labelRight">Lead Observer
+            <td id="LeadApprover">
+            <td id="LeadStatus">
+            <td id="LeadDt">
+            <td id="LeadId" class="hidden">
+        <tr>
+            <td class="labelRight">OIM
+            <td id="OIM">
+            <td id="OIMStatus">
+            <td id="OIMDt">
+            <td id="OIMId" class="hidden">
+        <tr>
+</table>
+</form>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tPersonnel = GetId('tPersonnel')
+    var tObserved
+    var tChecklist = $('#tChecklist')
+    var tFactor = $('#tFactor')
+    var tCause = GetId('tCause')
+    var tCardHazard = $('#tCardHazard')
+    var tExecution = $('#tExecution')
+    var tVerification = $('#tVerification')
+    var Id = getParameterByName('id')
+    var Status
+    var IsPaperView
+    var Page = 'swa'
+    
+    var Clone = getParameterByName('clone')
+    var ARR = ['id', 'Drill', 'LocationId', 'Location', 'Date', 'JobId', 'DateDone', 'JobTitle', 'Status', 'Description', 'Comment', 'LeadApprover', 'LeadId', 'OIMId', 'LeadDt', 'OIM', 'OIMDt', 'OIMStatus', 'LeadStatus']
+    $(document).ready(function () {
+        if (Id == '') {
+            Id = 0
+        }
+        InitDateTime(['DateDone'])
+        var xml = GetArray(['usp_JobGetSWA', Id, UserId, Lang ])
+        BindSelect(xml, $('#JobId'), 5)
+        InitFold()
+        InitPlanning(xml)
+       
+        Status = $('#Status').text()
+        InitEvent()
+
+        InitPersonnel(xml)
+        InitChecklist(xml)
+        InitCause(xml )
+        InitFactor(xml)
+        InitCardHazard(xml)
+        InitVerification(xml)
+        InitStatus(xml)
+        //InitPaperView(tPlanning)
+        if (IsPaperView) {
+            var t = tPlanning
+            t.find('tr').last().hide()
+            var tr = t.find('tr').eq(2)
+            //tr.children().slice(-2).appendTo(tr.prev())
+            tr.children().slice(0, 2).hide()
+            tr.children().slice(4, 6).hide()
+
+            t = tVerification
+            t.show()
+            t.find('span').eq(1).text('People')
+            t.find('tr').slice(3).remove()
+            t.find('tr').eq(2).children().eq(2).html('').append(GetId('FireWatcherId').parent().children())
+            t.insertAfter(tPlanning)
+
+            var xml = GetArray(['usp_AdminGetOIM', UserId])
+            if ($(xml).text() != '' && Status != 'Closed')
+                GetId('Close').show()
+        }
+        CleanUp()
+        InsertCommon()
+    })
+    function InitPersonnel(xml) {
+        tObserved = tPersonnel.clone().attr('id', 'tObserved').insertAfter(tPersonnel)
+        tObserved.find('span').eq(1).text('Observed Personnel')
+        GetXmlTable(xml, 4).each(function () {
+            var src = $(this)
+            var arr = [tPersonnel, tObserved]
+            var i = src.find('Type').text()
+            var arr0 = ['UserId', 'Name', 'Position', 'Company', 'Tour']
+            var arr1 = []
+            for (j in arr0)
+                arr1.push(src.find(arr0[j]).text())
+
+            on_AddPersonnel(arr[i].find('img').last(), arr1)
+        })
+        if (Id == 0) {
+            var xml = GetArray(['usp_PobGetByUserId', UserId ]) 
+            var arr0 = ['Position1', 'Company1', 'Tour1']
+            var arr1 = [UserId, UserName]
+            for (j in arr0)
+                arr1.push($(xml).find(arr0[j]).text())
+            
+            on_AddPersonnel( tPersonnel.find('img').last(), arr1)
+        }
+    }
+    function on_AddPersonnel(src, arr0) {
+        src = $(src)
+        var arr = []
+        if (arr0 != null)
+            arr.push(arr0)
+        else {
+            var r = GetPobUser()
+            if (r == null)
+                return
+            arr = r
+        }
+        for (var i in arr) {
+            r = arr[i]
+            var tr0 = src.closest('tr').prev()
+            var tr = tr0.clone().attr('active', 1).show().insertBefore(tr0)
+
+            var td = tr.children().first()
+            $('<span/>').prependTo(td).text(tr.index() - 1)
+            tr.attr('UserId', r[0])
+            tr.children().eq(1).text(r[2])
+            tr.children().eq(2).text(r[1])
+            tr.children().eq(3).text(r[3])
+            tr.children().eq(4).text(r[4])
+        }
+        InitVerification()
+    }
+    function InitChecklist(xml) {
+        var t = tChecklist
+        DataBind(t, xml, 1)
+
+        TdByName(t, 'id').each(function () {
+            var td = $(this)
+            td.parent().attr('id', td.text())
+        })
+        t.find('tr').eq(0).remove()
+
+        t.find('td:nth-last-child(1)').each(function () {
+            var td = $(this)
+            AddRadio(td)
+            if (!IsTrue(td.prev().text()))
+                AddDelete(td.closest('tr').children().first())
+            //td.prev().remove()
+        })
+        var arr = ['', 'Category ', 'Verification', 'Yes', 'No', 'N/A']
+        var tr = $('<tr/>').insertBefore(t.find('tr').eq(0))
+        for (var i in arr) {
+            $('<th />').text(arr[i]).addClass('labelCenter').appendTo(tr)
+        }
+        arr = ['1	Stop the Job', '2	Hold a Conversation', '3	Change Work Practice, if Necessary', '4	Resume Work Safely']
+        arr = arr.reverse()
+        for (var i in arr) {
+            var j
+            switch (parseInt(i)) {
+                case 0:
+                    j = 14
+                    break
+                case 1:
+                    j = 12
+                    break
+                case 2:
+                    j = 6
+                    break
+                case 3:
+                    j = 0
+                    break
+            }
+            tr = $('<tr/>').insertBefore(t.find('tr').eq(j))
+            $('<th colspan=6 />').text(arr[i]).addClass('hazard').appendTo(tr)
+            tr.addClass('marginBottom')
+            var tr1 = $('<tr/>').insertBefore(tr)
+            $('<th colspan=6 />').html('&nbsp').addClass('noborder').appendTo(tr1)
+        }
+        t.find(':radio').closest('tr').each(function (index) {
+            var tr = $(this)
+            if (index > 3) {
+                tr.children().first().html(index - 2)
+            }
+        })
+        t.find('tr').slice(5, 8).find('td:nth-child(1)').remove()
+        t.find('tr').slice(5, 8).find('td:nth-child(1)').remove()
+        t.find('tr').eq(4).children().eq(0).attr('rowspan', 4)
+        t.find('tr').eq(4).children().eq(1).attr('rowspan', 4)
+        return
+        t.find('th:nth-last-child(2)').remove()
+        AddTd(AddTr(t), '<a href=# onclick="on_AddDuty(this); return false">Add </a>', 'td', 11)
+        t.find('tr').eq(0).remove()
+        var arr = ['Yes', 'No', 'N/A']
+        AddHeader(t, 'Job Supervisor Duties', 'darkblue').attr('colspan', 2)
+        for (var i in arr) {
+            $('<th width=100  />').text(arr[i]).addClass('darkblue').css('text-align', 'center').appendTo(t.find('tr').eq(0))
+        }
+        t.find('tr:gt(0)').not(':last').find('td:nth-child(1),  td:nth-child(2)').addClass('label')
+    }
+    function AddRadio(td) {
+        var s = ''
+        var index = GetVal(td)
+        
+        for (var i = 0; i < 3; i++) {
+            s = '<input type =radio name =' + td.parent().index() + ' ' + (i == index ? 'checked' : '') + ' />'
+            if (i == 0)
+                td.html(s).addClass('center')
+            else
+                $('<td class=center>' + s + '</td>').appendTo(td.parent())
+        }
+    }
+    function InitCause(xml) {
+        var t = tCause
+        var html = ''
+        var i = 0
+        GetXmlTable(xml, 7).each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            var text = element.find('Text').text()
+            if (i++ % 4 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (IsTrue(element.find('Checked').text()))
+                checked = ' checked '
+            if (name == 'Other')
+                html += '<td colspan=2 id=' + id + '>' + name + '<input style="margin-left:10;width:50%;border:1 solid" type=text value="' + text + '" />'
+            else
+                html += '<td id=' + id + '>' + name + '<td style="width:1"><input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        AddHeader(t, 'Causes – <i>Why Stop the Job?</i> ', 'darkblue')
+        t.find('tr:gt(0)').find('td:even').addClass('labelRight')
+        //AddHeader(t, 'General Information', 'darkblue')
+
+    }
+    function InitFactor(xml) {
+        var t = tFactor
+        var html = ''
+        html += '<tr><td colspan=18 class=label>Job Factors'
+        html += '<tr style="text-align:center">'
+        for (var i = 1; i < 5; i++) {
+            var colSpan = 2
+            if (i == 2)
+                colSpan = 4
+            html += '<td colspan=' + colSpan + '><img src=../images/JsaFactor/' + i + '.png /> '
+        }
+
+        var element = $(xml).find('Table2')
+        var count = element.find('Seq:contains(1)').length + 1
+        //  alert(count )
+        for (var i = 0; i < count ; i++) {
+            html += '<tr>'
+            for (var j = 0; j < 5; j++) {
+                html += '<td><td>'
+            }
+        }
+        t.html(html)
+        for (var j = 0; j < 5; j++) {
+            element.find('seq:contains(' + (j + 1) + ')').each(function (index) {
+                var src = $(this)
+                var id = src.prev().prev().text()
+                var name = src.prev().text()
+                var checked = ''
+                if (IsTrue(src.next().text()))
+                    checked = ' checked '
+                var td = t.find('tr').eq(index + 3).find('td').eq(j * 2)
+                td.text(name).attr('id', id)
+                td.next().html('<input type=checkbox ' + checked + '/>')
+            })
+        }
+        t.find('img').width(30)
+        AddHeader(t, 'Job Factors Applicable to Job – to be completed by the Job Supervisor before commencing the job', 'darkblue')
+        t.find('tr').eq(2).addClass('label')
+        t.find('tr:gt(2)').find('td:even').addClass('label')
+        //Factor 2
+        // InitFactorOther(t, xml)
+    }
+    function InitFactorOther(t, xml) {
+        var td = t.find('td').last()
+        InsertAddButton(td.prev().attr('colspan', 2), 3)
+        td.remove()
+        var tds = GetTd(t.find('tr').slice(-2), 7)
+        InsertAddButton(tds.prev().attr('colspan', 2).eq(0), 2)
+        tds.remove()
+        var tr = InsertRow(t)
+        InsertAddButton(tr.children().eq(0), 0)
+        InsertAddButton(tr.children().eq(1), 1)
+
+        $(xml).find('Table16').each(function () {
+            var element = $(this)
+            var seq = element.find('seq').text()
+            var button = $('#Add' + seq)
+            var td = button.parent()
+            button.trigger('click')
+            var html = '<img src="../Images/delete.png" width="16" onclick="on_DeleteFactor(this)" />'
+            td.html(html + element.find('Name').text()).attr('seq', seq)
+            td.next().children().prop('checked', IsTrue(element.find('Checked').text()))
+        })
+    }
+    function InitCardHazard(xml) {
+        var t = tCardHazard
+        var html = ''
+        var i = 0
+        $(xml).find('Table3').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            if (i++ % 3 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (IsTrue(element.find('Checked').text()))
+                checked = ' checked '
+            html += '<td >' + name + '<td style="width:1"><input type=checkbox ' + checked + ' id=' + id + ' />'
+        })
+        t.html(html)
+
+        t.find('td').slice(-4, -2).prependTo(t.find('tr').last())
+
+        var index = 1
+        InsertImg(t, 0, 0, 3, index++)
+        InsertImg(t, 3, 0, 4, index++)
+        InsertImg(t, 7, 0, 3, index++)
+        InsertImg(t, 10, 0, 3, index++)
+
+        InsertImg(t, 0, 3, 4, index++)
+        InsertImg(t, 4, 2, 5, index++)
+        InsertImg(t, 9, 2, 4, index++)
+
+        InsertImg(t, 0, 6, 4, index++)
+        InsertImg(t, 4, 5, 3, index++)
+        InsertImg(t, 7, 5, 4, index++)
+        AddHeader(t, 'Hazards', 'darkblue')
+        // t.find('tr:gt(0)').find('td:even').addClass('labelRight')
+    }
+    function InsertImg(t, i, j, rowspan, index) {
+        var img = '<img  width=60 src=../images/jsaHazard/' + index + '.png />'
+        $('<td/>').insertBefore(t.find('tr').eq(i).find('td').eq(j)).html(img).attr('rowspan', rowspan).css('text-align', 'center')
+    }
+    function AddDelete(td) {
+        // td.append('<span style="font-family: Wingdings" onclick="on_Delete(this) ">&#253;</span>')
+    }
+    function on_Close() {
+        var ok = true
+        var arr = ['PermitId', 'DateDone']
+        for (var i in arr) {
+            if (IsEmpty(GetId(arr[i])))
+                ok = false
+        }
+        if (!ok) {
+            alert(RequiredMessage)
+            return
+        }
+        on_Save(0, true)
+        GetArray(['usp_JobAction', Page, 'Verification', Id, '', 'Close', UserId])
+        Refresh()
+    }
+    function InitVerification(xml) {
+        var t = tVerification
+        var td = t.find('tr').eq(2).children().eq(2)
+        if (GetVal(td) == '') {
+            td.html('')
+            td.prev().html('')
+        }
+        var html = '<input type=button onclick=on_Action(this) value =Verify /><input type=button onclick=on_Action(this) value =Reject />'
+        if (GetVal(td) == '' && tPersonnel.find('[userId=' + UserId + ']').length) {
+            td.prev().text(UserName)
+            td.html(html.replace('Verify', 'Sign') )
+        }   
+        var td1 = t.find('tr').eq(3).children().eq(2)
+        if (GetVal(td) == 'Verified' && GetVal(td1) == '' && GetVal( GetId('OIMId') ) == UserId ) {
+            td1.html(html)
+        }
+    }
+    function InitStatus(xml) {
+        if (Status != 'Open' || !tPersonnel.find('[userId=' + UserId + ']').length) 
+            LockPage()
+        tCardHazard.find('img').show()
+    }
+    function on_Action(src) {
+        src = $(src)
+        if (!Validate()) {
+            alert(RequiredMessage)
+            return
+        }
+        var action = src.val()
+        var role = GetVal( src.closest('tr').children().first()) 
+        on_Save(1, 1)
+        GetArray(['usp_JobAction', Page, 'Verification', Id, role, action, UserId])
+        Refresh()
+    }
+    function InitPlanning(xml) {
+        var t = tPlanning
+        t.find('td:even').addClass('labelRight')
+        t.find('tr').eq(1).children().not(':last').width('10%')
+
+        // InitExecution(xml)
+        var xml1 = GetXmlTable(xml, 0).text()
+        var src = $(xml1)
+        if (src == null)
+            return
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), src.attr(id))
+        }
+        LockField('JobId')
+        var drill = parseInt(src.attr('drill'))
+        //if (drill == 1)
+        $('[id=Drill]').eq((drill + 1) % 2).prop('checked', true)
+        src.find('Location').each(function () {
+            var element = $(this)
+            AddLocation($('#Location').prev(), element.attr('id'), element.attr('Name'))
+        })
+    }
+    function InitExecution(xml) {
+        var t = tExecution
+        var xml1 = $(xml).find('Table2').text()
+        var src = $(xml1)
+        var i = 1
+        src.each(function () {
+            var s = $(this)
+            var section = s.attr('section')
+            AddTd(AddTr(t), section).addClass('darkblue').attr('colSpan', 5)
+            s.find('sub').each(function () {
+                var sub = $(this)
+                var subSection = sub.attr('sub')
+                AddTd(AddTr(t), subSection).addClass('label').attr('colSpan', 5)
+                sub.find('q').each(function () {
+                    var q = $(this)
+                    var tr = AddTr(t)
+                    AddTd(tr, i++)
+                    var input = ''
+                    var html = q.attr('Q')
+                    var comment = q.attr('comment')
+                    if (comment != null)
+                        html += '<br><span>Explain:</span><input style="width:90%;" class=border type=text value="' + comment + '" />'
+                    AddTd(tr, html)
+
+                    html = '<input type=radio name=' + q.attr('id') + ' />'
+                    for (var j = 0; j < 3; j++) {
+                        AddTd(tr, html).addClass('center').css('padding', 0)
+                    }
+                    var answer = q.attr('answer')
+                    if (!isNaN(answer) && answer > -1)
+                        tr.find(':radio').eq(answer).prop('checked', true)
+                })
+            })
+        })
+        t.find('tr').eq(2).append($('<td>Yes<td> No <td>N/A</td>')).children().first().attr('colspan', 2)
+    }
+    function SavePersonnel(root) {
+        var arr = [tPersonnel, tObserved]
+        for (i in arr) {
+            var t = arr[i]
+            t.find('tr[active]').each(function () {
+                var tr = $(this)
+                var element = $.createElement('Personnel')
+                element.addAttr('id', tr.index() - 2)
+                element.addAttr('UserId', tr.attr('UserId'))
+                element.addAttr('Name', GetVal(tr.children().eq(2)))
+                element.addAttr('Position', tr.children().eq(1).text())
+                element.addAttr('Company', tr.children().eq(3).text())
+                element.addAttr('Tour', tr.children().eq(4).text())
+                element.addAttr('Type', i)
+                root.append(element)
+            })
+        }
+    }
+    function on_Save(submit, noRefresh) {
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        root.addAttr('submit', submit)
+        XmlGeneral(root)
+        SavePersonnel(root)
+        tChecklist.find(':radio').closest('tr').each(function (index) {
+            var tr = $(this)
+            var element = $.createElement('Checklist')
+            element.addAttr('id', tr.attr('id'))
+            var offset = 3
+            if (index > 1 && index < 5)
+                offset = 1
+            element.addAttr('Checked', tr.find(':checked').parent().index() - offset)
+            root.append(element)
+        })
+        tCause.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('cause')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            element.addAttr('Text', GetVal(td.find(':text')))
+            root.append(element)
+        })
+        tFactor.find(':checkbox:not([Other]) ').each(function () {
+            var td = $(this).parent().prev()
+            var element = $.createElement('factor')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            root.append(element)
+        })
+        tCardHazard.find(':checkbox').each(function () {
+            var ck = $(this)
+            var element = $.createElement('cardhazard')
+            element.addAttr('id', ck.attr('id'))
+            element.addAttr('Checked', ck.parent().find(':checked').length)
+            root.append(element)
+        })
+        tVerification.find('tr:gt(1)').each(function () {
+            var tr = $(this)
+            var element = $.createElement('Verification')
+            element.addAttr('Role', tr.children().eq(0).text())
+            element.addAttr('Name', tr.children().eq(1).text())
+            root.append(element)
+        })
+        var xml = GetCleanXml(root)
+        xml = GetArray(['usp_JobSaveSWA', xml])
+        Id = Trim($(xml).find('Column1').first().text())
+
+        if (noRefresh)
+            return
+        window.location = 'SWA.htm?id=' + Trim(Id)
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            //value = CleanSpecialCharacter(value )
+            element.addAttr(id, value)
+        }
+        $('#Location').find('td:odd').each(function () {
+            var td = $(this)
+            var Location = $.createElement('Location')
+            Location.addAttr('id', td.attr('id'))
+            Location.addAttr('Name', td.text())
+            element.append(Location)
+        })
+        root.append(element)
+    }
+    function XmlExecution(element) {
+        var t = tExecution
+        var ok = true
+        t.find(':radio').closest('tr').each(function () {
+            var tr = $(this)
+            var el = $.createElement('checklist')
+            el.addAttr('id', tr.find(':radio').eq(0).attr('name'))
+            var index = tr.find(':checked').parent().index() - 2
+            el.addAttr('Answer', index)
+            //if (index == 1 || index == 2)
+            //    el.addAttr('Comment', GetVal(tr.find(':text')))
+
+            if (index == 1) {
+                if (IsEmpty(tr.find(':text')))
+                    ok = false
+                el.addAttr('Comment', GetVal(tr.find(':text')))
+            }
+            element.append(el)
+        })
+        return ok
+    }
+
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+        InitVerification()
+    }
+    function on_AuthoritySelect(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var type = tr.children().first().text()
+        type = Trim(type)
+        var r = showModal('../common/popupPob.htm', type, 800, 400)
+        if (r == null)
+            return
+
+        src.next().text(r[1]).attr('userId', r[0])
+        src.parent().next().text(r[2])
+    }
+    function on_Clone() {
+        var xml = GetArray(['usp_JobCloneSWA', Id])
+        Id = $(xml).text()
+        window.location = 'SWA.htm?id=' + Trim(Id)
+    }
+    function InitEvent() {
+        tExecution.find(':radio').on('change', function () {
+            var src = $(this)
+            var tr = src.closest('tr')
+            var td = tr.children().eq(1) // src.parent().prev()
+            if (src.parent().index() == 3) {
+                if (td.children().length)
+                    td.children().show()
+                else
+                    $('<br><span> Explain:</span><input style="width:90%" type=text />').appendTo(td)
+            } else
+                td.children().hide()
+
+            //if (src.parent().index() == 3) {
+            //    if (td.find('input').length)
+            //        td.find('input').show()
+            //    else
+            //        $('<br><span> Explain:</span> <input  type=text />').appendTo(td)
+            //} else
+            //    td.find('input').hide()
+        })
+        //$(':button').on('click', function () {
+        //    var button = $(this)
+        //    var tr = button.closest('tr')
+        //    var name = button.val()
+        //    if (name != 'Approve' && name != 'Reject')
+        //        return
+        //    var section = button.closest('table').attr('id')
+        //    section = section.substring(1, section.length)
+        //    var type = tr.children().first().text()
+        //    var comment = GetVal(tr.find(':text'))
+
+        //    type = Trim(type)
+        //    GetArray(['usp_JobActionSWA', Id, section, type, name, comment])
+        //    Refresh()
+        //})
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var r
+        if (arr != null)
+            r = arr
+        else {
+            r = GetPobUser()
+            if (r == null)
+                return
+        }
+        r = r[0]
+        src.next().text(r[0]).next().text(r[1]).next().text(r[2])
+    }
+    function on_Submit(src) {
+        if (!Validate()) {
+            return
+        }
+        on_Save(1)
+    }
+    function Validate() {
+        var ok = true
+        var arr = ['DateDone', 'Location']
+        for (var i in arr) {
+            if (IsEmpty($('#' + arr[i])))
+                ok = false
+        }
+        if (tPersonnel.find('tr').length == 4) {
+            ok = false
+            Highlight(tPersonnel.find('tr').last(), 'yellow')
+        }
+        $(':radio').closest('tr').each(function () {
+            var tr = $(this)
+            if (!tr.find(':checked').length) {
+                tr.find(':radio').parent().css('background-color', 'yellow')
+                ok = false
+            }
+        })
+        return ok
+    }
+</script>

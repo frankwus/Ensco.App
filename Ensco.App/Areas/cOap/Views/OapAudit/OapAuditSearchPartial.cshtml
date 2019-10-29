@@ -1,0 +1,140 @@
+﻿@Html.DevExpress().FormLayout(fl =>
+{
+    fl.Name = "AuditSearch";
+
+    
+
+    fl.Width = Unit.Percentage(100);
+    fl.Items.AddGroupItem(g =>
+    {
+        g.Caption = "Audit Search Query";
+        g.ColumnCount = 5;
+        
+        g.Width = Unit.Percentage(100);
+        g.Items.Add(item =>
+        {
+            item.Caption = "Description";
+            item.Name = "Description";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+            // item.ColumnSpan = 3;
+        });
+        g.Items.Add(item =>
+        {
+            item.Caption = "Protocol";
+            item.Name = "Protocol";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+        });
+
+        g.Items.Add(item =>
+        {
+            item.Caption = "CAV";
+            item.Name = "CAV";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+        });
+        g.Items.Add(item =>
+        {
+            item.Caption = "Accessor";
+            item.Name = "Accessor";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+        });
+        g.Items.Add(item =>
+        {
+            item.Caption = "Audit Purpose";
+            item.Name = "AuditPurpose";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.ComboBox;
+            var settings = (ComboBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+            item.NestedExtension().ComboBox(s =>
+            {
+                s.Width = Unit.Percentage(100);
+                s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                s.Properties.DataSource = Enum.GetNames(typeof(Ensco.App.Areas.cOap.Controllers.AuditPurpose));
+                s.PreRender = (a, e) =>
+                {
+                    MVCxComboBox c = a as MVCxComboBox;
+                    c.Text = "[Select Audit Purpose]";
+                };
+
+            });
+
+        });
+
+        g.Items.Add(item =>
+        {
+            item.Caption = "Has CVT";
+            item.Name = "IsCVT";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+            // item.ColumnSpan = 3;
+        });
+        g.Items.Add(item =>
+        {
+            item.Caption = "Findings";
+            item.Name = "Findings";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+        });
+
+        g.Items.Add(item =>
+        {
+            item.Caption = "Protocol Count";
+            item.Name = "Protocol Count";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+        });
+        g.Items.Add(item =>
+        {
+            item.Caption = "Visibility";
+            item.Name = "Visibility";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+        });
+        g.Items.Add(item =>
+        {
+            item.Caption = "Audit Level";
+            item.Name = "AuditLevel";
+            item.Width = Unit.Percentage(20);
+            item.NestedExtensionType = FormLayoutNestedExtensionItemType.TextBox;
+            var settings = (TextBoxSettings)item.NestedExtensionSettings;
+            settings.Width = Unit.Percentage(100);
+
+        });
+
+
+        g.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+            item.ColumnSpan = 5;
+            item.NestedExtension().Button(button =>
+            {
+                button.Name = "btnAuditSearch";
+                button.Text = "Search";
+               // button.ClientSideEvents.Click = "function (s,e) { gridScheduledLifeSavers.UpdateEdit(); setTimeout(function() { RigOapChecklistGrid.Refresh(); }, 2000); }";
+            });
+        });
+
+
+    });
+}).GetHtml();

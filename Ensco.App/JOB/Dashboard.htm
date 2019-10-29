@@ -1,0 +1,243 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+
+    <form>
+        <table id="t" border="0">
+            <tr style="border:none">
+                <td width="99%" style="border:none">
+                    <a onclick="window.location='home.htm'; return false;" href="">Go Back</a>
+                <td class="nowrap"><a href="javascript:void(0)" nowrap onclick="on_JobDashboard(this)">Suspend All Jobs</a>
+                <td class="nowrap"><a href="javascript:void(0)" nowrap onclick="on_JobDashboard(this)">Resume All Jobs</a>
+                <td class="nowrap"><a href="javascript:void(0)" onclick="on_JobDashboard(this)">  Suspend All Hot Work </a>
+                <td class="nowrap"><a href="javascript:void(0)" onclick="on_JobDashboard(this)">  Resume All Hot Work </a>
+                <td class="nowrap"><a href="javascript:void(0)" onclick="on_JobDashboard(this)"> Suspend All Permits</a>
+                <td class="nowrap"><a href="javascript:void(0)" onclick="on_JobDashboard(this)"> Resume All Permits</a>
+                <td><img src="../Images/Help icon.png" onclick="on_Help()" Title="Help" />
+        </table>
+        <table id="tActivity" class="marginBottom">
+            <tr>
+                <th class="header" colspan="24">
+                    Permits
+            <tr>
+                <td width="200">Filters
+                <td width1="200">
+                    <span style="margin-left:5px" class="lang">Authorized</span><input value="1" name="AllJob" checked type="radio" />
+                    <span style="margin-left:5px" class="lang">Pre-Authorization </span><input value="0" name="AllJob" type="radio" />
+                    <span style="margin-left:5px" class="lang">Closed Last 24 Hours  </span><input value="0" name="AllJob" type="radio" />
+        </table>
+    </form>
+
+    <script>
+        var t = $('#t')
+        var tRisk = $('#tRisk')
+        var tPermitReady = $('#tPermitReady')
+        var tPermitNotReady = $('#tPermitNotReady')
+        var tPermitOther = $('#tPermitOther')
+        var FirstLoad = true
+        var Page = 'dashboard'
+        var IsOIM
+        $(document).ready(function () {
+            var t = $('#tActivity')
+            t.prev().find('td').css('border', 'none')
+            t.find('td').eq(0).addClass('labelRight')
+            InitFold()
+            LockSecurity()
+
+            for (var i = 0; i < 12; i++)
+                InitGrid(null, i, 1)
+            $(':radio').on('click', function () {
+                var src = $(this)
+                InitGrid(null, 0, 1)
+            })
+            Customize()
+            //$('.minus').slice(-3).trigger('click')
+            FirstLoad = false
+            var xml = GetArray(['usp_JobDashboard', 100, 1, '', 1, Lang])
+            var t0 = $('<table/>').insertBefore(t)
+            DataBind(t0, xml)
+            RemoveWingDing(t0)
+            AddGridHeader(t0, 'Summary')
+
+            var risk = GetId('Risk')
+            risk.prev().nextAll().slice(0, 5).insertAfter(risk.nextAll().slice(-1))
+            CleanUp()
+
+            // Contracts the Risk Management Lists section
+            $('table#Risk span.minus').trigger('click');
+            // Centers table cell with links
+            $('table[id!="HeaderCrumb"] tr:not([nosort=1]) a[href]').parent().css('text-align', 'center')
+        })
+        function LockSecurity() {
+            var xml = GetArray(['usp_AdminGetOIM', UserId])
+            if ($(xml).text() == '') {
+                t.find('a').hide()
+            } else
+                IsOIM = true
+        }
+        function InitGrid(a, group, index) {
+            var arr = ['Permits', 'My Pending Authorizations / Verifications', 'Energy Isolation Pending Authorization'
+                , 'Gas Test Pending Authorization', 'Non-Permit Jobs'
+                , 'Permit Authorities', 'Isolation Authorities', 'Gas Testors', 'Banksmen'
+                , 'Active Short Term Isolations', 'Active Long Term Isolations'
+                , 'Safety-Critical Assets'
+            ]
+            var t = $('#t' + group)
+            if (!t.length)
+                t = $('<table />').attr('id', 't' + group).appendTo($('body'))
+            if (group != 0)
+                t.addClass('marginBottom')
+            var type = ($('[name=AllJob]:checked').index() - 1) / 2
+            var xml = GetArray(['usp_JobDashboard', group, index, UserId, type, Lang])
+
+            if (xml == null)
+                return
+            DataBind(t, xml)
+            TdByName(t, 'Type', true).hide()
+            if (!t.find('tr').length) {
+                t.hide()
+                return
+            } else
+                t.show()
+
+            var total = $(xml).find('Table1').text()
+
+            AddCommonPaging(InitGrid, t, group, total, index, Callback, null, (group > 4))
+            AddGridSubHeader(t, arr[group])
+
+            if (group == 5)
+                AddHeaderTable('Risk Management Lists', t)
+            TdByName(t, 'Job').each(function () {
+                var td = $(this)
+                td.find('a').attr('title', td.next().text())
+            })
+            TdByName(t, 'JobTitle', true).hide()
+            if (group == 0 && IsOIM && type != 2) {
+                TdByName(t, 'Action').each(function () {
+                    var td = $(this)
+                    var action = 'Suspend'
+                    if (GetVal(td.prev()) == 'Suspended')
+                        action = 'Resume'
+                    td.html(AddButton(action) + AddButton('Cancel'))
+                })
+            } else {
+                TdByName(t, 'Action', true).hide()
+            }
+            TdByName(t, 'Status').each(function () {
+                var td = $(this)
+                if (GetVal(td) == 'Expired')
+                    td.css('color', 'red')
+            })
+        }
+        function AddButton(action) {
+            return '<a href="#" onclick="on_Action(this); return false "> ' + action + '</a>'
+        }
+        function on_Action(src) {
+            src = $(src)
+            var Id = GetVal(TdByName(src.closest('tr'), 'Permit').find('a'))
+
+            var action = GetVal(src)
+            if (action == 'Cancel') {
+                var xml = GetArray(['usp_JobValidatePermitCancel', Id])
+                var src = GetXmlTable(xml)
+                var ei = src.find('ei').text()
+                var gas = src.find('gas').text()
+                if (ei == 0 || gas == 0) {
+                    var arr = []
+                    if (ei == 0)
+                        arr.push('Isolated Equipment')
+                    if (gas == 0)
+                        arr.push('Gas Test')
+                    alert('The Permit cannot be ' + action + 'ed due to ' + arr.join(' and '))
+                    return
+                }
+                var r = showModal('../common/PopupCommon.htm', 'Are you sure you want to ' + action + ' this permit?', 500, 500)
+                if (!r)
+                    return
+            }
+            GetArray(['usp_JobSuspend', Id, 'Permit', action])
+            $(':radio:checked').trigger('click')
+        }
+        function AddHeaderTable(name, t) {
+            if (!FirstLoad)
+                return
+            var t = $('<table id=Risk class=marginBottom />').insertBefore(t)// .appendTo($('body'))
+            AddHeader(t, name)
+        }
+        function Customize() {
+            $('.header').closest('table').each(function () {
+                var t = $(this)
+                t.nextAll('table:visible').eq(0).removeClass('marginBottom')
+            })
+            return
+            var t = $('#t1')
+            t.removeClass('marginBottom')
+            var t1 = $('<table class=marginBottom />').insertBefore(t)
+            AddHeader(t1, 'Permits Pending Approval')
+        }
+        function Callback(t1) {
+            // AddGridHeader(t1, 'Hot Work Permit Search Results')
+        }
+        function on_JobDashboard(src) {
+            src = $(src)
+            var action = GetVal(src)
+            var page = 'Job'
+            if (action.indexOf('Permit') != -1)
+                page = 'Permit'
+            var id = 0
+            if (action.indexOf('Hot Work') != -1)
+                id = -1
+            if (action.indexOf('Cancel') != -1)
+                action = 'Cancel'
+            else if (action.indexOf('Resume') != -1)
+                action = 'Resume'
+            else
+                action = 'Suspend'
+
+            GetArray(['usp_JobSuspend', id, page, action])
+            $(':radio:checked').trigger('click')
+            return
+
+            var tr = src.closest('tr')
+            var id = 0
+            var r = Popup('PopupDashboard.htm', 1000, 500)
+
+            if (action.indexOf('All') == -1)
+                id = tr.children().eq(1).text()
+            GetArray(['usp_JobDashboardAction', action, id, r])
+            var status
+            if (action == 'Suspend')
+                status = 'Suspended'
+            if (action == 'Resume')
+                status = 'Open'
+            if (status != null) {
+                tr.children().eq(4).text(status)
+                if (action == 'Suspend')
+                    action = 'Resume'
+                else
+                    action = 'Suspend'
+                src.text(action)
+                return
+            }
+
+            Refresh()
+        }
+        function AutoRefresh() {
+            //  Refresh()
+            window.status = window.status + '1'
+            setTimeout(Refresh, 1000)
+        }
+    </script>
+</body>

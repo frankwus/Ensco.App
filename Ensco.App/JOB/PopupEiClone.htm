@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<style>
+    body {
+        margin: 20px;
+        margin-right: 40px;
+    }
+</style>
+<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body>
+    <!--<span style="margin-left:1; margin-bottom:5;  font-weight:bold" class="orangecolor"> Temporarily De-Isolate </span>-->
+    <table id="tEi" class="marginBottom">
+        <tr>
+            <th class="darkblue" colspan="11">
+                Certificate Cloning Process
+        <tr><td width="300" class="labelRight">Previous Certificate No.<td width="200"><td width="300" class="labelRight">Previous Permit<td>
+    </table>
+    <table class="marginBottom">
+        <tr>
+            <th class="hazard" colspan="11">
+                Isolation Authorities
+    </table>
+    <table id="tIA"></table>
+    <table class="marginBottom">
+        <tr>
+            <th class="hazard" colspan="11">
+                Permit Authorizers
+    </table>
+    <table id="tPermitApprover"></table>
+    <img id="Submit" src="../Images/Submit icon.png" onclick="on_Submit()" />
+    <img id="" src="../Images/Cancel icon.png" onclick="windodw.close()" />
+
+</body>
+</html>
+<script>
+    var tEi = $('#tEi')
+    var tIA = GetId('tIA')
+    var tPermitApprover = GetId('tPermitApprover')
+    var PermitId = getParameterByName('PermitId')
+    $(document).ready(function () {
+        var t = tEi
+        // t.width('100%').find('td').css('border', 'none').find(':text').addClass('border')
+        var xml = GetArray(['usp_JobPermitEi', PermitId])
+        xml = MyReplace(xml, 'Table>', 'Table0>')
+        t.find('tr').eq(1).children().eq(1).text(GetXmlTable(xml, 0).text()).nextAll().eq(1).text(PermitId)
+
+        t = tIA
+        DataBind(t, xml, 1)
+        RemoveWingDing(t)
+        TdByName(t, 'New Authority').each(function () {
+            var td = $(this)
+            var select = $('<select/>').width('50%').appendTo(td)
+            var role = td.prevAll().eq(1).text()
+
+            BindSelect(xml, select, 2, 'Position', 'Name')
+
+            select.find('option[value!=' + role + ']').not(':first').remove()
+
+            select.find('option').each(function () {
+                var src = $(this)
+                src.val(src.text())
+            })
+            $('<a style="marginLeft:10" href="javascript:void(0)"  />').appendTo(td).text('Same Authority').on('click', function () {
+                var td = $(this).parent()
+                select.val(td.prev().text())
+            })
+        })
+
+        t = tPermitApprover
+        DataBind(t, xml, 3)
+        RemoveWingDing(t)
+
+        TdByName(t, 'New Authorizer / Signer').each(function () {
+            var td = $(this)
+            var img = $('<img src="../images/select personnel icon.png" />').appendTo(td)
+            var role = td.prevAll().last().text()
+
+            img.on('click', function () {
+                var r = GetPobUser(role)
+                if (r == null)
+                    return
+                UpdateTd(td, r[0])
+            })
+            $('<a style="marginLeft:10" href="javascript:void(0)"  />').appendTo(td).text('Same Signer').on('click', function () {
+                var td = $(this).parent()
+                if (role == 'Permit Issuer')
+                    td.find('a').text('Same Authorizer')
+                var arr = td.parent().children().slice(1, 4).map(function () {
+                    return $(this).text()
+                }).get()
+                UpdateTd(td, arr)
+            })
+            $('<span/>').appendTo(td)
+        })
+        var arr = ['UserId', 'Position', 'UserId1', 'Position1']
+        for (var i in arr)
+            TdByName(t, arr[i], true).hide()
+        CleanUp()
+    })
+    function UpdateTd(td, arr) {
+        td.prev().text(arr[0])
+        td.find('span').text(arr[1])
+        td.next().text(arr[2])
+    }
+    function on_Submit() {
+        var root = $('<r />')
+
+        tIA.find('tr').slice(1).each(function () {
+            var tr = $(this)
+            var el = $.createElement('IA')
+            var name = GetVal(tr.find('select'))
+            if (name == '')
+                return
+            el.addAttr('Name', name)
+            el.addAttr('IsoType', GetVal(tr.children().first()))
+            root.append(el)
+        })
+        tPermitApprover.find('tr').slice(1).each(function () {
+            var td = $(this).find('img').parent()
+            var el = $.createElement('authorization')
+            var role = td.prevAll().last().text()
+            el.addAttr('Type', role)
+            var userId = GetVal(td.prev())
+            if (userId == '')
+                return
+            el.addAttr('UserId', userId)
+            el.addAttr('Name', td.find('span').text())
+            el.addAttr('Position', td.next().text())
+            root.append(el)
+        })
+        GetArray(['usp_JobClonePermitEi', PermitId, GetVal(tEi.find('td').eq(1)), GetCleanXml(root), UserId])
+        window.close()
+    }
+</script>

@@ -1,0 +1,30 @@
+﻿@*<script>
+    function onFileUploadComplete(e) {
+        //if (e.callbackData) {
+        //    var fileData = e.callbackData.split('|');
+        //    var fileName = fileData[0],
+        //        fileUrl = fileData[1],
+        //        fileSize = fileData[2];
+        //    DXUploadedFilesContainer.AddFile(fileName, fileUrl, fileSize);
+        //}
+
+        return 
+        window.location.reload();
+    }
+</script>*@
+
+@Html.DevExpress().UploadControl(settings =>
+{
+    settings.Name = ViewBag.ControlName ?? "MultiFileUpload";
+    settings.CallbackRouteValues = new { Area = "Common", Controller = "Admin", Action = "MultiFileUpload", SourceForm = ViewBag.SourceForm, SourceFormId = ViewBag.SourceFormId, controlName = ViewBag.ControlName };
+
+    settings.ShowProgressPanel = true;
+   // settings.ShowUploadButton = true;
+    settings.AutoStartUpload = true;
+    settings.AdvancedModeSettings.EnableMultiSelect = true;
+    settings.AdvancedModeSettings.EnableFileList = true;
+    settings.AdvancedModeSettings.EnableDragAndDrop = true;
+    settings.NullText = "Select a file to upload..";
+    
+    settings.ClientSideEvents.FileUploadComplete = string.Format("function(s,e) {{ console.log(e); onFileUploadComplete(e,\'{0}\',\'{1}\'); }}", ViewBag.SourceForm, ViewBag.SourceFormId);
+}).GetHtml()

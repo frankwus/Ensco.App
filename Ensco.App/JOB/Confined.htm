@@ -1,0 +1,434 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<form>
+    <table border="0">
+        <tr style="border:none">
+            <td width="99%" style="border:none">
+            <td><a id="Close" class="hidden" href="javascript:void(0)" onclick="on_Close(this)">Close</a>
+
+            <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+            <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+
+            <td><img src="../Images/Help icon.png" onclick="on_Help()" Title="Help" />
+    </table>
+    <table id="tPlanning">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                Planning
+        <tr>
+            <td>Entry Log No.
+            <td><span id="id"></span>
+            <td>Job
+            <td><span id="JobId"></span>
+            <td>Permit
+            <td><select id="PermitId" />
+            <td>Date/Time Performed
+            <td><input id="DateDone" type="text" />
+            <td>Date/Time Created
+            <td id="Date">
+            <td>Status
+            <td><span id="Status"></span>
+    </table>
+    <table id="tDummy" class1="marginBottom"></table>
+    <table class="marginBottom" id="tExecution0">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="14">
+                Execution
+    </table>
+    <table>
+        <tr class="hidden">
+            <td colspan="20">
+                <a href="javascript:void(0)" onclick="on_Submit(this)"> Finished, submit for verification </a>
+                <a href="javascript:void(0)" onclick="on_Edit(this)"> Edit</a>
+    </table>
+    <table id="tVerification" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="11">
+                Verification
+    </table>
+    <table id="tExecution">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="14">
+                Stand By Person(s)
+        <tr class="labelCenter">
+            <td>
+            <td>Name
+            <td>Position
+            <td>Signature
+            <td>Time In
+            <td>
+                Time Out 
+        <tr>
+            <td colspan="20">
+                <img src="../Images/Select Personnel icon.png" onclick="on_Add(this)" />
+                <a href="" onclick="on_Action(this);return false "> Sign checked rows above</a>
+    </table>
+</form>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tDummy = $('#tDummy')
+    var tGeneral = $('#tGeneral')
+    var tAuthorization = $('#tAuthorization')
+    var tExecution = $('#tExecution')
+    var tVerification = $('#tVerification')
+    var Id = getParameterByName('id')
+    var tExecution0 = GetId('tExecution0')
+    var Status
+    var IsPaperView
+    var Page = 'confined'
+    
+    var Clone = getParameterByName('clone')
+    var ARR = ['id', 'EntryLogNo', 'JobId', 'PermitId', 'GasId', 'Date', 'DateDone', 'Status']
+    $(document).ready(function () {
+        InitDateTime(['DateDone'])
+
+        InsertCommon()
+        InitFold()
+        var xml = GetArray(['usp_JobGetConfined', Id, UserId ])
+        BindSelect(xml, $('#PermitId'))
+        var xml1 = $(xml).find('Table1').text()
+        var src = $(xml1)
+        InitPlanning(src)
+        LoadJobPacket(tDummy)
+        InitExecution(src)
+        Status = $('#Status').text()
+        InitEvent()
+        InitStatus(xml )
+        InitPaperView(tExecution.next())
+        if (IsPaperView) {
+            $('#tPacket').hide()
+            var t = tExecution
+            t.add(t.next()).show()
+
+        }
+        CleanUp()
+        ToggleSign()
+    })
+    function ToggleSign() {
+        var arr = [GetId('tEntrant'), GetId('tExecution')]
+        for (var i in arr) {
+            var t = arr[i]
+            t.find('a').last().hide()
+            if (t.find(':checkbox').length)
+                t.find('a').last().show()
+        }
+    }
+    function InitStatus(xml) {
+        var t = tExecution
+        t.add(t.next()).find('span[id=UserId]').each(function () {
+            var span = $(this)
+            var tr = span.closest('tr')
+            if (span.text() != UserId || GetVal(tr.find(':text').eq(0)) != '') {
+                tr.find(':button, img:gt(0)').hide()
+                tr.find(':text').prop('disabled', true)
+            }
+        })
+        if (Status != 'Open' || $(GetXmlTable(xml, 1).text()).attr('IsJobOwner') == 0) {
+            LockPage()
+            $('a').filter(function () {
+                return GetVal($(this))=='Sign'
+            }).closest('tr').remove()
+        }
+        var xml = GetArray(['usp_AdminGetOIM', UserId])
+        if ($(xml).text() != '' && Status != 'Closed')
+            GetId('Close').show()
+    }
+    function InitPlanning(src) {
+        var t = tPlanning
+        t.find('tr').slice(-2).find('td:even').addClass('labelRight')
+        t.find('tr').last().css('border-bottom', '1 solid gray').children().slice(1, 4).width(60)
+
+        if (src == null)
+            return
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), src.attr(id))
+        }
+        src.find('Location').each(function () {
+            var element = $(this)
+            AddLocation($('#Location').prev(), element.attr('id'), element.attr('Name'))
+        })
+        LockField('PermitId')
+    }
+    function InitAuthorization() {
+        var t = tAuthorization
+        t.find('tr').eq(1).find('td').addClass('labelCenter')
+    }
+    function InitExecution(src) {
+        var t0 = tExecution
+        if (IsPaperView)
+            t0.find('tr').eq(1).children().slice(-3).hide()
+        var t1 = t0.clone().insertAfter(tExecution0  )
+        t1.attr('id', 'tEntrant')
+
+        var th = t1.find('th').eq(0)
+        var span = $('<span />').text('-').addClass('minus')
+        th.html('<span>Entrant(s)</span>')
+        span.prependTo(th)
+
+        src.find('ConfinedStandBy').each(function () {
+            var element = $(this)
+            var type = element.attr('type')
+            var t = t0
+            if (type == 0)
+                t = t1
+            var img = t.find('img').last()
+            var arr = [element.attr('UserId'), element.attr('Name'), element.attr('Position'), element.attr('Start'), element.attr('Stop'), element.attr('Signature')]
+            on_Add(img, arr, element.attr('id'))
+        })
+        t0.find('td:nth-child(5)').remove()
+        t0.find('td:nth-child(5)').remove()
+    }
+    function Validate() {
+        var ok = true
+        var t = tExecution.add(tEntrant)
+        //t.find(':text').add(GetId('DateDone')).each(function () {
+         GetId('DateDone').each(function () {
+            var src = $(this)
+            if (IsEmpty(src))
+                ok = false
+        })
+        return ok
+    }
+    function on_Save(close) {
+        if (!Validate()) {
+            alert('Pleaes fill out the required fields.')
+            return
+        }
+        var root = $('<r />')
+        SaveXmlAttachment()
+        root.addAttr('id', Id)
+        root.addAttr('close', close)
+        XmlGeneral(root)
+        XmlStandBy(root)
+        var xml = root[0].outerHTML
+        xml = GetArray(['usp_JobSaveConfined', xml])
+        Id = Trim($(xml).text())
+       // SaveEquipment()
+        window.location = 'Confined.htm?id=' + Id
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            element.addAttr(id, value)
+        }
+        root.append(element)
+    }
+    function XmlStandBy(root) {
+        var arr = [tExecution, GetId('tEntrant') ]
+        for (var i in arr) {
+            var t = arr[i]
+            t.find('[id=UserId]').closest('tr').each(function () {
+                var tr = $(this)
+                var el = $.createElement('standby')
+                i = parseInt(i)
+                el.addAttr('Type', (i + 1) % 2)
+                var span = tr.find('span').first()
+                el.addAttr('id', tr.attr('id'))
+                el.addAttr('UserId', span.text())
+                el.addAttr('Name', GetVal(tr.children().eq(1)))
+                el.addAttr('Position', tr.children().eq(2).text())
+               // el.addAttr('Signature',  tr.find(':checked').length==1?'Approved': '')
+                el.addAttr('Start', GetVal(tr.find(':text').eq(0)))
+                el.addAttr('Stop', GetVal(tr.find(':text').eq(1)))
+                el.addAttr('Checked', tr.find(':checked').length ) 
+                root.append(el)
+            })
+        }
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+        ToggleSign()
+    }
+
+    function GetDt() {
+        var dt = new Date()
+        var arr = dt.toString().split(' ')
+        return arr[2] + '-' + arr[1] + '-' + (arr[3] - 2000) + ' ' + arr[4]
+    }
+    function on_Clone() {
+        var xml = GetArray(['usp_JobCloneConfined', Id])
+        Id = $(xml).text()
+        window.location = 'confined.htm?id=' + Trim(Id)
+    }
+    function InitEvent() {
+        $(':button').on('click', function () {
+            var button = $(this)
+            var tr = button.closest('tr')
+            var name = button.val()
+            if (name != 'Approve' && name != 'Reject')
+                return
+            var section = button.closest('table').attr('id')
+            section = section.substring(1, section.length)
+            var type = tr.children().first().text()
+            var comment = GetVal(tr.find(':text'))
+
+            type = Trim(type)
+            GetArray(['usp_JobActionGas', Id, section, type, name, comment])
+            Refresh()
+        })
+    }
+    function on_Permit(src) {
+        src = $(src)
+
+    }
+    function on_Checklist(src) {
+        src = $(src)
+
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var r
+        if (arr != null)
+            r = arr
+        else {
+            r = GetPobUser()
+            if (r == null)
+                return
+        }
+
+        src.next().text(r[1]).attr('userId', r[0])
+    }
+    function DateTimeCallback(data) {
+        var src = $(this)
+        var tr =src.closest('tr')
+        var arr = []
+        tr.find(':text').each(function () {
+            arr.push($(this).datepicker('getDate')  )
+        })
+        if (arr[0] == null || arr[1] == null)
+            return 
+        if (arr[0]>=arr[1]){
+            alert('Time In cannot be greater than Time Out.')
+            src.val('')
+        }
+    }
+    function on_Add(src, arr0, id) {
+        src = $(src)
+        var arr = []
+        var tr = src.closest('tr')
+        if (arr0 == null) {
+            var r = GetPobUser()
+
+            if (r == null)
+                return
+            arr = r
+        } else
+            arr.push(arr0)
+        for (var i in arr) {
+            var r = arr[i]
+            var tr0 = src.closest('tr').prev()
+            var input = '<td><input type=text />'
+            var signature='' 
+            var html = '<tr><td width=50 class=nowrap>' + GetDelete() +  GetCheckbox()+ '<span class=hidden id=UserId >' + r[0] + '</span><td>' + r[1] + '<td>' + r[2] + '</td>'
+           // if (!IsPaperView )
+                html += '<td>' + input + input + '</tr>'
+            var tr1 = $(html).insertBefore(tr)
+            InitDateTime(tr1.find(':text'), DateTimeCallback)
+            if (arr0 != null) {
+                signature = arr0[5]
+                tr1.attr('id', id)
+                if (!IsPaperView) {
+                    SetVal(tr1.find(':text').eq(0), r[3])
+                    SetVal(tr1.find(':text').eq(1), r[4])
+                    tr1.children().eq(3).text(r[5])
+                }
+            }            
+            if (signature != '' && signature != null ) {
+                tr1.find('img, :checkbox').remove()
+                tr1.find(':text').prop('disabled', true )
+            }
+            if (tr1.closest('table').is( tExecution ))
+                tr1.children().slice(-2).hide()
+        }
+        ToggleSign()
+    }
+    function GetCheckbox() {
+        return '<input style="margin-left:10;margin-right:10" type=checkbox />'
+    }
+    function on_Action (src) {
+        src = $(src)
+        var t = src.closest('table')
+        if (t.find(':checkbox').length == 1)
+            t.find(':checkbox').prop('checked', true)
+        if (!t.find(':checked').length) {
+            alert('Please make a selection.')
+            return 
+        }
+        var ok=true 
+        t.find(':checkbox:checked').each(function () {
+            var tr = $(this).closest('tr')
+            tr.find(':text').each(function () {
+                var src = $(this)
+                if(IsEmpty(src)){
+                    ok=false
+                    return 
+                }
+                if (tr.find(':text').eq(1).datepicker('getDate') < tr.find(':text').eq(0).datepicker('getDate') ){
+                    Highlight(tr.find(':text'), 'color')
+                    ok=false
+                }
+
+            })
+            //var start = GetVal(tr.find(':text').eq(0))
+            //var stop = GetVal(tr.find(':text').eq(1))
+            //if ((start == '' || stop == '') && t.is(GetId('tEntrant'))) {
+            //    alert('Please enter the Start and Stop time.')
+            //    return
+            //}
+
+        })
+        if (!ok && !t.is(tExecution) ) {
+            alert(RequiredMessage+' . And the Time In cannot be greater than Time Out.')
+            return 
+        }
+        on_Save()
+        return 
+        var tr = src.closest('tr')
+        GetArray(['usp_JobActionStandBy', Id, tr.attr('id'), start, stop])
+        Refresh()
+    }
+    function on_Action_old (src) {
+        src = $(src)
+        var tr = src.closest('tr')
+        var start = GetVal(tr.find(':text').eq(0))
+        var stop = GetVal(tr.find(':text').eq(1))
+        if ((start == '' || stop == '') && tr.closest('table').is(GetId('tEntrant'))) {
+            alert('Please enter the Start and Stop time.')
+            return
+        }
+        GetArray(['usp_JobActionStandBy', Id, tr.attr('id'), start, stop])
+        Refresh()
+    }
+    function on_Close() {
+        if (!Validate()) {
+            alert('Pleaes fill out the required fields.')
+            return
+        }
+      //  alert(GetId('tEntranet').find('tr').length + ' ' + tExecution.find('tr').length);return 
+        if (GetId('tEntrant').find('tr').length == 3 || tExecution.find('tr').length == 3) {
+            alert('Please fill out both Execution and Verification section.')
+            return 
+        }
+        if (GetId('tEntrant').find(':checkbox').length  || tExecution.find(':checkbox').length ) {
+            alert('Please sign both Execution and Verification section.')
+            return
+        }
+        on_Save(1)
+    }
+</script>

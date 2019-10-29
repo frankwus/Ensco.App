@@ -1,0 +1,194 @@
+﻿<head>
+    <style>
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <table id="t1" class="marginBottom" >
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Hot Work Permits
+        </table>
+        <table id="tOpenJob"></table>
+        <table id="tOpen"></table>
+        <table id="tUpcoming"></table>
+        <table id="tCapa" class="marginBottom"></table>
+		<table id="tCapa1" class="marginBottom"></table>
+        <table id="tSearch" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Hot Work Permit Search
+            <tr>
+                <td>Permit No
+                <td><input type="text" />
+                <td>Location
+                <td><input />
+				               <td>Status
+                <td ><select />
+                <td>From Date
+                <td><input type="text" />
+
+            <tr>
+                <td> Job ID
+                <td><input type="text" />
+                <td>Has CAPA
+                <td colspan=3><select />
+                 <td>To Date
+                <td><input type="text" />
+
+            <tr>
+			               <td colspan="11" style='padding-top:4px' >
+				    <img src='../images/search icon.png' onclick="on_CommonSearch(this, 'usp_JobSearchPermit' ,1, Callback, 'Hot Work' )" />
+                    <img src='../images/cancel icon.png' onclick="on_Clear(this)" />
+        </table>
+        <table id="tSearchResult" class="marginBottom hidden">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="29">
+                    Hot Work Permit Search Results
+        </table>
+        <table id="tSearch1" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                     Hot Work Checklist Search
+            <tr>
+                <td>Certificate No.
+                <td><input type="text" />
+                <td>Location
+                <td><input />
+                <td>Status
+                <td><select />
+                <td>From Date
+                <td><input type="text" />
+            <tr>
+                <td> Job ID
+                <td><input type="text" />
+                <td>Fire Watcher
+                <td>
+                <td>Has CAPA
+                <td><select />
+                <td>To Date
+                <td><input type="text" />
+            <tr>
+			    <td colspan="11" style='padding-top:4px' >
+				    <img src='../images/search icon.png' onclick="on_CommonSearch(this, 'usp_JobSearchHotworkChecklist' ,1, Callback1 )" />
+                    <img src='../images/cancel icon.png' onclick="on_Clear(this)" />
+        </table>
+        <table id="tSearchResult1" class="marginBottom hidden">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="29">
+                    Hot Work Checklist Search Results
+        </table>
+    </form>
+</body>
+</html>
+<script>
+    var tOpenJob = $('#tOpenJob')
+    var tOpen = $('#tOpen')
+    var tUpcoming = $('#tUpcoming')
+    var tSearch = $('#tSearch')
+    var tSearchResult = $('#tSearchResult')
+    var tCapa = $('#tCapa')
+    var tSearch1 = $('#tSearch1')
+    var tSearchResult1 = $('#tSearchResult1')
+    var tCapa1 = $('#tCapa1')
+    var PermitType = getParameterByName('PermitType')
+    $(document).ready(function () {
+        InitFold()
+         for (var i =0;i<5; i++)
+			InitGrid(null,   i, 1 )
+        InitSearch()
+
+        InitPermitType()
+        CleanUp()
+    })
+    function InitPermitType() {
+        if (PermitType=='')
+            return
+        $('span').each(function () {
+            var span = $(this)
+            var text = span.text()
+            if (text.indexOf('Hot') != -1 )
+                span.text(text.replace('Hot', 'Cold'))
+        })
+    }
+	function InitGrid(a,  group , index ) {
+		var arr=[tOpenJob, tOpen, tUpcoming, tCapa, tCapa1]
+		var arr1=['Open Jobs with Hot Work Permits',  'Open Checklists',  'Upcoming Checklists', 'Hot Work Permit Open CAPA', 'Hot Work Checklist Open CAPA'] 	
+		var t=arr[group]
+		var xml = GetArray(['usp_JobLandingHotwork', group, index  ])
+		DataBind(t, xml )
+
+		var total = $(xml).find('Table1').text()
+		AddCommonPaging(InitGrid, t, group, total, index, Callback )
+
+		AddGridSubHeader(t, arr1[group])
+	}
+	function Callback(t1) {	
+        AddGridHeader(t1, 'Hot Work Permit Search Results')
+    }
+	function Callback1(t1) {
+        AddGridHeader(t1, 'Hot Work Checklist Search Results')
+    }
+	function InitSearch() {return 
+		var arr = ['Open', 'Closed']
+        var t = tSearch
+        t.find('td:even').not(':last').addClass('label right')
+        t.find(':text, select').width('97%')
+        t.find('tr').each(function () {
+            InitDate( $(this).find(':text').last() ) 
+        })
+		AddSelect(t, 0, arr)
+        AddSelectYesNo(t, 1)
+		NumberOnly([t.find('tr').eq(1).find(':text').eq(0), t.find('tr').eq(2).find(':text').eq(0) ])
+		//Search 1 
+		t = tSearch1
+        t.find('td:even').not(':last').addClass('label right')
+        t.find(':text, select').width('97%')
+        t.find('tr').each(function () {
+             InitDate( $(this).find(':text').last() ) 
+        })
+       	AddSelect(t, 0, arr)
+        AddSelectYesNo(t, 1)
+		NumberOnly([t.find('tr').eq(1).find(':text').eq(0), t.find('tr').eq(2).find(':text').eq(0) ])
+    }
+    function InitSearch2() {
+        var arr=['Open', 'Closed']
+        var t = tSearch
+        t.find('tr:gt(0)').not(':last').find('td:even').addClass('label right')
+        AddSelectYesNo(t, 0)
+        InitDateTime(t.find('tr').eq(1).find(':text').last())
+        InitDateTime(t.find('tr').eq(1).find(':text').slice(-2,-1))
+        AddSelect(t, 1, arr)
+
+        t = tSearch1
+        t.find('tr:gt(0)').not(':last').find('td:even').addClass('label right')
+        AddSelectYesNo(t, 1)
+        AddSelect(t, 0, arr)
+
+        InitDateTime(t.find('tr').eq(1).find(':text').last())
+        InitDateTime(t.find('tr').eq(2).find(':text').last())
+    }
+    function FormatGrid(t) {
+        t.find('th').first().text('')
+        GetTd(t, 0).each(function () {
+            var td = $(this)
+            td.text(td.parent().index())
+        })
+    } 
+    function on_Clear(src) {
+		src =$(src )
+		InitClear (src.closest('table'))
+    }
+</script>

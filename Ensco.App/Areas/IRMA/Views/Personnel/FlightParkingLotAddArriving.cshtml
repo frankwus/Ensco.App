@@ -1,0 +1,38 @@
+﻿@model Ensco.Irma.Models.ParkingLotPobModel
+
+@using (Html.BeginForm("FlightParkingLotAddArrivingPartial", "Personnel", FormMethod.Post))
+{
+    Html.DevExpress().PopupControl(settings =>
+    {
+        settings.Name = "popupControlParkingLotArriving";
+        settings.CallbackRouteValues = new { Controller = "Personnel", Action = "FlightParkingLotAddArriving" };
+        settings.CloseAction = CloseAction.OuterMouseClick;
+        settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+        settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+        settings.ShowFooter = true;
+        //settings.ShowOnPageLoad = true;
+        settings.AllowDragging = true;
+        settings.EnableHotTrack = true;
+        settings.Height = Unit.Percentage(100);
+        settings.Width = Unit.Percentage(100);
+        settings.HeaderText = "Add Arriving Personnel";
+
+        settings.SetContent(() =>
+        {
+            Html.RenderAction("FlightParkingLotAddArrivingPartial", "Personnel", new { Area = "IRMA" });
+        });
+        settings.SetFooterTemplateContent(c =>
+        {
+            ViewContext.Writer.Write("<div style=\"display: table; margin: 6px 6px 6px auto;\">");
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "btnArrivePersonnel";
+                buttonsettings.Text = "Add";
+                buttonsettings.UseSubmitBehavior = true;
+            }).Render();
+            ViewContext.Writer.Write("</div>");
+        });
+    }).GetHtml();
+}
+
+

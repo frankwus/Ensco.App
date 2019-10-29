@@ -1,0 +1,24 @@
+﻿@model Ensco.Irma.Models.IrmaHomeModel
+@using Ensco.App.App_Start
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_HomePobHistory";
+    grid.KeyFieldName = Model.PobHistory.KeyFieldName;
+    grid.CallbackRouteValues = new { Action = "IrmaHomeEnscoPobPartial", Controller = "Irma" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.PobHistoryModel), options);
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.PobHistory.KeyFieldName;
+    e.QueryableSource = Model.PobHistory.Dataset;
+}).GetHtml()

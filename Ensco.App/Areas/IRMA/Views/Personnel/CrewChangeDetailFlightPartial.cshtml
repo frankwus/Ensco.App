@@ -1,0 +1,77 @@
+﻿@model Ensco.Irma.Models.CrewFlightModel
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().GridView(gridPob =>
+{
+    gridPob.Name = "gridView_CrewChangeFlightPobs";
+    gridPob.SettingsDetail.MasterGridName = "gridView_CrewChangeFlights";
+    gridPob.KeyFieldName = Model.FlightPobInfo.KeyFieldName;
+
+    gridPob.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangeDetailFlightPartial", FlightId=Model.Id };
+    gridPob.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeFlightPobAddPartial" };
+    gridPob.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeFlightPobUpdatePartial" };
+    gridPob.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeFlightPobDeletePartial" }; //Delete it, this is not a template
+    gridPob.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+
+    gridPob.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    gridPob.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.EditButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    gridPob.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    gridPob.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    gridPob.SettingsCommandButton.CancelButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+    var attribs = Ensco.Utilities.UtilitySystem.GetCustomAttributes(typeof(Ensco.Irma.Models.CrewFlightPobModel));
+    Html.SetEnscoGridColumns(gridPob, typeof(Ensco.Irma.Models.CrewFlightPobModel));
+
+    gridPob.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridPob.SettingsPager.FirstPageButton.Visible = true;
+    gridPob.SettingsPager.LastPageButton.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridPob.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    gridPob.CommandColumn.Visible = false; 
+    //gridPob.CommandColumn.ShowNewButtonInHeader = true; 
+    //gridPob.CommandColumn.ShowEditButton = true;
+    //gridPob.CommandColumn.ShowDeleteButton = true;
+    //gridPob.CommandColumn.ShowUpdateButton = true;
+    //gridPob.CommandColumn.ShowCancelButton = true;
+    gridPob.CommandColumn.Width = 25;
+
+    gridPob.Styles.Header.Wrap = DefaultBoolean.True;
+    gridPob.SettingsPager.EnableAdaptivity = true;
+    gridPob.Styles.FilterRow.BackColor = System.Drawing.Color.LightSkyBlue;
+
+    gridPob.EditFormLayoutProperties.ColumnCount = 4;
+    foreach (var item in attribs)
+    {
+        if (!item.Visible)
+            continue;
+
+        gridPob.EditFormLayoutProperties.Items.Add(item.FieldName);
+    }
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    gridPob.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+
+    gridPob.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.FlightPobInfo.KeyFieldName;
+    e.QueryableSource = Model.FlightPobInfo.Dataset;
+}).GetHtml()
+

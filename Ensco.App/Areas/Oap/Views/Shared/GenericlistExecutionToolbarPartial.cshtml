@@ -1,0 +1,11 @@
+﻿@model Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist
+
+@Html.DevExpress().FormLayout(settings => {
+
+    var genericListController = (dynamic) ViewContext.Controller;
+    genericListController.ConfigureExecutionToolbar(settings, Html, ViewContext, Model);
+
+}).GetHtml()
+
+
+

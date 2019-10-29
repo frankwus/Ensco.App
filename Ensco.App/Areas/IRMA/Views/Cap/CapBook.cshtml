@@ -1,0 +1,129 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@section scripts
+{
+<script type="text/javascript">
+    MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+        function (s, e) {
+            //AdjustMainGrid(grid_CapBook); // grid is client side Id
+        }
+    );
+
+    function AdjustGrid(grid, width, height) {
+        if (grid === undefined || grid == null)
+            return;
+
+        grid.SetWidth(width);
+        grid.SetHeight(height);
+    }
+
+    function OnCapBookSplitterPaneResized() {
+        if (e.pane.name == "panelCompetency") {
+            AdjustGrid(grid_CapBookKSACompetency, e.pane.GetClientWidth(), e.pane.GetClientHeight());
+        }
+    }
+
+    function AdjustMainGrid(grid) {
+        var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+        grid.SetHeight(height);
+    }
+
+    function onToolbarItemClick(s, e) {
+        switch (e.item.name) {
+            case "AddItem" + s.name:
+                s.AddNewRow();
+                break;
+        }
+    }
+
+    function OnComboBoxValueChanged(s, url, name, selected) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { fieldName: name, value: selected },
+            beforeSend: function () {
+            },
+            success: function (msg) {
+                switch (name) {
+                    case 'RigId':
+                        Department.PerformCallback();
+                        break;
+                    case 'Department':
+                        PositionId.PerformCallback();
+                        break;
+                    case 'PositionId':
+                        CompId.PerformCallback();
+                        break;
+                    case 'CompId':
+                        KSAId.PerformCallback();
+                        break;
+                }
+            }
+        });
+    }
+    </script>
+}
+
+@Html.Hidden("SelectedCapBookPersonalId", (long)ViewData["SelectedCapBookPersonalId"])
+
+@Html.DevExpress().Splitter(settings =>
+{
+    settings.Name = "splitterCapBook";
+    settings.AllowResize = false;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+    settings.SeparatorVisible = false;
+    settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+    settings.ClientSideEvents.PaneResized = "function(s, e){ if(e.pane.name == \"panelPersonalSummary\") { grid_CapBook.SetWidth(e.pane.GetClientWidth()); grid_CapBook.SetHeight(e.pane.GetClientHeight());} else if (e.pane.name == \"panelCompetency\") { grid_CapBookKSACompetency.SetWidth(e.pane.GetClientWidth()), grid_CapBookKSACompetency.SetHeight(e.pane.GetClientHeight()); grid_CapBookExpirationCompetency.SetWidth(e.pane.GetClientWidth()), grid_CapBookExpirationCompetency.SetHeight(e.pane.GetClientHeight()); grid_CapBookAdditionalCompetency.SetWidth(e.pane.GetClientWidth()), grid_CapBookAdditionalCompetency.SetHeight(e.pane.GetClientHeight()); grid_CapBookAssessorGuideCompetency.SetWidth(e.pane.GetClientWidth()), grid_CapBookAssessorGuideCompetency.SetHeight(e.pane.GetClientHeight());}}";
+
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelPersonalSummary";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            //using (Html.BeginForm())
+            {
+                Html.RenderAction("CapBookPartial", "Cap", new { Area = "IRMA" });
+            }
+        });
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelCapBookEmpty1";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+        pane.SetContent(() =>
+        {
+            ViewContext.Writer.Write("<br/>");
+        });
+
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelCompetency";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            //using (Html.BeginForm())
+            {
+                Html.RenderAction("CapBookDetailPartial", "Cap", new { Area="IRMA" });
+            }
+        });
+    });
+}).GetHtml()
+
+
+

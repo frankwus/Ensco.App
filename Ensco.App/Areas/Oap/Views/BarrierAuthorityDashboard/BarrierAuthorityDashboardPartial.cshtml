@@ -1,0 +1,241 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklist>
+
+@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gridBACChecklists";
+
+    settings.KeyFieldName = "Id";
+
+    settings.CallbackRouteValues = new { Controller = "BarrierAuthorityDashboard", Action = "RigChecklists" };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "BarrierAuthorityDashboard", Action = "AddChecklist" };
+
+    settings.Settings.ShowTitlePanel = true;
+    settings.SettingsText.Title = "Barrier Authority Checklists";
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "RigChecklistUniqueId";
+        c.Caption = "Id";
+        c.Width = Unit.Percentage(5);
+        c.SetDataItemTemplateContent(container =>
+        {
+            Html.DevExpress().HyperLink(link =>
+            {
+                link.Properties.Text = DataBinder.Eval(container.DataItem, "RigChecklistUniqueId").ToString();
+                link.NavigateUrl = Url.Action("List", "BarrierAuthority", new { Id=DataBinder.Eval(container.DataItem,"Id") });
+            }).Render();
+        });
+    });
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "OapChecklist.Name";
+        c.Caption = "Checklist Type";
+        c.Width = Unit.Percentage(15);
+    });
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Title";
+    });
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "ChecklistDateTime";
+        c.Caption = "Checklist Start Date";
+        c.Width = Unit.Percentage(10);        
+        c.PropertiesEdit.DisplayFormatString = "dd-MMM-yyyy";
+
+        c.EditorProperties().TextBox(t =>
+        {
+            t.Width = Unit.Percentage(100);
+        });
+    });
+    settings.Columns.Add(c =>
+    {
+        c.Caption = "Auto Scheduled";
+        c.Width = Unit.Percentage(10);
+        c.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        c.SetDataItemTemplateContent(container =>
+        {
+            Html.DevExpress().CheckBox(check =>
+            {
+                check.Name = "checkbox_" + DataBinder.Eval(container.DataItem, "RigChecklistUniqueId");
+            }).Bind(DataBinder.Eval(container.DataItem,"IsAutoScheduled")).Render();
+        });
+    });
+    settings.Columns.Add("Status").Width = Unit.Percentage(10);
+
+    // Popup form customization
+    settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+    settings.EditFormLayoutProperties.ColumnCount = 2;
+    settings.SettingsPopup.EditForm.Modal = true;
+    settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.Center;
+    settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.SettingsPopup.EditForm.CloseOnEscape = AutoBoolean.True;
+    settings.SettingsText.PopupEditFormCaption = "Add/Edit " + settings.SettingsText.Title;
+
+
+    // Edit form fields
+    settings.EditFormLayoutProperties.Items.Add(i =>
+    {
+        i.ColumnName = "Title";
+        i.ColumnSpan = 2;
+    });
+
+    settings.EditFormLayoutProperties.Items.Add(i =>
+    {
+        i.ColumnName = "Description";
+        i.Caption = "Description";
+        i.ColumnSpan = 2;
+        i.SetTemplateContent(container =>
+        {
+            Html.DevExpress().Memo(m =>
+            {
+                m.Name = "Description";
+                m.Width = Unit.Percentage(100);
+                m.Properties.Rows = 5;
+            }).Render();
+        });
+    });
+
+    settings.EditFormLayoutProperties.Items.Add(i =>
+    {
+        i.Caption = "Checklist Type";
+        i.SetTemplateContent(container =>
+        {
+            Html.DevExpress().ComboBox(cb =>
+            {
+                cb.Name = "OapChecklistId";
+                cb.Properties.TextField = "Name";
+                cb.Properties.ValueField = "Id";
+                cb.Properties.ValueType = typeof(int);
+            }).BindList(ViewBag.ChecklistTypes).Render();
+        });
+    });
+
+    settings.EditFormLayoutProperties.Items.Add(i =>
+    {
+        i.Caption = "Lead Assessor";
+        i.SetTemplateContent(cont =>
+        {
+            int ownerId = Ensco.Utilities.UtilitySystem.CurrentUserId;
+            Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "LeadAssessorLookup", lookup = "Passport", multi = false, selected = ownerId });
+        });
+    });
+
+    settings.EditFormLayoutProperties.Items.Add(i =>
+    {
+        i.Caption = "Checklist Date";
+
+        i.SetTemplateContent(cont =>
+        {
+            Html.DevExpress().DateEdit(d =>
+            {
+                d.Name = "ChecklistDateTime";
+                d.Date = DateTime.UtcNow;
+            }).Render();
+        });
+    });
+
+    settings.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.ColumnSpan = 2;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+
+    settings.SettingsText.CommandUpdate = "Save";
+
+    // Filter
+    settings.Settings.ShowHeaderFilterButton = true;
+
+    // Paging
+    settings.SettingsPager.FirstPageButton.Visible = true;
+    settings.SettingsPager.LastPageButton.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+
+    // Style
+    settings.Width = Unit.Percentage(100);
+
+    // Toolbar
+    settings.SettingsSearchPanel.CustomEditorName = "search_BAC";
+    settings.Toolbars.Add(t => {
+
+        t.ItemAlign = GridToolbarItemAlign.Right;
+
+        t.Items.Add(i =>
+        {
+            i.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            i.Command = GridViewToolbarCommand.Custom;
+            i.Name = "AddItem" + settings.Name;
+            i.Text = DbRes.T("Add Checklist", "Resources");
+            i.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+            i.ItemStyle.ForeColor = System.Drawing.Color.White;
+            i.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            i.ClientEnabled = true;
+            i.BeginGroup = true;
+        });
+
+        t.Items.Add(i =>
+        {
+            i.ClientEnabled = false;
+            i.SetTemplateContent("&nbsp;&nbsp;&nbsp;");
+        });
+
+        t.Items.Add(i =>
+        {
+            i.SetTemplateContent(cont =>
+            {
+                Html.DevExpress().ButtonEdit(s =>
+                {
+                    s.Name = "search_BAC";
+                    s.Properties.NullText = "Search";
+                    s.Properties.Buttons.Add().Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                }).Render();
+            });
+        });
+
+        t.Items.Add(i =>
+        {
+            i.Command = GridViewToolbarCommand.Refresh;
+            i.DisplayMode = GridToolbarItemDisplayMode.Image;
+            i.Image.Url = "~/Images/Refresh.png";
+            i.Image.Height = Unit.Pixel(24);
+            i.Image.Width = Unit.Pixel(24);
+            i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+        });
+
+        t.Items.Add(i =>
+        {
+            i.Command = GridViewToolbarCommand.ShowFilterRow;
+            i.DisplayMode = GridToolbarItemDisplayMode.Image;
+            i.Image.Url = "~/Images/Filter.png";
+            i.Image.Height = Unit.Pixel(24);
+            i.Image.Width = Unit.Pixel(24);
+            i.ItemStyle.Border.BorderStyle = BorderStyle.None;
+        });
+
+    });
+    settings.ClientSideEvents.ToolbarItemClick = "function (s,e) { onToolbarItemClick(s, e); }";
+
+    settings.ClientSideEvents.BeginCallback = "function (s,e) { if (e.command == 'UPDATEEDIT') e.customArgs['OwnerId'] = LeadAssessorLookup.GetValueString();  }";
+
+}).Bind(Model.OrderByDescending(c => c.RigChecklistUniqueId)).GetHtml()
+
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().GridView(settings =>
+    {
+        var oapController = ViewContext.Controller as Ensco.App.Areas.Oap.Controllers.BarrierAuthorityDashboardController;
+
+        oapController.Configure(settings, Html, ViewContext);
+
+    }).Bind(Model).GetHtml();
+}

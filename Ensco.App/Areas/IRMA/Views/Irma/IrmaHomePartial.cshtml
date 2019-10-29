@@ -1,0 +1,125 @@
+﻿@*@model Ensco.Irma.Models.Irma.IrmaDashboardModel*@
+@using Ensco.Models
+
+@{ 
+    //MenuModel menu = Ensco.Services.ServiceSystem.ApplicationMenu;
+
+    //List<Ensco.Models.MenuItem> jobItems = menu.GetJobMenuItems();
+}
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formIrmaDashboard";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = true;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.ColCount = 1;
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = DbRes.T("Quick Links", "Resources");
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Percentage(100);
+        i.ColCount = 3;
+        i.Width = Unit.Percentage(25);
+        i.SettingsItems.Height = Unit.Pixel(100);
+
+        i.Items.Add(btn =>
+        {
+            btn.Caption = "";
+            btn.NestedExtension().Button(item =>
+            {
+                item.Name = "btnColdWorkPermit";
+                item.Text = DbRes.T("Cold Work Permit","Resources");
+                item.ControlStyle.BackColor = System.Drawing.ColorTranslator.FromHtml("#3DB7E4");
+                item.ControlStyle.ForeColor = System.Drawing.Color.White;
+                item.ControlStyle.Font.Bold = true;
+                item.ControlStyle.Font.Size = 14;
+                item.Width = Unit.Pixel(500);
+                item.Height = Unit.Pixel(70);
+                item.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("ColdWorkPermit", "Jobs", new { Area = "IRMA" }));
+            });
+        });
+        i.Items.Add(btn =>
+        {
+            btn.Caption = "";
+            btn.NestedExtension().Button(item =>
+            {
+                item.Name = "btnConfinedSPacePermit";
+                item.Text = DbRes.T("Confined Space Entry Permit","Resources");
+                item.ControlStyle.BackColor  = System.Drawing.Color.Yellow;
+                item.ControlStyle.ForeColor = System.Drawing.Color.Black;
+                item.ControlStyle.Font.Bold = true;
+                item.ControlStyle.Font.Size = 14;
+                item.Width = Unit.Pixel(500);
+                item.Height = Unit.Pixel(70);
+                item.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("ConfinedSpaceEntryPermit", "Jobs", new { Area = "IRMA" }));
+            });
+        });
+        i.Items.Add(btn =>
+        {
+            btn.Caption = "";
+            btn.NestedExtension().Button(item =>
+            {
+                item.Name = "btnJobDashboard";
+                item.Text = DbRes.T("Job Dashboard","Resources");
+                item.ControlStyle.BackColor = System.Drawing.ColorTranslator.FromHtml("#00467F");
+                item.ControlStyle.ForeColor = System.Drawing.Color.White;
+                item.ControlStyle.Font.Bold = true;
+                item.ControlStyle.Font.Size = 14;
+                item.Width = Unit.Pixel(500);
+                item.Height = Unit.Pixel(70);
+                item.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("JobDashboard", "Jobs", new { Area = "IRMA" }));
+            });
+        });
+        i.Items.Add(btn =>
+        {
+            btn.Caption = "";
+            btn.NestedExtension().Button(item =>
+            {
+                item.Name = "btnHotWorkPermit";
+                item.Text = DbRes.T("Hot Work Permit", "Resources");
+                item.ControlStyle.BackColor = System.Drawing.Color.Red;
+                item.ControlStyle.ForeColor = System.Drawing.Color.White;
+                item.ControlStyle.Font.Bold = true;
+                item.ControlStyle.Font.Size = 14;
+                item.Width = Unit.Pixel(500);
+                item.Height = Unit.Pixel(70);
+                item.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("HotWorkPermit", "Jobs", new { Area = "IRMA" }));
+            });
+        });
+        i.Items.Add(btn =>
+        {
+            btn.Caption = "";
+            btn.NestedExtension().Button(item =>
+            {
+                item.Name = "btnViewWI";
+                item.Text = DbRes.T("View Work Instruction", "Resources");
+                item.ControlStyle.BackColor = System.Drawing.ColorTranslator.FromHtml("#00467F");
+                item.ControlStyle.ForeColor = System.Drawing.Color.White;
+                item.ControlStyle.Font.Bold = true;
+                item.ControlStyle.Font.Size = 14;
+                item.Width = Unit.Pixel(500);
+                item.Height = Unit.Pixel(70);
+                item.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("WorkInstructionsAll", "Jobs", new { Area = "IRMA" }));
+            });
+        });
+
+        i.Items.Add(btn =>
+        {
+            btn.Caption = "";
+            btn.NestedExtension().Button(item =>
+            {
+                item.Name = "btnJobMyPage";
+                item.Text = DbRes.T("My Tasks", "Resources");
+                item.ControlStyle.BackColor = System.Drawing.ColorTranslator.FromHtml("#00467F");
+                item.ControlStyle.ForeColor = System.Drawing.Color.White;
+                item.ControlStyle.Font.Bold = true;
+                item.ControlStyle.Font.Size = 14;
+                item.Width = Unit.Pixel(500);
+                item.Height = Unit.Pixel(70);
+                item.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("MyPage", "Jobs", new { Area = "IRMA" }));
+            });
+        });
+    });    
+
+}).GetHtml()

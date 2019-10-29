@@ -1,0 +1,81 @@
+﻿@using Ensco.OAP.Models;
+@model IEnumerable<CommentModel>
+
+@* TO BE ADDED TO THE CALLING PAGE SCRIPTS - DO NOT UNCOMMENT *@
+
+
+@*
+    <script type="text/javascript">
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddItemgridLessonsLearnedControl": // Name of the toolbar button here
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+*@
+
+
+@{
+    string sourceForm = ViewBag.SourceForm;
+    string sourceFormId = ViewBag.SourceFormId;
+
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = true;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.AddButtonText = DbRes.T("Add Comment", "Resources");
+    options.ShowTitle = true;
+    options.ShowToolbar = true;
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gridComments";
+    settings.KeyFieldName = "Id";
+    settings.Caption = DbRes.T("Comments","Resources");
+
+    settings.CallbackRouteValues = new { Area="IRMA", Controller="Comments",Action="Control", SourceForm=sourceForm, SourceFormId=sourceFormId };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Area = "IRMA", Controller = "Comments", Action = "ControlAddRow", SourceForm = sourceForm, SourceFormId = sourceFormId };
+    //settings.SettingsEditing.DeleteRowRouteValues = new { Area = "IRMA", Controller = "Comments", Action = "ControlDeleteRow", SourceForm = sourceForm, SourceFormId = sourceFormId };
+
+    Html.EnscoStandardGrid(settings, typeof(CommentModel), options);
+    settings.CommandColumn.ShowNewButtonInHeader = true;
+
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+
+    settings.EditFormLayoutProperties.Items.Add(item =>
+    {
+        item.ColumnName = "Comment";
+    });
+ 
+    var commentColumn = (MVCxGridViewColumn)settings.Columns["Comment"];
+  
+    if (commentColumn != null)
+    {
+        commentColumn.EditorProperties().Memo(m =>
+        {
+            m.Width = Unit.Percentage(100);
+            m.Rows = 3;
+        });
+    }
+
+    settings.EditFormLayoutProperties.Items.AddCommandItem(item =>
+    {
+        item.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+
+    settings.CellEditorInitialize = (s, e) =>
+    {
+        switch (e.Column.FieldName)
+        {
+            case "Comment":
+                e.Editor.ReadOnly = false;
+                break;
+        }
+    };
+
+}).Bind(Model).GetHtml()

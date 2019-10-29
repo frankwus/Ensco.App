@@ -1,0 +1,42 @@
+﻿@model Ensco.Irma.Oap.WebClient.Corp.OapAudit
+
+@Html.DevExpress().FormLayout(settings => {
+
+
+    settings.Name = "VerificationToolbar";
+    settings.UseDefaultPaddings = false;
+    settings.AlignItemCaptionsInAllGroups = true;
+    settings.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+    settings.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 600;
+
+    settings.Items.Add(i =>
+    {
+        i.ShowCaption = DefaultBoolean.False;
+        i.CssClass = "buttonToolbar";
+        i.Width = Unit.Percentage(100);
+        i.NestedExtension().Button(s =>
+        {
+            s.Name = "startWorkflow";
+            s.Text = "Start Workflow";
+            //s.Text = DbRes.T("Start Workflow", "OapResources");
+            s.UseSubmitBehavior = false;
+            s.Width = Unit.Pixel(100);
+            s.RouteValues = new { Action = "StartAuditWorkflow", auditId = Model.Id};
+            s.Enabled = Model.Status == "Open";
+            s.ClientSideEvents.Click = "validateOapAudit";
+        });
+    });
+
+
+}).GetHtml()
+
+
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "verificationLoading";
+    settings.Modal = true;
+    settings.ContainerElementID = "gridviewVerifiers";
+}).GetHtml()
+
+
+

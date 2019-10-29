@@ -1,0 +1,21 @@
+﻿
+@model Ensco.Irma.Models.ParkingLotPobModel
+
+@Html.DevExpress().FormLayout(settings =>
+{
+    settings.Name = "flParkingLotArrivingPersonnel";
+    settings.EncodeHtml = false;
+    settings.UseDefaultPaddings = false;
+    settings.Width = Unit.Pixel(500);
+    settings.Enabled = true;
+
+    settings.ColCount = 2;
+    settings.Items.Add(x => x.Arriving, i =>
+    {
+    i.FieldName = "Arriving";
+    i.SetNestedContent(() => {
+        Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = i.FieldName, lookup = "PassportNotCrewOnboard", multi = false, selected = 0 });
+    });
+});
+}).GetHtml()
+

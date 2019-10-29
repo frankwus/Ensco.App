@@ -1,0 +1,258 @@
+﻿<head>
+    <style>body{
+    padding:5px;
+}</style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+<body >
+    <!--<br />
+    <table id="t" >
+        <tr>
+            <th class="header" style="text-align: left;" colspan="11">
+                New Permit Authorization
+        <tr class="label"><td>Permit Holder is requesting a new permit to continue work
+    </table>
+ <br />-->
+</body>
+<img src="../Images/Submit icon.png" onclick="on_Submit(this)" />
+<img src="../Images/Cancel icon.png" onclick="window.close() " />
+</html>
+<script>
+    var t = $('#t')
+    var tAuthorization
+    var tForm 
+    var Id = getParameterByName('id')
+    $(document).ready(function () {
+        var html = localStorage['PermitClone'] //window.dialogArguments
+        var body =$('body')
+        var parent = $(html)
+        parent.find('img, a').show().prop('disabled', false)
+        var t = parent.find('#tAuthorization').appendTo(body)
+        tAuthorization=t 
+        t.find('tr').show()
+        t.find('tr').eq(0).children().removeClass().addClass('header').text('New Permit Authorization')
+        t.find('tr').eq(1).children().html('Permit Authorizers – (if you don’t know, leave them blank)').addClass('darkblue')
+        t.find('td[rowspan=2]').siblings().remove().attr('rowspan', 1)
+        GetTd(t, 4).remove()
+        //        t.find('tr').find('img:first-child(1)').hide()
+        var tr = t.find('tr').eq(1).next()
+        var arr = ['Previous Authorizer / Signer', 'Previous Position', 'New Authorizer / Signer', 'New Position', 'Status']
+        for (var i in arr)
+            tr.children().eq( parseInt(i) +1).text(arr[i] )
+        t.find('img').each(function () {
+            var td = $(this).parent()
+            var td1 = td.next().next()
+            td1.html(td.html())
+            td1.find('span').text('').attr('userId', '')
+            var signer = 'Or Same Signer'
+            if (td.parent().prev().html().indexOf('Issuer') != -1)
+                signer ='Or Same Authorizer'
+            $('<a href="javascript:void(0)" onclick=on_Same(this) />').css('margin-left', 20).text(signer).appendTo(td1)
+        })
+        GetTd(t, 0).find('img').hide()
+
+        t = parent.find('#B').appendTo(body)
+        t.find('img').remove()
+        InitDateTime(t.find(':text').removeClass())
+        InitForm(body )
+        InitEvent()
+    })
+    function on_Same(src) {
+        src=$(src )
+        var span = src.prev()
+        var td1 = span.parent()
+        var td = td1.prev().prev()
+        if (src.closest('table').is ( tAuthorization))
+            span.replaceWith(span.closest('tr').find('span').first().clone())
+        else 
+            span.html(TdByName(span.closest('tr'), 'Previous Authority').text())
+       // td1.next().replaceWith(td.next().clone())
+    }
+    function InitForm(body ) {
+        var xml = GetArray(['usp_JobGetPermit',  Id, '', UserId])
+        var t = $('<table id=tForm />')
+        tForm=t 
+        DataBind(t, xml, 10)
+        AddGridSubHeader(t, 'Linked Permit to Work Forms – select which ones you want to clone')
+        t.appendTo(body).addClass('marginBottom')
+        RemoveWingDing(t )
+        GetTd(t, 2).hide()
+        GetTd(t, 3).hide()
+        t.find('th').slice(-2).hide()
+        GetTd(t, 0).each(function () {
+            var td = $(this)
+            //td.attr('id', td.text()).html('<input type=checkbox checked />')
+            td.prepend($('<input type=checkbox checked />')).width(100)
+        })
+        t.find(':checkbox').on('change', function () {
+            var ck = $(this)
+            var td = ck.parent()
+            var eiid = GetVal(td)
+            var page = GetVal(td.next())
+            if (page == 'Energy Isolation') {
+                if (ck.prop('checked'))
+                    ShowIA(eiid)
+                else
+                    GetId(eiid).hide()
+            }
+        }).trigger('change')
+    }
+    function ShowIA(eiid) {
+        if (GetId(eiid).length) {
+            GetId(eiid).show()
+            return 
+        }
+        var xml = GetArray(['usp_JobPermitEi', Id ])
+        xml = MyReplace(xml, 'Table>', 'Table0>')
+        var t = $('<table type=ia />').attr('id', eiid)
+        DataBind(t, xml, 1)
+        RemoveWingDing(t)
+        TdByName(t, 'New Authority').each(function () {
+            var td = $(this)
+            var select = $('<select/>').width('50%').appendTo(td)
+            var role = td.prevAll().eq(1).text()
+
+            BindSelect(xml, select, 2, 'Position', 'Name')
+
+            select.find('option[value!=' + role + ']').not(':first').remove()
+
+            select.find('option').each(function () {
+                var src = $(this)
+                src.val(src.text())
+            })
+            $('<a style="marginLeft:10" href="javascript:void(0)"  />').appendTo(td).text('Same Authority').on('click', function () {
+                var td = $(this).parent()
+                select.val(td.prev().text())
+            })
+        })
+        AddGridSubHeader(t, 'Isolation Authorities – (if you don’t know, leave them blank)')
+        t.insertAfter( tForm ).addClass('marginBottom')
+        return 
+        //var xml =GetArray(['usp_JobGetEi', eiid ] )
+        //var t = $('<table type=ia />').attr('id', eiid)
+        //DataBind(t, xml, 7)
+        //RemoveWingDing(t)
+        //TdByName(t.find('tr').eq(0), 'Isolation Type', true).text('Role')
+        //TdByName(t.find('tr').eq(0), 'Iso Authority', true).text('Previous Authority')
+        //TdByName(t.find('tr').eq(0), 'PH', true).text('New Authority')
+        //t.find('th, td').hide()
+        //var arr = ['Role', 'Previous Authority', 'New Authority', 'Status' ]
+
+        //for (var i in arr) {
+        //    TdByName(t, arr[i], true).show()
+        //}
+
+        //TdByName(t, 'New Authority').html(tAuthorization.find('img:visible').first().parent().html())
+        //AddGridSubHeader(t, 'Isolation Authorities – (if you don’t know, leave them blank)')
+        //t.insertAfter( tForm ).addClass('marginBottom')
+    }
+    function on_Submit() {
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        
+        var element = $.createElement('General')
+        $('#tAuthorization').find('img:visible').each(function () {
+            var td = $(this).parent()
+            var role = GetVal( td.parent().prev().children().first()) 
+            role = role.split('.')[1]
+            var el = $.createElement('Authorization')
+            el.attr('Role', Trim( role)) 
+            el.attr('UserId', td.find('span').attr('userId'))
+            el.attr('Name', td.find('span').text())
+            el.attr('Position', td.next().text())
+            element.append(el)
+        })
+
+        $('#tForm').find(':checked').each(function () {
+            var td = $(this).parent()
+            var id  = GetVal(td )
+            var el = $.createElement('Form')
+            el.attr('id', id )
+            el.attr('Page', td.next().next().text() ) 
+            element.append(el)
+        })
+        $('[type=ia]:visible').each(function () {
+            var t = $(this)
+            var eiid = t.attr('id')
+            TdByName(t, 'New Authority').each(function () {
+                var span = $(this).find('span')
+                var name = GetVal(span )
+                var role =GetVal( TdByName(span.closest('tr'), 'Role') )
+                if (name != '' && name != null ) {
+                    var el = $.createElement('ia')
+                    el.attr('Eiid', eiid)
+                    el.attr('IsoType', role)
+                    el.attr('Name', name )
+                    element.append(el)
+                }
+
+            })
+        })
+        element.attr('From', GetVal( GetId('FromDate')))
+        element.attr('To', GetVal(GetId('ToDate') ))
+        root.append(element)
+        var xml = GetArray(['usp_JobPermitRenew', Id,  GetCleanXml(root) ])
+        window.returnValue=1
+        window.close()
+    }
+    function InitEvent() {
+        $(':button').on('click', function () {
+            var button = $(this)
+            var tr = button.closest('tr')
+            var action = button.val()
+            var comment=GetVal(tr.find(':text').last())
+            window.returnValue = [action, comment] 
+            window.close()
+        })
+    }
+    function on_Cancel() {
+        window.close()
+        return
+    }
+    function on_AuthoritySelect(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var type = tr.children().first().text()
+        var arr = type.split('.')
+        if (arr.length > 1)
+            type = arr[1]
+        type = Trim(type)
+        var r = GetPobUser(type)
+        if (r == null)
+            return
+        r = r[0]
+        src.next().text(r[1]).attr('userId', r[0])
+        src.parent().next().text(r[2])
+    }
+    Date.prototype.addHours = function (h) {
+        this.setHours(this.getHours() + h);
+        return this;
+    }
+    function Hours12(src) {
+        src = $(src)
+        var tr = src.closest('tr')
+        var from = tr.find(':text').first()
+        var d = from.datepicker('getDate')
+        if (d == null)
+            return
+        hours = src.text()
+        hours = hours.replace('+', '')
+        hours = parseInt(hours)
+        if (hours == NaN)
+            hours = 1
+
+        d.setHours(d.getHours() + hours);
+        tr.find(':text').eq(1).datepicker('setDate', d);
+    }
+</script>

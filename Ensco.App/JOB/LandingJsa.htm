@@ -1,0 +1,154 @@
+﻿<head>
+    <style>
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <table id="t1" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    JSA Management
+        </table>
+        <table id="tOpen"></table>
+        <table id="tCapa" class="marginBottom"></table>
+        <table id="tSearch" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="10">
+                    Search
+            <tr>
+                <td>ID
+                <td><input type="text" />
+                <td>JSA Type
+                <td><select />
+                <td>Status
+                <td><select />
+                <td>From Date
+                <td><input type="text" />
+            <tr>
+                <td>Permit
+                <td><input type="text" />
+                <td>Location
+                <td>
+                    <img src='../images/search icon.png' onclick="on_Location(this)" />
+                    <table border="0" id="Location"></table>
+                <td>Has CAPA
+                <td><select />
+
+                <td>To Date
+                <td><input type="text" />
+            <tr>
+                <td>Participant
+                <td><img src="../Images/Select Personnel icon.png" onclick="on_PobSelect(this)" /><span></span>
+                <td>Job Supervisor
+                <td><img src="../Images/Select Personnel icon.png" onclick="on_PobSelect(this)" /><span></span>
+                <td>Job Factors
+                <td><select />
+            <tr>
+                <td colspan="11" style='padding-top:4px'>
+                    <img src='../images/search icon.png' onclick="on_CommonSearch(this, 'usp_JobSearchJSA' ,1, Callback )" />
+                    <img src='../images/cancel icon.png' onclick="on_Clear(this)" />
+        </table>
+        <table id="tSearchResult"  class="hidden marginBottom"></table>
+    </form>
+</body>
+</html>
+<script>
+    var tOpen = $('#tOpen')
+    var tSearch = $('#tSearch')
+    var tSearchResult = $('#tSearchResult')
+    var tCapa = $('#tCapa')
+    $(document).ready(function () {
+        InitFold()
+        for (var i = 0; i < 2; i++)
+            InitGrid(null, i, 1)
+        InitSearch()
+        CleanUp()
+    })
+    function InitGrid(a, group, index) {
+        var arr = [tOpen, tCapa]
+        var arr1 = ['Open JSAs', 'Open CAPA']
+        var t = arr[group]
+        var xml = GetArray(['usp_JobLandingJsa', group, index, Lang])
+        DataBind(t, xml)
+
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback)
+        if (group == 1)
+            AddGridHeader(t, arr1[group])
+        else 
+            AddGridSubHeader(t, arr1[group])
+    }
+    function InitSearch(xml) {
+        var arr = ['Open', 'Closed']
+        var t = tSearch
+        var xml = GetArray(['usp_JsaFilterSelect', Lang ])
+        t.find('tr:gt(0)').not(':last').find('td:even').addClass('labelRight')
+
+        BindSelect(xml, t.find('select').eq(3), 2)
+        AddSelectYesNo(t, 1)
+        AddSelectYesNo(t, 2)
+
+        InitDateTime(t.find('tr').eq(1).find(':text').last())
+        InitDateTime(t.find('tr').eq(2).find(':text').last())
+        AddSelect(t, 1, arr)
+
+        arr = ['JSA with Work Instruction', 'JSA with WI Checklist', 'JSA without Work Instruction', 'Verbal JSA']
+        AddSelect(t, 0, arr)
+        NumberOnly([t.find('tr').eq(1).find(':text').eq(0), t.find('tr').eq(2).find(':text').eq(0)])
+    }
+    function FormatGrid(t) {
+        t.find('th').first().text('')
+        GetTd(t, 0).each(function () {
+            var td = $(this)
+            td.text(td.parent().index())
+        })
+    }
+    function on_Submit() {
+        var t = tSearch
+        var arr = ['usp_JobSearchJSA']
+        t.find('tr:gt(0)').not(':last').find('td:odd').each(function () {
+            var td = $(this)
+            var value = GetVal(td.children())
+            arr.push(value)
+        })
+        var xml = GetSearch(arr)
+        t = tSearchResult
+        t.show()
+        DataBind(t, xml)
+        AddGridHeader(t, 'Search Results')
+        t.addClass('marginBottom')
+    }
+    function on_Clear(src) {
+        src = $(src)
+        InitClear(src.closest('table'))
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var r
+        if (arr != null)
+            r = arr
+        else {
+            r = GetPobUser()
+            if (r == null)
+                return
+            r = r[0]
+        }
+
+        src.next().text(r[1]).attr('userId', r[0])
+    }
+</script>

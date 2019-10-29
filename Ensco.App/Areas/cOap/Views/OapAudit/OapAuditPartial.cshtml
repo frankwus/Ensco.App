@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapAudit>
+
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+
+    Html.DevExpress().GridView(settings =>
+    {
+
+        //settings.CallbackRouteValues = new
+        //{
+        //    Controller = "OapAudit",
+        //    Action = "OpenAudits" };
+        //settings.ClientSideEvents.BeginCallback = "function(s,e) {OnBeginCallback(s,e);}";
+        //settings.ClientSideEvents.EndCallback = "function(s,e) {OnEndCallback(s,e);}";
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        // settings.Styles.SelectedRow.BackColor = Color.Red;
+        settings.Styles.SelectedRow.CssClass = "dvSelectedRow";
+
+        settings.CustomUnboundColumnData = (s, e) =>
+        {
+
+            if (e.Column.FieldName == "OapAuditProtocols")
+            {
+                MVCxGridView grid = (MVCxGridView)s;
+                int rowKey = (int)e.GetListSourceFieldValue("Id");
+                var row = (Ensco.Irma.Oap.WebClient.Corp.OapAudit)grid.GetRow(grid.FindVisibleIndexByKeyValue(rowKey));
+                var pList = (List<Ensco.Irma.Oap.WebClient.Corp.OapAuditProtocol>)row.OapAuditProtocols.ToList();
+                //if(pList.Count > 0)
+                //{
+                //    var ap = pList.Where(r => r.RigOapChecklist.OapChecklist.OapType.Code == "AR").FirstOrDefault();
+                //    pList.Remove(ap);
+
+                //}
+
+                e.Value = pList.Count()-1;
+            }
+        };
+
+
+        settings.ClientSideEvents.RowClick = string.Format("function(s, e){{ var key= s.GetRowKey(e.visibleIndex); SelectedAuditId.value = key; OapProtocolsGrid.PerformCallback(); }}");
+        var oapGroupController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapAuditController;
+        oapGroupController.Configure(settings, Html, ViewContext);
+
+
+
+    }).Bind(Model).GetHtml();
+    }

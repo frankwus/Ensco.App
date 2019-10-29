@@ -1,0 +1,1000 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<head>
+    <base target="_self" />
+    <style>
+        body {
+            margin: 10px;
+        }
+
+        a {
+            margin-right: 10;
+        }
+
+        .orange {
+            background-color: rgb( 232, 109, 31);
+            color: white;
+        }
+
+        tr.border_bottom td {
+            border-bottom: 3pt solid rgb(0, 70, 127);
+        }
+
+        tr.border_top td {
+            border-top: 3pt solid rgb(0, 70, 127);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .deepBlue {
+            background-color: rgb(0, 70, 127);
+            color: white;
+        }
+
+        .lightBlue {
+            background-color: rgb(61, 183, 228);
+            color: black;
+        }
+
+        .rotate {
+            transform: rotate(-90.0deg);
+            1font-size:5;
+            width: 1%;
+            text-align: center;
+        }
+
+        .label {
+            background-color: lightgray;
+            text-align: right;
+        }
+
+        .Add {
+        }
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+<body>
+    <table>
+        <tr style="text-align:right">
+            <td nowrap style="width:96%" class="noborder">
+                <span id="011311" style="display:none;margin-right:100">
+                    <a href="javascript:void(0)" id="Reload">reload</a>
+                    <input type="button" onclick="on_Reset(this)" value="Reset" />
+                    Approved?<input type="checkbox" onclick="on_Toggle(this)" />
+                    <input type="text" /><input type="button" onclick="on_Impersonate(this)" value="Impersonate" />
+                    <input type="button" onclick="on_Impersonate(this)" value="T" />
+                    <input type="button" onclick="on_Impersonate(this)" value="Z" />
+                </span>
+            <td class="noborder"><img id="Clone" src="../Images/Clone.png" onclick="on_Clone(this)" />
+            <td class="noborder"><img id="Save" src="../Images/save.png" style="width:30" onclick="on_Save()" Title="Save" />
+            <td class="noborder"><img src="../Images/outlook.png" onclick="on_Outlook()" />
+    </table>
+    <table id=t border="1" width="100%" style="border-collapse:collapse;" cellpadding="3">
+        <tr>
+            <td colspan="8" class="orange">CAPA Action Item
+        <tr>
+            <td rowspan="9" style="width:4" class="label">1
+            <td rowspan="5" class="orange" style="text-align:center;"> <img src="../Images/assign.png" />
+            <td class="label">Assignor
+            <td><img src="../Images/select_personnel.png" value="..." /><span id="Assignor"></span>
+            <td class="label">Notify when completed
+            <td><img src="../Images/select_personnel.png" value="..." /><span id="Notify0"></span>
+            <td class="label">Status
+            <td id="Status">
+        <tr>
+            <td class="label">Assignee
+            <td><img src="../Images/select_personnel.png" value="..." /><span id="Assignee"></span>
+            <td class="label">Due Date
+            <td><input type="text" id="DueDate" style="width:100%" onchange="on_DueDate(this)" />
+            <td class="label">Date Assigned
+            <td id="DateAssigned">
+        <tr>
+            <td class="label">Criticality
+            <td><select id="Criticality"></select>
+            <td class="label">Control Hierarchy
+            <td><select id="CH"></select>
+            <td class="label">Action Type
+            <td><select id="ActionType" />
+        <tr>
+            <td class="label">Action Required
+            <td colspan="5">
+                <textarea style="width:100%" rows="5" id="Description"></textarea>
+                <!--<img src="../Images/edit icon.png" onclick=on_Edit(this) class=Edit /><span id="Description"></span>-->
+        <tr>
+
+            <td class="label">Source
+            <td id="Source">
+
+            <td class="label">Require Review
+            <td colspan="3">
+                <input type="checkbox" id="RequireReview" checked1="checked" onclick=on_RequireReview(this) />
+                <a href="#" style="display:none" onclick="AddRequiredReviewer(this)" value="...">Add Required Reviewer</a>
+
+        <tr class="border_top">
+            <td rowspan="3" class="deepBlue" style="text-align:center;width:1"> <img src="../Images/respond.png" />
+            <td class="label">Completion Description
+            <td colspan="5"><textarea style="width:100%" rows="5" id="Comment"></textarea>
+        <tr>
+            <td class="label">Date Completed
+            <td><input type="text" id="DateCompleted" style="width:100%" />
+            <td class="label">Closure
+            <td>
+                <img src="../Images/Submit.png" value="Close" onclick=on_Action(this) />
+                <img src="../Images/clear.png" onclick=on_Clear(this) />
+            <td class="label">Attachments
+            <td colspan="5">
+                <img src="../Images/attachment.png" onclick="$(this).next().trigger('click')" />  <input id="Document" style="display: none;" type="file">
+                <!--<td><input type="file" />-->   <!--<span onclick="on_Attachment(this)">+ Add Attachment</span>-->
+        <tr style="display:none">
+            <td class="label">Request Reassignment
+            <td>
+                Yes
+                <!--<input type="radio" name="RequireReassignment" value="1" checked="checked" />
+                No  <input type="radio" name="RequireReassignment" value="0" />-->
+            <td class="label">To whom
+            <td>
+                <img src="../Images/Select_Personnel.png" value="..." /><span id="ToWhom"></span>
+                <input class="hidden" type="button" value="Submit" onclick="on_ToWhom(this) " />
+            <td class="orange">Assignor Response
+            <td>
+                <div class="hidden">
+                    Accept <input type="radio" value="1" checked name="ToWhom" />Reject <input type="radio" value="0" name="ToWhom" />
+                    <img src="../Images/Submit.png" onclick=on_ToWhomResponse(this) />
+                </div>
+        <tr style="display:none">
+            <td class="label">Request Extension
+            <td>
+                Yes
+                <!--<input type="radio" name="RequireExtension" value="1" checked="checked" />
+                No  <input type="radio" name="RequireExtension" value="0" />-->
+            <td class="label">Until When
+            <td>
+                <input type="text" id="UntilWhen" style="width:60%" />
+                <input type="button" value="Submit" onclick="on_UntilWhen(this) " />
+            <td class="orange">Assignor Response
+            <td>
+                <div class="hidden">
+                    Accept <input type="radio" checked value="1" name="UntilWhen" />Reject <input type="radio" value="0" name="UntilWhen" />
+                    <img src="../Images/Submit.png" onclick=on_UntilWhenResponse(this) />
+                </div>
+        <tr class="border_bottom">
+            <td colspan="6">
+                <a id="RequestReassignment" href="#" onclick="on_Reassignment(this)">Request Reassignment</a> |
+                <a id="RequestExtension" href="#" onclick="on_Extension(this)">Request Extension</a>
+
+        <tr id="ReviewerTr">
+            <td rowspan="1" class="lightBlue" style="text-align:center"> <img src="../Images/review.png" />
+
+
+            <td colspan="6">
+                <a href="#" onclick="on_AddReviewer(this)">+ Add Another Reviewer</a>|
+                <a href="#" onclick="on_AddRequestStatus(this)">Request Status Update</a>
+
+        <tr class="hidden" id="ReviewerTemplate">
+            <td class="label">Reviewer
+            <td id="Reviewer">
+            <td class="label">Response
+            <td colspan="3">
+                <input type="text" style="width:300;border:solid" />
+                <img src="../Images/Submit.png" onclick=on_ReviewerResponse(this) />
+        <tr class="hidden">
+            <td class="label">Request Status Update
+            <td>
+                <img src="../Images/select_personnel.png" value="..." /><span id="StatusUpdater"></span>
+                <img src="../Images/Submit.png" onclick=on_RequestStatus(this) />
+            <td class="label">Response
+            <td colspan="3">
+                <img id="StatusResponse" src="../Images/Submit.png" onclick=on_RequestStatusResponse(this) />
+        <tr>
+            <td colspan="8">
+                <img src="../Images/Submit.png" onclick=on_Submit(this) />
+                <img src="../Images/Cancel.png" onclick=on_Cancel(this) />
+    </table>
+
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var Id = getParameterByName('Id')
+    var Page = getParameterByName('Page')
+    var PageId = getParameterByName('PageId')
+    var UserId = getParameterByName('userId')
+    var ActionName = getParameterByName('Page')
+    var RaStatus = getParameterByName('Status')
+    var Status = 'Open'
+    var IsOriginator = getParameterByName('IsPublic') == 'false' ? true : false
+    var Assignor = $('#Assignor')
+    var Assignee = $('#Assignee')
+    var IsAdmin = getParameterByName('IsAdmin')
+    var ToWhom = $('#ToWhom')
+    var UntilWhen = $('#UntilWhen')
+    var StatusUpdater = $('#StatusUpdater')
+    var ARR = ['DueDate', 'DateAssigned', 'Criticality', 'CH', 'Description', 'Comment', 'DateCompleted', 'RequireReview',
+        'Status', 'StatusResponse', 'UntilWhen', 'ActionType']
+    var UserArr = ['Assignor', 'Assignee', 'ToWhom', 'StatusUpdater']
+    var XML
+    var IsAssigner
+    var IsAssignee
+    var IsStatusUpdater
+    var Timestamp
+    $(document).ready(function () {
+        t.find('td').eq(1).text((Id == 0 ? '' : Id))
+        if (Id == '')
+            Id = 0
+        Init()
+
+        Status = $('#Status').text()
+        if (Status == '')
+            Status = 'Open'
+        $('#Status').text(Status)
+        if (UserId == '')
+            UserId = '011311'
+        if (UserId == '011311' || getParameterByName('r') != '')
+            $('#011311').show().find(':text').width(300)
+        LockSecurity()
+        $('#DueDate, #DateCompleted, #UntilWhen').on('click', function () {
+            $('#ui-datepicker-div').show()
+        })
+        HideDatePicker()
+        Status = $('#Status').text()
+        CleanUp()
+        $('[id=Reviewer]').parent().find(':text').css('border', '1px solid black')
+    });
+    Date.prototype.addDays = function (days) {
+        var dat = new Date(this.valueOf());
+        dat.setDate(dat.getDate() + days);
+        return dat;
+    }
+    function on_DueDate(src) {
+        src = $(src)
+        var d = GetDate0(src.datepicker('getDate'))
+        var d0 = (new Date())
+        var index = 5
+        if (d < d0.addDays(-1))
+            index = 1
+        else if (d < d0.addDays(0))
+            index = 2
+        else if (d < d0.addDays(7))
+            index = 3
+        else if (d < d0.addDays(30))
+            index = 4
+        $('#Criticality').prop('selectedIndex', index)
+    }
+    function GetToday() {
+        return (new Date())
+    }
+    function HideDatePicker() {
+        if (!$('#ui-datepicker-div').is(':visible'))
+            setTimeout(HideDatePicker, 100)
+        else {
+            $('#ui-datepicker-div').hide()
+        }
+    }
+    function LowerCase(s) {
+        if (s == null)
+            return null
+        else
+            return s.toLowerCase()
+    }
+    function LockSecurity() {
+        if (LowerCase(Assignor.attr('userId')) == UserId)
+            IsAssigner = true
+        if (LowerCase(Assignee.attr('userId')) == UserId)
+            IsAssignee = true
+        if (LowerCase(StatusUpdater.attr('userId')) == UserId)
+            IsStatusUpdater = true
+        if (!IsAssigner || ['Pending for Response', 'Closed'].indexOf(Status) != -1) {
+            //if (Id != 0 && IsAdmin != 'true' && Status != 'Closed')
+            t.find('tr').slice(1, 6).find('input, select, img, textarea').prop('disabled', true)
+        }
+        if (!IsAssignee || Status != 'Pending for Response') {
+            t.find('tr').slice(6, 11).find('input, img, textarea, a').prop('disabled', true)
+            // $('#Comment').prev().hide()
+        }
+        //        $('[id=Reviewer][userid=' + UserId + ']').parent().find('*').prop('disabled', false)
+        $('[id=Reviewer]').filter(function () {
+            return LowerCase($(this).attr('userId')) == UserId
+        }).parent().find('*').prop('disabled', false)
+
+        var statusUpdater = $('#StatusUpdater')
+        if (statusUpdater.text() == '') {
+            statusUpdater.next().hide().closest('tr').children().last().children().hide()
+        } else
+            statusUpdater.siblings().hide()
+        if (IsAssigner) {
+            if (ToWhom.text() != '')
+                ToWhom.closest('tr').children().last().find('div').show().find('input, img').prop('disabled', false)
+            if (UntilWhen.val() != '')
+                UntilWhen.closest('tr').children().last().find('div').show().find('input, img').prop('disabled', false)
+        } else {
+            t.find('tr').slice(1, 6).find('input, select, img').prop('disabled', true)
+        }
+        if (!IsStatusUpdater)
+            $('#StatusUpdater').closest('tr').children().last().prop('disabled', true)
+        //if (Status != 'Pending Review')
+        //    $('[id=Reviewer]').closest('tr').find('input').prop('disabled', true)
+        if (Status != 'Open')
+            ToggleDisable(t.find('tr').last().find('img').first(), true)
+    }
+    function Init() {
+        AddSelect($('#ActionType'), null, ['Preventive', 'Corrective'])
+        XML = GetArray(['usp_CapaGet', PageId, Id, ActionName])
+        //   alert(XML)
+        var xml = $(XML).find('Column1').text()
+
+        InitDate(['UntilWhen', 'DueDate', 'DateAssigned', 'DateCompleted'])
+        InitSelect('CH', 1)
+        InitSelect('Criticality', 2)
+        var element = $(xml)
+        Timestamp = element.attr('rr')
+
+        $('#Source').html(element.attr('Source'))
+
+        for (var i in ARR)
+            InitField(element, ARR[i])
+        for (var i in UserArr) {
+            var name = UserArr[i]
+            var span = $('#' + name)
+            span.attr('userId', element.attr(name + 'UserId')).attr('email', element.attr(name + 'email')).text(element.attr(name + 'UserName'))
+        }
+        if (UntilWhen.val() != '') {
+            UntilWhen.siblings().hide()
+            on_Extension($('#RequestExtension'))
+        }
+        if (ToWhom.text() != '') {
+            ToWhom.siblings().hide()//.closest('tr').show()
+            on_Reassignment($('#RequestReassignment'))
+            // ToWhom.closest('tr').children().last().show()
+        }
+        var statusUpdaterUserId = element.attr('statusUpdaterUserId')
+        if (statusUpdaterUserId != null && statusUpdaterUserId != '') {
+            AddReviewer()
+            var statusUpdater = $('#StatusUpdater:visible')
+            statusUpdater.attr('userId', statusUpdaterUserId).attr('email', element.attr('statusUpdaterUserEmail')).text(element.attr('statusUpdaterUserName'))
+            $('#StatusUpdater').siblings().hide().closest('tr').next().find('a').eq(1).hide()
+        }
+        var statusResponse = element.attr('statusResponse')
+        if (statusResponse != null && statusResponse != '') {
+            var td = $('#StatusResponse').parent()
+            td.attr('id', 'StatusResponse').html(statusResponse)
+        }
+        element.find('Notify').each(function () {
+            var src = $(this)
+            AddNotify(src.attr('userId'), src.attr('userName'), src.attr('email'))
+        })
+        element.find('Reviewer').each(function () {
+            var src = $(this)
+            var arr1 = { userId: src.attr('userId'), userName: src.attr('userName'), email: src.attr('email') }
+            // AddReviewer({ userId: src.attr('userId'), name: src.attr('userName'), email: src.attr('email') }, src.attr('required'), src.attr('response'))
+            var arr = [] // vvv Jiming 9/14/17
+            $.each(arr1, function (i, n) {
+                arr.push(n);
+            });
+            AddReviewer(arr, src.attr('required'), src.attr('response')) //^^^
+        })
+        element.find('Attachment').each(function () {
+            var src = $(this)
+            InsertAttachment($('#Document').closest('td'), src.attr('guid'), src.attr('name'))
+        })
+        $('#ActionName').text(ActionName)
+
+        if (Id == 0)
+            $('#Assignor').text(UserName).attr('userId', UserId)
+        //FindEmployee()
+        InitEvent()
+    }
+    function InitSelect(id, index) {
+        var src = $('#' + id)
+        $('<option/>').appendTo(src)
+        $(XML).find('Table' + index).each(function () {
+            var element = $(this).find('id')
+            var option = $('<option/>')
+            option.val(element.text()).text(element.next().text()).appendTo(src)
+        })
+    }
+    function InitField(element, id) {
+        var src = $('#' + id)
+        if (!src.length) {
+            return
+        }
+        var value = element.attr(id)
+        value = Decode(value)
+        if (src.attr('class') == 'hasDatepicker' || id == 'DateAssigned')
+            value = FormatDate(value)
+        var tagName = src[0].tagName
+        if (['SELECT', 'INPUT'].indexOf(tagName) != -1) {
+            if (tagName == 'INPUT' && src.attr('TYPE').toLowerCase() == 'checkbox') {
+                if (IsTrue(value))
+                    src.prop('checked', true).trigger('click').trigger('click')
+                else
+                    src.prop('checked', false)
+            }
+            else
+                src.val(value)
+        }
+        else
+            src.html(value)
+        //return
+        //if (src.attr('class') == 'hasDatepicker')
+        //    AddDate(root, id)
+        //else
+        //    root.addAttr(id, value)
+    }
+    function FormatDate(d) {
+        d = GetDate0(d)
+        if (d == null)
+            return
+        return $.datepicker.formatDate("d-M-y", d)
+    }
+    function AddRequiredReviewer() {
+        var arr = GetADUser()
+        if (arr == null)
+            return
+        AddReviewer(arr, true)
+    }
+    function InitEvent() {
+        $('body').on('click', 'img[value="..."]', function () {//Active Directory     //...
+            var src = $(this)
+            var span = src.next()
+            var td = src.parent()
+            var tr = td.parent()
+            var type = 'test'
+            var arr = GetADUser()
+            if (arr == null)
+                return
+            if (Trim(td.prev().text()) == 'Reviewer') {
+                AddReviewer(arr, true)
+                return
+            }
+            if (span == null) {
+                return
+            }
+            if (span.next().length)
+                span.next().show()
+            var userId = arr[0], name = arr[1], email = arr[2]
+            if (span.attr('id') == 'Notify0')
+                AddNotify(userId, name, email)
+            else if (span.attr('id') == 'Clone')
+                AddClone(userId, name, email)
+            else
+                span.attr('userId', userId).attr('email', email).text(name)
+        })
+    }
+
+    function AddNotify(userId, userName, email) {
+        var span = $('#Notify0')
+        var div = $('<div id=Notify  >' + GetDeleteImg() + userName + '</div>')
+        div.attr('userId', userId).attr('email', email).attr('username', userName)
+        div.appendTo(span)
+    }
+    function AddClone(userId, userName, email) {
+        var span = $('#Clone')
+        var div = $('<div id=1  >' + GetDeleteImg() + userName + '</div>')
+        div.attr('userId', userId).attr('email', email).attr('username', userName)
+        div.appendTo(span)
+    }
+    function GetDeleteImg() {
+        return ' <img width=16 src=../Images/delete.png onclick=on_Delete(this) ></img>'
+    }
+    function on_Delete(src) {
+        src = $(src)
+        if (src.parent().prop('tagName') == 'DIV')
+            src.parent().remove()
+        else {
+            var tr = src.closest('tr')
+            if (tr.children().first().attr('rowspan') > 1) {
+                var tr1 = tr.next()
+                var tds1 = tr1.children()
+                var tds = tr.children().slice(1)
+                tr1.append(tds)
+                tr.append(tds1)
+                tr1.remove()
+                //  tr1.replaceWith(tr1.html() )
+            }
+            else
+                tr.remove()
+
+            UpdateRowSpan($('.lightBlue'), -1)
+            UpdateNumberRowSpan(-1)
+        }
+
+    }
+
+    function AddDate(root, name) {
+        var date = $('#' + name).datepicker('getDate')
+        if (date != null && date != '')
+            root.addAttr(name, GetDate(date))
+    }
+    function GetDate(d) {
+        d = GetDate0(d)
+        if (!Date.parse(d))
+            return
+        var dd = d.getDate();
+        var mm = d.getMonth() + 1;
+        var y = d.getFullYear();
+        return mm + '/' + dd + '/' + y;
+    }
+    function GetDate0(d) {
+        if (d == null)
+            return null
+        var arr = d.toString().split('-')
+        if (arr.length > 2)
+            return new Date(arr[0], arr[1] - 1, arr[2])
+        else
+            return d
+    }
+    function FormatDate(d) {
+        d = GetDate0(d)
+        if (d == null)
+            return
+        return $.datepicker.formatDate("d-M-y", d)
+    }
+    function on_Print() {
+        window.print()
+    }
+    function on_Edit(src) {
+        src = $(src)
+        var span = src.next()
+        var comment = span.html()
+        if (span.text().indexOf('Please complete the Work Order') == 0)
+            return
+        var r = showModal('richText.htm?a=1', comment, 850, 600)
+        if (r == null)
+            return
+        span.html(r)
+    }
+    function on_Reassignment(src) {
+        src = $(src)
+        if (ToWhom.closest('tr').is(':visible'))
+            return
+        var tr = src.closest('tr')
+        tr.prev().prev().show()
+        UpdateRowSpan($('.deepBlue'), 1)
+        UpdateNumberRowSpan(1)
+    }
+    function UpdateNumberRowSpan(i) {
+        UpdateRowSpan(t.find('td').eq(1), i)
+    }
+    function on_Extension(src) {
+        src = $(src)
+        if (UntilWhen.closest('tr').is(':visible'))
+            return
+        var tr = src.closest('tr')
+        tr.prev().show()
+        UpdateRowSpan($('.deepBlue'), 1)
+        UpdateNumberRowSpan(1)
+    }
+    function on_AddReviewer(src) {
+        var arr = GetADUser()
+        if (arr == null)
+            return
+        AddReviewer(arr)
+    }
+    function AddReviewer(arr, required, response) {
+        var tr0 = $('#ReviewerTr')
+        var i = -3
+        if (arr == null)
+            i = -2
+        var tr1 = t.find('tr').slice(i, i + 1).clone()
+        var tr = $('[id=Reviewer]:visible').last().parent()
+        if (!tr.length) {
+            tr = $('<tr/>')
+            tr.append(tr0.find('td:gt(0)').clone())
+            tr.insertAfter(tr0)
+            tr0.find('td:gt(0)').remove()
+            tr1.children().each(function () {
+                var td = $(this)
+                tr0.append(td.clone())
+            })
+            tr1 = tr0
+        } else {
+            tr1.insertAfter(tr).show()
+        }
+        if (arr != null) {
+            var index = 2
+            if (tr1.children().length == 4)
+                index = 1
+            var td = tr1.find('td').eq(index)
+            td.attr('userId', arr[0]).attr('email', arr[2]).text(arr[1])
+            if (!event.isTrigger)
+                td.next().next().find('*').prop('disabled', true)
+            if (required)
+                td.prev().append($('<span style="color:red">*</span>' + GetDeleteImg()))
+            else
+                td.prev().append($(GetDeleteImg()))
+
+            response = Trim(response)
+            if (response != '')
+                td.next().next().html(response)
+        }
+        UpdateRowSpan($('.lightBlue'), 1)
+        UpdateRowSpan(t.find('td').eq(1), 1)
+    }
+    function on_AddRequestStatus(src) {
+        src = $(src)
+        src.remove()
+
+        //if ($('td:visible').filter(function () {
+        //    return $(this).text() == 'Request Status Update'
+        //}).length == 0)
+        AddReviewer()
+        //alert(src[0].outerHTML)
+    }
+
+    function UpdateRowSpan(td, i) {
+        td.attr('rowspan', parseInt(td.attr('rowspan')) + i)
+    }
+    function on_ReviewerResponse(src) {
+        src = $(src)
+        var comment = GetVal(src.prev())
+        var tr = src.closest('tr')
+        var index = tr.prevAll().find('[id=Reviewer]').length
+        GetArray(['usp_capaReviewerResponse', PageId, Id, index, comment])
+    }
+    function on_RequestStatus(src) {
+        src = $(src)
+        var span = src.prev()
+        GetArray(['usp_CapaRequestStatusUpdate', PageId, Id, span.attr('userId'), span.text(), span.attr('email'), ActionName])
+        window.close()
+    }
+    function GetXml() {
+        var root = $('<ra />')
+        root.addAttr('raId', PageId)
+        root.addAttr('actionName', Page)
+        root.addAttr('Timestamp', Timestamp)
+        root.addAttr('id', Id)
+        AddUserAttr(root, Assignor)
+        AddUserAttr(root, Assignee)
+        AddUserAttr(root, ToWhom)
+        var statusUpdater = $('#StatusUpdater:visible')
+        if (statusUpdater.length)
+            AddUserAttr(root, statusUpdater)
+        for (var i in ARR) {
+            AddAttr(root, ARR[i])
+        }
+        CreateXmlReviewer(root, 'Reviewer')
+        CreateXmlReviewer(root, 'Notify')
+        CreateXmlAttachment(root)
+        var xml = root[0].outerHTML
+        xml = CleanSpecialCharacter(xml)
+        return CleanXml(xml)
+    }
+    function Validate() {
+        var arr = ['Description', 'DueDate', 'Assignee', 'Criticality', 'CH'] //, 'Comment', 'DateCompleted', 'RequireReview']
+        var isOk = true
+        for (var i in arr) {
+            var name = arr[i]
+            var src = $('#' + name)
+            if (IsEmpty(src))
+                isOk = false
+        }
+        var RequireReview = $('#RequireReview')
+        if (RequireReview.prop('checked') && $('#ReviewerTr').text().indexOf('*') == -1) {
+            Highlight(RequireReview.parent(), 'yellow')
+            isOk = false
+        }
+        if (!isOk) {
+            alert('Please fill out the highlighted fields.')
+            return false
+        }
+        return true
+    }
+    function on_Save() {
+        //if ( !Validate()) {
+        //    return
+        //}
+        var xml = GetXml()
+        var arr = [MyReplace(xml, "'", "''"), UserId]
+        var sql = "usp_SaveCapa  '" + arr.join("','") + "'"
+        var r = GetArray(['usp_CapaSave', MyReplace(xml, "'", "''"), UserId])
+        Id = $(r).find('Column1').text()
+        if (Id == -1) {
+            alert('The page has been updated by another user. Please refresh the page and try it again.')
+            return
+        }
+        //window.location='PopupCapa.htm?page='+Page+'&pageId='+PageId+'&id='+id
+        RefreshPopup()
+        return
+        window.returnValue = xml // [Id, Assignee.attr('userId'), Assignee.text(), Assignee.attr('email'), $('#Description').text(), $('#DueDate').val()]
+        window.close()
+    }
+
+    function AddAttr(root, id) {
+        var src = $('#' + id)
+        if (!src.length) {
+            return
+        }
+        var tagName = src[0].tagName
+        if (['SELECT', 'INPUT'].indexOf(tagName) != -1) {
+            if (tagName == 'INPUT' && src.attr('TYPE').toLowerCase() == 'checkbox')
+                value = '' + src.prop('checked')
+            else
+                value = src.val()
+        }
+        else
+            value = src.html()
+        value = Encode(value)
+        if (src.attr('class') == 'hasDatepicker' || id == 'DateAssigned')
+            AddDate(root, id)
+        else
+            root.addAttr(id, value)
+    }
+    function CreateXmlReviewer(root, name) {
+        $('[id=' + name + ']:visible').each(function (index) {
+            var td = $(this)
+            var element = $.createElement(name)
+            element.addAttr('userid', td.attr('userid'))
+            element.addAttr('username', td.text())
+            element.addAttr('email', td.attr('email'))
+            if (td.prev().text().indexOf('*') != -1)
+                element.addAttr('required', 1)
+            element.addAttr('seq', index)
+            var tr = td.parent()
+            var response = tr.find('td').last().text()
+            var input = tr.find(':text')
+            if (input.length)
+                response = input.val()
+            element.addAttr('response', response)
+            root.append(element)
+        })
+    }
+    function CreateXmlAttachment(root) {
+        $('[type=file]').parent().find('a').each(function () {
+            var a = $(this)
+            var element = $.createElement('Attachment')
+            element.addAttr('guid', a.attr('href').replace('../upload/', ''))
+            element.addAttr('name', a.text())
+            root.append(element)
+        })
+    }
+    function AddDate(element, id) {
+        var src = $('#' + id)
+        var date = src.datepicker('getDate')
+        if (date != '')
+            element.addAttr(id, GetDate(date))
+    }
+    function AddUserAttr(root, src) {
+        var id = src.attr('id')
+        root.addAttr(id + 'UserId', src.attr('userId'))
+        root.addAttr(id + 'UserName', src.text())
+        root.addAttr(id + 'Email', src.attr('email'))
+    }
+    function CleanSpecialCharacter(xml) {
+        return xml
+        var c0 = '&#@;'
+        var s = xml
+        for (var i = 0; i < 28; i++) {
+            c = c0.replace('@', i)
+            s = MyReplace(s, c, '')
+        }
+        return s
+    }
+    function on_Action(src) {
+        src = $(src)
+        var d = GetDate($('#DateCompleted').datepicker('getDate'))
+        var action = src.attr('value')
+        if (action == 'Close' && d == null) {
+            alert('Please pick a date.')
+            return
+        }
+        d = new Date(d)
+        if (d > Date.now()) {
+            alert('Please pick a date in the past.')
+            return
+        }
+        if (action == 'Close')
+            $('#Status').text('Closed')
+        GetArray(['usp_capaAssigneeRespond', PageId, Id, action, GetDate(d), UserId, ActionName])
+        window.returnValue = GetXml()
+        window.close()
+    }
+    function on_Toggle(src) {
+        src = $(src)
+        var s = window.location.toString().toLowerCase()
+        var status0 = getParameterByName('status').toLowerCase()
+        var status = 'open'
+        if (status0 == 'open')
+            status = 'approved'
+        s = s.replace(status0, status)
+
+        s = s.replace('#', '')
+        window.location = s
+    }
+    function on_Impersonate(src) {
+        src = $(src)
+        var id = $.trim($('#011311').find('input:text').val())
+        if (id == '')
+            id = '011311'
+        var id1 = id
+        if (src.val() == 'r100oim')
+            id = 'r100oim'
+        if (src.val() == 'T')
+            id = '011014'
+        if (src.val() == 'Z')
+            id = '016101'
+
+        var s = window.location.toString().toLowerCase()
+        if (s.indexOf('userid') == -1)
+            s += '&userId=' + id
+        else {
+            var id0 = getParameterByName('userId').toLowerCase()
+            if (id == '')
+                s = MyReplace(s, '&userid=' + id0, '')
+            else
+                s = MyReplace(s, id0, id)
+        }
+        s = s.replace('#', '')
+        if (getParameterByName('r') == '')
+            s += '&r=1'
+        RefreshPopup(s)
+    }
+    function on_Reset() {
+        GetArray(['usp_resetCapa', PageId, Id])
+        RefreshPopup()
+    }
+    function on_UntilWhen(src) {
+        src = $(src)
+        var date = src.prev().datepicker('getDate')
+        if (date != '')
+            date = GetDate(date)
+        var arr = [PageId, Id, date, ActionName]
+        GetArray(['usp_CapaUntilWhen', PageId, Id, date, ActionName])
+        window.close()
+    }
+    function on_ToWhom(src) {
+        src = ToWhom
+        GetArray(['usp_capaToWhomSubmit', PageId, Id, src.attr('userId'), src.text(), src.attr('email'), ActionName])
+        window.close()
+    }
+    function on_ToWhomResponse(src) {
+        src = $(src)
+        var value = src.siblings(':checked').val()
+        var arr = [PageId, Id, value, ActionName]
+        GetArray(['usp_capaToWhomResponse', PageId, Id, value, ActionName])
+        window.returnValue = GetXml()
+        window.close()
+    }
+    function on_UntilWhenResponse(src) {
+        src = $(src)
+        var value = src.siblings(':checked').val()
+        alert(value)
+        var arr = [PageId, Id, value, ActionName]
+        GetArray(['usp_capaUntilWhenResponse', PageId, Id, value, ActionName])
+        window.returnValue = GetXml()
+        window.close()
+    }
+    function on_RequestStatusResponse(src) {
+        src = $(src)
+        var text = src.siblings().val()
+        var arr = [PageId, Id, text, ActionName]
+        GetArray(['usp_capaStatusResponse', PageId, Id, text, ActionName])
+        window.returnValue = GetXml()
+        window.close()
+    }
+    function on_Clone(src) {
+        var r = Popup('PopupCapaClone.htm?raId=' + PageId + '&Id=' + Id + '&actionName=' + ActionName + '&userId' + UserId, 900, 500)
+        if (r == null)
+            return
+        window.returnValue = [r, GetXml()]
+        window.close()
+        return
+
+        src = $(src)
+        var root = $('<ra />')
+        src.parent().find('div').each(function () {
+            var div = $(this)
+            var element = $.createElement('clone')
+            element.addAttr('userid', div.attr('userid'))
+            element.addAttr('username', div.text())
+            element.addAttr('email', div.attr('email'))
+            //element.addAttr('description',  $('#Description').text())
+            //var date = $('#DueDate').datepicker('getDate') //.val()
+            //if (date != null)
+            //    element.addAttr('dueDate', GetDate(date) )
+            root.append(element)
+        })
+        var arr = [PageId, Id, ActionName, root[0].outerHTML, UserId]
+        GetArray(['usp_capaClone', PageId, Id, ActionName, root[0].outerHTML, UserId])
+        window.returnValue = [CleanXml(root[0].outerHTML), GetXml()]
+        window.close()
+    }
+    function on_Cancel() {
+        window.close()
+    }
+    function FindEmployee() {
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: "../common/popupPobCapa.htm/FindEmployee",
+            data: '{name: "' + UserId + '", includeGroup: false }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var span = Assignor
+                var tr = $(data.d).find('tr').eq(1)
+                span.attr('userId', tr.find('td').eq(1).text())
+                span.text(tr.find('td').eq(2).text())
+                span.attr('email', tr.find('td').eq(3).text())
+            },
+            failure: function (response) {
+                alert(response.d);
+            }
+        });
+    }
+    function on_Submit() {
+        if (!Validate()) {
+            return
+        }
+        $('#Status').text('Pending for Response')
+        on_Save()
+        // window.close()
+    }
+    function IsEmpty(src) {
+        var id = src.attr('id')
+        if (!src.length)
+            return false
+        var value
+        var tagName = src[0].tagName
+        if (tagName == 'INPUT')
+            value = src.val()
+        else if (tagName == 'SELECT')
+            value = src.prop('selectedIndex') < 1 ? '' : 'dummy'
+        else
+            value = src.text()
+        value = $.trim(value)
+        if (value == '') {
+            if (src.prev('input[value="..."]').length)
+                src = src.prev()
+            if (src.prop('tagName') == 'SPAN')
+                src = src.parent()
+            Highlight(src, 'yellow')
+            return true
+        }
+        Highlight(src, 'white')
+        return false
+    }
+    function Highlight(src, color) {
+        if (src.prop('tagName') == 'A')
+            src = src.parent()
+        src.css('background-color', color)
+    }
+
+    function on_RequireReview(src) {
+        src = $(src)
+        if (src.prop('checked'))
+            src.next().show()
+        else
+            src.next().hide()
+    }
+    function on_Clear(src) {
+        $('#Comment').html('')
+        $('#DateCompleted').val('')
+    }
+    function RefreshPopup(url0) {
+        var reload = document.getElementById('Reload');
+        var url = window.location.href;
+        url = url.replace('&id=0', '&id=' + Id)
+        if (url0 != null)
+            url = url0
+        reload.href = url
+        reload.click();
+        return
+        var src = $('#Reload')
+
+        src.attr('href', window.location.href)
+        src.trigger('click')
+    }
+</script>	

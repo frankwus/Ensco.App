@@ -1,0 +1,54 @@
+﻿@using Ensco.OAP.Models;
+@model IEnumerable<CommentModel> 
+
+@{ 
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;    
+    options.ShowTitle = true;
+    options.ShowToolbar = true;
+}
+ 
+@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gComments";
+    settings.Caption = DbRes.T("Comments","Resources");
+    settings.KeyFieldName = "Id";
+
+    settings.CallbackRouteValues = new { Area="IRMA", Controller="Comments", Action="GetAllComments"};
+ 
+
+    Html.EnscoStandardGrid(settings, typeof(CommentModel), options);
+
+    settings.Columns.Add(col =>
+    {
+        col.Caption = "Source";
+        col.FieldName = "SourceForm";
+        col.VisibleIndex = 4;
+        col.SetDataItemTemplateContent(cont =>
+        {
+            string source = DataBinder.Eval(cont.DataItem, "SourceForm").ToString();
+            string sourceId = DataBinder.Eval(cont.DataItem, "SourceFormId").ToString();
+            // string sourceFormURL = DataBinder.Eval(cont.DataItem, "SourceFormURL").ToString();
+
+            //ViewContext.Writer.Write(
+            //  string.Format("<a href=\"{0}\" target='_blank'>{1} : {2}</a>", sourceId, source.ToUpper(), sourceId));
+
+
+            ViewContext.Writer.Write( string.Format("{0}", source.ToUpper()));
+
+
+        });
+    });
+
+    settings.PreRender = (sender, e) =>
+    {
+        MVCxGridView gridView = (MVCxGridView)sender;
+        gridView.SortBy(gridView.Columns["Id"], DevExpress.Data.ColumnSortOrder.Descending);
+    };
+
+}).Bind(Model).GetHtml()
+ 

@@ -1,0 +1,751 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=11"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+
+<table border="0">
+    <tr style="border:none">
+        <td width="99%" style="border:none">
+            <span class="orangecolor"></span>
+
+        <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+        <td><img src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+</table>
+<body>
+    <table id="t0">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="10">
+            <span class="minus">-</span>    Security
+    </table>
+
+    <table id="tPassword" class="marginBottom" >
+        <tr>
+            <th class="header" colspan="22">
+                Password Reset – only for Non-Ensco personnel in current PoB
+        <tr>
+            <td class="label" width="100">Select User
+            <td ><img onclick="on_SinglePobUser(this)" src="../Images/Select Personnel icon.png"><span class="hidden"></span><span></span>
+            <img src="../Images/Submit icon.png" onclick="on_ResetPassword(this)"/>
+    </table>
+
+    <table id="t1" class="marginBottom">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="24">
+            <span class="minus">-</span>    Roles
+        <tr>
+            <td class="darkblue" colspan="24">Current Offshore Installation Manager (OIM)
+        <tr class=marginBottom>
+            <td colspan="2">Current OIM
+            <td width="200" ><span id="OIM" class="hidden"></span><span id="OIMName"></span>
+            <td>Change OIM
+            <td><img onclick="on_OIM(this)" src="../Images/Select Personnel icon.png">
+        <tr>
+            <td colspan= 11 style="border:none">&nbsp;
+        <tr>
+            <td class="darkblue" colspan="24"> Current Master
+        <tr>
+            <td colspan="2">Current Master
+            <td width="200" ><span id="Master" class="hidden"></span><span id="MasterName"></span>
+            <td>Change Master
+            <td><img onclick="on_OIM(this)" src="../Images/Select Personnel icon.png">
+        <tr>
+            <td colspan= =11 style="border:none">&nbsp;
+    </table>
+    <table id="tAdministrative">
+        <tr>
+            <th class="header" style="text-align: left;" colspan="10">
+                Administrative
+    </table>
+    <table id="tBrazil">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="24">
+                Location Specific Fields
+        <tr>
+            <td width=200 class="labelRight">Rig is in Brazil?
+            <td width=400><input id=Brazil type=checkbox />
+            <td width=200 class="labelRight">Ensco Required Per Contract
+            <td width=400><input id=PerContract type="text" />
+    </table>
+    <!--<table id="tLock" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="24">
+                Energy Isolation Locks
+        <tr>
+            <td><img onclick="on_Lock(this)" src="../Images/Select Personnel icon.png"><span id="PermitHolder"></span>
+    </table>-->
+    <table id="tOptional" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="24">
+                Optional PoB Fields
+        <tr>
+            <td width=400 class="labelRight">Require use of Optional Field 1?
+            <td><input type=checkbox onchange=on_CheckOptional(this) />
+            <td class="labelRight">If yes, what label?
+            <td><input type=text />
+        <tr>
+            <td width=400 class="labelRight">Require use of Optional Field 2?
+            <td><input type=checkbox onchange=on_CheckOptional(this) />
+            <td class="labelRight">If yes, what label?
+            <td><input type=text />
+        <tr>
+            <td width=400 class="labelRight">Require use of Optional Field 3?
+            <td><input type=checkbox onchange=on_CheckOptional(this) />
+            <td class="labelRight">If yes, what label?
+            <td><input type=text />
+        <tr>
+            <td width=400 class="labelRight">Require use of Optional Field 4?
+            <td><input type=checkbox onchange=on_CheckOptional(this) />
+            <td class="labelRight">If yes, what label?
+            <td><input type=text />
+
+    </table>
+    <table class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="24">
+                Meetings Management
+        <tr>
+            <td width='20%' class="labelRight">Daily HoD Meeting
+            <td width='20%' class="labelRight">Default Time
+            <td width='20%'>
+                <input id="MeetingDefaultTime" type="text" style="width:200" />
+                <img src="../Images/calendar.gif" onclick="on_Time(this) " />
+            <td width='20%' class="labelRight">Default Location
+            <td width='20%'>
+                <img src='../images/search icon.png' onclick="on_Location(this)" />
+                <!--<table border="0" id="MeetingDefaultLocation"></table>-->
+                <span id="MeetingDefaultLocation" border="0">Bow Leg</span>
+        <tr>
+            <td colspan="11" class="label" style="border-bottom:none">Pre-Tour Meetings:
+    </table>
+    <table id="tMeeting"></table>
+    <table id="" class="marginBottom">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="24">
+                Daily Summary
+        <tr>
+            <td width=400 class="labelCenter">Email Time
+            <td class="labelRight">Default Time
+            <td>
+                <input id="EmailTime" type="text" style="width:200" />
+                <img src="../Images/calendar.gif" onclick="on_Time(this) " />
+            <td class="label">List the people that will receive the daily summary email (always include the rig manager)
+
+    </table>
+    <table id="tDailySummary">
+        <tr class="labelCenter"><td><td>Position <td>Name<td>Date Added
+        <tr class="hidden">   <td><td> <td><td>
+        <tr><td colspan=11><img src="../images/search icon.png" onclick="on_DailySummary(this) " />
+    </table>
+
+    <table class="marginBottom" id="tVersion">
+        <tr>
+            <th class="darkblue" style="text-align: left;" colspan="24">IRMA Version: <span id="version">-</span></th>
+        </tr>
+    </table>
+
+</body>
+<script>
+    var t0 = $('#t0')
+    var t1 = $('#t1')
+    var Div1 = $('#Div1')
+    var tLock = $('#tLock')
+    var tOptional = $('#tOptional')
+    var tMeeting = $('#tMeeting')
+    var tDailySummary = $('#tDailySummary')
+    //var tDailySummary = $('#tDailySummary')
+    var ARR = ['ClientColdWork', 'ClientHotWork', 'ClientConfinedSpace','RequireClientSignature', 'RestrictView', 'OIM', 'OIMName', 'Master', 'MasterName', 'Brazil', 'PerContract'
+        , 'EmailTime', 'MeetingDefaultTime', 'MeetingDefaultLocation']
+    var Page = 'admin'
+    var Id = 0
+    $(document).ready(function () {
+        var count = 15
+        for (var i = 1; i <= count; i++)
+            $('<table/>').insertAfter(t0).addClass((i == count ? '' : 'marginBottom'))
+        for (var i = 1; i <= count; i++)
+            InitGrid(null, i, 1)
+        $('#Save').parent().nextAll().andSelf().css('border', 'none')
+        var xml = GetArray(['usp_AdminGet', 100, 1, UserId])
+        //InitIA()
+        //InitCheckbox()
+        //t.find('td.darkblue').each(function () {
+        //    var td = $(this)
+        //    var tr = td.parent()
+        //    var roleId = td.attr('roleId')
+        //    var index = 1
+        //    t.find('tr[roleId=' + roleId + ']').find('td:nth-child(1)').each(function () {
+        //        var td = $(this)
+        //        var id = td.text()
+        //        if (!isNaN(id))
+        //            td.html(GetDelete() + (index++)).attr('id', id)
+        //        td.width(50)
+        //    })
+        //})
+        //InitLock(xml)
+        InitCustom(xml)
+        InitMeeting(xml)
+        InitDailySummary(xml)
+        RestoreScroll()
+        LockSecurity(xml)
+        NumberOnly([$('#PerContract')])
+        InitTime($('#MeetingDefaultTime, #EmailTime'))
+        //InitAdminFold()
+        //InitClient(xml )
+        InitFold()
+
+        CleanUp()
+        Customize() 
+        //Formatting()
+
+        InitIRMAVersionTable()
+    })
+
+    function InitIRMAVersionTable() {
+
+        var version;
+
+        $.ajax({
+            type: 'GET',
+            async: false,            
+            url: '../webservice.asmx/GetIrmaVersion',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                version = $(data.d).find('Version').text();
+                $('#version').text(version);
+            },
+            error: function (x) {
+                console.error("Error: " + x.responseText);
+            }
+        });
+
+        
+    }
+
+    function Customize() {
+        var arr = ['Formal Safety Observation Scheduling', 'Life Saver Scheduling', 'Critical Area Verification Scheduling'
+            , 'Emergency Drill Scheduling', 'Emergency Drill Viewing on Calendar', 'Meetings Management']
+        for (var i in arr) {
+            $('span').filter(function () {
+                return GetVal($(this))==arr[i]
+            }).closest('table').remove() 
+        }
+        GetId('tMeeting').remove()
+    }
+    function InitGrid(a, group, index) {
+        var group1 =group 
+        if (group1 == 2)
+            group1 = 14
+        else if (group1 > 1 && group <15)
+            group1--
+        var t = GetId('tt' + group)
+        if (!t.length) {
+            t = t0.nextAll().eq(group - 1)
+            t.attr('id', 'tt' + group)
+        }
+        var xml = GetArray(['usp_AdminGet', group1, index, UserId ])
+        DataBind(t, xml)
+        var total = $(xml).find('Table1').text()
+        AddCommonPaging(InitGrid, t, group, total, index, Callback)
+      
+        GetTd(t, 0).each(function () {
+            var td = $(this)
+            if (!td.find('a').length)
+                td.attr('id', td.text()).html ( GetDelete() )            
+        })
+        t.find('th').first().html('')
+        var name = Trim ( GetXmlTable(xml, 2).text()) 
+        var onclick = 'on_PobSelect'
+        if (group == 15) {
+            name = 'Energy Isolation Locks'
+            onclick = 'on_Lock'
+        }
+        AddGridSubHeader(t, name )
+        $('<tr><td colspan=11 ><img onclick="' + onclick + ' (this)" src="../Images/Select Personnel icon.png" /> </tr>').appendTo(t)
+        switch (name) {
+            case 'Emergency Drill Viewing on Calendar':
+                var html = '<td colspan =11 > Restrict who can view upcoming drills on the schedule / calendar?<input type=checkbox id =RestrictView />'
+                $('<tr/>').insertAfter(t.find('tr').first()).html(html)
+                break
+            case 'Client':
+                var arr = [ '', 'Confined Space Entry Work', 'Hot Work', 'Cold Work' ]
+                for (var i in arr) {
+                    var html = 'Does the client require to sign @ permits?'
+                    var id = 'Client' + arr[i].replace(' Entry Work', '').replace(' ', '')
+                    html = html.replace('@', arr[i])
+                    if (i == 0) {
+                        html = 'Do you want to choose at time of permit?'
+                        id = 'RequireClientSignature'
+                    }
+                    html ='<td colspan=11>'+ html +'<input type=checkbox id ='+id+' />'
+                    $('<tr/>').insertAfter(t.find('tr').first()).html(html)
+
+                }
+                $('<tr><td style="background-color:rgb(0, 70, 127);color:white" colspan=11>Company Man</tr> ').insertAfter(t.find('tr').eq(4))
+                break
+            case 'Isolation Authority':
+                var select = $('<select />').css('margin', 6).css('border', 'solid').css('border-width', 1).width(200)
+                var xml = GetArray(['usp_JobGetEI', 0, UserId, Lang  ])
+                BindSelect(xml, select, 1, 'id', 'id')
+                select.insertBefore(t.find('img').last())
+                $('<span>IA Type</span>').insertBefore(select)
+                break
+            case 'Permit Issuer':
+                t1.find('tr').prependTo(t)
+                break
+            case '':
+                break
+            case '2':
+                break
+        }
+    }
+    function Callback(t1) {
+        AddGridHeader(t1, 'Search Results')
+    }
+    function InitClient(xml ) {
+        var tr = GetId('ClientColdWork').closest('tr')
+        //var td = tr.children()
+        //var html ='<td>'+ td.children()[0].outerHTML+'</td>'
+        //td.children().remove()
+        //$(html).insertAfter(td)
+        //td.css('colspan', 1)
+
+        var arr = [['ClientHotWork', 'Does the client require to sign Hot Work permits?'], ['ClientConfinedSpace', 'Does the client require to sign Confined Space Entry Work permits?']]
+        for (var i in arr) {
+            var name = arr[i][0]
+            var checked = ''
+            
+            if (GetXmlTable(xml, 2).find('Name:contains('+name+')').next().text() == 1)
+                checked='checked'
+            var html = '<tr><td colspan=11 >' + arr[i][1] + '<input '+checked+ ' type=checkbox id=' + name + ' /></tr>'
+            $(html).insertAfter(tr)
+            tr=tr.next()
+        }
+    }
+    function Formatting() {
+        var tr = t.find('span:contains("Permit Issuer")').closest('tr')
+        //t1.find('td').addClass('paddingBottom')
+        t1.find('tr').insertBefore(tr)
+    }
+    function InitCustom(xml) {
+        for (var i in ARR) {
+            var role = ARR[i]
+            var name = $($.parseXML(xml)).find('Name').filter(function(){
+                return $(this).text()== role 
+            }).next().text()
+            SetVal($('#' + role), name)
+        }
+        var t = tOptional
+        $(xml).find('Table2').find(':contains(Option)').each(function (index) {
+            var element = $(this)
+            t.find(':checkbox').eq(index).prop('checked', true).closest('tr').find(':text').val(element.next().text())
+        })
+    }
+    function LockSecurity(xml) {
+        var count = $(xml).find('Table1').text()
+        if (count == 0) {
+            $('body').html('Access denied.  ')
+            return 
+
+            t0.nextAll().andSelf().find('input, a, img').prop('disabled', true)
+            $('#Save').hide()
+        }
+       // tDailySummary.find('img, input').prop('disabled', false)
+    }
+    function InitLock(xml) {
+        var t = tLock
+        DataBind(t, xml, 3)
+        t.find('td:nth-child(1)').each(function (index) {
+            var td = $(this)
+            var id = td.text()
+            td.html(GetDelete() + (++index) + GetEdit() ).attr('id', id).css('white-space',  'nowrap')
+            td.width(100)
+        })
+        var html = '<tr><td colspan=11 ><img onclick="on_Lock(this)" src="../Images/Select Personnel icon.png"></tr>'
+        t.append($(html))
+        html = '<tr><th colspan=11 class=darkblue >Energy Isolation Locks</tr>'
+        t.prepend($(html))
+        t.find('th').eq(0).width(100)
+    }
+    function GetEdit() {
+        return '<input type=button value =Edit onclick=on_EditLock(this) />'
+    }
+    function on_EditLock(src) {
+        src = $(src)
+        on_Lock(src )
+    }
+    function InitCheckbox() {
+        var arr = [['Emergency Drill Viewing on Calendar', 'RestrictView', 'Restrict who can view upcoming drills on the schedule / calendar?']
+            , ['Client', 'ClientColdWork', 'Does the client require to sign Cold Work permits?']]
+        for (var i in arr) {
+            var name = arr[i][0]
+            var column = arr[i][1]
+            var text = arr[i][2]
+            var td = $('td.darkblue:contains("' + name + '")').parent().next().children()
+            var checked = ''
+            if (td.text() == 1)
+                checked = 'checked'
+            var html = text + '<input type=checkbox ' + checked + ' />'
+            td.html(html).find(':checkbox').attr('id', column)
+            td.find(':checkbox').on('click', function () {
+                var ck = $(this)
+                // GetArray( ['usp_AdminUpdate',  ck.attr('column') ,  (ck.prop('checked') ? 1 : 0) ] )
+            })
+        }
+    }
+    function on_Delete(src) {
+        src = $(src)
+        var t = src.closest('table')
+        var role = GetVal(t.find('.darkblue').last().find('span').eq(1))
+        var id = src.parent().attr('id')
+        if (t.is(tDailySummary)) {
+            role = 'DailySummary'
+            id=src.closest('tr').index()-1
+        }
+        GetArray(['usp_AdminDelete', id,  role , UserId  ] )
+        src.closest('tr').remove()
+    }
+    function on_PobSelect(src, arr) {
+        src = $(src)
+        var select = src.prev()
+        var ia = select.val()
+        if (select.length && ia == '') {
+            alert('Please pick an IA type. ')
+            return
+        }
+        var r = GetPobUser()
+        if (r == null)
+            return
+        var r0 = r
+        var root = $('<r />')
+        for (var i in r0) {
+            r = r0[i]
+            var roleId = src.parent().attr('roleId')
+
+            if ( ia == '' && t.find('tr[roleId=' + roleId + ']').find('td:contains(' + r[0] + ')').length)
+                continue
+            var position = r[2]
+            if (select.length)
+                position = ia
+            //var tr = src.closest('tr')
+            //var roleId = src.parent().attr('roleId')
+            //var html = '<tr roleId=' + roleId + '><td>' + GetDelete() + '<td>' + position + '<td>' + r[0] + '<td>' + r[1] + '<td></tr>'
+            //$(html).insertBefore(tr)
+
+            var role = $.createElement('role')
+            role.addAttr('Role',  GetVal( src.closest('table').find('.darkblue').last().find('span').eq(1)) )
+            role.addAttr('UserId', r[0] )
+            role.addAttr('Name', r[1] )
+            role.addAttr('Position', position )
+            root.append(role)
+        }
+        var xml = root[0].outerHTML
+        GetArray(['usp_AdminSaveRole', xml, UserId])
+        Refresh()
+    }
+    function on_SinglePobUser(src) {
+        src = $(src)
+        var r = GetPobUser() //'NonEnsco' )
+        if (r == null)
+            return
+        r = r[0]
+        src.next().text(r[0]).next().text(r[1])
+    }
+    function Validate() {
+        var ok = true
+        var src = $('#ClientColdWork')
+        if (src.prop('checked')) {
+            var tr = src.closest('tr')
+            if (tr.nextAll().length == 2) {
+                ok = false
+                alert('Please select a client.')
+            }
+        }
+        tMeeting.find(':text').closest('tr').each(function () {
+            var tr = $(this)
+            if (IsEmpty(tr.find(':text')))
+                ok = false
+            if (IsEmpty(tr.find('span')))
+                ok = false
+            if (IsEmpty(tr.find('select')))
+                ok = false
+        })
+        return ok
+    }
+    function on_Save() {
+        if (!Validate())
+            return
+        var root = $('<r />')
+        //t.find('tr[roleId]').each(function (index ) {
+        //    var tr = $(this)
+        //    var role = $.createElement('role')
+        //    role.addAttr('id', index )
+        //    role.addAttr('RoleId', tr.attr('roleId'))
+        //    role.addAttr('UserId', tr.children().eq(2).text())
+        //    role.addAttr('Name', GetVal( tr.children().eq(3)))
+        //    role.addAttr('Position', tr.children().eq(1).text())
+        //    role.addAttr('dt', tr.children().eq(4).text())
+        //    root.append(role)
+        //})
+        //$('span:contains("Energy Isolation Locks")').closest('table').find('tr:gt(1)').not(':last').each(function () {
+        //    var tr = $(this)
+        //    var lock = $.createElement('lock')
+
+        //    lock.addAttr('id', tr.children().eq(0).attr('id'))
+        //    lock.addAttr('No', tr.children().eq(1).text())
+        //    lock.addAttr('Available', tr.children().eq(2).text())
+        //    lock.addAttr('Comment', GetVal(tr.children().eq(3)))
+        //    root.append(lock)
+        //})
+        tOptional.find(':checked').closest('tr').find(':text').each(function () {
+            var input = $(this)
+            var optional = $.createElement('optional')
+            var name = GetVal(input)
+            if (name == '')
+                return
+            optional.addAttr('Name', name)
+            root.append(optional)
+        })
+        tDailySummary.find('tr:gt(0)').not(':last').not(':last').each(function () {
+            var tr = $(this)
+            var summary = $.createElement('summary')
+
+            summary.addAttr('id', tr.index() - 1)
+            var td = tr.children().eq(2)
+            summary.addAttr('UserId', td.attr('userId'))
+            summary.addAttr('Name', td.text())
+            summary.addAttr('Email', td.attr('email'))
+            summary.addAttr('Position', tr.children().eq(1).text())
+            summary.addAttr('dt', GetVal(tr.children().eq(3)))
+            root.append(summary)
+        })
+        tMeeting.find('tr').each(function () {
+            var tr = $(this)
+            if (!tr.find('[onclick="on_Delete(this)"]').length)
+                return
+            var meeting = $.createElement('meeting')
+
+            meeting.addAttr('id', tr.index() - 1)
+            var time = GetVal(tr.children().eq(1))
+            if (tr.find(':text').length)
+                time = GetVal(tr.find(':text'))
+            meeting.addAttr('Time', time)
+            meeting.addAttr('Location', GetVal(tr.children().eq(2)))
+            //if (tr.children().length ==4 )
+            var day = tr.children().eq(3).text()
+            if (tr.find('select').length)
+                day = tr.find('select').val()
+            meeting.addAttr('Day', day)
+            root.append(meeting)
+        })
+        for (var i in ARR) {
+            var custom = $.createElement('custom')
+            var name = ARR[i]
+            custom.addAttr('Name', name)
+            custom.addAttr('Value', GetVal($('#' + name)))
+            root.append(custom)
+        }
+
+        var xml = root[0].outerHTML
+        console.log(xml)
+        //return
+        GetArray(['usp_AdminSave', xml, UserId])
+        Refresh()
+    }
+    function on_Lock(src) {
+        src = $(src)
+        var tr = src.closest('tr')
+        var lockNo = tr.children().eq(1).text()
+        var available = tr.children().eq(2).text()
+        var comment = tr.children().eq(3).text()
+
+        var r = showModal('../Admin/popupLock.htm', JSON.stringify([lockNo, available, comment]), 800, 400)
+        if (r == null)
+            return
+        Refresh()
+        return 
+        if (lockNo != '') {
+            tr.children().eq(2).text(r[1])
+            tr.children().eq(3).text(r[2])
+            return 
+        }
+        if (tLock.find('td:contains("' + r[0] + '")').length) {
+            alert('The lock already exists.')
+            return
+        }
+
+        var html = '<tr><td>' + GetDelete() + GetEdit()+ '<td>' + r[0] + '<td>' +r[1]+'<td>' + r[2] + '</tr> '
+        $(html).insertBefore(src.closest('tr'))
+
+        var root = $('<r />')
+        var role = $.createElement('lock')
+        role.addAttr('No', r[0])
+        role.addAttr('Available', r[1])
+        role.addAttr('Craft', r[2])
+        role.addAttr('Comment', r[3])
+        root.append(role)
+        var xml = root[0].outerHTML
+        GetArray(['usp_AdminSaveRole', xml, UserId])
+        Refresh() 
+
+    }
+    function InitAdminFold() {
+        $('.darkblue , .header').each(function (index) {
+            var td = $(this)
+            var span = $('<span  style="margin-left:5;margin-right:5" >-</span>')
+            span.css('font-size', '18pt')
+            td.html('<span>' + Trim(td.text()) + '</span>')
+            span.prependTo(td)
+        })
+        $(document).on('click', 'span', function (index) {
+            var span = $(this)
+            var text = Trim(span.text())
+            var th = span.parent()
+            var tr = th.parent()
+            if (text != '-' && text != '+') //&& !th.hasClass('header'))
+                return
+            var c = th.attr('class')
+            var cs = $('.' + c)
+            var i
+            var th1
+            //alert(cs.length)
+            cs.each(function (index ) {
+                if ($(this).is( th)) 
+                    i = index
+                if (index==i+1)
+                    th1=$(this)
+            })
+alert( th[0].outerHTML +'   '+th1[0].outerHTML )
+            var trs=tr.nextUntil( th1.closest('tr'))
+            if (text == '-') {
+                span.text('+')
+                trs.hide()
+            }
+            else {
+                span.text('-')
+                trs.show()
+            }
+        })
+    }
+    function on_Location(src) {
+        src = $(src)
+        var r = Popup('../common/PopupLocation.htm', 900, 900)
+
+        if (r == null)
+            return
+        AddLocation(src, r[0], r[1])
+    }
+    function on_CheckOptional(src) {
+        src = $(src)
+        if (src.prop('checked'))
+            src.parent().next().next().prop('disabled', false)
+        else
+            src.parent().next().next().prop('disabled', true)
+    }
+    function on_Time(src) {
+        src = $(src)
+        src.prev().focus()
+    }
+    function InitMeeting(xml) {
+        var t = tMeeting
+        DataBind(t, xml, 5)
+        RemoveWingDing(t)
+        GetTd(t, 0).html(GetDelete())
+        var html = ' <tr><td colspan=11><img src="../images/search icon.png" onclick="on_Meeting(this) " /></tr>'
+
+        $(html).appendTo(t)
+        var tr = GetTd(t, 3).filter(function () {
+            return Trim($(this).text()) != ''
+        }).eq(0).parent()
+        if (!tr.length)
+            tr = t.find('tr').last()
+        html = '<tr><td colspan=11 class=label >Weekly SHE Meetings:	'
+        html += '<tr class="label center"><td> <td>Default Time <td>Default Location <td>Default Day</tr>'
+        var tr1 = t.find('tr').last().clone().insertBefore(tr)
+
+        $(html).insertBefore(tr)
+        if (!tr1.prev().length)
+            tr1.nextAll().eq(1).clone().insertBefore(tr1)
+        // t.find('tr').eq(0).children().eq(2).attr('colspan', 2).next().remove()
+    }
+    function on_Meeting(src) {
+        src = $(src)
+        var t = tMeeting
+        var tr = t.prev().find('tr').eq(1)
+        var html = '<tr><td width=1%>' + GetDelete() + tr.children().eq(2)[0].outerHTML + tr.children().eq(4)[0].outerHTML + '<td><select/></tr>'
+        var tr1 = $(html).insertBefore(src.closest('tr'))
+        InitTime(tr1.find(':text'))
+        tr1.find('span').text('')
+        for (var i = 0; i < 7; i++) {
+            var weekDay = WeekDay(i)
+            $('<option/>').appendTo(tr1.find('select')).val(weekDay).text(weekDay)
+        }
+        AddOptionAll(tr1.find('select'))
+        if (src.closest('tr').next().length)
+            tr1.find('select').remove()
+    }
+    function InitDailySummary(xml) {
+        var t = tDailySummary
+        $(xml).find('Table4').each(function () {
+            var c = $(this).children()
+            var arr = []
+            for (var i = 1; i < 6; i++)
+                arr.push(c.eq(i).text())
+            on_DailySummary(t.find('img').last(), arr)
+        })
+    }
+    function WeekDay(i) {
+        var weekday = new Array(7);
+        weekday[0] = "Sunday";
+        weekday[1] = "Monday";
+        weekday[2] = "Tuesday";
+        weekday[3] = "Wednesday";
+        weekday[4] = "Thursday";
+        weekday[5] = "Friday";
+        weekday[6] = "Saturday";
+        return weekday[i]
+    }
+    function on_DailySummary(src, arr) {
+        src = $(src)
+        var t = src.closest('table')
+        var r
+        if (arr != null)
+            r = arr
+        else
+            r = GetADUser()
+        if (r == null)
+            return
+        var tr = src.closest('tr').prev()
+        var tr1 = tr.clone().show().insertBefore(tr)
+        tr1.children().eq(0).html(GetDelete())
+        tr1.children().eq(1).text(r[3])
+        tr1.children().eq(2).text(r[1]).attr('userid', r[0]).attr('email', r[2])
+        if (arr != null)
+            tr1.children().eq(3).text(arr[4])
+
+    }
+    function on_ResetPassword(src) {
+        src = $(src)
+        var span = src.prev().prev()
+        var userId = span.text()
+        if (userId == '') {
+            alert('Please select a user.')
+            return 
+        }
+        GetArray(['usp_ChangePassword', userId])
+        alert('Password has been reset.')
+    }
+    function on_OIM(src) {
+        src = $(src)
+        var r = GetPobUser()
+        if (r == null)
+            return
+        var arr =r[0]
+        src.closest('tr').find('span').eq(0).text(arr[0] ).next().text(arr[1])
+    }
+</script>

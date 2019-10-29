@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Ensco.Irma.Data.vw_Job>
+
+@Html.DevExpress().GridView(settings =>
+{
+
+    settings.Name = "gridJobs";
+    settings.KeyFieldName = "Id";
+
+    settings.SettingsText.Title = "Jobs and eSSoW Pending Approval/Review";
+    settings.Settings.ShowTitlePanel = true;
+
+    // Routes
+    settings.CallbackRouteValues = new { Controller = "OIMOversightDashboard", Action = "GetOpenJobs" };
+
+    // Columns    
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Id";
+        c.Width = Unit.Percentage(5);
+        c.SetDataItemTemplateContent(container =>
+        {
+            string type = DataBinder.Eval(container.DataItem, "Type").ToString();
+            string id = DataBinder.Eval(container.DataItem, "Id").ToString();
+            string url = string.Empty;
+            string popupName = "popupPhase1";
+
+            switch (type)
+            {
+                case "Cold Work":
+                case "Hot Work":
+                case "Confined Space":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = string.Format("{0} Permit", type), url = string.Format("~/job/permit.htm?id={0}",id) });
+                    break;
+                case "Crane":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = "Crane Checklist", url = string.Format("~/job/Crane.htm?id={0}", id) });
+                    break;
+                case "Job":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = "Job", url = string.Format("~/job/job.htm?id={0}", id) });
+                    break;
+                case "EI":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = "Energy Isolation", url = string.Format("~/job/EI.htm?id={0}", id) });
+                    break;
+                case "Gas Test Certificate":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = "Gas Test Certificate", url = string.Format("~/job/Gas.htm?id={0}", id) });
+                    break;
+                case "Lift":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = "Lift Plan Checklist", url = string.Format("~/job/lift.htm?id={0}", id) });
+                    break;
+                case "Man Riding":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = "Man Riding Checklist", url = string.Format("~/job/Riding.htm?id={0}", id) });
+                    break;
+                case "Verbal JSA":
+                case "JSA with WI Checklist":
+                case "JSA with Work Instruction":
+                case "JSA without Work Instruction":
+                case "Hazard ID Prompt Card":
+                    url = Url.Action("ShowJobWindow", new { Area = "IRMA", Controller = "Jobs", name = popupName, title = "JSA", url = string.Format("~/job/jsa.htm?id={0}", id) });
+                    break;
+                default:
+                    break;
+            }
+
+            Html.DevExpress().HyperLink(link =>
+            {
+                link.Properties.Text = id;
+                link.NavigateUrl = url;
+            }).Render();
+        });
+    });
+    settings.Columns.Add(c => {
+        c.FieldName = "JobId";
+        c.Caption = "Job";
+        c.Width = Unit.Percentage(5);
+    });
+    settings.Columns.Add("Type").Width = Unit.Percentage(10);
+    settings.Columns.Add("Title");
+    settings.Columns.Add("Location").Width = Unit.Percentage(15);
+    settings.Columns.Add(c => {
+        c.FieldName = "Date";
+        c.PropertiesEdit.DisplayFormatString = "dd-MMM-yyyy";
+        c.Width = Unit.Percentage(8);        
+    });
+    settings.Columns.Add("Status").Width = Unit.Percentage(10);
+
+    // Filter
+    settings.Settings.ShowHeaderFilterButton = true;
+
+    // Paging
+    settings.SettingsPager.FirstPageButton.Visible = true;
+    settings.SettingsPager.LastPageButton.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Visible = true;
+    settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+
+    // Style
+    settings.Width = Unit.Percentage(100);
+
+}).Bind(Model).GetHtml()

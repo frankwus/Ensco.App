@@ -1,0 +1,43 @@
+﻿@model Ensco.Models.DataTableModel
+
+@section scripts
+{
+    <script type="text/javascript">
+        MVCxClientGlobalEvents.AddControlsInitializedEventHandler(
+            function (s, e) {
+                AdjustMainGrid(gridView_PersonnelArchive); // grid is client side Id
+            }
+        );
+
+        function AdjustSize() {
+            $.event.trigger("AdjustOtherElements");
+        }
+
+        $(document).on("AdjustOtherElements", function () {
+            AdjustMainGrid(gridView_PersonnelArchive); // grid is client side Id
+        });
+
+        function AdjustMainGrid(grid) {
+            var height = $(window).height() - 150; // see if we can calculate footer height dynamically
+
+            grid.SetHeight(height);
+        }
+        function onShowChooserClick(s, e) {
+            UpdateCustomizationWindowVisibility();
+        }
+
+        function UpdateCustomizationWindowVisibility() {
+            if (gridView_PersonnelArchive.IsCustomizationWindowVisible())
+                gridView_PersonnelArchive.HideCustomizationWindow();
+            else
+                gridView_PersonnelArchive.ShowCustomizationWindow();
+            //UpdateButtonText();
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("PersonnelArchivePartial", Model);
+}
+

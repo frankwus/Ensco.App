@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<head>
+    <style>
+        body {
+            margin: 15;
+        }
+
+        td {
+            padding: 2;
+        }
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+    <table id="t" border="1" width="100%">
+        <tr><td>
+        <tr>
+            <td>
+                <a href="">Yes</a>
+                <a href="">No</a>
+    </table>
+
+</body>
+</html>
+<script>
+    var t = $('#t')
+    $(document).ready(function () {
+        var html = window.dialogArguments
+        t.find('td').eq(0).html(html)
+        t.find('td').addClass('noborder')
+        t.find('a').css('margin-left', 10).on('click', function () {
+            var a = $(this)
+
+            window.returnValue = (GetVal(a) == 'Yes')
+            window.close()
+            return false
+        })
+        CleanUp()
+    })
+</script>

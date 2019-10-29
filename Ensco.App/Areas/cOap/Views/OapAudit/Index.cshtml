@@ -1,0 +1,231 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapAudit>
+
+@section scripts
+{
+    <script type="text/javascript">
+        var rb = "@ViewBag.SelectedRBId";
+        $(function () {
+            if (rb != null && rb != '') {
+                $('[name="buCombo"]').val('All');
+            }
+            $('#OapProtocolsGrid .dxct-if').hide();
+            
+        });
+
+        function hideGV() {
+            $('#OapProtocolsGrid .dxct-if').hide();
+        }
+
+        function onToolbarItemClick(s, e) {
+                switch (e.item.name) {
+                    case "AddNewAudit":
+                        s.AddNewRow();
+                        break;
+                }
+        }
+       
+        function OnBeginCallback(s, e) {
+            e.customArgs['isBuid'] =false;
+            if (rigCombo.GetSelectedIndex() != -1)
+                e.customArgs['rrigId'] = rigCombo.GetValue();
+            else if (buCombo.GetSelectedIndex() != -1) {
+                e.customArgs['rrigId'] = buCombo.GetValue();
+                e.customArgs['isBuid'] = true;
+            }
+            var popup = OapAuditGrid.GetPopupEditForm();
+            if (popup != null) {
+                if (typeof popup != "undefined" || popup != "undefined") { popup.Hide(); }
+            }
+
+            
+            }
+
+            function OnEndCallback(s, e) {
+                var key = s.GetRowKey(e.visibleIndex);
+                SelectedAuditId.value = OapAuditGrid.GetRowKey(0) == null ? 0 : OapAuditGrid.GetRowKey(0);
+                var popup = OapAuditGrid.GetPopupEditForm();
+                if (popup != null) {
+                    if (typeof popup != "undefined" || popup != "undefined") { popup.Hide(); }
+                }
+                // OapProtocolsGrid.PerformCallback();
+              
+            }
+
+
+
+            function SelectedId(s) {
+              
+                if (s.name == "rigCombo" && s.GetSelectedIndex() != -1) {
+                    // rCombo.GetSelectedIndex() != -1) {
+                    buCombo.SetSelectedIndex(-1);
+
+                }
+                else {
+                    (s.name == "buCombo" && s.GetSelectedIndex() != -1)
+                    // rCombo.GetSelectedIndex() != -1) {
+                rigCombo.SetSelectedIndex(-1);
+                }
+               
+                
+                OapAuditGrid.PerformCallback();
+
+               
+            }
+    </script>
+}
+
+@{
+    var lkpRig = Ensco.Utilities.UtilitySystem.GetLookupList("Rig");
+
+    var lkpBU = Ensco.Utilities.UtilitySystem.GetLookupList("BusinessUnit");
+    lkpBU.Items.Insert(0, new { Description = "All", Name = "All", Id = 0, PeopleSoftId = 0 });
+}
+ 
+@Html.Hidden("SelectedAuditId", 0)
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    ViewContext.Writer.Write("<br/>");
+    ViewContext.Writer.Write("<br/>");
+
+    Html.DevExpress().FormLayout(form =>
+    {
+        form.Name = "formAddAdditional";
+        form.EncodeHtml = false;
+        form.UseDefaultPaddings = false;
+        form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+
+        form.Width = Unit.Percentage(40);
+
+        form.Items.AddGroupItem(group =>
+        {
+            group.Caption = "Filter By:";
+
+            group.Items.Add(item =>
+            {
+
+                item.FieldName = "Business Unit";
+                item.Width = System.Web.UI.WebControls.Unit.Percentage(40);
+                item.NestedExtension().ComboBox(s =>
+                {
+                    s.Name = "buCombo";
+                    s.ShowModelErrors = true;
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.Properties.ValidationSettings.SetFocusOnError = true;
+                    s.Width = System.Web.UI.WebControls.Unit.Percentage(40);
+                    s.Properties.DataSource = lkpBU.Items;
+                    s.Properties.NullText = "[Select Business Unit]";
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.DataMember = "Name";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                    s.Properties.ClientSideEvents.SelectedIndexChanged = "function(s, e) { SelectedId(s); }";
+                    
+
+                    s.Properties.AllowNull = false;
+                });
+            });
+
+            group.Items.Add(Item =>
+            {
+                Item.ShowCaption = DefaultBoolean.False;
+                Item.Width = System.Web.UI.WebControls.Unit.Percentage(2);
+                Item.NestedExtension().Label(s =>
+                {
+                    s.Text = "OR";
+                    s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                    s.Style.Add("font-weight", "bold");
+                    s.Style.Add("vertical-align", "middle");
+
+
+                });
+
+
+            });
+
+            group.Items.Add(item =>
+            {
+                item.FieldName = "Rig";
+                item.Width = System.Web.UI.WebControls.Unit.Percentage(40);
+                item.NestedExtension().ComboBox(s =>
+                {
+                    s.Name = "rigCombo";
+
+                    s.ShowModelErrors = true;
+                    s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                    s.Properties.ValidationSettings.Display = Display.Dynamic;
+                    s.Properties.ValidationSettings.SetFocusOnError = true;
+                    s.Width = System.Web.UI.WebControls.Unit.Percentage(40);
+                    s.Properties.DataSource = lkpRig.Items;
+                    s.Properties.NullText = "[Select Rig]";
+                    s.Properties.TextField = "Name";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.DataMember = "Name";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                    s.Properties.AllowNull = false;
+                    s.Properties.ClientSideEvents.SelectedIndexChanged = "function(s, e) { SelectedId(s); }";
+                    s.PreRender = (sender, e) =>
+                    {
+                       ASPxComboBox cbx = sender as ASPxComboBox;
+                        //cbx.SelectedIndex = 0;
+
+                    };
+
+                });
+            });
+
+
+        });
+
+
+
+
+
+
+    }).GetHtml();
+}
+
+
+
+
+<div>
+    @{
+       
+        //  Html.DevExpress().RoundPanel(settings =>
+        //  {
+        //      settings.Name = "roundPanel";
+        //      settings.AllowCollapsingByHeaderClick = true;
+        //      settings.ShowCollapseButton = true;
+        //      settings.ShowHeader = true;
+        //      settings.View = DevExpress.Web.View.Standard;
+        //      settings.EnableAnimation = true;
+        //      settings.Width = Unit.Percentage(100);
+        //      settings.HeaderText = "Oap Audits";
+
+        //      settings.SetContent(() => Html.RenderPartial("OapAuditPartial", Model)
+        //);
+        //  }).GetHtml();
+
+    }
+    @Html.Partial("OapAuditPartial", Model)
+</div>
+
+@{
+
+    ViewContext.Writer.Write("<br />");
+    //Html.RenderAction("DisplayProtocols", "OapAuditPlan", new { aId = 1 });
+    // Html.RenderAction("DisplayProtocols", "OapProtocolsToAudit", new { Area = "cOap", aId = Model.FirstOrDefault().Id });
+    Html.RenderAction("DisplayProtocols", "OapProtocolsToAudit", new { Area = "cOap", aId = 0 });
+
+    ViewContext.Writer.Write("<br />");
+}
+<br />
+<br />
+@*<div>
+        @Html.Partial("OapAuditSearchPartial")
+</div>*@

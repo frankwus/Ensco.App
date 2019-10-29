@@ -1,0 +1,172 @@
+﻿@{
+    Layout = null;
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>IRMA - Login</title>
+
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Html.DevExpress().GetStyleSheets(
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.GridView, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Editors, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Chart, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Report, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.TreeList, Theme = "EnscoTheme" },
+                                new StyleSheet { ExtensionSuite = ExtensionSuite.Scheduler, Theme = "EnscoTheme" }
+                                )
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-ui")
+
+    @Html.DevExpress().GetScripts(
+                            new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+                            new Script { ExtensionSuite = ExtensionSuite.GridView },
+                            new Script { ExtensionSuite = ExtensionSuite.Editors },
+                            new Script { ExtensionSuite = ExtensionSuite.Chart },
+                            new Script { ExtensionSuite = ExtensionSuite.Report },
+                            new Script { ExtensionSuite = ExtensionSuite.TreeList },
+                            new Script { ExtensionSuite = ExtensionSuite.Scheduler }
+                            )
+
+    @model Ensco.Models.LoginModel
+    @using Ensco.App.Helpers
+    <script src="@Url.Content("~/irma.js")"></script>
+    <script src="@Url.Content("~/base.js")"></script>    
+
+    <style>
+        body {
+            background-image: url("@Url.Content("~/Images/ENSCO-8503-French-Guiana.jpeg")");
+            background-position: center;
+            backgruond-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+</head>
+<body>
+    @Html.DevExpress().PopupControl(pc =>
+{
+    pc.Name = "pcLogin";
+    pc.Modal = true;
+    pc.Width = 320;
+    pc.AllowDragging = false;
+    pc.CloseAction = CloseAction.None;
+    pc.ShowCloseButton = false;
+    pc.CloseOnEscape = false;
+    pc.PopupAnimationType = AnimationType.None;
+    pc.ShowHeader = true;
+
+    pc.SetHeaderTemplateContent(cont =>
+    {
+        ViewContext.Writer.Write("<img src='/Images/irma.png'>");
+    });
+
+    pc.AutoUpdatePosition = true;
+    pc.ShowOnPageLoad = true;
+    pc.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    pc.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    pc.SetContent(() =>
+    {
+        using (Html.BeginForm("Index", "Login", FormMethod.Post, new { id = "popupForm", @class = "edit_form" }))
+        {
+
+            ViewContext.Writer.Write(Html.Hidden("returnUrl", ViewBag.ReturnUrl as string));            
+
+            Html.DevExpress().FormLayout(s =>
+            {
+                s.Name = "ModalModeFormLayout";
+                s.RequiredMarkDisplayMode = RequiredMarkMode.None;
+                s.Width = Unit.Percentage(100);
+                s.Height = Unit.Percentage(100);
+
+                s.NestedExtensionWidth = Unit.Percentage(100);
+                s.Items.Add(x=>x.UserId, i =>
+                {
+                    i.FieldName = "UserId";
+                    i.Caption = "User";
+                    i.NestedExtension().TextBox(item =>
+                    {
+                        item.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        item.Properties.ValidationSettings.Display = Display.Dynamic;
+                        item.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        item.Properties.ClientSideEvents.Init = "function (s,e) { setUsernameFromLocalStorage(); }";
+                    });
+                });
+                s.Items.Add(x => x.Password, i =>
+                {
+                    i.FieldName = "Password";
+                    i.Caption = "Password";
+                    i.NestedExtension().TextBox(item =>
+                    {
+                        item.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                        item.Properties.ValidationSettings.Display = Display.Dynamic;
+                        item.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        item.Properties.Password = true;
+                    });
+                });
+                s.Items.Add(i =>
+                {
+                    i.ShowCaption = DefaultBoolean.False;
+                    i.Width = Unit.Percentage(100);
+                    i.SetNestedContent(() =>
+                    {
+                        ViewContext.Writer.Write("<div style='float:right'>");
+                        Html.DevExpress().Button(
+                            buttonSettings =>
+                            {
+                                buttonSettings.Name = "btnUpdate";
+                                buttonSettings.Text = "Login";
+                                buttonSettings.UseSubmitBehavior = true;
+                                buttonSettings.ClientSideEvents.Click = "function (s,e) { saveUsernameOnLocalStorage(s,e); }";
+                            }
+                        ).Render();
+
+                    });
+                });
+
+            }).Render();
+
+            foreach (ModelState modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    ViewContext.Writer.Write("<div class='alert alert-danger'>" + error.ErrorMessage + "</div>");
+                }
+            }
+
+        }
+
+    });
+
+    pc.ShowFooter = true;
+    pc.SetFooterTemplateContent(cont =>
+    {
+        ViewContext.Writer.Write("<div style='float:right;'><small>Powered by &nbsp;</small><img src='/Images/ensco.png' style='width:100px;' /></div>");
+    });
+
+}).GetHtml()
+    <script>      
+
+        function saveUsernameOnLocalStorage(s, e) {
+            localStorage.setItem('lastUsername', UserId.GetValue());
+        }
+
+        function setUsernameFromLocalStorage() {
+            if (localStorage.getItem('lastUsername') != null) {
+                UserId.SetValue(localStorage.getItem('lastUsername'));
+                Password.Focus();
+            } else {
+                UserId.SetValue('');
+                UserId.Focus();
+            }
+        }
+
+    </script>
+
+</body>
+</html>

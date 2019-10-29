@@ -1,0 +1,172 @@
+﻿@model Ensco.Irma.Models.IrmaHomePassportModel
+@using System.Data
+@using System.Web.UI.WebControls
+@{
+    DataSet ds = (DataSet)this.ViewBag.TimeAt;
+}
+@Html.DevExpress().FormLayout(form => {
+    form.Name = "formMyEnscoPassport";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = true;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Ensco Passport";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColumnCount = 6;
+        //i.Items.Add(item =>
+        //{
+        //    item.RowSpan = 4;
+        //    item.Caption = "";
+        //    //item.NestedExtension().Image(img =>
+        //    //{
+        //    //    img.ImageUrl = "~/Images/PotatoHead.gif";
+        //    //    img.Height = Unit.Pixel(100);
+        //    //    img.Width = Unit.Pixel(100);
+        //    //});
+        //    Html.EnscoNestedEditor(item, x => x.Picture, true);
+        //});
+        i.Items.Add(x => x.FirstName, item =>
+        {
+            item.FieldName = "FirstName";
+            Html.EnscoNestedEditor(item, x => x.FirstName, true);
+        });
+        i.Items.Add(x => x.MiddleName, item =>
+        {
+            item.FieldName = "MiddleName";
+            Html.EnscoNestedEditor(item, x => x.MiddleName, true);
+        });
+        i.Items.Add(x => x.LastName, item =>
+        {
+            item.FieldName = "LastName";
+            Html.EnscoNestedEditor(item, x => x.LastName, true);
+        });
+        i.Items.Add(x => x.EmployeeId, item =>
+        {
+            item.FieldName = "EmployeeId";
+            item.Caption = "Employee / Passport ID";
+            Html.EnscoNestedEditor(item, x => x.EmployeeId, true);
+        });
+        i.Items.Add(x => x.Position, item =>
+        {
+            item.FieldName = "Position";
+            Html.EnscoNestedEditor(item, x => x.Position, true);
+        });
+        i.Items.Add(x => x.Status, item =>
+        {
+            item.FieldName = "Status";
+            Html.EnscoNestedEditor(item, x => x.Status, true);
+        });
+        i.Items.Add(x => x.Rig, item =>
+        {
+            item.FieldName = "Rig";
+            item.Caption = "Rig / Facility";
+            Html.EnscoNestedEditor(item, x => x.Rig, true);
+        });
+        i.Items.Add(x => x.Department, item =>
+        {
+            item.FieldName = "Department";
+            Html.EnscoNestedEditor(item, x => x.Department, true);
+        });
+        i.Items.Add(x => x.Nationality, item =>
+        {
+            item.FieldName = "Nationality";
+            Html.EnscoNestedEditor(item, x => x.Nationality, true);
+        });
+        i.Items.Add(x => x.BusinessUnit, item =>
+        {
+            item.FieldName = "BusinessUnit";
+            Html.EnscoNestedEditor(item, x => x.BusinessUnit, true);
+        });
+        i.Items.Add(x => x.Supervisor, item =>
+        {
+            item.FieldName = "Supervisor";
+            Html.EnscoNestedEditor(item, x => x.Supervisor, true);
+        });
+        i.Items.Add(x => x.EmailAddress, item =>
+        {
+            item.FieldName = "EmailAddress";
+            Html.EnscoNestedEditor(item, x => x.EmailAddress, true);
+        });
+        i.Items.Add(x => x.Company, item =>
+        {
+            item.FieldName = "Company";
+            Html.EnscoNestedEditor(item, x => x.Company, true);
+        });
+        i.Items.Add(x => x.RigManager, item =>
+        {
+            item.FieldName = "RigManager";
+            Html.EnscoNestedEditor(item, x => x.RigManager, true);
+        });
+        i.Items.Add(x => x.PhoneNumber, item =>
+        {
+            item.FieldName = "PhoneNumber";
+            Html.EnscoNestedEditor(item, x => x.PhoneNumber, true);
+        });
+        i.Items.Add(x => x.Country, item =>
+        {
+            item.FieldName = "Country";
+            Html.EnscoNestedEditor(item, x => x.Country, true);
+        });
+        i.Items.Add(x => x.State, item =>
+        {
+            item.FieldName = "State";
+            Html.EnscoNestedEditor(item, x => x.State, true);
+        });
+        i.Items.Add(x => x.City, item =>
+        {
+            item.FieldName = "City";
+            Html.EnscoNestedEditor(item, x => x.City, true);
+        });
+    });
+
+}).GetHtml()
+@Html.DevExpress().FormLayout(form => {
+    form.Name = "formMyTime";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = true;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Time";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColumnCount = 6;
+
+        i.Items.Add(item => {
+            this.CreateItem(item, "Company", ds, "TimeAtEnsco");
+        });
+        i.Items.Add(item => {
+            this.CreateItem(item, "Rig/Facility", ds, "TimeAtRig");
+        });
+        i.Items.Add(item => {
+            this.CreateItem(item, "Department", ds, "");
+        });
+        i.Items.Add(item => {
+            this.CreateItem(item, "Position", ds, "TimeAtPostion");
+        });
+    });
+
+}).GetHtml()
+@functions{
+    void CreateItem(MVCxFormLayoutItem item, string label, DataSet ds, string name) {
+        string text = "";
+        try {
+            text = ds.Tables[0].Rows.Count == 0 ? "" : ds.Tables[0].Rows[0][name].ToString();
+        } catch (Exception ex) {
+            // text = ex.Message;
+        }
+        item.Caption = label;
+        item.NestedExtension().TextBox(s => {
+            s.Name = label + "1";
+            s.Text = text;
+            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+            s.Properties.ValidationSettings.Display = Display.Dynamic;
+            s.ShowModelErrors = true;
+            s.EncodeHtml = false;
+            s.ReadOnly = true;
+            s.Width = Unit.Percentage(100);
+        });
+    }
+}

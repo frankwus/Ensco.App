@@ -1,0 +1,22 @@
+﻿@model Ensco.Models.DataTableModel
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_HomeTasksJob";
+    grid.KeyFieldName =Model.KeyFieldName;
+    grid.CallbackRouteValues = new { Action = "IrmaHomeEnscoPassportTasksJobPartial", Controller = "Irma" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.OpenJobModel), options);
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()

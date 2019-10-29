@@ -1,0 +1,48 @@
+﻿@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = true;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.AddButtonText = "Add Approver";
+    options.ShowTitle = true;
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "gvApproval";
+    settings.Width = Unit.Percentage(100);
+    settings.Caption = "Approval";
+    settings.KeyFieldName = "Id";
+
+    Html.EnscoStandardGrid(settings, typeof(Ensco.OAP.Models.ViewModels.LL_PreApprovalGridViewRowModel), options);
+    settings.Columns.Clear();
+
+    settings.CallbackRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedApprovalReviewPartial" };
+
+    settings.Columns.Add("ApproverPassportId");
+    settings.Columns.Add("Position");
+    settings.Columns.Add("OriginatorComments");
+    settings.Columns.Add("DueDate");
+    settings.Columns.Add("ReviewerComments");
+    settings.Columns.Add("Status");
+    settings.Columns.Add(c =>
+    {
+        c.Caption = "Signature";
+    });
+
+    settings.SettingsEditing.AddNewRowRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedApprovalReviewAddPartial" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Area = "IRMA", Controller = "LessonsLearned", Action = "LessonsLearnedApprovalReviewDeletePartial" };
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+    settings.EditFormLayoutProperties.ColumnCount = 4;
+    settings.EditFormLayoutProperties.Items.Add("ApproverPassportId");
+    settings.EditFormLayoutProperties.Items.Add("DueDate");
+    settings.EditFormLayoutProperties.Items.Add("OriginatorComments");
+    settings.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+
+}).Bind(Model).GetHtml()

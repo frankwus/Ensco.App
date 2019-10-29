@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<style>
+    body {
+        margin: 20px;
+        margin-right: 40px;
+    }
+</style>
+<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body>
+    <span style="margin-left:1; margin-bottom:5;  font-weight:bold" class="orangecolor"> Reminder </span>
+
+
+
+    <br>
+</body>
+<img src="../Images/Cancel icon.png" onclick="window.close() " />
+</html>
+<script>
+    var t = $('#t')
+    var t1 = GetId('t1')
+    var Action = getParameterByName('action')
+    $(document).ready(function () {
+        var xml = window.dialogArguments
+
+        var arr = ['You have Action Items pending. Please click on the link to go to the permit.'
+            , 'Permit Issuer has authorized the following permit. Please click on the link to go to the permit. '
+            , 'Energy Isolation '
+            , 'Permit Checklist has changed. '
+            , 'After Field Break'
+        ]
+        for (var i in arr) {
+            Show(xml, parseInt(i), arr[i])
+        }
+
+        $('a').on('click', function () {
+            var a = $(this)
+            window.close()
+
+        })
+        CleanUp()
+    })
+    function Show(xml, index, text) {
+        var t = $('<table/>')
+        DataBind(t, xml, index)
+        //alert( Trim(t.text()) )
+        if (Trim(t.text()) != '') {
+            t.find('th').html(text).attr('colspan', 11)
+            t.appendTo($('body'))
+
+            t.find('tr').slice(1).each(function () {
+                var tr = $(this)
+                var page = tr.children().eq(0).text()
+                var id = tr.children().eq(1).text()
+                var name = tr.children().eq(2).text()
+                var action = tr.children().eq(3).text()
+                var html = '<a href=' + page + '.htm?id=' + id + '>' + name + ' ' + id + ' ' + action + '</a>'
+                tr.attr('id', id)
+                if (index == 3) {
+                    html = '<td>' + action + '<td><input type=button value=Sign /><input type=button value=Reject /></td>'
+                    tr.html(html)
+                    tr.find(':button').on('click', function () {
+                        var button = $(this)
+                        var action = GetVal(button)
+                        if (action != 'Reject')
+                            action = 'Approve'
+                        var xml = GetArray(['usp_JobActionPermit', tr.attr('id'), 'Authorization', 'Permit Holder', action, '', UserId, ''])
+                        window.close()
+                    })
+                } else {
+                    tr.children().eq(0).html(html)
+                    tr.children().slice(1).remove()
+                }
+            })
+            t.find('tr').eq(0).children().slice(1).remove()
+        }
+
+    }
+    function on_Submit() {
+        window.close()
+    }
+</script>

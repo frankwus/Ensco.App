@@ -1,0 +1,36 @@
+﻿@model Ensco.App.TLC.FleetSummaryModel
+
+@using Ensco.App.App_Start
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_FleetSummaryRigDetail";
+    grid.KeyFieldName = Model.FleetSummaryRig.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Cap", Action = "FleetSummaryRigDetailPartial" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.TLC.Models.CAP_FleetSummaryRigModel), options);
+
+    grid.CommandColumn.Width = Unit.Pixel(25);
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.FleetSummaryRig.KeyFieldName;
+    e.QueryableSource = Model.FleetSummaryRig.Dataset;
+}).GetHtml()
+
+

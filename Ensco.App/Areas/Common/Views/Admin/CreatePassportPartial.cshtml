@@ -1,0 +1,178 @@
+﻿@model Ensco.Models.UserModel
+@using System.Data;
+    @{
+        Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+        bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+    }
+
+
+    @Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formCreatePassport";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+    form.RequiredMarkDisplayMode = RequiredMarkMode.RequiredOnly;
+
+    //    form.PreRender+=
+    form.Items.AddGroupItem(i =>{
+        i.Caption = EnscoHelper.GetTranslation( "Ensco Passport Fields") ;
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Percentage(100);
+        i.ColCount = 4;
+
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Passport, true );
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.FirstName);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.MiddleName);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.LastName);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.DisplayName);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Nationality);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Company);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Department);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Position);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Email);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.DateOfBirth);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.ISNNumber);
+        });
+        });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = EnscoHelper.GetTranslation("Contact Information");
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Percentage(100);
+        i.ColCount = 4;
+        i.Items.Add(item => {
+            item.ColumnSpan = 2;
+            Html.EnscoCapaEditor(item, x => x.AddressLine1);
+        });
+        i.Items.Add(item => {
+            item.ColumnSpan = 2;
+            Html.EnscoCapaEditor(item, x => x.AddressLine2);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.City);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.State);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.Country);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.PostalCode);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.PrimaryPhone);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.SecondaryPhone);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.MaritalStatus);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.PersonalEmail);
+        });
+
+
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = EnscoHelper.GetTranslation("Emergency Contact Information");
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.Height = Unit.Percentage(100);
+        i.ColCount = 3;
+
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.EmergencyContactFirstName);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.EmergencyContactLastName);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.EmergencyContactRelationship);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.EmergencyContactEmail);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.EmergencyContactPrimaryPhone);
+        });
+        i.Items.Add(item => {
+            Html.EnscoCapaEditor(item, x => x.EmergencyContactSecondaryPhone);
+        });
+        i.Items.Add(item => {
+            item.ColumnSpan = 3;
+            Html.EnscoCapaEditor(item, x => x.EmergencyContactComment);
+        });
+    });
+}).GetHtml()
+
+    <div style='float:left; padding-right:30px'>
+        @Html.DevExpress().Button(btnSettings =>
+        {
+            btnSettings.Name = "btnPassportSearch";
+            btnSettings.Text = "Check Existing Users";
+            btnSettings.UseSubmitBehavior = false;
+            btnSettings.Enabled = true;
+            btnSettings.ClientVisible = false;
+            btnSettings.ClientSideEvents.Click = " function(s, e) { onCheckExistingUser (s, e) } ";// var filter = \"\"; if(FirstName.lastChangedValue != null){ filter += ' FirstName:' + FirstName.lastChangedValue;} if(LastName.lastChangedValue != null){filter += ' LastName:' + LastName.lastChangedValue;} if(MiddleName.lastChangedValue != null){ filter += ' MiddleName:' + MiddleName.lastChangedValue;} if(Email.lastChangedValue != null){ filter += ' Email:' + Email.lastChangedValue;} if(Position.lastSuccessValue != null){ filter += ' Position:' + Position.lastSuccessValue;} PassportSearchFilter.value = filter; gridPassportSearch.PerformCallback(); }";
+        }).GetHtml()
+    </div>
+
+    <div style='float:right; padding-right:30px'>
+        <span id="Msg" hidden style="color:red"> The record exists for the same user. Do you want to proceed?</span>
+        @Html.DevExpress().Button(btnSettings =>
+        {
+            btnSettings.Name = "btnUpdate";
+            btnSettings.Text = "Save";
+            btnSettings.UseSubmitBehavior = false;
+            btnSettings.ClientSideEvents.Click = " function(s, e) {onSave (s, e) } ";
+            btnSettings.Enabled = bPobEditor;
+        }).GetHtml()
+        @Html.DevExpress().Button(btnSettings =>
+        {
+            btnSettings.Name = "btnCancel";
+            btnSettings.Text = "Cancel";
+            btnSettings.UseSubmitBehavior = false;
+            btnSettings.ClientSideEvents.Click = string.Format("function(s, e){{ document.location.href = '{0}';}}", Url.Action("Index", "Personnel", new { Area = "IRMA" }));
+        }).GetHtml()
+    </div>
+
+    @if (ViewData.ModelState.Values.Any(x => x.Errors.Count >= 1)) {
+        string errorMsg = "";
+        foreach (var item in ViewData.ModelState.Values) {
+            foreach (var error in item.Errors) {
+                errorMsg += string.Format("{0}\r\n", error.ErrorMessage);
+            }
+        }
+        @Html.DevExpress().Label(lblsettings => {
+                                                lblsettings.Name = "ErrorMsg";
+                                                lblsettings.Text = errorMsg;
+                                                lblsettings.ControlStyle.ForeColor = System.Drawing.Color.Red;
+                                            }).GetHtml();
+    }

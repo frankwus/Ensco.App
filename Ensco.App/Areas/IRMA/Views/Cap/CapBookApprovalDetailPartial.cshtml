@@ -1,0 +1,57 @@
+﻿@model Ensco.App.TLC.ManageCapBookModel
+
+@using System.Web.UI.WebControls
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    options.ShowToolbar = false;
+    options.ShowPager = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridView_CapBookVerification";
+
+    grid.KeyFieldName = "Id";
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Cap", Action = "CapBookApprovalDetailPartial" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "Cap", Action = "CapBookApprovalDetailUpdate" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.ApprovalModel), options);
+
+    grid.Columns["DueDate"].Visible = false;
+    grid.Columns["RequesterComments"].Visible = false;
+
+    grid.CommandColumn.Width = Unit.Pixel(50);
+
+    grid.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+    grid.EditFormLayoutProperties.ColumnCount = 2;
+    grid.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    grid.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+    grid.EditFormLayoutProperties.Items.Add("ApproverComments");
+    grid.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+    grid.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+
+    grid.CommandButtonInitialize = (s, e) =>
+    {
+        MVCxGridView gv = (MVCxGridView)s;
+        if(e.ButtonType == ColumnCommandButtonType.Edit)
+        {
+            int approver = (int)gv.GetRowValues(e.VisibleIndex, "Approver");
+            e.Visible = (approver == Ensco.Utilities.UtilitySystem.CurrentUserId);
+        }
+    };
+
+}).Bind(Model.Approvals).GetHtml()
+
+

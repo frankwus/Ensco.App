@@ -1,0 +1,143 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formManageRigLists";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "General Settings";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 3;
+        i.Width = Unit.Percentage(100);
+        i.Height = Unit.Percentage(100);
+        i.Items.Add(x=>x.MaxPOB, item =>
+        {
+            item.Caption = "Ensco Per Contract";
+            item.FieldName = "MaxPOB";
+            Html.EnscoNestedEditor(item, x => x.MaxPOB);
+        });
+        i.Items.Add(x => x.DateFormat, item =>
+        {
+            item.Caption = "Date Format";
+            item.FieldName = "DateFormat";
+            Html.EnscoNestedEditor(item, x => x.DateFormat);
+        });
+        i.Items.Add(x => x.DateTimeFormat, item =>
+        {
+            item.Caption = "Date Time Format";
+            item.FieldName = "DateTimeFormat";
+          //  Html.EnscoCapaEditor(item, x => x.DateTimeFormat, false , null, null, false, true );
+           Html.EnscoNestedEditor(item, x => x.DateTimeFormat);
+        });
+        i.Items.Add(x=>x.PobSummaryEmailList, item =>
+        {
+            item.Caption = "PoB Summary Email Recipients";
+            item.ColumnSpan = 3;
+            item.FieldName = "PobSummaryEmailList";
+            Html.EnscoNestedEditor(item, x => x.PobSummaryEmailList);
+        });
+
+        //i.Items.Add(x=>x.Location, item =>
+        //{
+        //    item.Caption = "Location";
+        //    Html.EnscoNestedEditor(item, x => x.Location);
+        //});
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Job Daily Summary";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 4;
+        i.Width = Unit.Percentage(100);
+        i.Height = Unit.Percentage(100);
+        i.Items.Add(x => x.DailySummaryEmailList, item =>
+        {
+            item.Caption = "Daily Summary Email Recipients";
+            item.FieldName = "DailySummaryEmailList";
+            item.ColumnSpan = 4;
+            Html.EnscoNestedEditor(item, x => x.DailySummaryEmailList);
+        });
+
+        i.Items.Add(x => x.EmailTime, item =>
+        {
+            item.Caption = "Email Time";
+            item.FieldName = "EmailTime";
+            item.Width = Unit.Percentage(25);
+            Html.EnscoNestedEditor(item, x => x.EmailTime);
+        });
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Rig Settings";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 2;
+        i.Width = Unit.Percentage(100);
+        i.Height = Unit.Percentage(100);
+        i.Items.Add(x => x.IsRigInBrazil, item =>
+        {
+            item.Caption = "Is Rig in Brazil";
+            item.FieldName = "IsRigInBrazil";
+            item.ColumnSpan = 2;
+            Html.EnscoNestedEditor(item, x => x.IsRigInBrazil);
+        });
+        i.Items.Add(x => x.IsClientRequireSignColdWorkPermit, item =>
+        {
+            item.Caption = "Does the client require to sign Cold Work permit?";
+            item.FieldName = "IsClientRequireSignColdWorkPermit";
+            Html.EnscoNestedEditor(item, x => x.IsClientRequireSignColdWorkPermit);
+        });
+        i.Items.Add(x => x.IsClientRequireSignHotWorkPermit, item =>
+        {
+            item.Caption = "Does the client require to sign Hot Work permit?";
+            item.FieldName = "IsClientRequireSignHotWorkPermit";
+            Html.EnscoNestedEditor(item, x => x.IsClientRequireSignHotWorkPermit);
+        });
+        i.Items.Add(x => x.IsClientRequireSignConfinedWorkPermit, item =>
+        {
+            item.Caption = "Does the client require to sign Confined Space Entry Work permit?";
+            item.FieldName = "IsClientRequireSignConfinedWorkPermit";
+            Html.EnscoNestedEditor(item, x => x.IsClientRequireSignConfinedWorkPermit);
+        });
+        i.Items.Add(x => x.ChooseClientSignAtTimeOfPermit, item =>
+        {
+            item.Caption = "Do you want to choose at time of permit?";
+            item.FieldName = "ChooseClientSignAtTimeOfPermit";
+            Html.EnscoNestedEditor(item, x => x.ChooseClientSignAtTimeOfPermit);
+        });
+    });
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Administrative";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 2;
+        i.Width = Unit.Percentage(100);
+        i.Height = Unit.Percentage(100);
+        i.Items.Add(x => x.CurrentOIM, item =>
+        {
+            item.Caption = "Current OIM";
+            item.FieldName = "CurrentOIM";
+            Html.EnscoNestedEditor(item, x => x.CurrentOIM);
+        });
+        i.Items.Add(x => x.CurrentMaster, item =>
+        {
+            item.Caption = "Current Master";
+            item.FieldName = "CurrentMaster";
+            Html.EnscoNestedEditor(item, x => x.CurrentMaster);
+        });
+    });
+    form.Items.Add(item =>
+    {
+        item.ShowCaption = DefaultBoolean.False;
+        item.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        item.NestedExtension().Button(s =>
+        {
+            s.Name = "btnRigMaxPobSubmit";
+            s.Text = "Save";
+            s.UseSubmitBehavior = false;
+            s.ClientSideEvents.Click = "function(s,e){ onSaveAdminList(s, e) }";
+        });
+    });
+}).GetHtml()

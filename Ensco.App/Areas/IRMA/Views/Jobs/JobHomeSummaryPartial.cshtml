@@ -1,0 +1,31 @@
+﻿@model Ensco.Irma.Models.Jobs.JobsHomeModel
+
+@using Ensco.App.App_Start
+
+@{ 
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+    options.ShowPager = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridView_JobHomeSummary";
+    Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.Jobs.JobSummaryModel));
+    foreach (var item in grid.Columns)
+    {
+        MVCxGridViewColumn col = item as MVCxGridViewColumn;
+        col.Settings.AllowHeaderFilter = DefaultBoolean.False;
+    }
+
+    grid.Styles.Header.Wrap = DefaultBoolean.True;
+    grid.SettingsPager.EnableAdaptivity = true;
+    grid.Settings.ShowHeaderFilterButton = false;
+    grid.SettingsBehavior.AllowSort = false;
+    grid.Width = Unit.Percentage(100);
+
+}).Bind(Model.Summary).GetHtml()

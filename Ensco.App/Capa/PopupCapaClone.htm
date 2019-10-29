@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<head>
+    <style>
+        .pad {
+            padding: 4;
+        }
+
+        body {
+            margin: 10;
+        }
+    </style>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<body>
+
+    <br />
+    <span class="orangecolor">Clone a CAPA Item</span>
+    <table id="t0">
+        <tr>
+            <td>Step 1
+            <td colspan="11">Enter Employee ID, First Name or Last Name that will assign CAPA to and click the search button – Use shared accounts on the rig
+        <tr>
+            <td class="label pad">Search Field
+            <td><input type="text" style="width:300" /><img src="../Images/Search icon.png" onclick="on_Save(this)" />
+        <tr>
+            <td>Step 2
+            <td colspan="11">
+                Check the box of the name(s) of the people you want
+        <tr>
+            <td colspan="11"><table id="t1"></table>
+        <tr>
+            <td>Step 3
+            <td colspan="11">Hit the submit button to add the name(s) to the list of selected users
+        <tr>
+            <td class="pad" colspan="11"><img src="../Images/Submit icon.png" onclick="on_Add(this)" />
+        <tr>
+            <td style="border-bottom: 1 solid gray">Step 4
+            <td colspan="11">Repeat Steps 1 – 3 as necessary until have added all the users you want
+        <tr>
+            <td>Step 5
+            <td colspan="11">Hit the clone button to generate a copy of this CAPA item assigned to each user in the list
+        <tr>
+            <td colspan="11" class="Hazard pad">Selected Users
+        <tr>
+            <td colspan=11><table id="t"></table>
+        <tr>
+            <td colspan="11">
+                <img src="../Images/Submit icon.png" onclick="on_Clone(this)" />
+                <img src="../Images/Cancel icon.png" onclick="on_Cancel(this)" title="Cancel" />
+    </table>
+
+    <!--<br />
+    <table border="1" id="t1" style="border-collapse:collapse" width="100%"></table>
+
+    <table border="1" id="t" style="border-collapse:collapse" width="100%"></table>-->
+
+</body>
+</html>
+<script>
+    var t = $('#t')
+    var t0 = $('#t0')
+    var t1 = $('#t1')
+    var RaId = getParameterByName('RaId')
+    var Id = getParameterByName('Id')
+    var ActionName = getParameterByName('ActionName')
+    var UserId = getParameterByName('UserId')
+    $(document).ready(function () {
+        t0.find('td:nth-child(1):contains(Step)').addClass('header').addClass('right')
+        t0.find('td:nth-child(2)').addClass('label')
+        t0.find('tr').last().find('td').css('border', 'none')
+        //$(':text').val('wang')
+        //on_Save(0)
+        ConfigKeyPress()
+        $(':text').focus()
+        t.add(t1).parent().css('padding', 0)
+        $('input:checkbox').on('change', function () {
+            $('img').slice(-2, -1).focus()
+        })
+        $('input:checkbox').on('click', function () {
+            if ($('input:checked').length > 1)
+                $(this).prop('checked', false)
+        })
+        $(document).keypress(function (e) {
+            if (e.which != 13) return
+            e.preventDefault()
+            if ($(':checked').length)
+                on_Add()
+        })
+        CleanUp()
+    })
+    function on_Save() {
+        var text = $(':text').val()
+        t1.find('tr').remove()
+        $.ajax({
+            type: "POST",
+            url: "../common/EmpDirectory.aspx/FindEmployee",
+            data: '{name: "' + text + '", includeGroup: false }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var html = data.d
+                t1.html(html)
+
+                if (!t1.length)
+                    return
+                $('<input type=checkbox />').appendTo(t1.find('td:nth-child(1)'))
+                t1.find(':checkbox').eq(0).remove()
+                t1.find('tr').eq(0).addClass('labelCenter')
+                $('input:checkbox').first().focus()
+            },
+            failure: function (response) {
+                alert(response.d);
+            }
+            , async: false
+        });
+    }
+    function on_Add() {
+        if (!t.find('tr').length)
+            t1.find('tr').first().appendTo(t)
+        $(GetDelete()).insertAfter(t1.find(':checked'))
+        t1.find(':checkbox:checked').closest('tr').appendTo(t)
+        t1.find('tr').remove()
+        // t.find('tr').eq(0).addClass('labelCenter')
+    }
+    function on_Clone() {
+        var root = $('<ra />')
+        var found = false
+        t.find(':checkbox:checked').closest('tr').each(function () {
+            var tr = $(this)
+            var element = $.createElement('clone')
+            element.addAttr('userid', tr.children().eq(1).text())
+            element.addAttr('username', tr.children().eq(2).text())
+            element.addAttr('email', tr.children().eq(3).text())
+            root.append(element)
+            found = true
+        })
+        if (!found) {
+            alert('Please make a selection.')
+            return
+        }
+        var arr = [RaId, Id, ActionName, root[0].outerHTML, UserId]
+        GetArray(['usp_capaClone', Id, root[0].outerHTML, UserId])
+        window.returnValue = CleanXml(root[0].outerHTML)
+        //return
+        window.close()
+    }
+    function on_Cancel() {
+        window.close()
+        return
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+    }
+</script>

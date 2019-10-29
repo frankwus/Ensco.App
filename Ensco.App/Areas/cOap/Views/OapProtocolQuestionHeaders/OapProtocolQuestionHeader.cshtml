@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapProtocolQuestionHeader>
+@{
+    ViewBag.Title = "Oap Protocol Question Sub Text";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        var currentOapChecklistQuestionId, startEdit = false;
+        function OnBeginCallback(s, e) {
+            startEdit = (e.command == "STARTEDIT");
+        }
+
+        function OnInit(s, e) {
+            var oapChecklistQuestionId = OapProtocolQuestionHeaderGrid.GetEditor("OapChecklistQuestionId").GetValue();
+            if (oapChecklistQuestionId) {
+                OapProtocolQuestionHeaderGrid.GetEditor("OapChecklistQuestionId").PerformCallback();
+            }
+        }
+
+        function OnEndCallback(s, e) {
+            currentOapChecklistQuestionId = OapProtocolQuestionHeaderGrid.GetEditor("OapChecklistQuestionId").GetValue();
+            if (currentOapChecklistQuestionId || startEdit) {
+                OapProtocolQuestionHeaderGrid.GetEditor("OapChecklistQuestionId").PerformCallback();
+            }
+        }
+
+        function OapProtocolOnSelectedeChanged() {
+            OapProtocolQuestionHeaderGrid.GetEditor("OapChecklistQuestionId").PerformCallback();
+        }
+
+        function OapProtocolQuestionBeginCallback(s, e) {
+            e.customArgs["OapProtocolId"] = OapProtocolQuestionHeaderGrid.GetEditor("OapProtocolId").GetValue();
+        }
+
+        function OapProtocolQuestionEndCallback(s, e) {
+            if (startEdit) {
+                s.SetValue(currentOapChecklistQuestionId);
+                startEdit = false;
+            }
+        }
+
+        function OnToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewProtocolQuestionHeader":
+                    s.AddNewRow();
+                    break;
+            }
+        }
+    </script>
+}
+
+<div class="oap-protocol-question-header-master-grid">
+    @using (Html.BeginForm())
+    {
+        @Html.Partial("OapProtocolQuestionHeaderPartial", Model)
+    }
+</div>

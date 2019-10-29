@@ -1,0 +1,1574 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <table border="0">
+            <tr style="border:none">
+                <td width="99%" style="border:none">
+                <td><a id="Toggle" class="nowrap" href="" onclick="on_Toggle(this); return false ">Convert to JSA with Work Instruction</a>
+                <td>    <a href="" id="Close" onclick="on_Close(this); return false">Close  </a>
+                <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+                <td><img class="hidden" src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+                <td><img src="../Images/outlook.png" onclick="on_Outlook()" Title="Email" />
+                <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+        </table>
+        <table id="tPlanning">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="22">
+                    Planning
+            <tr>
+                <td>JSA ID
+                <td>
+                <td>Job
+                <td>
+                    <a href="javascript:void(0)" onclick="window.location = 'job.htm?id=' + $(this).text(); " id="JobId"></a>
+                    <span class="hidden" id="Type" />
+                <td>Permit
+                <td><select id="PermitId"></select>
+                <td>Date/Time Created
+                <td width="100" id="dt">
+                <td>Status
+                <td width="100" id="Status">
+            <tr>
+                <td>Location
+                <td colSpan=5>
+                    <img src='../images/search icon.png' onclick="on_Location(this)" />
+                    <span border="0" id="Location"></span>
+                    <span class="hidden" id="LocationId"></span>
+                <td>Work Instruction
+                <td>
+                    <select id="Wi"></select>
+                <td>Date/Time Performed
+                <td width="100"> <input type="text" id="dtDone" />
+        </table>
+        <table class="hidden" id="Dummy">
+            <tr>
+                <th class="header" colspan="11">
+        </table>
+        <table id="tPersonnel0" class="marginBottom">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="10">
+                    Personnel
+            <tr>
+
+                <td class="labelRight" width="200">Job Supervisor
+                <td class="labelRight" width="200">Position
+                <td id="SupervisorPosition" width="200">
+                <td class="labelRight" width="200"> Name
+                <td>  <img onclick="on_AddSupervisor(this)" src="../Images/Select Personnel icon.png" /><span id="SupervisorName"></span><span id="SupervisorId"></span>
+            <tr>   <td colspan="22" class="Hazard">JSA Participants
+        </table>
+
+        <table id="tPersonnel">
+            <tr class="labelCenter">
+                <td>
+                <td>Position
+                <td>Name
+                <td>Company
+                <td>Date/Time
+
+            <tr style="display:none">
+                <td>  <img src="../Images//delete.png" width="16" onclick="on_Delete(this)" />
+                <td>
+                <td>
+                <td>
+                <td> <a href=# onclick="on_Now(this); return false">Now</a> <input style="width:200" type="text" />
+            <tr>
+                <td colspan="8"><img src="../Images/Select Personnel icon.png" onclick="on_AddPersonnel(this)" />
+        </table>
+        <table id="tExecution" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="11">
+                    Execution
+        </table>
+        <table id="tDuty"></table>
+        <table id="tTask" class="marginBottom"></table>
+        <table id="tCardHazard" class="marginBottom"></table>
+        <table id="tEvent" class="marginBottom"></table>
+        <table id="tLife" class="marginBottom">
+            <tr><td>	Stop Work Authority	 <td>	Energy Isolation	<td> 	Lifting Operations
+            <tr><td>	Stop for safety, it’s your obligation!	<td>	Lock out, tag out and try out!	<td>	Stay clear of a moving load!
+            <tr><td>	Permit to Work	 	<td>Working at Height	 	<td>Pressure Systems
+            <tr><td>	Plan, prepare, control and execute!		<td>Protect yourself from falls and others from dropped objects!	<td>	Never work on a pressurized
+            <tr><td>	Job Safety Analysis	 <td>	Dropped objects	 <td>	Lifting Operations
+            <tr><td>	It’s all about the conversation!	<td>	Never enter Red Zones without authorization!	<td>	Manage the impact of change!
+            <tr><td>	Energy Isolation
+        </table>
+        <table id="tFactor" border="1" class="marginBottom"></table>
+        <table id="tBarrier" border="1" class="marginBottom"></table>
+        <table id="tHand" border="1" class="marginBottom"></table>
+        <table id="tObject" border="1" class="marginBottom"></table>
+
+        <table id="A" class="hidden">
+            <tr>
+                <td class="orange" style="border-right:none">
+                    <div class="A">S1</div><div></div><div></div>
+                    <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                <td style="border-top-color:orange;border:none; border1-bottom-color:orange;border-left-color:orange">
+                    <table border="0">
+                        <tr>
+                            <td class="orange">Job Step
+                            <td class="label" style="border-top-color:gray">Job Factors
+
+                        <tr class="A">
+                            <td class="noborder">
+                                <textarea></textarea>
+                            <td class1="noborder">
+                                <img onclick="on_JF(this)" src="../Images/Select Personnel icon.png" />
+                                <table border="0" id="JF"></table>
+
+                        <tr>
+                            <td colspan="3">
+                                <table id="H">
+                                    <tr>
+                                        <th class="darkblue" colspan="11">
+                                            <span class="minus">-</span>
+                                            <span>Hazards Applicable to Job – to be completed by the Job Supervisor before commencing the job</span>
+                                            <!--<tr>
+                                                <td class="label" colspan="11">
+                                                    Optionally add Hazards that are specific to the job at time of execution that are not already catured in the Work Insturction-->
+
+                                    <tr>
+                                        <td class="Hazard" style1="border-right:none">
+                                            <div class="H">H1</div><div></div><div></div>
+                                            <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                                        <td style1="border:none">
+                                            <table>
+                                                <tr>
+                                                    <td style1="border:none">
+                                                        <table>
+
+                                                            <tr>
+                                                                <td class="Hazard" colspan="10" style1="border-top:none; border-left:none">
+                                                                    <span>Hazard</span>
+                                                            <tr class="H">
+                                                                <td style="border-left:none;border-bottom:none">
+                                                                    <textarea style="width:100%;height:100%" rows="5"></textarea>
+                                                                <td style="vertical-align:top">
+                                                                    <table id="B">
+
+                                                                        <tr class="darkblue">
+                                                                            <td colspan="2">
+                                                                                Barrier
+                                                                            <td>
+                                                                                Control Hierarchy Type
+                                                                            <td>Person
+                                                                        <tr class="B">
+                                                                            <td style="border-left:none;">
+                                                                                <div class="B">B1</div><div></div><div></div>
+                                                                                <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+                                                                            <td>
+                                                                                <textarea></textarea>
+                                                                            <td>
+                                                                                <select />
+                                                                            <td>
+                                                                                <!--<table>
+                                                                                    <tr class="P">
+                                                                                        <td width="1" style="border-top:none;border-right:none">
+                                                                                            <div class="P">P1</div><div></div><div></div>
+                                                                                            <div style="font-family: Wingdings" class="Delete" onclick="on_DeleteWingDing(this)">&#253;</div>
+
+                                                                                        <td style="border-top:none;border-right:none">
+                                                                                            <span>  </span>
+                                                                                            <img src="../Images/Select Personnel icon.png" onclick="on_PobSelect(this)" />
+                                                                                    <tr>
+                                                                                        <td style="border-bottom:none;border-right:none" colspan="10">-->
+                                                                                <select id="Person" />
+                                                                                <!--<u><span class="P" onclick="on_AddWingDing(event, this)">+ Add Person</span></u>-->
+                                                                                <!--</table>-->
+                                                                        <tr>
+                                                                            <td style="border-left:none;border-bottom:none" colspan="10"><u><span class="B" onclick="on_AddWingDing(event, this)">+ Add Barrier</span></u>
+                                                                        </tr>
+
+                                                                    </table>
+                                                            </tr>
+
+                                                        </table>
+
+                                                </tr>
+
+                                            </table>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="11">
+                                            <u><span class="H" onclick="on_AddWingDing(event, this)">+ Add Hazard</span></u>
+                                </table>
+                    </table>
+            <tr>
+                <td colspan="11">
+                    <u><span class="A" onclick="on_AddWingDing(event, this)">+ Add Job Step</span></u>
+                    <!--<tr>
+                        <td colspan="11">
+                            <u><span onclick="on_StartJob( this)">Start the Job</span></u><span> <input id="NewJSAConducted" type="checkbox" />New JSA Conducted</span>-->
+        </table>
+        <table id="tChange" border="1" class="marginBottom"></table>
+        <div><a id="SubmitForVerification" href="javascript:void(0) " onclick="on_Submit(this)"> Submit for Verification </a></div>
+        <table id="tVerification" class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="11">
+                    Verification
+        </table>
+        <table class1="marginBottom">
+            <tr>
+                <td>
+                    <a href="" onclick="on_Evaluate(this); return false">Evaluate Required Fields</a>
+        </table>
+        <table class="marginBottom hidden" id="tStep">
+            <tr>
+                <th class="darkblue" colspan="11">
+                    Job Steps – to be completed by the Job Supervisor before commencing the job
+            <tr>
+                <td class="label">
+                    Optionally add Job Factors and Hazards when applicable to a job step and not captured above
+        </table>
+        <img id=ImgZoom class="hidden" />
+    </form>
+</body>
+</html>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tPersonnel = $('#tPersonnel')
+    var tExecution = $('#tExecution')
+    var tDuty = $('#tDuty')
+    var tTask = $('#tTask')
+    var tCardHazard = $('#tCardHazard')
+    var tEvent = $('#tEvent')
+    var tLife = $('#tLife')
+    var tFactor = $('#tFactor')
+    var tBarrier = $('#tBarrier')
+    var tHand = $('#tHand')
+    var tObject = $('#tObject')
+    var tChange = $('#tChange')
+    var tVerification = $('#tVerification')
+    var tStep = $('#tStep')
+    var IsPaperView
+    var H = $('#H')
+    var A = $('#A')
+    var A1
+    var Id = getParameterByName('id')
+    var Page = 'jsa'
+    var Status
+    var Type
+    var ARR = ['Type', 'PermitId', 'dt', 'dtDone', 'Wi', 'Status', 'SupervisorId','LocationId', 'Location', 'JobId', 'JobTitle', 'SupervisorName'
+        , 'SupervisorPosition', 'NewJSAConducted']
+    $(document).ready(function () {
+        if (Id == '') {
+            Id = 0
+        }
+
+        InitDateTime(['dtDone'])
+        InsertCommon()
+        var xml = GetArrayRaw(['usp_JsaGet', Id, UserId, Lang ])
+        BindSelect(xml, $('#PermitId'), 12)
+        InitPlanning(xml)
+        Status = $('#Status').text()
+        InitVerification(xml)
+        InitFold()
+        Type = $('#Type').text()
+        InitCard(xml)
+
+        InitExecution(xml)
+        InitButtonEvent()
+        InitStatus(xml)
+        InitPaperView(tPersonnel)
+        if (IsPaperView) {
+            var t = tPlanning
+            t.find('tr').last().hide()
+            var tr = t.find('tr').eq(2)
+            t = tPersonnel
+            t.find('th').eq(3).hide().next().next().hide()
+            GetTd(t, 4).hide()
+            GetId('Toggle').hide()
+            //return
+        }
+        LoadJobPacket(tPlanning.next() )
+
+        InitLife()
+
+        FormattingAll()
+        CleanUp()
+    })
+    function InitCard(xml) {
+        if (Type == 'Hazard ID Prompt Card') {
+            var t = tPlanning
+            t.find('td').eq(0).text('ID')
+            t.find('tr').last().hide()
+            var xml0 = GetArray(['usp_JsaList', Id])
+            var src = $('#PermitId')
+            BindSelect(xml0, src)
+            src.parent().prev().text('JSA')
+            var element = $($.parseXML(xml)).find('Table')
+            src.val(element.find('PermitId').text())
+            tPersonnel.hide().prev().hide()
+            $('#HistoryLog').hide()
+        }
+    }
+    function FormattingAll() {
+         tFactor.add(tEvent).add(tLife).add(tCardHazard).find('img').on('click', function () {
+            Zoom(this )
+        })
+        Formatting(H)
+
+        if (Type == 'JSA without WI')
+            Formatting(A1)
+
+        $('table[id=B]').find('td:nth-child(4)').css('border-right', 'none')
+        $('table[id=B]').closest('td').css('border-bottom', 'none').css('border-right', 'none')
+        $('table[id=H]').find('td.Hazard').next().find('td:lt(1)').css('border-left', 'none').css('border-top', 'none')
+        var color = 'rgb(61, 183, 228)' //blue
+        $('table[id=H]').find('td.Hazard').css('border-right-color', color).css('border-left-color', color).css('border-top-color', color)
+        $('table[id=H]').find('td.Hazard').closest('td').css('border-right-color', color).css('border-left-color', color).css('border-top-color', color)
+
+        if (Type == 'JSA without WI') {
+            A1.children().children().not(':last').not(':last').each(function () {
+                var tr = $(this)
+                tr.find('td:nth-child(1)').css('border-right', 'none')
+
+                tr.find('td').eq(1).css('border-left', 'none')
+                tr.find('td').eq(5).css('border-left', 'none').css('border-right', 'none')
+            })
+        }
+
+        // $('table[id=H]').find('td.Hazard').next().css('border-left', 'none').css('border-top', 'none')
+        $(':checkbox').parent().addClass('center').css('padding', 0)
+    }
+    function Formatting(t) {
+        return
+        var c = 'A'
+        var color = " rgb( 232, 109, 31)" //orange
+        if (t.is(H)) {
+            c = 'H'
+            t = $('[id=H]')
+            color = 'rgb(61, 183, 228)' //blue
+        }
+        t.children().children().not(':last').find('td:first-child')
+            .css('border-right', '0')
+            .css('border-bottom', '0')
+            .css('border-top', '0')
+        t.find('div.P, div.B').parent().css({
+            "border-bottom-color": "black",
+            "border-bottom-width": ".5px",
+            "border-top-width": "0px",
+            "border-left-width": "0px",
+            "border-right-width": "0px",
+            "border-style": "solid"
+        })
+        t.find('div.' + c).parent().css({
+            "border-bottom-color": "black",
+            "border-right-color": color,
+            "border-width": "1px",
+            "border-style": "solid"
+        })
+        t.find('div.' + c).parent().first().css({
+            "border-top-color": color,
+            "border-width": "1px",
+            "border-style": "solid"
+        });
+        t.find('div.H').parent().css({
+            "border-bottom-color": "black",
+            // "border-right-color": " rgb( 232, 109, 31)",
+            "border-width": "1px",
+            "border-style": "solid"
+        })
+
+        $('[id=H]').children().children('tr:nth-child(3)').css({
+            "border-top-color": color,
+            "border-width": "1px",
+            "border-style": "solid"
+        });
+
+        t.children().children().slice(0).each(function () {
+            var tr = $(this)
+            tr.children().css('border-top-color', 'lightgray')//.css('border-bottom', 'none')
+        })
+        t.prev().find('td').last().css('border-bottom', 'none')
+        return
+        var td = t.find('tr').eq(0).children()//.eq(1)
+        td.css('border-top-color', 'lightgray')
+    }
+    function InitLife() {
+        var t = tLife
+        var index = 1
+        t.find('tr:odd').each(function () {
+            var tr = $(this)
+            tr.children().each(function () {
+                var td = $(this)
+                td.css('font-weight', 'bold')
+                td.css('border-bottom-color', 'white')
+                $('<td rowspan=2 ><img width=40 src=../images/JsaLife/' + (index++) + '.png /> </td>').insertBefore(td).addClass('center')
+            })
+        })
+        var td = t.find('td').last()
+        td.css('border-bottom-color', 'black')
+        $('<td colspan=11 />').insertAfter(td).addClass('label')
+    }
+    function InitButtonEvent() {
+        $(':button').on('click', function () {
+            var button = $(this)
+            var tr = button.closest('tr')
+            var action = button.val()
+            if (['Approve', 'Verify', 'Reject'].indexOf(action) == -1)
+                return
+
+            var section = button.closest('table').attr('id')
+            section = section.substring(1, section.length)
+            var role = tr.children().first().text()
+            var comment = GetVal(tr.find(':text'))
+
+            role = Trim(role)
+            GetArray(['usp_JobActionJsa', Id, section, role, UserId, action, comment])
+            Refresh()
+        })
+    }
+    function InitVerification(xml) {
+        var t = tVerification
+        DataBind(t, xml, 11)
+        TdByName(t, 'UserId', true ).hide() 
+        var tr = t.find('tr').eq(1)
+
+        var html = '<input type =button value=Verify />'
+        html += html.replace('Verify', 'Reject')
+        if (Status == 'Pending Verification' && tr.children().eq(5).text() == '' && GetVal(TdByName(t, 'UserId')) == UserId)
+            tr.children().eq(4).html(html)
+        t.find('th span').remove()
+        AddGridHeader(t, 'Verification')
+        t.find('th').eq(1).text('Position')
+        t.find('th').eq(3).hide()
+        GetTd(t, 2).hide()
+    }
+    function on_AddWorkInstruction(src, arr1) {
+        src = $(src)
+        var arr0 = []
+        if (arr1 == null) {
+            var r = showModal('popupJobTitle.htm', Id, 1100, 900)
+
+            if (r == null)
+                return
+            var t = $('<table/>')
+            t.html(r)
+            t.find('tr').each(function () {
+                var c = $(this).children()
+                arr0.push([c.eq(1).text(), c.eq(2).text(), c.eq(3).text()])
+            })
+        } else
+            arr0.push(arr1)
+        for (var i in arr0) {
+            var arr = arr0[i]
+            AddWorkInstruction(src, arr[0], arr[1])
+        }
+    }
+    function AddWorkInstruction(src, id, name) {
+        var t = src.next()
+        if (t.find('td').filter(function () {
+            return $(this).text() == name
+        }).length)
+            return
+        var tr = AddTr(t)
+        AddTd(tr, '<img src="../Images//delete.png" width="16" onclick="on_Delete(this)" />').width(1)
+        var html = '<a href=wims.htm?id=' + id + '>' + name + '</a>'
+        AddTd(tr, html).attr('id', id)
+        t.find('td').css('border', 'none')
+    }
+
+    function on_AddPersonnel(src) {
+        src = $(src)
+        var r = GetPobUser()
+
+        if (r == null)
+            return
+        var arr = r
+        for (var i in arr) {
+            r = arr[i]
+            var tr0 = src.closest('tr').prev()
+            var tr = tr0.clone().show()
+            // alert(r)
+            var dt = tr.insertBefore(tr0).find(':text') //. datepicker({ dateFormat: 'd-M-y' })
+            InitDateTime(dt)
+            var td = tr.children().first()
+            $('<span/>').prependTo(td).text(tr.index())
+            tr.attr('UserId', r[0])
+            tr.children().eq(1).text(r[2])
+            tr.children().eq(2).text(r[1])
+            tr.children().eq(3).text(r[3])
+            SyncPerson(r[0], r[1])
+        }
+    }
+    function SyncPerson(userId, name, action) {
+        $('select[id=Person]').each(function () {
+            var src = $(this)
+            if (action == 'Remove')
+                src.find('option[value=' + userId + ']').remove()
+            else
+                $('<option/>').appendTo(src).val(userId).text(name)
+
+        })
+    }
+    function InitStatus(xml) {
+        //alert(GetXmlTable(xml).text())
+        if (Status != 'Open' || GetXmlTable(xml).find('IsJobOwner').text() == 0) {
+            LockPage()
+        }
+        GetId('SubmitForVerification').hide()
+        if (Status == 'Open')
+            GetId('SubmitForVerification').show()
+
+        if (Status == 'Pending Verification') {
+            tVerification.find(':button').prop('disabled', false)
+        }
+        if (Status == 'Verified' && GetXmlTable(xml).find('IsJobOwner').text() == 1)
+            GetId('Close').show()
+        if (Status == 'Closed' || GetXmlTable(xml).find('IsJobOwner').text() == 0) {
+            GetId('Close').hide()
+            GetId('Toggle').hide()
+            tPlanning.nextAll().find('a').hide()
+        }
+        tCardHazard.add(tEvent).find('img').show()
+    }
+    function InitPlanning(xml) {
+        var t = tPlanning
+        var element = $($.parseXML(xml)).find('Table')
+        t.find('td').eq(1).text(Id)
+        $('#dt').datepicker({ dateFormat: 'd-M-y' })
+        t.find('tr').eq(1).children().width('10%')
+        BindSelect(xml, GetId('Wi'), 17)
+        var time = $('#Time')
+        time.timepicker({
+            step: 15, // "minuteStep" is also an alternative option
+            showSeconds: true
+        })
+        t.find('td:even').addClass('label').css('text-align', 'right')
+
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), element.find(id).text())
+        }
+        InitWi(xml)
+        LockField('PermitId')
+        LockField('Wi')
+        var wi=GetId('Wi')
+        if ( wi.prop('tagName')=='A')
+           wi.attr('wimsId', GetVal(wi)).text(  GetXmlTable(xml).find('WiTitle').text())
+    }
+    function InitWi(xml) {
+        var src = $('#Wi').prev()
+        $(xml).find('Table14').each(function () {
+            var element = $(this)
+            on_AddWorkInstruction(src, [element.find('id').text(), element.find('Name').text()])
+        })
+    }
+    function InitExecution(xml) {
+        InitPersonnel(xml)
+        BindSelect(xml, H.find('select').last(), 1, 'UserId', 'Name')
+
+        InitDuty(xml)
+        InitFactor(xml)
+        InitEvent(xml)
+
+        InitChange(xml)
+        if (Type == 'JSA with Work Instruction') {
+            var arr = [tTask, tEvent, tHand, tObject, tLife, A]
+            for (var i in arr)
+                arr[i].remove()
+            tBarrier.hide()
+            InitHazard(xml)
+            var src = $('#PermitId')
+            src.parent().hide().prev().hide()
+            src.closest('tr').next().children().eq(1).attr('colspan', 3)
+            GetId('Toggle').text('Convert to JSA without Work Instruction')
+        } else if (Type == 'Hazard ID Prompt Card') {
+            var arr = [tDuty, A, H]
+            for (var i in arr)
+                arr[i].remove()
+            InitTask(xml)
+            InitHand(xml)
+            tTask.removeClass()
+            InitCardHazard(xml)
+            InitBarrier(xml)
+            InitObject(xml)
+            tObject.removeClass()
+            tFactor.find('span').eq(1).html('Job Factors – <i>What elements affect my job?</i>').closest('tr').next().hide()
+            tChange.hide()
+            tVerification.hide()
+            GetId('Toggle').hide()
+        } else {
+            InitTask(xml)
+            InitHazard(xml)
+            InitHand(xml)
+            InitObject(xml)
+            InitStep(xml)
+            var td = $('#Wi').parent()
+            td.hide().prev().hide()
+
+            tBarrier.hide()
+        }
+    }
+    function InitPersonnel(xml) {
+        var t = tPersonnel
+        var index = 1
+        $(xml).find('Table1').each(function () {
+            var element = $(this)
+            var tr = t.find('tr').slice(-2, -1)
+            var tr1 = tr.clone().show()
+            tr1.insertBefore(tr)
+            var td = tr1.children().first()
+            $('<span/>').prependTo(td).text(index++)
+            tr1.attr('UserId', element.find('UserId').text())
+            tr1.children().eq(1).text(element.find('Position').text())
+            tr1.children().eq(2).text(element.find('Name').text())
+            tr1.children().eq(3).text(element.find('Company').text())
+            var dt = tr1.children().last().find(':text')
+
+            InitDateTime(dt)
+            dt.val(element.find('dt').text())
+        })
+        t.prev().find('tr').eq(1).find('td').css('border-bottom', 'none')//.css('border-width', 1).css('border-color', 'black')
+    }
+    function AddRadio(td, index) {
+        var s = ''
+        var index = GetVal(td)
+        for (var i = 0; i < 3; i++) {
+            s = '<input type =radio name =' + td.parent().index() + ' ' + (i == index ? 'checked' : '') + ' />'
+            if (i == 0)
+                td.html(s).addClass('center')
+            else
+                $('<td class=center>' + s + '</td>').appendTo(td.parent())
+        }
+    }
+    function InitDuty(xml) {
+        var t = tDuty
+        DataBind(t, xml, 2)
+        t.find('td:nth-last-child(1)').each(function () {
+            var td = $(this)
+            AddRadio(td)
+            if (!IsTrue(td.prev().text()))
+                AddDelete(td.closest('tr').children().first())
+            td.prev().remove()
+        })
+        t.find('th:nth-last-child(2)').remove()
+        AddTd(AddTr(t), '<a href=# onclick="on_AddDuty(this); return false">Add </a>', 'td', 11)
+        t.find('tr').eq(0).remove()
+        var arr = ['Yes', 'No', 'N/A']
+        AddHeader(t, 'Job Supervisor Duties', 'darkblue').attr('colspan', 2)
+        for (var i in arr) {
+            $('<th width=100  />').text(arr[i]).addClass('darkblue').css('text-align', 'center').appendTo(t.find('tr').eq(0))
+        }
+        t.find('tr:gt(0)').not(':last').find('td:nth-child(1),  td:nth-child(2)').addClass('label')
+    }
+    function InitCardHazard(xml) {
+        var t = tCardHazard
+        var html = ''
+        var i = 0
+        $(xml).find('Table15').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            if (i++ % 3 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (IsTrue(element.find('Checked').text()))
+                checked = ' checked '
+            html += '<td >' + name + '<td style="width:1"><input type=checkbox ' + checked + ' id=' + id + ' />'
+        })
+        t.html(html)
+
+        t.find('td').slice(-4, -2).prependTo(t.find('tr').last())
+
+        var index = 1
+        InsertImg(t, 0, 0, 3, index++)
+        InsertImg(t, 3, 0, 4, index++)
+        InsertImg(t, 7, 0, 3, index++)
+        InsertImg(t, 10, 0, 3, index++)
+
+        InsertImg(t, 0, 3, 4, index++)
+        InsertImg(t, 4, 2, 5, index++)
+        InsertImg(t, 9, 2, 4, index++)
+
+        InsertImg(t, 0, 6, 4, index++)
+        InsertImg(t, 4, 5, 3, index++)
+        InsertImg(t, 7, 5, 4, index++)
+        AddHeader(t, 'Hazards –<i> How can I or the environment be hurt?</i>', 'darkblue')
+        // t.find('tr:gt(0)').find('td:even').addClass('labelRight')
+    }
+    function InsertImg(t, i, j, rowspan, index) {
+        var img = '<img  width=60 src=../images/jsaHazard/' + index + '.png />'
+        $('<td/>').insertBefore(t.find('tr').eq(i).find('td').eq(j)).html(img).attr('rowspan', rowspan).css('text-align', 'center')
+    }
+    function InitTask(xml) {
+        var t = tTask
+        var html = ''
+        var i = 0
+        $(xml).find('Table3').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            var text = element.find('Text').text()
+            if (i++ % 4 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (IsTrue(element.find('Checked').text()))
+                checked = ' checked '
+            if (name == 'Other')
+                html += '<td colspan=2 id=' + id + '>' + name + '<input style="margin-left:10;width:50%;border:1 solid" type=text value="' + text + '" />'
+            else
+                html += '<td id=' + id + '>' + name + '<td style="width:1"><input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        AddHeader(t, 'Job Tasks – <i>What am I about to do?</i>', 'darkblue')
+        t.find('tr:gt(0)').find('td:even').addClass('labelRight')
+    }
+    function InitEvent(xml) {
+        var t = tEvent
+        var html = '<tr>'
+        var i = 0
+        var arr=['Fire / Explosion', 'Loss of Power', 'Loss of Primary Containment', 'Marine Collision', 'Safety Critical Asset Failure', 'Stability', 'Station Keeping', 'Structural Failure', 'Well Control']
+        $(xml).find('Table4').each(function (index ) {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            var checked = ''
+            if (IsTrue(element.find('Checked').text()))
+                checked = ' checked '
+            html += '<td id=' + id + '><img width=30 src=../images/JsaEvent/' + name + '.png title="'+arr[index] +'" /> <input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        AddHeader(t, 'Process Safety Events – <i>What are the worst-case scenarios?</i>', 'darkblue')
+        AddHeader(tLife, 'Life Savers – <i>Have I remembered the Life Saving rules?</i>', 'darkblue')
+    }
+    function InitBarrier(xml) {
+        var t = tBarrier
+        var html = ''
+        var i = 0
+
+        $(xml).find('Table13').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            console.log(name)
+            var text = element.find('Text').text()
+            if (i++ % 4 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (IsTrue(element.find('Checked').text()))
+                checked = ' checked '
+            if (name == 'Other')
+                html += '<td colspan=2 id=' + id + '>' + name + '<input style="margin-left:10;width:50%;border:1 solid" type=text value="' + text + '" />'
+            else
+                html += '<td id=' + id + '>' + name + '<td style="width:1"><input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        AddHeader(t, 'Barriers – <i>How can I control the hazards?</i>', 'darkblue')
+        t.find('tr:gt(0)').find('td:even').addClass('labelRight')
+    }
+    function InitFactor(xml) {
+        var t = tFactor
+        var html = ''
+        html += '<tr><td colspan=18 class=label>Add Job Factors that are applicable to the job as a whole.  Job Factors that apply to only specific job steps will be entered below.'
+        html += '<tr style="text-align:center">'
+        //<td colspan=2><img src=../images/warning.png /><td colspan=4><img src=../images/warning.png /><td colspan=2><img src=../images/warning.png /><td colspan=2><img src=../images/warning.png />'
+        for (var i = 1; i < 5; i++) {
+            var colSpan = 2
+            if (i == 2)
+                colSpan = 4
+            html += '<td colspan=' + colSpan + '><img src=../images/JsaFactor/' + i + '.png /> '
+        }
+
+        var element = $(xml).find('Table5')
+        var count = element.find('Seq:contains(1)').length + 1
+        //  alert(count )
+        for (var i = 0; i < count ; i++) {
+            html += '<tr>'
+            for (var j = 0; j < 5; j++) {
+                html += '<td><td>'
+            }
+        }
+        t.html(html)
+        for (var j = 0; j < 5; j++) {
+            element.find('seq:contains(' + (j + 1) + ')').each(function (index) {
+                var src = $(this)
+                var id = src.prev().prev().text()
+                var name = src.prev().text()
+                var checked = ''
+                if (IsTrue(src.next().text()))
+                    checked = ' checked '
+                var td = t.find('tr').eq(index + 3).find('td').eq(j * 2)
+                td.text(name).attr('id', id)
+                td.next().html('<input type=checkbox ' + checked + '/>')
+            })
+        }
+        t.find('img').width(30)
+        AddHeader(t, 'Job Factors Applicable to Job – to be completed by the Job Supervisor before commencing the job', 'darkblue')
+        t.find('tr').eq(2).addClass('label')
+        t.find('tr:gt(2)').find('td:even').addClass('label')
+        //Factor 2
+        InitFactorOther(t, xml)
+    }
+    function InitFactorOther(t, xml) {
+        var td = t.find('td').last()
+        InsertAddButton(td.prev().attr('colspan', 2), 3)
+        td.remove()
+        var tds = GetTd(t.find('tr').slice(-2), 7)
+        InsertAddButton(tds.prev().attr('colspan', 2).eq(0), 2)
+        tds.remove()
+        var tr = InsertRow(t)
+        InsertAddButton(tr.children().eq(0), 0)
+        InsertAddButton(tr.children().eq(1), 1)
+
+        $(xml).find('Table16').each(function () {
+            var element = $(this)
+            var seq = element.find('seq').text()
+            var button = $('#Add' + seq)
+            var td = button.parent()
+            button.trigger('click')
+            var html = '<img src="../Images/delete.png" width="16" onclick="on_DeleteFactor(this)" />'
+            td.html(html + element.find('Name').text()).attr('seq', seq)
+            td.next().children().prop('checked', IsTrue(element.find('Checked').text()))
+        })
+    }
+    function on_DeleteFactor(src) {
+        src = $(src)
+        var td = src.parent()
+        var seq = td.attr('seq')
+        var td1
+        while (true) {
+            td1 = td.parent().nextAll().find('td[seq=' + seq + ']').first()
+            //alert(td1.find('a').length )
+            if (td1.length && !td1.find('a').length) {
+                td.html(td1.html())
+                //alert(td.next().html())
+                //alert(td1.next().html() )
+                td.next().find(':checkbox').prop('checked', td1.next().find(':checkbox').prop('checked'))
+                td = td1
+            } else {
+                var button = $('#Add' + seq)
+                td1 = button.parent()
+                td.next().remove()
+
+                td.html(td1.html())
+                td.attr('colspan', (seq == 1 ? 4 : 2))
+                td1.html('').addClass('label')
+                return
+            }
+        }
+    }
+    function InsertAddButton(td, i) {
+        td.html('<a  href="javascript:void(0)" onclick="on_AddFactor(this)" > Add Other</a>')
+        td.css('background', 'white')
+        td.find('a').attr('id', 'Add' + i)
+    }
+    function FindTd(tr, i) {
+        var j = i * 2
+        if (i > 1)
+            j += 2
+        var td
+        var count = 0
+        if (j == 0)
+            return tr.children().first()
+        tr.children().each(function () {
+            var td0 = $(this)
+            var colspan = parseInt(td0.attr('colspan'))
+            if (isNaN(colspan))
+                colspan = 1
+            count += colspan
+            if (count == j)
+                td = td0.next()
+        })
+        return td
+    }
+    function InsertRow(t) {
+        return $('<tr class=label><td colspan=2 ><td  colspan=4><td colspan=2><td  colspan=2></tr>').appendTo(t)
+    }
+    function on_AddFactor(src) {
+        src = $(src)
+        var t = tFactor
+        var td0 = src.parent()
+        var i = src.attr('id')
+        i = i.replace('Add', '')
+        var tr = src.closest('tr')
+        var tr1 = tr.next()
+        if (!tr1.length)
+            tr1 = InsertRow(t)
+        var td = FindTd(tr1, i)
+        src.appendTo(td)
+        td.css('background-color', 'white')
+        $('<input type=text />').appendTo(td0)
+        if (i == 1)
+            td0.attr('colspan', 3)
+        else
+            td0.attr('colspan', 1)
+        $('<td><input type=checkbox Other=1 seq=' + i + ' /></td>').insertAfter(td0).css('background-color', 'white').addClass('center').css('padding', 0)
+    }
+    function InitChange(xml) {
+        var t = tChange
+        DataBind(t, xml, 10)
+        t.find('tr').first().remove()
+        $('<th width=800  />').text('Action').addClass('darkblue').css('text-align', 'center')
+           .insertAfter(AddHeader(t, 'Change Management', 'darkblue').attr('colspan', 3))
+
+        t.find('td:nth-child(3)').each(function () {
+            var td = $(this)
+            var val = Trim(td.text())
+            var checked = (IsTrue(val) ? 'checked' : '')
+            td.html('<input type=checkbox ' + checked + ' />')
+        })
+        t.find(':checkbox').on('change', function () {
+            var ck = $(this)
+            if (ck.prop('checked'))
+                ck.parent().next().children().show()
+            else
+                ck.parent().next().children().hide()
+        }).trigger('change')
+    }
+    function InitHazard(xml) {
+        var element = $($(xml).find('Table6').text())
+        A.find('td').css('padding', 0)
+
+        var xml = GetArray(['usp_JsaFilterSelect', Lang ])
+        BindSelect(xml, H.find('select').eq(0), 1)
+
+        var t = H.clone().show().addClass('marginBottom')
+        t.insertAfter(tFactor)
+        InitH(t, element)
+        InitPerson(t )
+    }
+    function InitH(t, element) {
+        element.each(function (index) {  //Hazard
+            var elementH = $(this)
+            var span = t.find('span.H').last()
+            if (index > 0)
+                span.trigger('click')
+            var trH = span.closest('tr').prev()
+            trH.find('textarea').text(elementH.attr('Text'))
+            UpdateDiv(trH, elementH, 'H')
+            $('B', elementH).each(function (index) { //Barrier
+                var elementB = $(this)
+                var span = trH.find('span.B').last()
+                if (index > 0)
+                    span.trigger('click')
+                var trB = span.closest('tr').prev()
+                trB.find('textarea').eq(0).val(elementB.attr('Barrier'))
+                trB.find('select').eq(0).val(elementB.attr('CHT'))
+                UpdateDiv(trB, elementB, 'B')
+                $('P', elementB).each(function (index) { // Person
+                    var elementP = $(this)
+
+                    trB.find('select').eq(1).val(elementP.attr('UserId'))
+                })
+            })
+        })
+    }
+    function InitPerson(t ) {
+        t.on('click', 'select', function () {
+            var src = $(this)
+            if (src.attr('id') != 'Person')
+                return
+            if ( src.children().length == 1 )
+                alert('Please fill out the JSA Participants.')
+        })
+    }
+    function InitStep(xml) {
+        var element = $($(xml).find('Table9').text())
+        var t = A.clone().show()
+
+        A1 = t
+        t.insertAfter(tObject)
+        // if (element.length)
+        t.find('.Delete').closest('tr').remove()
+        // return
+        element.each(function (index) {  //Hazard
+            var elementA = $(this)
+            var span = t.find('span.A')
+            span.trigger('click')
+            var trA = span.closest('tr').prev()
+            trA.find('textarea').first().val(elementA.attr('Text'))
+            InitJF(trA, elementA.attr('JF'))
+            trA.find(':checkbox').prop('checked', elementA.attr('Status') == 1 ? true : false)
+
+            var xml = GetArray(['usp_JsaFilterSelect', Lang ])
+            BindSelect(xml, trA.find('select').eq(0), 1)
+            // BindSelect(xml, trA.find('select').eq(1), 1)
+
+            UpdateDiv(trA, elementA, 'A')
+            InitH(trA.find('#H'), elementA.find('H'))
+        })
+        if (t.find('.A').length == 1)
+            t.find('span.A').trigger('click')
+        tStep.show().insertBefore(t)
+    }
+    function InitJF(tr, list) {
+        if (list == null || list == '')
+            return
+        var t = tr.find('#JF')
+        var arr = list.split(',')
+        for (var i in arr) {
+            var name = arr[i]
+            $('<tr><td width=30>' + GetDelete() + '<td>' + name + '</tr>').appendTo(t)
+        }
+        t.find('td').addClass('noborder')
+    }
+    function UpdateDiv(tr, element, name) {
+        var div = tr.find('div.' + name)
+        // div.next().text(element.attr(name + 'Action'))
+        // div.next().next().text(element.attr(name + 'dt'))
+    }
+    function InitStep2(xml) {
+        var element = $($(xml).find('Table6').text())
+        var A = $('#A')
+        H.find('td').css('padding', 0)
+        var xml = GetArray(['usp_JsaFilterSelect'])
+        BindSelect(xml, H.find('select').eq(0), 0)
+        BindSelect(xml, H.find('select').eq(1), 1)
+        H.find(':text').width('98%')
+
+        var t = A.clone().show()
+        t.insertAfter(tObject)
+        if (element.length)
+            t.find('.Delete').first().closest('tr').remove()
+        element.each(function (index) {  //Hazard
+            var elementH = $(this)
+            var span = t.find('span.H')
+            span.trigger('click')
+            var trH = span.closest('tr').prev()
+            trH.find(':text').val(elementH.attr('Text'))
+
+            $('B', elementH).each(function (index) { //Barrier
+                var elementB = $(this)
+                var span = trH.find('span.B').last()
+                if (index > 0)
+                    span.trigger('click')
+                var trB = span.closest('tr').prev()
+                trB.find('select').eq(0).val(elementB.attr('Barrier'))
+                trB.find('select').eq(1).val(elementB.attr('CHT'))
+                $('P', elementB).each(function (index) { // Person
+                    var elementP = $(this)
+                    var span = trH.find('span.P').last()
+                    if (index > 0)
+                        span.trigger('click')
+                    var trP = span.closest('tr').prev()
+                    trP.find('span').eq(0).text(elementP.attr('UserName')).attr('UserId', elementP.attr('UserId'))
+                })
+            })
+        })
+    }
+    function InitHand(xml) {
+        var t = tHand
+        var html = '<tr><td class=hazard colspan=18>Hand Hazards – <i>How can I injure my hands and fingers?</i>'
+        var element = $(xml).find('Table7')
+
+        for (var j = 0; j < 5; j++) {
+            html += '<tr>'
+            element.find('seq:contains(' + (j + 1) + ')').each(function (index) {
+                var src = $(this)
+                var id = src.prev().prev().text()
+                var name = src.prev().text()
+                var checked = ''
+                if (IsTrue(src.next().text()))
+                    checked = ' checked '
+                var text = src.next().next().text()
+                if (name == 'Other')
+                    html += '<td colSpan=2 id=' + id + '>' + name + '<input style="margin-left:10;width:50%;border:1 solid" type=text value=" ' + text + '" />'
+                else
+                    html += '<td id=' + id + '>' + name + '<td> <input type=checkbox ' + checked + '/>'
+            })
+        }
+        t.html(html)
+        t.find('tr:gt(0)').find('td:even').addClass('label')
+    }
+    function InitObject(xml) {
+        var t = tObject
+        var html = '<tr><td class=hazard colspan=18>Dropped Objects –<i> What about potential dropped objects?</i>'
+        var i = 0
+        $(xml).find('Table8').each(function () {
+            var element = $(this)
+            var id = element.find('id').text()
+            var name = element.find('Name').text()
+            if (i++ % 4 == 0)
+                html += '<tr>'
+            var checked = ''
+            if (IsTrue(element.find('Checked').text()))
+                checked = ' checked '
+            html += '<td id=' + id + '>' + name + '<td style="width:1"><input type=checkbox ' + checked + ' />'
+        })
+        t.html(html)
+        t.find('tr:gt(0)').find('td:even').addClass('label')
+    }
+    function on_AddDuty(src) {
+        src = $(src)
+        var tr = src.closest('tr')
+        var index = tr.index()
+        var tr1 = tr.prev().clone()
+        tr1.find('td').eq(0).text(index).next().html('<input style="width:97%" type=text/>').siblings().find(':checkbox').prop('checked', false)
+        AddDelete(tr1.children().first())
+        tr1.insertBefore(tr)
+    }
+    function AddDelete(td) {
+        td.append('<span style="font-family: Wingdings" onclick="on_Delete(this) ">&#253;</span>')
+    }
+    function AddSelect(xml, name, t) {
+        var index = parseInt(name.replace('Table', ''))
+        //alert(index )
+        var src = t.find('select').eq(index)
+        $('<option/>').appendTo(src)
+        $(xml).find(name).find('Name').each(function () {
+
+            var element = $(this)
+            var option = $('<option/>').appendTo(src)
+            option.val(element.next().text()).text(element.text())
+            if (element.prev().length) {
+                option.attr('parent', element.prev().text())
+                option.wrap('<div/>')
+            }
+        })
+        src.children('option').wrap('<div/>')
+
+    }
+    function WingDing(name) {
+        return '<font color=red>' + name + '</font>'
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            element.addAttr(id, value)
+        }
+        element.addAttr('Type', Type)
+        root.append(element)
+    }
+    function on_Save(submit) {
+        if (!Validate())
+            return
+        var wi = GetId('Wi')
+        var wimsId = wi.attr('wimsId')
+        if (wi.prop('tagName') == 'A')
+            wi.text(wimsId).attr('en', wimsId)
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        root.addAttr('submit', submit)
+        SaveXmlAttachment(root)
+        XmlGeneral(root)
+
+        tPersonnel.find('tr:gt(0)').not(':last').not(':last').each(function () {
+            var tr = $(this)
+            var element = $.createElement('Personnel')
+            element.addAttr('id', tr.index() - 2)
+            element.addAttr('UserId', tr.attr('UserId'))
+            element.addAttr('Name', GetVal(tr.children().eq(2)))
+            element.addAttr('Position', tr.children().eq(1).text())
+            element.addAttr('Company', tr.children().eq(3).text())
+            element.addAttr('dt', GetVal(tr.find(':text')))
+            root.append(element)
+        })
+        tDuty.find('tr:gt(0)').not(':last').each(function () {
+            var tr = $(this)
+            var element = $.createElement('Duty')
+            element.addAttr('id', tr.index())
+            element.addAttr('Name', CleanSpecialCharacter(GetValTd(tr.children().eq(1))))
+            element.addAttr('Required', tr.find('span').length ? 0 : 1)
+            element.addAttr('Checked', tr.find(':checked').parent().index() - 2)
+            root.append(element)
+        })
+        tTask.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('task')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            element.addAttr('Text', CleanSpecialCharacter(td.find(':text').val()))
+            root.append(element)
+        })
+        tCardHazard.find(':checkbox').each(function () {
+            var ck = $(this)
+            var element = $.createElement('cardhazard')
+            element.addAttr('id', ck.attr('id'))
+            element.addAttr('Checked', ck.parent().find(':checked').length)
+            root.append(element)
+        })
+        tEvent.find('tr:gt(0)').find('td').each(function () {
+            var td = $(this)
+            var element = $.createElement('event')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.find(':checked').length)
+            root.append(element)
+        })
+        tBarrier.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('Barrier')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            element.addAttr('Text', CleanSpecialCharacter(td.find(':text').val()))
+            root.append(element)
+        })
+        tFactor.find(':checkbox:not([Other]) ').each(function () {
+            var td = $(this).parent().prev()
+            var element = $.createElement('factor')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            root.append(element)
+        })
+        tFactor.find(':checkbox[Other] ').each(function () {
+            var ck = $(this)
+            var td = ck.parent().prev()
+            var element = $.createElement('factor2')
+            var name
+            if (td.find(':text').length)
+                name = GetVal(td.find(':text'))
+            else
+                name = GetVal(td)
+            element.addAttr('Name', name)
+            element.addAttr('Seq', ck.attr('Seq'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            root.append(element)
+        })
+        CreateXmlHazard($('#H').first(), root)
+        tHand.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('hand')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            element.addAttr('Text', CleanSpecialCharacter(td.find(':text').val()))
+            root.append(element)
+        })
+        tObject.find('tr:gt(0)').find('td:even').each(function () {
+            var td = $(this)
+            var element = $.createElement('object')
+            element.addAttr('id', td.attr('id'))
+            element.addAttr('Checked', td.next().find(':checked').length)
+            root.append(element)
+        })
+        tChange.find(':checkbox').each(function (index) {
+            var ck = $(this)
+            var element = $.createElement('change')
+            element.addAttr('id', index + 1)
+            element.addAttr('Checked', ck.prop('checked') ? 1 : 0)
+            root.append(element)
+        })
+        CreateXmlStep(root)
+        var xml = root[0].outerHTML
+        //console.log(xml); return
+        xml = GetArray(['usp_JsaSave', xml])
+        Id = Trim($(xml).find('Column1').first().text())
+        window.location = 'jsa.htm?id=' + Id
+    }
+    function CreateXmlStep(root) {
+        $('#A').first().find('tr.A').each(function (index) {
+            var tr = $(this)
+            var A = $.createElement('A')
+            A.addAttr('id', index + 1)
+            A.addAttr('Text', GetVal(tr.find('textarea')))
+            A.addAttr('JF', GetJF(tr))
+            A.addAttr('Status', tr.find(':checkbox').prop('checked'))
+            var div = tr.parent().closest('tr').parent().closest('tr').find('div.A')
+            A.addAttr('Action', div.next().text())
+            A.addAttr('dt', div.next().next().text())
+            console.log(tr.next().find('#H').length)
+            tr.next().find('#H').each(function () {
+                CreateXmlHazard($(this), A)
+            })
+            root.append(A)
+        })
+    }
+    function GetJF(tr) {
+        return GetTd(tr.find('#JF'), 1).map(function () {
+            return $(this).text()
+        }).get()
+    }
+    function CreateXmlHazard(srcH, root) {
+        srcH.find('tr.H').each(function (index) {
+            var tr = $(this)
+            var H = $.createElement('H')
+            H.addAttr('id', index + 1)
+            H.addAttr('Text', GetVal(tr.find('textarea').first()))
+            var div = tr.parent().closest('tr').parent().closest('tr').find('div.H')
+            //H.addAttr('Action', div.next().text())
+            //H.addAttr('dt', div.next().next().text())
+            UpdateXmlAction(H, div)
+            $('tr.B', tr).each(function (index) {
+                var tr = $(this)
+                var B = $.createElement('B')
+                B.addAttr('id', index + 1)
+                B.addAttr('Barrier', GetVal(tr.find('textarea').first()))
+                B.addAttr('CHT', tr.find('select').eq(0).val())
+                var div = tr.find('div.B')
+                UpdateXmlAction(B, div)
+
+                var P = $.createElement('P')
+                P.addAttr('id', index + 1)
+                P.addAttr('UserId', tr.find('select').eq(1).val())
+                P.addAttr('UserName', GetVal(tr.find('select').eq(1)))
+                var div = tr.find('div.P')
+                UpdateXmlAction(P, div)
+                B.append(P)
+
+                H.append(B)
+            })
+            root.append(H)
+        })
+    }
+    function UpdateXmlAction(element, div) {
+        var action = div.next().text()
+        var dt = div.next().next().text()
+        if (action == '') {
+            action = 'Added'
+            dt = GetDt()
+        }
+        element.addAttr('Action', action)
+        element.addAttr('dt', dt)
+    }
+    function CleanSpecialCharacter(xml) {
+        return MyReplace(xml, "'", "''")
+    }
+    function on_Delete(src) {
+        src = $(src)
+        if (src.closest('table').is(tPersonnel))
+            SyncPerson(src.closest('tr').attr('userId'), '', 'Remove')
+
+        src.closest('tr').remove()
+    }
+    function on_Impersonate(src) {
+        src = $(src)
+        var id = $.trim($('#011311').find('input:text').val())
+        var id1 = id
+        if (src.val() == 'T')
+            id = '011014'
+        if (src.val() == 'Z')
+            id = '016101'
+
+        var s = window.location.toString().toLowerCase()
+        if (s.indexOf('userid') == -1)
+            s += '&userId=' + id
+        else {
+            var id0 = getParameterByName('userId').toLowerCase()
+            if (id == '')
+                s = MyReplace(s, '&userid=' + id0, '')
+            else
+                s = MyReplace(s, id0, id)
+        }
+        window.location = s
+    }
+    function on_AddWingDing(e, src) {
+        src = $(src)
+        var c = src.attr('class')
+        var tr = src.closest('tr')
+        var t = tr.closest('table')
+        var count = t.find('div.' + c).length
+        var tr1 = A.find('span.' + c).closest('tr').prev().clone()
+        var text = c
+        if (c == 'A')
+            text = 'S'
+        text += (count + 1)//+'<br>Added<br>'+(new Date())
+        var div = tr1.find('div.' + c)
+        div.html(text)
+
+        if (!e.isTrigger) {
+            //  div.next().text('Added')
+            // div.next().next().text(GetDt())
+        }
+        tr1.insertBefore(tr)
+    }
+    function GetDt() {
+        var dt = new Date()
+        var arr = dt.toString().split(' ')
+        return arr[2] + '-' + arr[1] + '-' + (arr[3] - 2000) + ' ' + arr[4]
+    }
+    function on_PobSelect(src) {
+        src = $(src)
+        var r = GetPobUser()
+        if (r == null)
+            return
+        r = r[0]
+        src.prev().text(r[1]).attr('userId', r[0])
+    }
+    function on_AddSupervisor(src) {
+        src = $(src)
+        var r = GetPobUser()
+        if (r == null)
+            return
+        r = r[0]
+        var td = src.parent()
+        var span = src.next()
+        span.attr('userId', r[0]).text(r[1])
+        td.prev().prev().text(r[2])
+    }
+    function on_DeleteWingDing(src) {
+        src = $(src)
+        // src.prev().text(GetDt())
+        // src.prev().prev().text('Deleted')
+        src.closest('tr').remove()
+    }
+    function on_StartJob(src) {
+        src = $(src)
+        var name = src.text()
+        //alert(name )
+        name = MyReplace(name, ' the Job', '')
+        if (name == 'Start' || name == 'Resume')
+            name = 'Suspend'
+        else if (name == 'Suspend')
+            name = 'Resume'
+        src.text(name + ' the Job')
+    }
+
+    function on_Now(src) {
+        src = $(src)
+        var id = src.closest('tr').index() - 2
+        GetArray(['usp_JsaUpdatePersonnel', Id, id])
+        Refresh()
+    }
+    function Validate(noMessage) {
+        if (IsPaperView || Type.indexOf('Work Instruction') == -1 || Type == 'Hazard ID Prompt Card' )
+            return true
+        var ok = true
+        var arr = ['Wi']
+        var s = ''
+        for (var i in arr) {
+            var id = arr[i]
+            if (id == 'Wi' && Type != 'JSA with Work Instruction')
+                continue
+            var src = $('#' + id)
+            if (IsEmpty(src)) {
+                ok = false
+            }
+        }
+        arr = ['SupervisorName']
+        if (IsEmpty(GetId('SupervisorName')) ) 
+            ok = false
+        if (GetId('tPersonnel').find('tr').length == 3 && Type.indexOf('Work Instruction') != -1 ) {
+            alert('Please fill out the JSA Participants.')
+            ok = false
+            return 
+        }
+        if (!ok)
+            alert(RequiredMessage)
+        return ok
+    }
+    function on_Close() {
+        if (Validate()) {
+            if (!IsPaperView && Type != 'Hazard ID Prompt Card' && GetVal(tVerification.find('tr').eq(2).children().slice(-2, -1)) == '') {
+                alert('Please verify the form first')
+                return
+            }
+            GetArray(['usp_JobClose', Page, Id])
+            Refresh()
+        }
+    }
+    function on_JF(src) {
+        src = $(src)
+        var r = Popup('PopupJobFactor.htm', 800, 800)
+
+        if (r == null)
+            return
+        for (var i in r) {
+            var name = r[i]
+            AddJF(src, name)
+        }
+    }
+    function AddJF(src, name) {
+        var t = src.next()
+        var tr = AddTr(t)
+
+        AddTd(tr, GetDelete()).width(1)
+        AddTd(tr, name)
+        t.find('td').css('border', 'none')
+    }
+    function on_Evaluate(msg) {
+        var ok = true
+        //var t = GetId('H')
+        //if (A1 != null)
+        //    t=t.add( A1)
+        //t.find('textarea, select').each(function () {
+        //    var src = $(this)
+        //    if (IsEmpty(src))
+        //        ok=false
+        //})
+        if (tPersonnel.find('tr').length == 3 && Type != 'Hazard ID Prompt Card') {
+            alert('There is at least one JSA Participant')
+            return
+        }        
+
+        if (Type != 'Hazard ID Prompt Card') {
+
+            tDuty.find(':radio').closest('tr').each(function () {
+                var tr = $(this)
+                if (!tr.find(':checked').length) {
+                    Highlight(tr.children().slice(-3), 'yellow')
+                    ok = false
+                }
+            })
+
+            var arr = ['dtDone', 'SupervisorName']
+            for (var i in arr) {
+                if (IsEmpty(GetId(arr[i])))
+                    ok = false
+            }
+        }        
+        if (ok) {
+            if (msg)
+                alert('There is no error on this page.')
+        } else
+            alert('Please fill out the required fields. ')
+        return ok
+    }
+    function on_Submit(src) {
+        if (!on_Evaluate()) {
+            return
+        }
+        on_Save(1)
+    }
+    function on_Toggle() {
+        GetArray(['usp_JobJsaToggle', Id])
+        Refresh()
+    }
+    function Zoom(src) {
+        var y = event.clientY
+        var x = event.clientX
+        src = $(src)
+
+        var name = src.attr('src')
+        var w, h, top, left
+        GetId('ImgZoom').hide().replaceWith('<img id=ImgZoom />')
+        GetId('ImgZoom').load(function () {
+            w = $(this).width()
+            h = $(this).height()
+            if (false ) {
+                w *= 1.5
+                h *= 1.5
+            }
+            h = h * 200 / w
+            w = 200
+
+            if (w > $(window).width())
+                w = $(window).width()
+            if (h > $(window).height())
+                h = $(window).height()
+            top = y + $(window).scrollTop() //- h
+            //alert($(window).scrollTop())
+            left = x + $(window).scrollLeft() //-w
+            if (x > $(window).height() / 2)
+                top -= h
+            if (x > $(window).width() / 2)
+                left -= w
+            var margin = 0
+            if (top < $(window).scrollTop())
+                top = $(window).scrollTop()
+            if (left < $(window).scrollLeft())
+                left = $(window).scrollLeft()
+
+            GetId('ImgZoom').css({ position: 'absolute', top: top, left: left }).height(h).width(w)
+            GetId('ImgZoom').show()
+        })
+        GetId('ImgZoom').attr('src', name)
+        GetId('ImgZoom').click(function () {
+            $(this).hide()
+        })
+    }
+</script>

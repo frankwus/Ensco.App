@@ -1,0 +1,7 @@
+﻿@model Ensco.App.Areas.cOap.Models.ReviewSearchModel
+
+@Html.DevExpress().FormLayout(settings => {
+
+    var genericListController = (dynamic) ViewContext.Controller;
+    genericListController.ConfigureReviewSearch(settings, Html, ViewContext);
+}).Bind(Model).GetHtml()

@@ -1,0 +1,384 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+
+<table border="0">
+    <tr style="border:none">
+        <td width="90%" style="border:none">
+            <span class="orangecolor">Job Suspension</span>
+
+        <td><img id="Clone" src="../Images/Clone icon.png" onclick="on_Clone(this)" />
+        <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+        <td><img src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+        <td><img src="../Images/print.png" onclick="on_Print(this)" Title="Print Webpage" />
+        <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+        
+        <td><img src="../Images/Help icon.png" onclick="on_Help()" Title="Help" />
+</table>
+
+<table id="tPlanning" border="1" class="marginBottom">
+
+    <tr>
+        <th class="header" style="text-align: left;" colspan="24">
+            Planning
+    <tr>
+        <td>ID
+        <td style="width:40"><span id="id"></span>
+        <td>Job
+        <td><img src="../Images/Link icon.png" onclick="on_JobLink(this) " />
+            <table border="0" id="JobLink"></table>
+<td>Status
+        <td id="Status">
+        <td>Date/Time
+        <td><input id="Date" type="text" />
+</table>
+
+<table id="tExecution" border="1" class="marginBottom">
+    <tr>
+        <th class="header" style="text-align: left;" colspan="14">
+            Execution
+    <tr>
+        <th class="darkblue" style="text-align: left;" colspan="14">
+            Personnel
+    <tr>
+        <td class="labelRight">Suspended by
+        <td class="labelRight">Name
+        <td colspan="2"><img onclick="on_PobSelect(this)" src="../Images/Select Personnel icon.png"><span id="Name"></span>
+        <td class="labelRight">Position
+        <td width="300" id="Position">
+        <td class="labelRight">At
+        <td><input id="At" type="text" />
+    <tr>
+        <td class="labelRight">Reason
+        <td colspan="22"><input id="Date" type="text" />
+    <tr>
+        <td class="labelRight">Suspension Lifted
+        <td><select />
+        <td class="labelRight">Name
+        <td width="200"><img onclick="on_PobSelect(this)" src="../Images/Select Personnel icon.png"><span id="Name1"></span>
+        <td class="labelRight">Position
+        <td id="Position1">
+        <td class="labelRight">At
+        <td><input id="At1" type="text" />
+</table>
+<table id="tVerification"></table>
+<script>
+    var tPlanning = $('#tPlanning')
+    var tAuthorization = $('#tAuthorization')
+    var tExecution = $('#tExecution')
+    var tVerification = $('#tVerification')
+    var Id = getParameterByName('id')
+    var Status
+    var Page = 'Suspend'
+    
+    var Clone = getParameterByName('clone')
+    var ARR = ['id', 'Status', 'Date', 'Name', 'Position', 'At', 'Reason', 'Outcome', 'Name1', 'Position1', 'At1']
+    $(document).ready(function () {
+        if (Id == '') {
+            Id = 0
+        }
+        InsertCommon()
+        InitDateTime(['At', 'At1'])
+        var xml = GetArray(['usp_JobGetSuspend', Id])
+        InitPlanning(xml)
+       // InitAuthorization(xml)
+       // InitVerification(xml)
+        Status = $('#Status').text()
+        InitFold()
+        InitEvent()
+        
+        // InitApprover(xml)
+        LockSecurity()
+        CleanUp()
+    })
+
+    function LockSecurity(xml) {
+        var t = tAuthorization
+        t.find(':button, img').hide()
+        t.find(':text').prop('disabled', true)
+        t.find('span[userId=' + UserId + ']').closest('tr').each(function () {
+            var tr = $(this)
+            if (tr.children().eq(3).text() == 'Pending Approval') {
+                tr.children().eq(4).children().show()
+                tr.children().eq(6).children().prop('disabled', false)
+            }
+        })
+        t.find('td:nth-child(5)').filter(function () {
+            return $(this).text() == ''
+        }).closest('tr').find('img').show()
+    }
+    function on_JobLink(src) {
+        src = $(src)
+        var xml = GetArray(['usp_JobGetLink'])
+        var r = showModal('../common/popup.htm', xml, 800, 800)
+        if (r == null)
+            return
+        AddJobLink(src, r[0], r[1])
+    }
+    function AddJobLink(src, id, name) {
+        var t = src.next()
+        var tr = AddTr(t)
+        AddTd(tr, GetDelete() ) //'<img src="../Images//delete.png" width="16" onclick="on_Delete(this)" />').width(1)
+        AddTd(tr, id).attr('id', id)
+        t.find('td').css('border', 'none')
+    }
+    function InitAuthorization(xml) {
+        var t = tAuthorization
+        DataBind(t, xml, 4)
+        RemoveWingDing(t)
+        AddGridHeader(t, 'Authorization')
+    }
+    function InitVerification(xml) {
+        var t = tVerification
+        DataBind(t, xml, 5)
+        RemoveWingDing(t)
+        AddGridHeader(t, 'Verification')
+        t.find('td:contains("' + UserName + '")').each(function () {
+            var td = $(this).next()
+            if (td.text() == '') {
+                td.html('<input type=button onclick=on_Action(this) value =Sign />')
+            }
+
+        })
+    }
+    function on_Action(src) {
+        src = $(src)
+        var role = src.closest('tr').children().first().text()
+        GetArray(['usp_JobAuthorizationSign', Page, 'Verification', Id, role, UserName])
+        Refresh()
+    }
+    function InitPlanning(xml) {
+        var t = tPlanning
+        t.find('td:even').addClass('labelRight')
+
+        InitExecution(xml)
+        var xml1 = $(xml).find('Table1').text()
+        var src = $(xml1)
+        if (src == null)
+            return
+        for (var i in ARR) {
+            var id = ARR[i]
+            SetVal($('#' + id), src.attr(id))
+        }
+        $(xml).find('Table2').find('JobId').each(function () {
+            var element = $(this)
+            AddJobLink($('#JobLink').prev(), element.text())
+        })
+    }
+    function InitExecution(xml) {
+        var t = tExecution
+    }
+    function GetSelect() {
+        var arr = ['', 'Yes', 'No', 'N/A']
+        var select = $('<select/>')
+        for (var i in arr) {
+            var name = arr[i]
+            $('<option/>').text(name).val(name).appendTo(select)
+        }
+        return select[0].outerHTML // '<select ><option></option><option>Yes</option><option>No</option><option>N/A</option></select>'
+    }     
+    function on_InitialTest(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var tr1 = tr.clone().show()
+        tr1.insertBefore(tr)
+
+    }
+    function on_Save(isVerification) {
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        XmlGeneral(root)
+        $('#JobLink').find('td:odd').each(function () {
+            var td = $(this)
+            var element = $.createElement('job')
+            element.addAttr('JobId', td.attr('id'))
+            root.append(element)
+        })
+        if (isVerification)
+            XmlAuthorization(tVerification, root)
+        var xml = root[0].outerHTML
+        xml = GetArray(['usp_JobSaveSuspend', xml])
+        Id = $(xml).text()
+        window.location = 'Suspend.htm?id=' + Trim(Id)
+    }
+    function InitAuthorization2(src) {
+        var t = tAuthorization
+        var section = 'Authorization'
+        var arr = ['Permit Issuer']
+        for (var i in arr) {
+            var type = arr[i]
+            var tr = AddTr(t)
+            AddTd(tr).text(type)
+            //tr = AddTr(t)
+            var arr1 = ['<img onclick="on_AuthoritySelect(this)" src="../Images/Select Personnel icon.png"><span ></span>'
+                , '', '', '', '<input type="button" value="Approve" /><input type="button" value="Reject" />'
+                , '', '<input type="text" style="width:100%" />'
+            ]
+            for (var j in arr1) {
+                AddTd(tr).html(arr1[j])
+            }
+            var element = src.find('JobAuthorization[Section=' + section + '][Type="' + type + '"]')
+
+            tr.find('span').text(element.attr('name')).attr('userId', element.attr('userId'))
+            tr.find('td').eq(2).text(element.attr('position'))
+            tr.find('td').eq(3).text(element.attr('Signature'))
+            tr.find('td').eq(4).text(element.attr('Status'))
+            tr.find('td').eq(6).text(element.attr('DateCompleted'))
+            tr.find('td').eq(7).find(':text').val(element.attr('Comment'))
+        }
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            //value = CleanSpecialCharacter(value )
+            element.addAttr(id, value)
+        }
+        root.append(element)
+    }
+    function XmlAuthorization(t, element) {
+        var section = t.attr('id').substring(1, t.attr('id').length)
+        t.find('tr:gt(1)').each(function () {
+            var tr = $(this)
+            var type = tr.children().first().text()
+            type = Trim(type)
+            var el = $.createElement('authorization')
+            el.addAttr('Page', Page)
+            el.addAttr('Section', section)
+            el.addAttr('Type', type)
+            el.addAttr('Name', tr.children().eq(1).text())
+            el.addAttr('DateCompleted', tr.children().eq(3).text())
+            element.append(el)
+        })
+    }
+    function XmlExecution(element) {
+        var t = tExecution
+        t.find('select').each(function () {
+            var select = $(this)
+            var el = $.createElement('checklist')
+            el.addAttr('id', select.attr('id'))
+            el.addAttr('Answer', select.val())
+            el.addAttr('Comment', (select.parent().prev().find('input:text').val()))
+            element.append(el)
+        })
+    }
+    function CleanSpecialCharacter(xml) {
+        return MyReplace(xml, "'", "''")
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+    }
+
+    function GetDt() {
+        var dt = new Date()
+        var arr = dt.toString().split(' ')
+        return arr[2] + '-' + arr[1] + '-' + (arr[3] - 2000) + ' ' + arr[4]
+    }
+    function on_AuthoritySelect(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var type = tr.children().first().text()
+        type = Trim(type)
+        var r = showModal('../common/popupPob.htm', type, 800, 400)
+        if (r == null)
+            return
+
+        src.next().text(r[1]).attr('userId', r[0])
+        src.parent().next().text(r[2])
+    }
+    function on_Clone() {
+        var xml = GetArray(['usp_JobCloneSuspend', Id])
+        Id = $(xml).text()
+        window.location = 'Suspend.htm?id=' + Trim(Id)
+    }
+    function InitEvent() {
+        tExecution.find('select').on('change', function () {
+            var src = $(this)
+            var tr = src.closest('tr')
+            var td = src.parent().prev()
+            if (!src.find('option:selected:contains(Yes)').length) {
+                if (td.find('input').length)
+                    td.find('input').show()
+                else
+                    $('<br><input style="width:100%" type=text />').appendTo(td)
+            } else
+                td.find('input').hide()
+        })
+        $(':button').on('click', function () {
+            var button = $(this)
+            var tr = button.closest('tr')
+            var name = button.val()
+            if (name != 'Approve' && name != 'Reject')
+                return
+            var section = button.closest('table').attr('id')
+            section = section.substring(1, section.length)
+            var type = tr.children().first().text()
+            var comment = GetVal(tr.find(':text'))
+
+            type = Trim(type)
+            GetArray(['usp_JobActionSuspend', Id, section, type, name, comment])
+            Refresh()
+        })
+    }
+    function on_Checklist(src) {
+        src = $(src)
+
+    }
+    function on_Rider(src) {
+        var t = tRider
+        var r = Popup('../common/popupPob.htm', 800, 400)
+        if (r == null)
+            return
+        var tr = t.find('tr').last()
+        var tr1 = tr.clone().show().insertBefore(tr)
+        tr1.children().eq(2).text(r[1])
+        tr1.children().eq(3).text(r[2])
+        tr1.children().eq(4).text(r[3])
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var r
+        if (arr != null)
+            r = arr
+        else {
+            r = Popup('../common/popupPob.htm', 800, 400)
+            if (r == null)
+                return
+        }
+
+        src.next().text(r[1]).attr('userId', r[0])
+    }
+    function on_Location(src) {
+        src = $(src)
+        var r = Popup('../common/PopupLocation.htm?a=1', 900, 900)
+
+        if (r == null)
+            return
+        AddLocation(src, r[0], r[1])
+    }
+    function AddLocation(src, id, name) {
+        var t = src.next()
+        t.text(name)
+        return
+        var tr = AddTr(t)
+        AddTd(tr, '') //'<img src="../Images//delete.png" width="16" onclick="on_Delete(this)" />').width(1)
+        AddTd(tr, name).attr('id', id)
+        t.find('td').css('border', 'none')
+    }
+    function on_Submit(src) {
+        on_Save(true)
+    }
+</script>

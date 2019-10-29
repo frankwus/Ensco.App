@@ -1,0 +1,70 @@
+﻿@using Ensco.Utilities;
+
+@{
+    string[] arr = UtilitySystem.GetGridType();
+    string mType = arr[0];
+    string dType = arr[1];
+}
+@model Ensco.Models.DataTableModel
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = true;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = true;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    string name = "grid";
+
+    string focusRowChangedEvent = "onFocusRowChangedEvent";
+    string selectionChangedEvent = string.Format("function(s, e){{alert(11); document.location = '{0}?Id=' + s.GetValue();}}", Url.Action("OnboardIndividualCompanyChanged", "Personnel", new { Area = "IRMA" }));
+
+    Dictionary<EnscoHelper.EventHandlerType, string> handlers = new Dictionary<EnscoHelper.EventHandlerType, string>();
+    handlers[EnscoHelper.EventHandlerType.FocusRowChanged] = focusRowChangedEvent;
+    handlers[EnscoHelper.EventHandlerType.ComboBoxSelectionChanged] = selectionChangedEvent;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name =name;
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.SettingsPager.PageSize = 10;
+
+    grid.CallbackRouteValues = new {Area = "Common", Controller = "Admin", Action = "GridPartial", mType=mType, dType=dType  };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "GridUpdate", action1="Update"  };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "GridUpdate", action1 = "Add" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "GridUpdate", action1 = "Delete" };
+
+    grid.ClientSideEvents.BeginCallback = "function(s,e) { onBeginCallback(s, e);}";
+    //grid.ClientSideEvents.EndCallback = "function(s,e) { onEndCallback(s, e);}";
+    Html.EnscoStandardGrid(grid, Ensco.Irma.Services.IrmaServiceSystem.GetModelType(mType ), options, handlers );
+   // grid.ClientSideEvents.ValueChanged = "OnChangedProduktartID";
+    grid.CellEditorInitialize = (s, e) => {
+        MVCxGridView grid1 = (MVCxGridView)s;
+
+        if (true || e.Column.FieldName == "PassportId") {
+            object keyVal = -1;
+            if (e.KeyValue != null) {
+                //  keyVal = grid1.GetRowValuesByKeyValue(e.KeyValue, "PassportNo");
+            }
+           // e.Editor.SetClientSideEventHandler("ValueChanged", string.Format("function(s,e){{ TextChanged(s,e); }}"));
+           // e.Editor.SetClientSideEventHandler("TextChanged", string.Format("function(s,e){{ TextChanged(s,e); }}"));
+        }
+
+    };
+    grid.DataBound = (s, e) => {
+        ASPxGridView g = (ASPxGridView)s;
+        foreach (GridViewColumn c in g.Columns)
+            c.Caption = " " + c.Caption;
+    };
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) => {
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+
+
+
+
+
+

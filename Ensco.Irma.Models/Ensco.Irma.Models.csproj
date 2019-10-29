@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{11951D8A-E825-432D-95FF-01D715CE6EBF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ensco.Irma.Models</RootNamespace>
+    <AssemblyName>Ensco.Irma.Models</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RIG-UAT|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\RIG-UAT\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Corp-UAT|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Corp-UAT\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'IRMA-RIG-DEV|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\IRMA-RIG-DEV\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Admin\AdminModel.cs" />
+    <Compile Include="Admin\AdminRoleModel.cs" />
+    <Compile Include="Admin\IsolationTypeModel.cs" />
+    <Compile Include="Admin\JobCodeModel.cs" />
+    <Compile Include="Admin\LockModel.cs" />
+    <Compile Include="Admin\ReconcileModel.cs" />
+    <Compile Include="Admin\ReconcilePassportModel.cs" />
+    <Compile Include="Irma\IrmaDashboardModel.cs" />
+    <Compile Include="Irma\IrmaHomeTasksCapaModel.cs" />
+    <Compile Include="Irma\IrmaHomeTasksIsolationModel.cs" />
+    <Compile Include="Irma\IrmaHomeTasksTlcModel.cs" />
+    <Compile Include="Irma\IrmaHomeTasksCapModel.cs" />
+    <Compile Include="Irma\IrmaHomeTasksJobModel.cs" />
+    <Compile Include="Irma\IrmaHomeTasksTaskModel.cs" />
+    <Compile Include="Jobs\JobSummaryModel.cs" />
+    <Compile Include="Jobs\ManageAssetsModel.cs" />
+    <Compile Include="Jobs\PermitModel.cs" />
+    <Compile Include="Pob\ApprovalModel.cs" />
+    <Compile Include="Pob\ArrivalLogReportModel.cs" />
+    <Compile Include="Pob\CrewChangeModel.cs" />
+    <Compile Include="Pob\CrewChangeSearchModel.cs" />
+    <Compile Include="Pob\CrewFlightLookupModel.cs" />
+    <Compile Include="Pob\CrewFlightModel.cs" />
+    <Compile Include="Pob\CrewFlightPobModel.cs" />
+    <Compile Include="Pob\CrewPobViewModel.cs" />
+    <Compile Include="Pob\CurrentCrewChangeModel.cs" />
+    <Compile Include="Pob\DepartureLogReportModel.cs" />
+    <Compile Include="Pob\EmergencyTeamReportModel.cs" />
+    <Compile Include="Pob\FlightManifestPobModel.cs" />
+    <Compile Include="Irma\IrmaHomeModel.cs" />
+    <Compile Include="Irma\IrmaHomePassportModel.cs" />
+    <Compile Include="Jobs\JobsHomeModel.cs" />
+    <Compile Include="Jobs\SafetyCriticalAssetModel.cs" />
+    <Compile Include="Pob\LifeBoatComplianceReportModel.cs" />
+    <Compile Include="Pob\LifeBoatModel.cs" />
+    <Compile Include="Pob\LifeBoatRosterListModel.cs" />
+    <Compile Include="Pob\ManageCrewChangeModel.cs" />
+    <Compile Include="Pob\ManageFlightManifestModel.cs" />
+    <Compile Include="Pob\MovePersonnelModel.cs" />
+    <Compile Include="Pob\MusterStationModel.cs" />
+    <Compile Include="Pob\OffboardPobModel.cs" />
+    <Compile Include="Pob\OnboardIndividualPobModel.cs" />
+    <Compile Include="Pob\ParkingLotModel.cs" />
+    <Compile Include="Pob\ParkingLotPobModel.cs" />
+    <Compile Include="Pob\PersonnelOnOffBoardModel.cs" />
+    <Compile Include="Pob\PersonnelTypeModel.cs" />
+    <Compile Include="Pob\PobArrivalDepartureLogModel.cs" />
+    <Compile Include="Pob\PobArrivalLogModel.cs" />
+    <Compile Include="Pob\PobBoardingModel.cs" />
+    <Compile Include="Pob\PobCrewBreakdownModel.cs" />
+    <Compile Include="Pob\PobCurrentModel.cs" />
+    <Compile Include="Pob\PobDepartureLogModel.cs" />
+    <Compile Include="Pob\PobEmailModel.cs" />
+    <Compile Include="Pob\PobHistoryModel.cs" />
+    <Compile Include="Pob\PobHomeModel.cs" />
+    <Compile Include="Pob\PobLogSelect.cs" />
+    <Compile Include="Pob\PobLookupModel.cs" />
+    <Compile Include="Pob\PobStatusModel.cs" />
+    <Compile Include="Pob\PobSummaryByCompanyTypeModel.cs" />
+    <Compile Include="Pob\PobSummaryCountsModel.cs" />
+    <Compile Include="Pob\PobSummaryDataModel.cs" />
+    <Compile Include="Pob\PobSummaryModel.cs" />
+    <Compile Include="Pob\PobSummaryReportModel.cs" />
+    <Compile Include="Pob\PobSummaryTeamModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pob\RigAdminManageModel.cs" />
+    <Compile Include="Pob\RigComplianceModel.cs" />
+    <Compile Include="Pob\RigComplianceUserModel.cs" />
+    <Compile Include="Pob\RigCrewModel.cs" />
+    <Compile Include="Pob\RigFieldVisibilityModel.cs" />
+    <Compile Include="Pob\RigPersonnelArchiveModel.cs" />
+    <Compile Include="Pob\RigPersonnelHistoryModel.cs" />
+    <Compile Include="Pob\RigPersonnelModel.cs" />
+    <Compile Include="Pob\RigPersonnelViewModel.cs" />
+    <Compile Include="Pob\RigRequirementDocsModel.cs" />
+    <Compile Include="Pob\RigRequirementsComplianceModel.cs" />
+    <Compile Include="Pob\RigRequirementsModel.cs" />
+    <Compile Include="Pob\RigSubRequirementsModel.cs" />
+    <Compile Include="Pob\RoomBedModel.cs" />
+    <Compile Include="Pob\RoomBedSummaryModel.cs" />
+    <Compile Include="Pob\RoomModel.cs" />
+    <Compile Include="Pob\RosterSignInReportModel.cs" />
+    <Compile Include="Pob\RosterSignInSheetModel.cs" />
+    <Compile Include="Pob\RosterUserModel.cs" />
+    <Compile Include="Pob\RotationScheduleModel.cs" />
+    <Compile Include="Pob\ScheduleCrewChangeModel.cs" />
+    <Compile Include="Pob\ScheduleTypeModel.cs" />
+    <Compile Include="Pob\SelectPobModel.cs" />
+    <Compile Include="Pob\TeamManagementModel.cs" />
+    <Compile Include="Pob\TeamModel.cs" />
+    <Compile Include="Pob\TeamMemberModel.cs" />
+    <Compile Include="Pob\TeamTypeModel.cs" />
+    <Compile Include="Pob\TourChangeModel.cs" />
+    <Compile Include="Pob\TourManagementModel.cs" />
+    <Compile Include="Pob\TourModel.cs" />
+    <Compile Include="Pob\TourPobModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Ensco.Models\Ensco.Models.csproj">
+      <Project>{a540798d-bf18-486b-9c38-2aea1a7335aa}</Project>
+      <Name>Ensco.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Ensco.Utilities\Ensco.Utilities.csproj">
+      <Project>{E8B301A0-D57F-42AE-9B87-DA32D0DFC258}</Project>
+      <Name>Ensco.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

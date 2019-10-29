@@ -1,0 +1,63 @@
+﻿@model Ensco.Irma.Models.ActiveCrewChangeModel
+@using System.Web.UI.WebControls
+
+@if (Model != null)
+{
+    Html.DevExpress().Splitter(settings =>
+    {
+        settings.Name = "ActiveCrewChangeSplitter";
+        settings.AllowResize = false;
+        settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+        settings.SeparatorVisible = false;
+        settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+        settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+        settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+        settings.Panes.Add(pane =>
+        {
+            pane.Name = "ActiveCrewChangeInfo";
+            pane.AutoHeight = true;
+            pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+            pane.AutoWidth = false;
+            pane.Size = Unit.Pixel(100);
+
+            pane.SetContent(() =>
+            {
+                Html.RenderAction("ActiveCrewInfoPartial", "Personnel", Model);
+            });
+        });
+        settings.Panes.Add(pane =>
+        {
+            pane.Name = "ActiveCrewChangeHeader";
+            pane.AutoHeight = true;
+            pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+            pane.SetContent(() =>
+            {
+                Html.RenderAction("ActiveCrewChangeDetailPartial", "Personnel", new { Id = Model.CrewChange.Id });
+            });
+        });
+        settings.Panes.Add(pane =>
+        {
+            pane.Name = "ActiveCrewChangeInbound";
+            pane.AutoHeight = true;
+            pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+            pane.SetContent(() =>
+            {
+                Html.RenderAction("ActiveCrewChangeInboundPartial", "Personnel", new { Id = Model.CrewChange.Id });
+            });
+        });
+        settings.Panes.Add(pane =>
+        {
+            pane.Name = "ActiveCrewChangeOutbound";
+            pane.AutoHeight = true;
+            pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+            pane.SetContent(() =>
+            {
+                Html.RenderAction("ActiveCrewChangeOutboundPartial", "Personnel", new { Id = Model.CrewChange.Id });
+            });
+        });
+    }).GetHtml();
+}
+else
+{
+    <h2>No Active Crew Change</h2>
+}

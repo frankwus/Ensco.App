@@ -1,0 +1,17 @@
+﻿@Html.DevExpress().Menu(settings =>
+{
+    settings.Name = "actionMenu";
+    settings.EnableAnimation = true;
+
+    settings.Items.Add(item =>
+    {
+        item.Text = "Actions";
+        item.Items.Add("Comments");
+        item.Items.Add("Reviews");
+        item.Items.Add("Lessons Learned");
+        item.Items.Add("CAPA");
+        item.Items.Add("PDF");
+        item.Items.Add("E-mail");
+    });
+
+}).GetHtml()

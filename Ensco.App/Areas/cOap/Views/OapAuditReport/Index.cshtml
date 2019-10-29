@@ -1,0 +1,542 @@
+﻿@using System
+@using Ensco.Utilities
+@using System.Collections.Generic;
+@using Ensco.Irma.Oap.WebClient.Corp
+@using Ensco.App.Areas.cOap.Models
+@using Westwind.Globalization;
+
+@model OapAudit
+
+@{
+    ViewBag.Title = "Audit Report Page";
+}
+@{
+    var achklist = Model.OapAuditProtocols.Where(p => p.RigOapChecklist.OapChecklist.OapType.Code == "AR");
+    var aProtocol = achklist.Count() > 0 ? achklist.FirstOrDefault().RigOapChecklist : null;
+}
+@Scripts.Render("~/Scripts/coap/oapauditchklist.js")
+<script>
+    function onToolbarItemClick(s, e) {
+        console.log(e);
+        switch (e.item.name) {
+            case "AddNewProtocol":
+                s.AddNewRow();
+                break;
+        }
+    }
+
+    function refreshProtocolAssessorGrid(s, e) {
+        gridProtocolsAssessors.PerformCallback();
+    }
+
+    //For multi select of protocols
+    var textSeparator = ";";
+    function updateText() {
+        var selectedItems = checkProtocolListBox.GetSelectedItems();
+        OapChecklistId.SetText(getSelectedItemsText(selectedItems));
+
+        var text = getSelectedItemsText(selectedItems).split(textSeparator);
+        var val = getValuesByTexts(text);
+        //OapChecklistId.SetText(val);
+
+    }
+    function synchronizeListBoxValues(dropDown, args) {
+        checkProtocolListBox.UnselectAll();
+        var texts = dropDown.GetText().split(textSeparator);
+        var values = getValuesByTexts(texts);
+        checkProtocolListBox.SelectValues(values);
+        updateText(); // for remove non-existing texts
+    }
+    function getSelectedItemsText(items) {
+        var texts = [];
+        for (var i = 0; i < items.length; i++)
+            texts.push(items[i].text);
+        return texts.join(textSeparator);
+    }
+    function getValuesByTexts(texts) {
+        var actualValues = [];
+        var item;
+        for (var i = 0; i < texts.length; i++) {
+            item = checkProtocolListBox.FindItemByText(texts[i]);
+            if (item != null)
+                actualValues.push(item.value);
+        }
+        return actualValues;
+    }
+
+    function validateOapAudit(s, e) {
+        e.processOnServer = false;
+            var validationUrl = '@Url.Action("ValidateOapAudit", "OapAuditReport", new { auditId = Model.Id })';
+        var startWorkflowUrl = '@Url.Action("StartAuditWorkflow", "OapAuditReport", new {auditId = Model.Id})';
+            verificationLoading.Show();
+            startWorkflow.SetEnabled(false)
+            $.get(validationUrl)
+                .done(function (data) {
+                    if (data.Success == true)
+                        $.get(startWorkflowUrl).done(function () {
+                            verificationLoading.Hide();
+                            window.location.reload();
+                        });
+                    else {
+                        verificationLoading.Hide();
+                        startWorkflow.SetEnabled(true);
+                        var errors = data.Errors.join('\n- ');
+                        alert('Please complete the steps before submitting audit for approval: \n- ' + errors
+                        + "\n\nPlease save the planning and execution tabs to confirm the changes.");
+                    }
+
+                })
+                .fail(function (data) {
+                    startWorkflow.SetEnabled(true);
+                    verificationLoading.Hide();
+                    alert('There was an error validating the audit');
+                });
+        }
+
+    function onReviewSearchClick(s, e) {
+        gridPreviousProtocols.PerformCallback();
+    }  
+
+    function gridPreviousProtocolsOnBeginCallback(s, e) {
+        if (e.command === "UPDATEEDIT" || e.command === "CUSTOMCALLBACK") {
+            e.customArgs["model"] = MVCxClientUtils.GetSerializedEditorValuesInContainer("reviewSearchLayout");
+        }
+    }
+
+</script>
+@{
+
+    var people = (IEnumerable<Person>)ViewData["Users"];
+    //  CommonUtilities.GetPassportColumnAction(html, viewContext, "UpdatedBy", "Assessor", Translate("Lead Assessor"), users)
+}
+
+@Html.Hidden("SelectedCheckListId")
+
+@using (Html.BeginForm("Save", "oapauditreport", FormMethod.Post, new { Id = Model.Id }))
+{
+    @Html.DevExpress().PageControl(pcontrol =>
+{
+    pcontrol.Name = "pcAuditReportPage";
+    pcontrol.Width = Unit.Percentage(100);
+
+    //Details Tab
+    pcontrol.TabPages.Add("Details").SetContent(() =>
+    {
+        ViewContext.Writer.Write("<br/>");
+
+
+
+        Html.DevExpress().FormLayout(layout =>
+        {
+            layout.Name = "editAudit";
+            layout.ColumnCount = 4;
+            layout.Width = Unit.Percentage(100);
+
+            // Details
+            layout.Items.AddGroupItem(group =>
+            {
+                group.Caption = "Audit Details";
+                group.ColumnCount = 4;
+
+                group.Items.Add(i =>
+                {
+                    i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+                    i.ShowCaption = DefaultBoolean.False;
+                    i.ColumnSpan = 4;
+                    i.NestedExtension().Button(b =>
+                    {
+                        b.Name = "btSave";
+                        b.Text = "Save";
+                        b.UseSubmitBehavior = true;
+                    });
+                });
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Audit ID";
+                    i.FieldName = "Id";
+                    i.ColumnSpan = 2;
+                    i.NestedExtension().TextBox(t =>
+                    {
+                        t.Name = "Id";
+                        t.ReadOnly = true;
+                    });
+                });
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Date / Time Created";
+                    i.FieldName = "CreatedDateTime";
+                    i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+                    i.NestedExtension().TextBox(t =>
+                    {
+                        t.Name = "DateCreated";
+                        t.ReadOnly = true;
+                    });
+                });
+
+
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Status";
+                    i.FieldName = "Status";
+
+                    i.NestedExtension().TextBox(t =>
+                    {
+                        t.Name = "Status";
+                        t.ReadOnly = true;
+                    });
+                });
+
+                group.Items.Add(i =>
+                {
+                    i.ShowCaption = DefaultBoolean.False;
+                    i.ColumnSpan = 4;
+                    i.NestedExtension().Label(t =>
+                    {
+                        t.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        t.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+                    });
+                });
+
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Date / Time Started";
+                    i.FieldName = "StartDateTime";
+                    i.NestedExtension().DateEdit(t =>
+                    {
+                        t.Name = "StartDate";
+                        //t.ReadOnly = true;
+                    });
+                });
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "End Date / Time";
+                    i.FieldName = "EndDateTime";
+                    i.NestedExtension().DateEdit(t =>
+                    {
+                        t.Name = "EndDate";
+                        // t.ReadOnly = true;
+                    });
+                });
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Audit Purpose";
+                    i.FieldName = "AuditPurpose";
+                    // i.Width = Unit.Percentage(50);
+                    i.SetNestedContent(() =>
+                    {
+                        Html.DevExpress().ComboBox(cb =>
+                        {
+                            cb.Name = "AuditPurpose";
+                            cb.Properties.NullText = "[Select]";
+                            // cb.Enabled = Model.IsEditable;
+
+                            cb.PreRender = (sender, e) =>
+                            {
+                                if (Model.AuditPurpose == null)
+                                    return;
+                                var combobox = (sender as MVCxComboBox);
+                                var items = combobox.Items;
+                                foreach (ListEditItem item in items)
+                                {
+                                    if (Model.AuditPurpose == item.Value.ToString())
+                                        combobox.SelectedIndex = item.Index;
+                                }
+                            };
+                        }).BindList(Enum.GetNames(typeof(Ensco.App.Areas.cOap.Controllers.AuditPurpose))).GetHtml();
+                    });
+                });
+
+
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "AuditLevel";
+                    i.FieldName = "AuditLevel";
+                    i.NestedExtension().TextBox(t =>
+                    {
+                        t.Name = "AuditLevel";
+                        // t.Width = Unit.Percentage(100);
+                        // t.ReadOnly = !Model.IsEditable;
+                        t.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    });
+                });
+
+
+
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Is CVT Audit?";
+                    i.FieldName = "IsCVT";
+                    Html.EnscoNestedEditor(i, audit => audit.IsCVT);
+                    i.NestedExtensionType = FormLayoutNestedExtensionItemType.CheckBox;
+                    var cbSettings = (CheckBoxSettings)i.NestedExtensionSettings;
+                    //cbSettings.Enabled = Model.IsEditable;
+
+                    //i.NestedExtension().DropDownEdit(d =>
+                    //{
+                    //    d.Name = "Topic";
+                    //    d.ReadOnly = !Model.IsEditable;
+                    //});
+                });
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Repeat Finding";
+                    i.FieldName = "RepeatFinding";
+
+                    Html.EnscoNestedEditor(i, audit => audit.RepeatFinding);
+                    i.NestedExtensionType = FormLayoutNestedExtensionItemType.CheckBox;
+                    // var cbSettings = (CheckBoxSettings)i.NestedExtensionSettings;
+                });
+
+                //group.Items.Add(i =>
+                //{
+                //    i.Caption = "eMoc ID";
+                //    i.FieldName = "eMocId";
+                //    i.NestedExtension().TextBox(t =>
+                //    {
+                //        t.Name = "eMocId";
+                //        t.ReadOnly = true;
+                //    });
+                //});
+
+                //group.Items.Add(i =>
+                //{
+                //    i.Caption = "eMoc Status";
+                //    i.FieldName = "eMocStatus";
+                //    i.NestedExtension().TextBox(t =>
+                //    {
+                //        t.Name = "eMocStatus";
+                //        t.ReadOnly = true;
+                //    });
+                //});
+
+
+
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Description";
+                    i.FieldName = "Description";
+                    i.ColumnSpan = 4;
+                    i.RequiredMarkDisplayMode = FieldRequiredMarkMode.Required;
+                    i.NestedExtension().Memo(t =>
+                    {
+                        t.Name = "Description";
+                        t.Width = Unit.Percentage(100);
+                        t.Height = Unit.Point(100);
+                        //t.ReadOnly = !Model.IsEditable;
+                        // t.Enabled = Model.IsEditable;
+                        t.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    });
+                });
+
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Editor Rights";
+                    i.FieldName = "EditorRights";
+                    i.ColumnSpan = 4;
+                    // Html.EnscoNestedEditor(i, audit => audit.OapAuditRights);
+                    i.NestedExtensionType = FormLayoutNestedExtensionItemType.ComboBox;
+                    i.SetNestedContent(() =>
+                    {
+                        var ownerId = UtilitySystem.CurrentUserId;
+                        Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "Assessor", lookup = "SharedAndCorpAccount", multi = true, selected = ownerId });
+
+
+                        //Html.DevExpress().ComboBox(cb =>
+                        //{
+                        //  cb.Name = "EditorRights";
+                        // cb.Properties.NullText = "[Select]";
+                        // cb.Enabled = Model.IsEditable;
+
+                        //cb.PreRender = (sender, e) =>
+                        //{
+                        //    if (Model.OapAuditRights  == null)
+                        //        return;
+                        //    var combobox = (sender as MVCxComboBox);
+                        //    var items = combobox.Items;
+                        //    foreach (ListEditItem item in items)
+                        //    {
+                        //        if (Model.OapAuditRights == item.Value)
+                        //            combobox.SelectedIndex = item.Index;
+                        //    }
+                        //};
+
+
+                    });
+
+                    i.NestedExtension().ComboBox(s =>
+                    {
+
+                        s.Width = Unit.Percentage(100);
+                        s.Height = Unit.Point(100);
+                        s.PreRender = (sender, e) =>
+                        {
+                            if (Model.OapAuditRights == null)
+                                return;
+                            var combobox = (sender as MVCxComboBox);
+                            var items = combobox.Items;
+                            foreach (ListEditItem item in items)
+                            {
+                                if (Model.OapAuditRights == item.Value)
+                                    combobox.SelectedIndex = item.Index;
+                            }
+                        };
+
+
+                    });
+
+                });
+
+
+                group.Items.Add(i =>
+                {
+                    i.Caption = "Visibility Rights";
+                    i.FieldName = "VisibilityRights";
+                    i.ColumnSpan = 4;
+                    Html.EnscoNestedEditor(i, audit => audit.OapAuditRights);
+                    i.NestedExtensionType = FormLayoutNestedExtensionItemType.ComboBox;
+                    i.SetNestedContent(() =>
+                    {
+                        var ownerId = UtilitySystem.CurrentUserId;
+                        Html.RenderAction("GridLookupPartial", "Common", new { Area = "Common", name = "Assessor1", lookup = "SharedAndCorpAccount", multi = true, selected = ownerId });
+
+
+                        //Html.DevExpress().ComboBox(cb =>
+                        //{
+                        //  cb.Name = "EditorRights";
+                        // cb.Properties.NullText = "[Select]";
+                        // cb.Enabled = Model.IsEditable;
+
+                        //cb.PreRender = (sender, e) =>
+                        //{
+                        //    if (Model.OapAuditRights  == null)
+                        //        return;
+                        //    var combobox = (sender as MVCxComboBox);
+                        //    var items = combobox.Items;
+                        //    foreach (ListEditItem item in items)
+                        //    {
+                        //        if (Model.OapAuditRights == item.Value)
+                        //            combobox.SelectedIndex = item.Index;
+                        //    }
+                        //};
+
+
+                    });
+
+                    i.NestedExtension().ComboBox(s =>
+                    {
+
+                        s.Width = Unit.Percentage(100);
+                        s.Height = Unit.Point(100);
+                        s.PreRender = (sender, e) =>
+                        {
+                            if (Model.OapAuditRights == null)
+                                return;
+                            var combobox = (sender as MVCxComboBox);
+                            var items = combobox.Items;
+                            foreach (ListEditItem item in items)
+                            {
+                                if (Model.OapAuditRights == item.Value)
+                                    combobox.SelectedIndex = item.Index;
+                            }
+                        };
+
+
+                    });
+
+                });
+
+
+            });
+
+        }).GetHtml();
+
+
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        Html.RenderAction("AssessorsPartial", "OapAuditReport");
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        Html.RenderAction("RigChecklists", "OapProtocolsToAudit");
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+
+    });
+
+    //Execution Tab
+    pcontrol.TabPages.Add("Execution").SetContent(() =>
+    {
+
+
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+
+        if (aProtocol != null)
+        {
+            Html.RenderAction("DisplayExecutionChecklistGrid", "OapProtocol", new { area = "cOap", protocol = aProtocol });
+            if(aProtocol.Comments != null && aProtocol.Comments.Count > 0)
+                foreach (var c in aProtocol.Comments.Distinct())
+                {
+                    ViewContext.Writer.Write("<br/>");
+                    Html.RenderAction("DisplayExecutionComments", "OapProtocol", new { area = "cOap", Comments = c });
+                }
+        }
+        else
+        {
+            ViewContext.Writer.Write("<b style='align:center;width:100%'>NO DATA</b>");
+        }
+        //  Html.RenderAction("DisplayExecutionChecklistGrid", "OapProtocol", new { area="cOap", protocol = Model.OapAuditProtocols[0].RigOapChecklist != null ? Model.OapAuditProtocols.FirstOrDefault().RigOapChecklist : null });
+
+
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+    });
+
+    pcontrol.TabPages.Add("Verification").SetContent(() =>
+    {
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        // ViewContext.Writer.Write("Verification Processs");
+        Html.RenderPartial("AuditVerificationToolbarPartial", Model);
+        ViewContext.Writer.Write("<br/>");
+        Html.RenderAction("AuditVerificationPartial", new { Verifiers = aProtocol != null ? aProtocol.VerifiedBy : null });
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+    });
+
+    //Review Tab
+    pcontrol.TabPages.Add("Review").SetContent(() =>
+    {
+        ViewContext.Writer.Write("Protocols and Checklist Review Plan");
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        Html.RenderAction("ReviewSearchPartial", "OapAuditReport");
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        Html.RenderPartial("PreviousProtocolPartial", new List<OapPreviousProtocolsFlatModel>());
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+        Html.RenderPartial("CapaFromPreviousProtocolPartial", new List<OapCapaProtocolsFlatModel>());       
+        ViewContext.Writer.Write("<br/>");
+        ViewContext.Writer.Write("<br/>");
+    });
+
+    //CVT tab
+    pcontrol.TabPages.Add("CVT").SetContent(() =>
+    {
+
+    });
+}).GetHtml();
+}

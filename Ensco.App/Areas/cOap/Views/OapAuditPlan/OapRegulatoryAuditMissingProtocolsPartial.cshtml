@@ -1,0 +1,15 @@
+﻿ @model IEnumerable<Ensco.App.Areas.cOap.Models.AuditPlanRACProtocolModel>
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var oapAuditPlanRACController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapAuditPlanController;
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        oapAuditPlanRACController.ConfigureRegulatoryAuditComplianceMissingProtocols(settings, Html, ViewContext);
+    }).Bind(Model);
+
+    grid.GetHtml();
+}

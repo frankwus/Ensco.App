@@ -1,0 +1,41 @@
+﻿@model Ensco.Irma.Models.Jobs.ManageAssetsModel
+@using Ensco.App.App_Start
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    Html.DevExpress().TreeList(settings =>
+    {
+        settings.Name = "treeListCorpPersonnel";
+        settings.CallbackRouteValues = new { Controller = "Jobs", Action = "SafetyCriticalAssetListPartial" };
+        settings.Width = Unit.Percentage(100);
+
+        //settings.Settings.ShowTreeLines = true;
+        //settings.ControlStyle.Border.BorderStyle = BorderStyle.Groove;
+        //settings.SettingsBehavior.AutoExpandAllNodes = true;
+        //settings.Settings.ShowTreeLines = true;
+        //settings.Settings.GridLines = System.Web.UI.WebControls.GridLines.Both;
+        //settings.SettingsBehavior.ExpandCollapseAction = TreeListExpandCollapseAction.NodeDblClick;
+        //settings.AutoGenerateColumns = false;
+
+        //settings.KeyFieldName = "Id";
+        //settings.ParentFieldName = "Parent";
+
+        settings.Columns.Add("Name");
+
+        //settings.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        //settings.SettingsPager.FirstPageButton.Visible = true;
+        //settings.SettingsPager.LastPageButton.Visible = true;
+        //settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        //settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        //settings.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+        //settings.SettingsPager.PageSize = 20;
+
+    }).BindToVirtualData(TreeVirtualModeHelper.VirtualModeCreateChildren, TreeVirtualModeHelper.VirtualModeNodeCreating).GetHtml();
+}
+
+
+
+
+

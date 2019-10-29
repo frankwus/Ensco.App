@@ -1,0 +1,16 @@
+﻿@model IEnumerable<System.Globalization.CultureInfo>
+
+@using (Html.BeginForm())
+{
+    Html.DevExpress().ComboBox(settings =>
+    {
+        settings.Name = "comboBoxLanguage";
+        settings.Width = 180;
+        settings.SelectedIndex = 0;
+        settings.CallbackRouteValues = new { Area = "Common", Controller = "Common", Action = "Language" };
+        settings.Properties.TextField = "DisplayName";
+        settings.Properties.ValueField = "TwoLetterISOLanguageName";
+        settings.Properties.ClearButton.DisplayMode = ClearButtonDisplayMode.OnHover;
+        settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+    }).BindList(Model).GetHtml();
+}

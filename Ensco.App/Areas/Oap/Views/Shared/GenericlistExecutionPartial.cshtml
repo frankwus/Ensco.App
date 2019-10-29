@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Ensco.App.Areas.Oap.Models.OapGenericCheckListFlatModel>
+
+@{
+    var genericListController = (dynamic) ViewContext.Controller;
+
+    var errorkey = Ensco.App.Areas.Oap.Controllers.GridConstants.ExecutionErrorsKey;
+
+    var errors = (ViewData[errorkey] ?? string.Empty).ToString(); 
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        genericListController.ConfigureExecution(settings, Html, ViewContext);
+    });
+
+    if (!string.IsNullOrEmpty(errors))
+    {
+        grid.SetEditErrorText(errors);
+    }
+    grid.Bind(Model).GetHtml();
+}

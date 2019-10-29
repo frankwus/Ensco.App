@@ -1,0 +1,60 @@
+﻿@{
+    HttpCookie cookie = this.Request.Cookies["ListName"];
+    string type = "Rig";
+    if (cookie != null) {
+        type = cookie.Value; 
+    }
+}
+@model Ensco.Models.DataTableModel
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = true;
+    options.ShowEditButton = true;
+    options.ShowDeleteButton = true;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+    string name = "gridRigAdminList";
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name =name;
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.SettingsPager.PageSize = 20;
+
+    grid.CallbackRouteValues = new {Area = "Common", Controller = "Admin", Action = "ManageAdminListPartial"  };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageAdminListUpdate" };
+    grid.SettingsEditing.AddNewRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageAdminListUpdate" };
+    grid.SettingsEditing.DeleteRowRouteValues = new { Area = "Common", Controller = "Admin", Action = "ManageAdminListDelete" };
+
+    grid.ClientSideEvents.EndCallback = "function(s,e) { onEndCallback(s, e);}";
+    Html.EnscoStandardGrid(grid, Ensco.Irma.Services.IrmaServiceSystem.GetModelType(type), options);
+
+    grid.CellEditorInitialize = (s, e) => {
+        MVCxGridView grid1 = (MVCxGridView)s;
+
+        if (e.Column.FieldName == "RigType") {
+            object keyVal = -1;
+            if (e.KeyValue != null) {
+                keyVal = grid1.GetRowValuesByKeyValue(e.KeyValue, "RigType");
+            }
+            e.Editor.SetClientSideEventHandler("TextChanged", string.Format("function(s,e){{ TextChanged(s,e); }}"));
+        }
+
+    };
+    grid.DataBound = (s, e) => {
+        ASPxGridView g = (ASPxGridView)s; 
+        foreach (GridViewColumn c in g.Columns)
+            c.Caption = " " + c.Caption;
+    };
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) => {
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+
+
+
+
+

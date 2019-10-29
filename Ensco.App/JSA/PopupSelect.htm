@@ -1,0 +1,55 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=1"></script>
+</head>
+<body >
+    <table id="t" border="1" width="100%" style="border-collapse:collapse"></table>
+ <br />
+        <input type="button" value="Submit" onclick="on_Submit() "/>
+        <input type="button" value="Cancel" onclick="on_Cancel()" />
+</body>
+</html>
+<script>
+    var t = $('#t')
+    $(document).ready(function () {
+        var xml = window.dialogArguments
+        var html='<tr><td class=header colspan=2><br>'
+        $(xml).find('Name').each(function () {
+            var element = $(this)
+            html+='<tr><td style="width:1%"><input type=checkbox /> <td id ='+ element.prev().text() +' > '+ element.text() 
+        })
+        t.html(html)
+         
+        //for (var i in arr) {
+        //    $('#'+arr[i]).prev().children().prop('checked', true)
+        //}
+    })
+    function on_Submit() {
+        var arr =$(':checkbox:checked').map(function () {
+            var td = $(this).parent().next()
+            return  [ td.attr('id') ,  td.text() ]
+        }).get()
+         window.returnValue = arr
+        window.close()
+    }
+    function on_Cancel() {
+        window.close()
+        return
+    }
+    function  {
+        document.onkeydown = function () {
+            if ((event.keyCode == 83) && (event.ctrlKey)) {
+                event.cancelBubble = true;
+                event.returnValue = false;
+                event.keyCode = false;
+                if (event.keyCode == 83)
+                    on_Submit()
+                return false;
+            }
+        }
+    }
+</script>

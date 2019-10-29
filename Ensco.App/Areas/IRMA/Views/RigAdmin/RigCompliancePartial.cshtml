@@ -1,0 +1,158 @@
+﻿@model Ensco.Irma.Models.RigAdminManageModel
+
+@using System.Web.UI.WebControls
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+
+    var gridView = Html.DevExpress().GridView(grid =>
+    {
+        grid.Name = "gridView_ComplianceUsers";
+        grid.KeyFieldName = "Id";
+
+        grid.CallbackRouteValues = new { Area = "Irma", Controller = "RigAdmin", Action = "RigCompliancePartial" };
+
+        grid.Height = Unit.Percentage(100);
+
+        Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.RigComplianceUserModel));
+
+        MVCxGridViewColumn column = (MVCxGridViewColumn)grid.Columns["RequirementsMet"];
+        column.SetDataItemTemplateContent(c =>
+        {
+            bool value = (bool)DataBinder.Eval(c.DataItem, "RequirementsMet");
+            string yesUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/Yes.png"));
+            string noUrl = new UrlHelper(HttpContext.Current.Request.RequestContext).Content(String.Format("~/Images/No.png"));
+            ViewContext.Writer.Write(String.Format("<img src=\"{0}\" width=\"16\" height=\"16\" />", (value ? yesUrl : noUrl)));
+        });
+
+        grid.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+        grid.SettingsPager.FirstPageButton.Visible = true;
+        grid.SettingsPager.LastPageButton.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Visible = true;
+        grid.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+        grid.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+        grid.CommandColumn.Visible = true;
+        //grid.CommandColumn.ShowEditButton = true;
+        //grid.CommandColumn.ShowNewButtonInHeader = true;
+        //grid.CommandColumn.ShowDeleteButton = true;
+        //grid.CommandColumn.ShowUpdateButton = true;
+        //grid.CommandColumn.ShowCancelButton = true;
+        grid.CommandColumn.Width = 50;
+        grid.Styles.Header.Wrap = DefaultBoolean.True;
+        grid.SettingsPager.EnableAdaptivity = true;
+
+        grid.Toolbars.Add(toolbar =>
+        {
+            toolbar.Name = "toolbarRigCompliancePartial";
+            toolbar.Enabled = true;
+            toolbar.EnableAdaptivity = true;
+            toolbar.Position = GridToolbarPosition.Top;
+            toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+            toolbar.Items.Add(i =>
+            {
+                i.BeginGroup = true;
+                i.ItemStyle.HorizontalAlign = HorizontalAlign.Left;
+                i.SetTemplateContent(c =>
+                {
+                    Html.DevExpress().ButtonEdit(s =>
+                    {
+                        s.Name = "search";
+                        s.Properties.NullText = "Search...";
+                        s.Properties.Buttons
+                            .Add()
+                            .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                    }).Render();
+                });
+            });
+
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Refresh;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Refresh.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ShowFilterRow;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Filter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ClearFilter;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/ClearFilter.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ExportToPdf;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Pdf.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.ExportToCsv;
+                item.DisplayMode = GridToolbarItemDisplayMode.Image;
+                item.Image.Url = "~/Images/Excel.png";
+                item.Image.Width = Unit.Pixel(24);
+                item.Image.Height = Unit.Pixel(24);
+                item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+        });
+        grid.SettingsSearchPanel.CustomEditorName = "search";
+
+        grid.SettingsExport.EnableClientSideExportAPI = true;
+        grid.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+        grid.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+        grid.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+        grid.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+        grid.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+        grid.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+        grid.SettingsDetail.ShowDetailRow = true;
+
+        grid.SetDetailRowTemplateContent(c =>
+        {
+            Ensco.Irma.Models.ManageCrewChangeModel.IsEditing = c.Grid.IsEditing;
+            Ensco.Irma.Models.ManageCrewChangeModel.IsNewRowEditing = c.Grid.IsNewRowEditing;
+            if (!c.Grid.IsEditing && !c.Grid.IsNewRowEditing)
+            {
+                Html.RenderAction("RigComplianceDetailPartial", new { Id = DataBinder.Eval(c.DataItem, "Id") });
+            }
+        });
+
+    }).Bind(Model.Personnel).GetHtml();
+}
+
+

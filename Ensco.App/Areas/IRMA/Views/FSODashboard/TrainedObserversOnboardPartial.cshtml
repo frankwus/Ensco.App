@@ -1,0 +1,37 @@
+﻿@using Ensco.FSO.Models;
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.AddButtonText = "Add Observer";
+    options.ShowTitle = false;
+    options.Title = DbRes.T("Open Safety Observation Checklists","OapResources");
+}
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "gvTrainedObservers";
+    settings.KeyFieldName = "Id";
+    settings.Width = Unit.Percentage(100);
+    settings.Caption = DbRes.T("Trained Observers Onboard", "OapResources");
+
+    Html.EnscoStandardGrid(settings, typeof(Ensco.FSO.Models.TrainedObserversViewModel), options);
+
+    settings.CallbackRouteValues = new { Area="IRMA", Controller="FSODashboard", Action="TrainedObserversOnboard" };
+
+    settings.FormatConditions.AddHighlight("Observations", "IsInCompliance == false", GridConditionHighlightFormat.LightRedFillWithDarkRedText);
+    settings.FormatConditions.AddHighlight("Observations", "(IsInCompliance == true || IsInCompliance == null)", GridConditionHighlightFormat.GreenFillWithDarkGreenText);
+
+    settings.SettingsResizing.ColumnResizeMode = ColumnResizeMode.NextColumn;
+
+    settings.Columns["Position"].Width = Unit.Percentage(20);
+    settings.Columns["DaysOnboard"].Width = Unit.Percentage(15);
+    settings.Columns["DaysOnboard"].CellStyle.HorizontalAlign = HorizontalAlign.Left;
+    settings.Columns["Observations"].Width = Unit.Percentage(15);
+    settings.Columns["Observations"].CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    settings.Columns["LastObservation"].Width = Unit.Percentage(15);
+
+}).Bind((IEnumerable<TrainedObserversViewModel>)ViewBag.TrainedObservers).GetHtml()

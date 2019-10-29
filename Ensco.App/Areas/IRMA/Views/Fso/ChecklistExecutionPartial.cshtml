@@ -1,0 +1,38 @@
+﻿@*@Html.DevExpress().GridView(gv =>
+{
+    gv.Name = "gvExecution";
+    gv.KeyFieldName = "Id";
+
+    gv.CallbackRouteValues = new { Area = "IRMA", Controller = "Fso", Action = "ChecklistExecutionPartial" };
+    gv.SettingsEditing.AddNewRowRouteValues = new { Controller = "Fso", Action = "ChecklistExecutionAddPartial" };
+    gv.SettingsEditing.UpdateRowRouteValues = new { Controller = "Fso", Action = "ChecklistObserversUpdatePartial" };
+    gv.SettingsEditing.DeleteRowRouteValues = new { Controller = "Fso", Action = "ChecklistObserversDeletePartial" }; //Delete it, this is not a template
+
+}).Bind(Model).GetHtml()*@
+
+@Html.DevExpress().FormLayout(settings => {
+
+    settings.Name = "frmExecution";
+    settings.EncodeHtml = false;
+
+
+    settings.Items.AddGroupItem(group =>
+    {
+        group.Caption = "Actions";
+        group.Height = Unit.Percentage(100);
+        group.ColumnCount = 4;
+        group.Width = Unit.Percentage(100);
+
+    });
+
+    settings.Items.AddGroupItem(group =>
+    {
+        group.Caption = "Conditions";
+        group.Height = Unit.Percentage(100);
+        group.ColumnCount = 4;
+        group.Width = Unit.Percentage(100);
+
+    });
+
+
+}).GetHtml()

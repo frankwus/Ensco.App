@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapChecklistQuestion>
+ 
+
+@Html.DevExpress().GridView(settings =>
+{
+    var oapChecklistQuestionsHelpController = ViewContext.Controller as Ensco.App.Areas.cOap.Controllers.OapChecklistQuestionsHelpController;
+    oapChecklistQuestionsHelpController.Configure(settings, Html, ViewContext);
+
+}).Bind(Model).GetHtml()
+
+

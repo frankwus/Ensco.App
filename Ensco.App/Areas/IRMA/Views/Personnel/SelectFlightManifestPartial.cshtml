@@ -1,0 +1,23 @@
+﻿@model Ensco.Models.LookupListModel<dynamic>
+
+@*@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "popupChecklistGrid";
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.CallbackRouteValues = new { Controller = "Personnel", Action = "SelectFlightManifestPartial" };
+    grid.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "SelectFlightManifestUpdatePartial" };
+
+    Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.CrewFlightModel));
+
+    grid.CommandColumn.Visible = true;
+    grid.CommandColumn.ShowSelectCheckbox = true;
+    grid.CommandColumn.SelectAllCheckboxMode = GridViewSelectAllCheckBoxMode.AllPages;
+    grid.CommandColumn.Width = 25;
+    
+}).Bind(Model.Items).GetHtml()
+
+@Html.DevExpress().Button(buttonsettings => {
+    buttonsettings.Name = "btnSelectFlightManifest";
+    buttonsettings.Text = "Add";
+    buttonsettings.ClientSideEvents.Click = "function(s, e){ popupChecklistGrid.UpdateEdit(); }";
+    }).GetHtml()*@

@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js"></script>
+</head>
+<span class="orangecolor" style="font-weight:bold">S.M.A.R.T.E.R. CAPA Methodology</span>
+<table id="t">
+    <tr>
+        <td class="darkblue" colspan="11">
+            Information Gathering
+    <tr><td class="label" colspan="11">       Use the Information Gathering Technique to help develop better corrective or preventive actions
+
+    <tr>
+        <td>
+            What
+        <td>Establish what exactly happened
+    <tr>
+        <td>
+            Where
+        <td>	Determine the exact location of where the problem occurred
+    <tr>
+        <td>
+            When
+        <td>Determine the details of when the problem occurred
+    <tr>
+        <td>
+            Who
+        <td>Establish people present when it happened, that are involved or have the problem
+    <tr>
+        <td>
+            How
+        <td>Determine the specifics of how the problem occurred, but do not perform causal analysis at this stage
+    <tr>
+        <td>
+            Why
+        <td>The “Why” may be established using the Ensco 3by5 or during a TapRooT® investigation
+
+
+    <tr>
+        <td class="darkblue" colspan="11">
+            S.M.A.R.T.E.R. CAPAs
+    <tr>
+        <td>
+            Specific
+        <td>
+            •	Directly address the nonconformity or unplanned event (What)
+
+            <br />•	State specific requirements and constraints (How)
+
+            <br />•	State applicable location(s) (Where)
+    <tr>
+        <td>       Measurable
+        <td>
+            •	Specify what must be accomplished to close the action
+            <br />
+            •	Specify how progress will be measured
+    <tr>
+        <td>
+            Assignable
+        <td>
+            •	Be assigned to a specific person (Who)
+            <br />
+            •	Be assigned to personnel capable of completing the action
+    <tr>
+        <td>
+            Realistic
+        <td>•	Be achieved given available resources
+    <tr>
+        <td>
+            Timely
+        <td>	•	Have a specific due date given a reasonable timeframe to complete (When)
+    <tr>
+        <td>
+            Effective
+        <td>•	Evaluate performance and progress
+    <tr><td>         Reviewed	<td>•	Review for lessons learned and provide feedback
+
+</table>
+<script>
+    var t = $('#t')
+    $(document).ready(function () {
+        t.find('td:nth-child(1)[colspan!=11]').not('td:last-child()').addClass('header')
+        t.find('td').css('border', '1 solid gray')
+        CleanUp()
+
+    })
+
+</script>

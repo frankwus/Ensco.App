@@ -1,0 +1,106 @@
+﻿@model Ensco.Models.UserModel
+@using System.Data;
+@section scripts
+{
+    <script type="text/javascript">
+
+        function OnPassportSearch(s, e) {
+
+        }
+
+    </script>
+}
+@Html.Hidden("PassportSearchFilter", (string)ViewData["PassportSearchString"])
+
+@Html.DevExpress().Splitter(settings =>
+{
+    settings.Name = "splitterCreatePassport";
+    settings.AllowResize = false;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+    settings.SeparatorVisible = false;
+    settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelCreatePassport";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+
+            using (Html.BeginForm("CreatePassportPartial", "Admin", FormMethod.Post))
+            {
+                Html.RenderPartial("CreatePassportPartial", Model);
+            }
+        });
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelCreatePassportEmpty1";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+        pane.SetContent(() =>
+        {
+            ViewContext.Writer.Write("<br/>");
+        });
+
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelPassportSearch";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+         Html.RenderAction("PassportSearch", "Admin", new { Area = "Common", parameter  ="1=11"  });
+
+        });
+    });
+}).GetHtml()
+<script>
+    var Filter = '1=1'
+    ASPxClientControl.GetControlCollection().ControlsInitialized.AddHandler(function () {
+        if (grid.GetVisibleRowsOnPage() == 0)
+            grid.SetVisible(false)
+    });
+    function onSave(s, e) {
+        Filter = '1=1'
+        var name = s.GetText()
+        if (name == 'Submit') {
+            $('form').submit()
+            return
+        }
+        var arr = [FirstName, LastName, Company]
+        for (var i in arr) {
+            var obj = arr[i]
+            if (!obj.GetIsValid())
+                return
+            var value = obj.GetValue()
+
+            Filter += ' and ' + obj.name + "='" + value + "'"
+        }
+        Filter = MyReplace(Filter, "'", "''")
+        grid.PerformCallback() //{ parameter: filter });
+    }
+    function onEndCallback(s, e) {
+        grid.SetVisible(true)
+        if (grid.GetVisibleRowsOnPage() > 0) {
+            btnUpdate.SetText('Submit')
+            GetId('Msg').show()
+        } else
+            $('form').submit() 
+    }
+    function onBeginCallback(s, e) {
+        e.customArgs["parameter"] = Filter
+    }
+</script>

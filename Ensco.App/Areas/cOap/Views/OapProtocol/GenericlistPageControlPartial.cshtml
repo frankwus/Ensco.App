@@ -1,0 +1,8 @@
+﻿@model Ensco.Irma.Oap.WebClient.Corp.RigOapChecklist
+
+@Html.DevExpress().PageControl(settings =>
+ {
+   var genericListController = (dynamic) ViewContext.Controller;
+   genericListController.ConfigureTabs(settings, Html, ViewContext);
+}).GetHtml()
+

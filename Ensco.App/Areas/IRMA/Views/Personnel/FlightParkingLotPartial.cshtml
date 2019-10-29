@@ -1,0 +1,258 @@
+﻿@model Ensco.Irma.Models.CrewFlightModel
+
+@{
+    Ensco.Utilities.UserSession userInfo = Ensco.Utilities.UtilitySystem.CurrentUser;
+    bool bPobEditor = (userInfo != null && userInfo.IsPobEditor) ? true : false;
+}
+@using (Html.BeginForm("MovePersonnelPartial", "Personnel", FormMethod.Post)) {
+    Html.DevExpress().PopupControl(settings => {
+        settings.Name = "dummy";
+    }).GetHtml();
+}
+
+@Html.Partial("FlightParkingLotAddArriving", new Ensco.Irma.Models.ParkingLotPobModel())
+@Html.Partial("MovePersonnel", new Ensco.Irma.Models.MovePersonnelModel())
+@Html.Partial("FlightParkingLotAddDeparting", new Ensco.Irma.Models.ParkingLotPobModel())
+@Html.DevExpress().GridView(gridPob =>
+{
+    gridPob.Name = "gridView_FlightParkingLotPobs";
+    gridPob.KeyFieldName = "Id";
+    gridPob.Settings.ShowTitlePanel = true;
+    gridPob.SettingsText.Title = "Parking Lot";
+
+    gridPob.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "FlightParkingLotPartial"};
+    gridPob.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "FlightParkingLotPobAdd" };
+    gridPob.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "FlightParkingLotPobDelete" }; //Delete it, this is not a template
+    gridPob.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+    gridPob.SettingsBehavior.ConfirmDelete = true;
+
+
+    gridPob.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    gridPob.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    gridPob.SettingsCommandButton.EditButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.EditButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    gridPob.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    gridPob.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    gridPob.SettingsCommandButton.CancelButton.Image.Width = 16;
+    gridPob.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+    var attribs = Ensco.Utilities.UtilitySystem.GetCustomAttributes(typeof(Ensco.Irma.Models.FlightManifestPobModel));
+    Html.SetEnscoGridColumns(gridPob, typeof(Ensco.Irma.Models.FlightManifestPobModel));
+
+    // Hide Position, Company & Nationality in edit mode (these should be coming from Passport)
+    MVCxGridViewColumn colPosition = gridPob.Columns["Position"] as MVCxGridViewColumn;
+    colPosition.EditFormSettings.Visible = DefaultBoolean.False;
+    MVCxGridViewColumn colCompany = gridPob.Columns["Company"] as MVCxGridViewColumn;
+    colCompany.EditFormSettings.Visible = DefaultBoolean.False;
+    MVCxGridViewColumn colNationality = gridPob.Columns["Nationality"] as MVCxGridViewColumn;
+    colNationality.EditFormSettings.Visible = DefaultBoolean.False;
+
+    // Hide Airport columns if set to not visible
+    gridPob.Columns["BodyWeight"].Visible = (Model != null) ? Model.ShowAirportInfo : false;
+    gridPob.Columns["BagWeight"].Visible = (Model != null) ? Model.ShowAirportInfo : false;
+    gridPob.Columns["Bags"].Visible = (Model != null) ? Model.ShowAirportInfo : false;
+    gridPob.Columns["HomeAirport"].Visible = (Model != null) ? Model.ShowAirportInfo : false;
+    gridPob.Columns["AirlineFlight"].Visible = (Model != null) ? Model.ShowAirportInfo : false;
+    gridPob.Columns["Terminal"].Visible = (Model != null) ? Model.ShowAirportInfo : false;
+
+    gridPob.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridPob.SettingsPager.FirstPageButton.Visible = true;
+    gridPob.SettingsPager.LastPageButton.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridPob.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridPob.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    gridPob.CommandColumn.Visible = bPobEditor;
+    gridPob.CommandColumn.ShowDeleteButton = bPobEditor;
+    gridPob.CommandColumn.ShowUpdateButton = bPobEditor;
+    gridPob.CommandColumn.ShowCancelButton = bPobEditor;
+    gridPob.CommandColumn.Width = 75;
+    gridPob.SettingsBehavior.ConfirmDelete = true;
+
+    gridPob.CommandColumn.SelectAllCheckboxMode = GridViewSelectAllCheckBoxMode.None;
+    gridPob.CommandColumn.ShowSelectCheckbox = bPobEditor;
+    gridPob.ClientSideEvents.SelectionChanged = String.Format("function (s, e) {{ OnValueChanged(s, '{0}', s.GetRowKey(e.visibleIndex), e.isSelected); }}", Url.Action("FlightParkingLotPobSelect", "Personnel", new { Area = "IRMA" }));
+
+
+    gridPob.Styles.Header.Wrap = DefaultBoolean.True;
+    gridPob.SettingsPager.EnableAdaptivity = true;
+    gridPob.Toolbars.Add(toolbar =>
+    {
+        toolbar.Name = "toolbarCrewChangePartial";
+        toolbar.Enabled = true;
+        toolbar.EnableAdaptivity = true;
+        toolbar.Position = GridToolbarPosition.Top;
+        toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+        if (bPobEditor)
+        {
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Custom;
+                item.Name = "AddArrivingPersonnel";
+                item.Text = "Add Arriving Personnel";
+                item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                item.ItemStyle.ForeColor = System.Drawing.Color.White;
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+                //item.NavigateUrl = Url.Action("FlightParkingLotAddArriving", "Personnel", new { Area = "IRMA" });
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.Name = "divider1";
+                item.SetTemplateContent(c =>
+                {
+                    ViewContext.Writer.Write("&nbsp;&nbsp;");
+                });
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Custom;
+                item.Name = "AddDepartingPersonnel";
+                item.Text = "Add Departing Personnel";
+                item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                item.ItemStyle.ForeColor = System.Drawing.Color.White;
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.Name = "divider1";
+                item.SetTemplateContent(c =>
+                {
+                    ViewContext.Writer.Write("&nbsp;&nbsp;");
+                });
+            });
+            toolbar.Items.Add(item =>
+            {
+                item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+                item.Command = GridViewToolbarCommand.Custom;
+                item.Name = "MovePersonnel";
+                item.Text = "Move Personnel";
+                item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+                item.ItemStyle.ForeColor = System.Drawing.Color.White;
+                item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+                item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+                item.ClientEnabled = true;
+            });
+        }
+
+        toolbar.Items.Add(i =>
+        {
+            i.BeginGroup = true;
+            i.ItemStyle.HorizontalAlign = HorizontalAlign.Left;
+            i.SetTemplateContent(c =>
+            {
+                Html.DevExpress().ButtonEdit(s =>
+                {
+                    s.Name = "search";
+                    s.Properties.NullText = "Search...";
+                    s.Properties.Buttons
+                        .Add()
+                        .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                }).Render();
+            });
+        });
+
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.Refresh;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Refresh.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ShowFilterRow;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Filter.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ClearFilter;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/ClearFilter.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        //toolbar.Items.Add(item =>
+        //{
+        //    item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+        //    item.Command = GridViewToolbarCommand.ExportToPdf;
+        //    item.DisplayMode = GridToolbarItemDisplayMode.Image;
+        //    item.Image.Url = "~/Images/Pdf.png";
+        //    item.Image.Width = Unit.Pixel(24);
+        //    item.Image.Height = Unit.Pixel(24);
+        //    item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+        //    item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+        //    item.ClientEnabled = true;
+        //});
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ExportToCsv;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Excel.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+    });
+    gridPob.SettingsSearchPanel.CustomEditorName = "search";
+    gridPob.SettingsExport.EnableClientSideExportAPI = true;
+    gridPob.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+    gridPob.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+    gridPob.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+    gridPob.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+    gridPob.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    gridPob.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+    gridPob.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+    gridPob.ClientSideEvents.ToolbarItemClick = "function(s,e){ if(e.item.name == \"AddArrivingPersonnel\"){ popupControlParkingLotArriving.Show(); } else if(e.item.name == \"AddDepartingPersonnel\"){ popupControlParkingLotDeparting.Show(); } else if(e.item.name == \"MovePersonnel\") { popupControlMovePersonnel.Show(); } }";
+
+    gridPob.CellEditorInitialize = (s, e) =>
+    {
+        e.Editor.ReadOnly = e.Column.ReadOnly;
+    };
+
+    gridPob.FormatConditions.AddHighlight("Status", "[Status] = 3", GridConditionHighlightFormat.GreenFillWithDarkGreenText);
+    gridPob.FormatConditions.AddHighlight("Status", "[Status] = 4", GridConditionHighlightFormat.LightRedFillWithDarkRedText);
+
+    gridPob.EditFormLayoutProperties.ColumnCount = 4;
+    gridPob.EditFormLayoutProperties.Items.Add("Location");
+    gridPob.EditFormLayoutProperties.Items.AddCommandItem(i =>
+    {
+        i.ShowUpdateButton = true;
+        i.ShowCancelButton = true;
+        i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+    });
+
+}).Bind(Model.Personnel).GetHtml()
+
+

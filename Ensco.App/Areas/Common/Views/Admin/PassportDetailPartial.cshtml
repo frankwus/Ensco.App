@@ -1,0 +1,36 @@
+﻿@model Ensco.Models.UserModel
+
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formPassportDetailPartial";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+
+    var groupItem = form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Personal Information";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 3;
+    });
+    form.ColCount = 3;
+
+    groupItem.Items.Add(x => x.FirstName, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.MiddleName, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.LastName, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.Passport, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.Position, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.Status, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    
+    groupItem.Items.Add(x => x.Company, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.Nationality, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.DisplayName, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.City, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.State, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.Country, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.PrimaryPhone, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+    groupItem.Items.Add(x => x.Email, item => { item.NestedExtension().Label(s => s.Width = Unit.Percentage(100)); });
+
+}).GetHtml()

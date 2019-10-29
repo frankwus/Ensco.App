@@ -1,0 +1,85 @@
+﻿@using Ensco.App.App_Start
+@using System.Data;
+@{
+
+    DataSet ds = Ensco.Utilities.UtilitySystem.GetDataSet("exec usp_GetPobDuplicate 'All'");
+    Html.BindDataTable("grid",  "Reconcile", ds.Tables[0],"irma", "irma", "ReconcilePassportPartial" );
+    return;
+
+
+
+
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = true;
+    options.ShowTitle = false;
+
+    System.Drawing.Color[] colors = new System.Drawing.Color[6];
+    colors[0] = System.Drawing.Color.PapayaWhip;
+    colors[1] = System.Drawing.Color.LightSkyBlue;
+    colors[2] = System.Drawing.Color.LightCyan;
+    colors[3] = System.Drawing.Color.PaleTurquoise;
+    colors[4] = System.Drawing.Color.PaleGreen;
+    colors[5] = System.Drawing.Color.LightGoldenrodYellow;
+    Dictionary<int, int> groupColors = new Dictionary<int, int>();
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_CrewChange";
+    grid.KeyFieldName = Model.Dataset.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Irma", Controller = "Irma", Action = "ReconcilePassportPartial" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Irma.Models.Admin.ReconcileModel), options);
+    MVCxGridViewColumn col = (MVCxGridViewColumn)grid.Columns["MatchGroup"];
+    col.SortIndex = 0;
+    grid.HtmlRowPrepared = (s, e) =>
+    {
+        int group = (e.GetValue("MatchGroup") != null) ? (int)e.GetValue("MatchGroup") : -1;
+        if (group != -1)
+        {
+            int colIndex = 0;
+            if(!groupColors.ContainsKey(group))
+            {
+                colIndex = groupColors.Count;
+                if (colIndex > 5)
+                    colIndex = 0;
+                groupColors[group] = colIndex;
+            }
+            else
+            {
+                colIndex = groupColors[group];
+            }
+            e.Row.BackColor = colors[colIndex];
+        }
+
+    };
+
+    grid.CommandColumn.SelectAllCheckboxMode = GridViewSelectAllCheckBoxMode.None;
+    grid.CommandColumn.ShowSelectCheckbox = true;
+    //grid.ClientSideEvents.SelectionChanged = String.Format("function (s, e) {{ OnValueChanged(s, '{0}', s.GetRowKey(e.visibleIndex), e.isSelected); }}", Url.Action("FlightParkingLotPobSelect", "Personnel", new { Area = "IRMA" }));
+
+    // Merge Users
+    MVCxGridViewToolbar toolbar = grid.Toolbars[0];
+    MVCxGridViewToolbarItem item = new MVCxGridViewToolbarItem();
+    item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+    item.Command = GridViewToolbarCommand.Custom;
+    item.Name = "MergeUsers";
+    item.Text = "Merge Selected Users";
+    item.ItemStyle.BackColor = System.Drawing.Color.RoyalBlue;
+    item.ItemStyle.ForeColor = System.Drawing.Color.White;
+    item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+    item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+    item.ClientEnabled = true;
+    toolbar.Items.Insert(0, item);
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.Dataset.KeyFieldName;
+    e.QueryableSource = Model.Dataset.Dataset;
+}).GetHtml()
+

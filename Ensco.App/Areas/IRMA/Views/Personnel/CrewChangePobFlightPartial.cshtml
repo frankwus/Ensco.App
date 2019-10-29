@@ -1,0 +1,134 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().GridView(gridFlight =>
+{
+    gridFlight.Name = "gridView_CrewChangePobFlights";
+    gridFlight.SettingsDetail.MasterGridName = "gridView_CrewChangePartial";
+
+    gridFlight.KeyFieldName =  Model.CrewFlightInfo.KeyFieldName;
+
+    gridFlight.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangePobFlightPartial", Id = Model.Id };
+    gridFlight.SettingsEditing.AddNewRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeFlightAddPartial" };
+    gridFlight.SettingsEditing.UpdateRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeFlightUpdatePartial" };
+    gridFlight.SettingsEditing.DeleteRowRouteValues = new { Controller = "Personnel", Action = "CrewChangeFlightDeletePartial" }; //Delete it, this is not a template
+    gridFlight.SettingsEditing.Mode = GridViewEditingMode.Inline;
+
+    gridFlight.Width = Unit.Percentage(100);
+    gridFlight.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Image;
+    gridFlight.SettingsCommandButton.NewButton.Image.Url = "~/Images/Create.png";
+    gridFlight.SettingsCommandButton.NewButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.NewButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.EditButton.Image.Url = "~/Images/Edit.png";
+    gridFlight.SettingsCommandButton.EditButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.EditButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.DeleteButton.Image.Url = "~/Images/Delete.png";
+    gridFlight.SettingsCommandButton.DeleteButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.DeleteButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.UpdateButton.Image.Url = "~/Images/Save.png";
+    gridFlight.SettingsCommandButton.UpdateButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.UpdateButton.Image.Height = 16;
+    gridFlight.SettingsCommandButton.CancelButton.Image.Url = "~/Images/Cancel.png";
+    gridFlight.SettingsCommandButton.CancelButton.Image.Width = 16;
+    gridFlight.SettingsCommandButton.CancelButton.Image.Height = 16;
+
+
+    List<Ensco.Utilities.ColumnAttribute> attribs = Ensco.Utilities.UtilitySystem.GetCustomAttributes(typeof(Ensco.Irma.Models.CrewFlightModel));
+    Html.SetEnscoGridColumns(gridFlight, typeof(Ensco.Irma.Models.CrewFlightModel));
+
+    gridFlight.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridFlight.SettingsPager.FirstPageButton.Visible = true;
+    gridFlight.SettingsPager.LastPageButton.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridFlight.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+    gridFlight.CommandColumn.Visible = true;
+    gridFlight.CommandColumn.ShowNewButtonInHeader = true;
+    gridFlight.CommandColumn.Width = 50;
+
+
+    gridFlight.Styles.Header.Wrap = DefaultBoolean.True;
+    gridFlight.SettingsPager.EnableAdaptivity = true;
+    gridFlight.Styles.FilterRow.BackColor = System.Drawing.Color.LightSkyBlue;
+
+    gridFlight.Toolbars.Add(toolbar =>
+    {
+        toolbar.Name = "toolbarFlightPobPartial";
+        toolbar.Enabled = true;
+        toolbar.EnableAdaptivity = true;
+        toolbar.Position = GridToolbarPosition.Top;
+        toolbar.ItemAlign = GridToolbarItemAlign.Right;
+
+        toolbar.Items.Add(i =>
+        {
+            i.BeginGroup = true;
+            i.ItemStyle.HorizontalAlign = HorizontalAlign.Left;
+            i.SetTemplateContent(c =>
+            {
+                Html.DevExpress().ButtonEdit(s =>
+                {
+                    s.Name = "flightSearch";
+                    s.Properties.NullText = "Search...";
+                    s.Properties.Buttons
+                        .Add()
+                        .Image.IconID = DevExpress.Web.ASPxThemes.IconID.FindFind16x16gray;
+                }).Render();
+            });
+        });
+
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.Refresh;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Refresh.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ExportToPdf;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Pdf.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.ForeColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+        toolbar.Items.Add(item =>
+        {
+            item.ItemStyle.HorizontalAlign = HorizontalAlign.Right;
+            item.Command = GridViewToolbarCommand.ExportToCsv;
+            item.DisplayMode = GridToolbarItemDisplayMode.Image;
+            item.Image.Url = "~/Images/Excel.png";
+            item.Image.Width = Unit.Pixel(24);
+            item.Image.Height = Unit.Pixel(24);
+            item.ItemStyle.HoverStyle.BackColor = System.Drawing.Color.Transparent;
+            item.ItemStyle.Border.BorderStyle = BorderStyle.None;
+            item.ClientEnabled = true;
+        });
+    });
+    gridFlight.SettingsSearchPanel.CustomEditorName = "flightSearch";
+    gridFlight.SettingsExport.EnableClientSideExportAPI = true;
+    gridFlight.SettingsExport.ExcelExportMode = DevExpress.Export.ExportType.DataAware;
+    gridFlight.Styles.Header.Wrap = DevExpress.Utils.DefaultBoolean.True;
+    gridFlight.Settings.HorizontalScrollBarMode = ScrollBarMode.Hidden;
+    gridFlight.Settings.VerticalScrollBarMode = ScrollBarMode.Hidden;
+    gridFlight.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    gridFlight.Height = System.Web.UI.WebControls.Unit.Percentage(100);
+    gridFlight.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.CrewFlightInfo.KeyFieldName;
+    e.QueryableSource = Model.CrewFlightInfo.Dataset;
+}).GetHtml()
+
+
+

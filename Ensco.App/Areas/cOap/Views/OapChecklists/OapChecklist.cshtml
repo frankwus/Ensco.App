@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapChecklist>
+@{
+    ViewBag.Title = "Oap Checklists";
+}
+
+<script type="text/javascript">
+        var currentSubTypeId, startEdit = false;
+        function OnBeginCallback(s, e) {
+            startEdit = (e.command == "STARTEDIT");
+        }
+
+        function OnInit(s, e) {
+            var oapSubTypeId = OapChecklistGrid.GetEditor("OapSubTypeId").GetValue();
+            if (oapSubTypeId) {
+                OapChecklistGrid.GetEditor("OapSubTypeId").PerformCallback();
+            }
+        }
+
+    function OnEndCallback(s, e) {               
+               currentSubTypeId = OapChecklistGrid.GetEditor("OapSubTypeId").GetValue();
+              if (currentSubTypeId || startEdit) {
+                   OapChecklistGrid.GetEditor("OapSubTypeId").PerformCallback();
+             }                 
+        }
+
+        function OapTypeOnSelectedeChanged() {
+            OapChecklistGrid.GetEditor("OapSubTypeId").PerformCallback();
+        }
+
+        function OapSubTypeBeginCallback(s, e) {
+            e.customArgs["OapTypeId"] = OapChecklistGrid.GetEditor("OapTypeId").GetValue();
+        }
+
+        function OapSubTypeEndCallback(s, e) {
+            if (startEdit) {
+                s.SetValue(currentSubTypeId);
+                startEdit = false;
+            }
+        }
+
+        function onToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewChecklist":
+                    s.AddNewRow();
+                    break;
+            }
+        }
+</script>
+ 
+
+<div class="oap-checklist-master-grid">
+   @using (Html.BeginForm())
+   {
+      @Html.Partial("OapChecklistPartial", Model)
+   }
+</div>
+

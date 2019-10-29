@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "Audit Plan";
+}
+
+
+<form>
+    @Html.DevExpress().PageControl(pcontrol =>
+    {
+        pcontrol.Name = "pcAuditPlan";
+        pcontrol.Width = Unit.Percentage(100);
+
+        //Summary Tab
+        pcontrol.TabPages.Add("Summary").SetContent(() =>
+        {
+            Html.DevExpress().FormLayout(layout =>
+            {
+                layout.Name = "SummaryDetailsGraph";
+                layout.UseDefaultPaddings = false;
+                layout.Style.Add("margin-top", "1em");
+                layout.Width = Unit.Percentage(100);
+                layout.Items.AddGroupItem(group =>
+                {
+                    group.Caption = "Quartely Sales";
+                    group.Width = Unit.Percentage(100);
+                    group.Items.Add(item =>
+                    {
+                        item.Caption = " ";
+                        item.SetNestedContent("Placeholder for Graph");
+                    });
+
+                });
+            }).GetHtml();
+            ViewContext.Writer.Write("<br/>");
+            Html.RenderPartial("OapSummaryDetailsPartial", null);
+            ViewContext.Writer.Write("<br/>");
+            Html.RenderPartial("OapProtocolPartial", null);
+            ViewContext.Writer.Write("<br/>");
+            Html.DevExpress().FormLayout(layout =>
+            {
+                layout.Name = "AuditScheduleSummary";
+                layout.UseDefaultPaddings = false;
+                layout.Style.Add("margin-top", "1em");
+                layout.Width = Unit.Percentage(100);
+                layout.Items.AddGroupItem(group =>
+                {
+                    group.Caption = "Audit Schedule";
+                    group.Width = Unit.Percentage(100);
+                    group.Items.Add(item =>
+                    {
+                        item.Caption = " ";
+                        item.SetNestedContent("Placeholder for the Scheduler");
+                    });
+
+                });
+            }).GetHtml();
+        });
+
+        //Regulatory Audit Compliance Tab
+        pcontrol.TabPages.Add("Regulatory Audit Compliance").SetContent(() =>
+        {
+            Html.DevExpress().FormLayout(layout =>
+            {
+                layout.Name = "AuditScheduleRAC";
+                layout.UseDefaultPaddings = false;
+                layout.Style.Add("margin-top", "1em");
+                layout.Width = Unit.Percentage(100);
+                layout.Items.AddGroupItem(group =>
+                {
+                    group.Caption = "Quartely Sales";
+                    group.Width = Unit.Percentage(100);
+                    group.Items.Add(item =>
+                    {
+                        item.Caption = " ";
+                        item.SetNestedContent("Placeholder for Graph");
+                    });
+
+                });
+            }).GetHtml();
+            ViewContext.Writer.Write("<br/>");
+            Html.RenderPartial("OapRegulatoryAuditProtocolsPartial", null);
+            ViewContext.Writer.Write("<br/>");
+            Html.RenderPartial("OapRegulatoryAuditMissingProtocolsPartial", null);
+        });
+
+        //CVT tab
+        pcontrol.TabPages.Add("CVT").SetContent(() =>
+        {
+            Html.DevExpress().FormLayout(layout =>
+            {
+                layout.Name = "AuditScheduleCVT";
+                layout.UseDefaultPaddings = false;
+                layout.Style.Add("margin-top", "1em");
+                layout.Width = Unit.Percentage(100);
+                layout.Items.AddGroupItem(group =>
+                {
+                    group.Caption = "Audit Schedule";
+                    group.Width = Unit.Percentage(100);
+                    group.Items.Add(item =>
+                    {
+                        item.Caption = " ";
+                        item.SetNestedContent("Placeholder for the Scheduler");
+                    });
+
+                });
+            }).GetHtml();
+            ViewContext.Writer.Write("<br/>");
+            Html.RenderPartial("OapCVTCompliancePartial", null);
+        });
+    }).GetHtml()
+</form>

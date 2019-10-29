@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Rig.RigOapChecklistQuestionFinding>
+
+@{
+    ViewBag.Title = ViewBag.Title ?? "GenericList";
+    Layout = "~/Areas/Oap/Views/Shared/_OapLayout.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript">
+
+
+    //Finding Types
+    var currentFindingSubTypeId, findingGridStartEdit = false;
+
+    function checklistFindingGridOnBeginCallback(s, e) {
+    
+    findingGridStartEdit = (e.command == "STARTEDIT");
+    }
+
+    function checklistFindingGridOnEndCallback(s, e) {
+    currentFindingSubTypeId = checklistFindingGrid.GetEditor("FindingSubTypeId").GetValue();
+    if (currentFindingSubTypeId || findingGridStartEdit) {
+    checklistFindingGrid.GetEditor("FindingSubTypeId").PerformCallback();
+    }
+    }
+
+    function findingTypeOnSelectedeChanged() {
+    checklistFindingGrid.GetEditor("FindingSubTypeId").PerformCallback();
+    }
+
+    function findingSubTypeBeginCallback(s, e) {
+    e.customArgs["FindingTypeId"] = checklistFindingGrid.GetEditor("FindingTypeId").GetValue();
+    }
+
+    function findingSubTypeEndCallback(s, e) {
+    if (findingGridStartEdit) {
+    s.SetValue(currentFindingSubTypeId);
+    findingGridStartEdit = false;
+    }
+    }
+
+    </script>
+}
+
+<div class="rig-oap-main-view">
+    @Html.Partial("GenericlistFindingPartial", Model)
+</div>
+
+

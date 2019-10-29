@@ -1,0 +1,23 @@
+﻿@model Ensco.Irma.Models.PobHomeModel
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "gridView_PobOverview";
+    grid.Settings.ShowTitlePanel = true;
+    grid.SettingsText.Title = "Overview PoB";
+    grid.KeyFieldName = "Id";
+
+    Html.SetEnscoGridColumns(grid, typeof(Ensco.Irma.Models.PobSummaryModel));
+    foreach(var item in grid.Columns)
+    {
+        MVCxGridViewColumn col = item as MVCxGridViewColumn;
+        col.Settings.AllowHeaderFilter = DefaultBoolean.False;
+    }
+
+    grid.Styles.Header.Wrap = DefaultBoolean.True;
+    grid.SettingsPager.EnableAdaptivity = true;
+    grid.Settings.ShowHeaderFilterButton = false;
+    grid.SettingsBehavior.AllowSort = false;
+    grid.Width = Unit.Percentage(100);
+
+}).Bind(Model.PobSummary).GetHtml()

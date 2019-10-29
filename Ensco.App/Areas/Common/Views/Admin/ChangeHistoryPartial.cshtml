@@ -1,0 +1,25 @@
+﻿@model Ensco.Models.ManageChangeHistoryModel
+
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_ChangeHistory";
+    grid.KeyFieldName = Model.Dataset.KeyFieldName;
+
+    grid.CallbackRouteValues = new { Area = "Common", Controller = "Admin", Action = "ChangeHistoryPartial" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.ChangeHistoryModel), options);
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.Dataset.KeyFieldName;
+    e.QueryableSource = Model.Dataset.Dataset;
+}).GetHtml()

@@ -1,0 +1,1758 @@
+﻿<head>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../base.js?a=1"></script>
+    <link rel="stylesheet" href="../js/jquery-ui.css"></link>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="../js/dt/jquery.simple-dtpicker.js"></script>
+    <link rel="stylesheet" href="../js/dt/jquery.simple-dtpicker.css"></link>
+    <link rel="stylesheet" href="../js/jquery.timepicker.css"></link>
+    <link rel="stylesheet" href="../base.css"></link>
+    <script type="text/javascript" src="../irma.js?a=11"></script>
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <table border="0">
+            <tr style="border:none">
+                <td width="99%" id="PermitColor">
+                <td class="nowrap"><a id="Cancel" href="" onclick="on_Start(this); return false"> Cancel</a>
+                <td class="nowrap"><a id="Suspend" href="" onclick="on_Start(this); return false"> Suspend</a>
+                <td><img id="Save" src="../Images/save icon.png" onclick="on_Save()" Title="Save" />
+                <td><img src="../images/history log icon.png" id="HistoryLog" onclick="on_HistoryLog()" Title="View History Log" />
+                <td><img src="../Images/outlook.png" onclick="on_Outlook()" Title="Email" />
+                <td><img src="../Images/pdf.png" onclick="on_PDF()" Title="Export to PDF" />
+        </table>
+        <table id="tPlanning" border="1">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="11">
+                    Planning
+        </table>
+        <table id="A" border="1">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="10">
+                    <span class="minus">-</span>   A. Permit Request (Permit Holder to Complete)
+            <tr>
+                <td width="100">Permit No
+                <td width="200" id="id" class="noentry">
+                <td>Job No
+                <td width="200" id="JobId" class="noentry">
+                <td> Date / Time Created
+                <td id="Date" class="noentry" />
+                <td>Status
+                <td width="200"><span id="Status" class="noentry"></span> <span />
+            <tr>
+                <td> Description of Work
+                <td colspan="5"><textarea id="JobDescription" rows="5"></textarea>
+                <td>Location of Work
+                <td>
+                    <img src='../images/search icon.png' onclick="on_Location(this)" />
+                    <span border="0" id="Location"></span>
+
+            <tr>
+                <td>Additional Documents Reviewed
+                <td colspan="5"><textarea id="Document"></textarea>
+                <td> Permit Editors
+                <td>
+                    <img onclick="on_JobOwner(this)" src="../Images/Select Personnel icon.png" />
+                    <table border="0" id="JobOwner"></table>
+        </table>
+        <table id="" class="hidden">
+            <th class="header" style="text-align: left;" colspan="11">
+        </table>
+        <table id="tWims" class="marginBottom" border="1">
+            <tr>
+                <th class="hazard" colspan="11">
+                    Work Instructions
+            <tr class="labelCenter">
+                <td>
+                <td>WI Job Title
+                <td>Everyone Review
+                <td>WI Job Criticality
+            <tr>
+                <td colspan="8">  <a href=# onclick="on_AddWorkInstruction(this); return false">+ Add Work Instruction</a>
+        </table>
+        <table id="tJobCategory">
+            <tr>
+                <td style="border-bottom:1 solid black" class="labelRight">Job Category
+                <td>
+                    <select id="JobCategory"></select>
+                <td class="labelRight">Job Criticality
+                <td>
+                    <select id="JobCriticality"></select>
+                <td class="labelRight">Lead Department
+                <td>
+                    <select id="LeadDepartment"></select>
+                <td width=400 class="labelRight noborder">Has Work Order
+                <td width=40 nowrap style="border-bottom:1 solid black">
+                    <input id=HasWorkOrder type="checkbox" />
+                    <input class="hidden1" id=EAMSWorkOrder type="text" width="100" style="border: 1 solid gray" />
+        </table>
+        <table id="tDummy" class="hidden">
+            <th class="darkblue" style="text-align: left;" colspan="11">
+        </table>
+        <table id="tForm"></table>
+        <table id="tJobPlan" class="marginBottom">
+            <tr>
+                <td class="hazard" colspan="11">For Job Plan
+            <tr>
+                <td class="labelRight">Job Title
+                <td colspan="10"><input type="text" id="JobTitle" />
+            <tr>
+        </table>
+
+        <table id="tAuthorization0" class="marginBottom">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="7">
+                    <span class="minus">-</span>   Authorization
+                    <!--<tr class="labelCenter">
+                        <td width="300">Role
+                        <td>Name
+                        <td>Position
+                    <tr>
+                        <td class="labelRight">Permit Holder
+                        <td><img onclick="on_AuthoritySelect(this)" src="../Images/Select Personnel icon.png"><span></span>
+                        <td>
+                    <tr>
+                        <td class="labelRight">Permit Authority
+                        <td><img onclick="on_AuthoritySelect(this)" src="../Images/Select Personnel icon.png"><span></span>
+                        <td>
+                    <tr>
+                        <td class="labelRight">Permit Issuer
+                        <td><img onclick="on_AuthoritySelect(this)" src="../Images/Select Personnel icon.png"><span></span>
+                        <td>-->
+        </table>
+        <table id="B" class="marginBottom">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="5">
+                    <span class="minus">-</span> B. Period of Validity (Permit Holder to Complete) Note: maximum permit validity is 12 hours
+            <tr active="1">
+                <td width="100" class="labelRight">From
+                <td width="200"><input type="text" id="FromDate" />
+                <td width="100" class="labelRight">To
+                <td width="200">
+                    <input type="text" id="ToDate" />
+                <td widt1h="300">
+                <td class="hidden" id="TourEndTime">
+        </table>
+        <table id="CD" class="marginBottom">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="11">
+                    <span class="minus">-</span>C. Safety Precautions and D. Worksite Preparation (Permit Authority to Complete)
+            <tr>
+                <td width="50%" valign="top" style="padding-left:0;padding-right:20;border-right:none">
+                    <table id="C" class1="marginBottom">
+                        <tr class="label">
+                            <td>#
+                            <td>Safety Precautions
+                            <td>Yes
+                            <td>No
+                            <td>N/A
+                    </table>
+                <td valign="top" style="padding-left:0;border-left:none">
+                    <table id="D" class1="marginBottom">
+                        <tr class="label">
+                            <td>#
+                            <td>Worksite Preparation
+                            <td>Yes
+                            <td>No
+                            <td>N/A
+                    </table>
+        </table>
+
+        <table id="E" class="marginBottom">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="1">
+                    <span class="minus">-</span> E. Special Precautions (Permit Authority to Complete)
+            <tr active="1">
+                <td><textarea rows="5" style="width:100%" id="ChecklistComment"></textarea>
+            <tr>
+                <td colspan="8">
+                    <a href="javascript:void(0)" onclick="on_Evaluate(this)">Evaluate Required Fields</a>
+        </table>
+        <table class="marginBottom">
+            <tr>
+                <th class="header" style="text-align: left;" colspan="11">
+                    <span class="minus">-</span>   Permit Authorization
+        </table>
+        <table id="tAuthorization">
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="11">
+                    <span class="minus"></span>   Authorization
+            <tr>
+                <td>Role
+                <td>Name
+                <td>Position
+                <td>Status
+                <td>Authorizer Actions
+                <td>Date / Time Completed
+                <td>Authorizer Comments
+        </table>
+
+        <!--<table id="tDummy1" class="hidden">
+            <th class="darkblue" style="text-align: left;" colspan="11">
+        </table>-->
+        <!--<a href="javascript:void(0)" id="ChangeAuthorization" onclick="on_ChangeAuthorization(this)">Change Authorization   </a>-->
+        <!--<a class="hidden" style="margin-left:10" href="javascript:void(0)" id="SubmitExtension" onclick="on_SubmitForAuthorization(this)">Submit for Reauthorization  </a>
+        <a class="hidden" style="margin-left:10" href="javascript:void(0)" id="SubmitExtension" onclick="Refresh()">Cancel Change Request   </a>
+        <br />-->
+        <table id="tExecution" class=marginBottom>
+            <tr>
+                <th class="header" style="text-align: left;" colspan="11">
+                    Execution
+            <tr>
+                <th class="darkblue" style="text-align: left;" colspan="11">
+                    <span class="minus">-</span>    J. (Permit Holder to Complete)
+            <tr>
+                <td width="300">Work described in section A completed
+                <td width="200">
+                    <span>Yes</span> <input id="WorkCompleted" name="WorkCompleted" type="radio" value="1" />
+                    <span>No</span> <input id="WorkCompleted" name="WorkCompleted" type="radio" value="0" />
+                <td width="300">Apply for new permit
+                <td width="200">
+                    <span>Yes</span> <input id="NewPermit" name="NewPermit" type="radio" value="1" />
+                    <span>No</span> <input id="NewPermit" name="NewPermit" type="radio" value="0" />
+            <tr>
+                <td colspan="11">
+                    <br />
+                    <a href="javascript:void(0)" onclick="on_Submit(this)">  Closeout Permit</a>
+
+                    <!--<tr>
+                    <td width="300">Work described in section A completed
+                    <td width="20"><input id="WorkCompleted" checked type="checkbox" />
+                    <td width="200">Apply for new permit?
+                    <td width="20"><input id="NewPermit" disabled type="checkbox" />
+                    <td width="100"><span>Status</span>
+                    <td id="NewPermitStatus" width="100">
+                    <td width1="100"><span>From</span>
+                    <td><input id="FromDate1" type="text" />
+                    <td width="50"><span>To</span>
+                    <td>
+                        <input id="ToDate1" type="text" />
+                        <a href="javascript:void(0)" onclick="Hours12(this)">12 hours</a>-->
+        </table>
+        <table id="tVerification" class=marginBottom>
+            <th class="header" style="text-align: left;" colspan="11">
+                Permit Closeout (Verification)
+        </table>
+        <!--<a href="javascript:void(0)" id="SubmitVerification" onclick="on_Submit(this)">Submit for Verification</a>-->
+        <img id="Submit" src="../Images/Submit icon.png" onclick="on_SubmitForAuthorization(this)" />
+        <span class="hidden" id="Type"></span>
+        <iframe id="f" class="hidden"></iframe>
+    </form>
+</body>
+</html>
+<script>
+    var tPlanning = $('#tPlanning')
+    var A = $('#A')
+    var tDummy = $('#tDummy')
+    var tForm = $('#tForm')
+    var tJobCategory = GetId('tJobCategory')
+    var B = $('#B')
+    var C = $('#C')
+    var D = $('#D')
+    var CD = GetId('CD')
+    var E = $('#E')
+    var tJobPlan = GetId('tJobPlan')
+    var tWims = GetId('tWims')
+    var tAuthorization0 = $('#tAuthorization0')
+    var tAuthorization = $('#tAuthorization')
+    var tExecution = $('#tExecution')
+    var tVerification = $('#tVerification')
+    var Id = getParameterByName('id')
+    var Status
+    var Type = getParameterByName('type')
+    var IsPaperView
+    var IsOriginator
+    var Page = 'permit'
+    var JobId
+    var f=GetId('f')
+    var Clone = getParameterByName('clone')
+    var ARR = ['id', 'Type', 'JobTitle', 'JobDescription', 'JobId', 'Status', 'TourEndTime', 'NewPermitStatus', 'Location', 'FromDate', 'ToDate', 'Date', 'Document', 'ChecklistComment']
+    //, 'WorkCompleted', 'NewPermit', 'FromDate1', 'ToDate1']
+    var ARR1 = ['JobNo', 'JobPacketList']
+    var WiXml
+    $(document).ready(function () {
+        if (Id == '') {
+            Id = 0
+        }
+        WiXml = localStorage['WiXml']
+        localStorage.removeItem('WiXml')
+
+        InitDateTime(B.find(':text'), DateTimeCallback)
+        InsertCommon()
+        InitFold()
+        var xml = GetArray(['usp_JobGetPermit', Id, Type, UserId])
+        xml = MyReplace(xml, 'Column1', 'zz')
+        InitPlanning(xml)
+
+        LoadJobPacket(A)
+        InsertCommonEquipment(tDummy)
+
+        InitExecution()
+        InitQuestion(xml)
+        LockSecurity(xml)
+        InitEvent()
+        InitClone()
+        RestoreScroll()
+        InitPaperView(A)
+        if (IsPaperView) {
+            var t = A
+            t.find('tr:gt(1)').hide()
+            tAuthorization0.show()
+        }
+        tVerification.find('img').hide()
+        CleanUp()
+        InitNoJob(xml)
+        InitClient(xml)
+        InitStatus(xml)
+        InitForm(xml)
+        InitSubmit()
+        CleanUp()
+        InitKeyPress()
+        FromWims()
+    })
+    function FromWims() {
+        var arr = []
+        var s=''
+        $(WiXml).find('wi').each(function () {
+            var src =$(this)
+            var url ='https://wims.enscoplc.com/wi/create.aspx?wiType=WI&id=' + src.attr('id')
+            var arr1 = [url, src.attr('name'), src.attr('Criticality'), src.attr('WiNo')]
+            arr.push(arr1 )
+            GetId('JobCategory').find('option').filter(function () {
+                return GetVal($(this)) == src.attr('Category')
+            }).prop('selected', true)
+            s += src.attr('Criticality')
+            GetId('JobCriticality').find('option').filter(function () {
+                return GetVal($(this)) == src.attr('Criticality')
+            }).prop('selected', true)
+        })
+        var criticality='Low'
+        if (s.indexOf('High') != -1)
+            criticality = 'High'
+        else if (s.indexOf('Medium') != -1)
+            criticality = 'Medium'
+        on_AddWorkInstruction(tWims.find('a').last(), arr, true)
+        $(WiXml).find('general').each(function () {
+            var src = $(this)
+            var name = src.attr('name')
+            tJobPlan.find('td:contains("'+name +'")').next().children().prop('checked', true )
+        })
+        tWims.find('img').remove()
+        tJobPlan.find(':checked').prop('disabled', true)
+        WiXml=''
+    }
+    function InitChange() {
+        if (Status != 'Authorized')
+            return
+        var t = tAuthorization0
+        var arr = ['Permit Holder', 'Permit Authority', 'Permit Issuer']
+        for (var i in arr) {
+            var role = arr[i]
+            var row = $(GetXmlTable(xml, 2).text()).find('JobAuthorization[Type="' + role + '"]')
+            var tds = t.find('tr').eq(parseInt(i) + 2).children()
+            tds.eq(2).text('').prev().find('span').text('')
+            tds.find('img').show()
+            if (row.length) {
+                tds.eq(1).find('span').attr('userId', row.attr('userId')).text(row.attr('Name'))
+                tds.eq(2).text(row.attr('Position'))
+                tds.find('img').hide()
+            }
+        }
+    }
+    function InitKeyPress() {
+        document.onkeypress = function () {
+            if (!event.ctrlKey)
+                return
+            var k = event.keyCode
+            if (k == 65) {
+                event.cancelBubble = true;
+                event.returnValue = false;
+                event.keyCode = false;
+                C.add(D).find(':radio').trigger('click')
+                return false;
+            }
+        }
+    }
+    function InitSubmit() {
+        var status = GetVal(GetId('Status'))
+        var Submit = GetId('Submit')
+        Submit.css('marginTop', 10)
+        if (status == '' || status =='Open')
+            Submit.show()
+        else
+            Submit.hide()
+    }
+    function InitForm(xml) {
+        if (Id == 0)
+            return
+        var arr = GetXmlTable(xml, 9).find('Name').map(function () {
+            return $(this).text()
+        }).get()
+        arr = $.unique(arr)
+       // arr = ['Energy Isolation',  'Gas Test Certificate', 'Confined Space Entry Log' ]
+        if (Type != 'Confined Space')
+            arr.push( 'Confined Space Entry' )
+          //  arr1 = ['Energy Isolation', 'Confined Space Entry No.', 'Gas Test Certificate', 'Hot Work Checklist']
+        //if (Type == 'Cold Work')
+        //    arr1 = ['Energy Isolation', 'Confined Space Entry No.', 'Lift Plan Checklist', 'Man Riding Checklist', 'Crane Personnel Lift Checklist']
+        var t = tForm
+        var tr =$('<tr/>').appendTo(t )
+        for (var i in arr) {
+            var name = arr[i]
+            var j = parseInt(i)
+
+            var w = (50 / arr.length) + '%'
+            AddTd(tr, name).addClass('labelRight').width(w)
+            var select = AddTd(tr, '<select />').width(w).find('select')
+            select.append('<option/>').width('75%')
+            GetXmlTable(xml, 10).find('Name:contains("' + name + '")').each(function () {
+                var element = $(this)
+                var value = element.prev().text()
+                var page = element.next().text()
+                var flag = element.next().next().text()
+                select.attr('page', page)
+                $('<option/>').appendTo(select).text(value).val(value).prop('selected', (flag == 1 ? true : false))
+                var html ='<a href='+page+'.htm?id='+value +'>'+value+'</a>'
+                if (flag == 1)
+                    select.parent().html(html )
+                if (select.children().length==2)
+                    select.children().last().prop('selected', true )
+            })
+        }
+        AddTd(AddTr(A), '').attr('colspan', 11).css('padding-left', 0).append(t)
+        t.find('td').css('border', 'none')
+        if (t.find('td').length == 2) {
+            t.find('td').eq(0).width(400)
+        }
+    }
+    function GetFormDropDown(name) {
+        var t = tForm
+        return t.find('td:contains("'+name +'")').next().children()
+    }
+
+    function Listener_bak(xml0) {
+        var xml1 = GetXmlTable(xml0, 2).text()
+        if (xml0 == null ||
+                (IsRole(xml1, 'Permit Holder') && TdContains(tAuthorization.find('tr').eq(4), 2, 'Authorized') && $(xml1).attr('Status') == 'Pending Approval')) {
+            var xml = GetArray(['usp_JobGetPermit', Id, '', UserId])
+            xml = MyReplace(xml, 'Column1', 'zz')
+            var xml2 = $(xml).find('Table2').text()
+            if ($(xml2).attr('status') == 'Authorized') {
+                if (confirm('The status has changed for this page. Do you want to refresh it?'))
+                    Refresh()
+                return
+            }
+            setTimeout(Listener, 100)
+        }
+    }
+    function TdContains(src, i, name) {
+        return GetTd(src, i).filter(function () {
+            return GetVal($(this)).indexOf(name) != -1
+        })
+    }
+    function InitClient(xml) {
+        var t = tAuthorization
+        var td = t.find('td:contains(Client)')
+        if (td.length) {
+            var tr = td.parent().next()
+            var span = tr.find('span').first()
+            var src = GetXmlTable(xml, 8).first()
+            var userId = src.find('userId').text()
+            span.text(src.find('Name').text()).attr('userId', userId)
+            span.parent().next().text(src.find('Position').text())
+            tr.find('img').hide()
+        }
+    }
+    function InitNoJob(xml) {
+        var JobId = Trim($('#JobId').text())
+        if (JobId == '') {
+            BindSelect(xml, $('#JobCategory'), 4)
+            BindSelect(xml, $('#JobCriticality'), 5)
+            BindSelect(xml, $('#LeadDepartment'), 6)
+            InitHasWorkOrder()
+            AddJobOwner(GetId('JobOwner').prev(), UserId, UserName)
+
+            var tr = tJobPlan.find('tr').eq(2)
+            AddTd(tr, 'Other Required Documents').addClass('labelRight')
+            GetXmlTable(xml, 9).each(function () {
+                var element = $(this)
+                AddForm (tr, element.find('Name').text())
+            })
+            AddForm(tr, 'Confined Space Entry')
+        } else {
+            tJobPlan.hide()
+            tForm.closest('tr').hide()
+            tWims.next().andSelf().hide()
+        }
+
+
+    }
+    function AddForm(tr, name) {
+        AddTd(tr, name ).addClass('labelRight')
+        AddTd(tr, '<input type=checkbox />')
+    }
+    function on_AddWorkInstruction(src, arr1, auto) {
+        src = $(src)
+        var arr0 = []
+        if (arr1 == null) {
+            var r = showModal('landingWims.htm', 0, 1200, 900)
+            if (r == null)
+                return
+            var t = $('<table/>')
+            t.html(r)
+            t.find('tr').each(function () {
+               // alert($(this).html() )
+                var c = $(this).children()
+                var a = c.find('a')
+                var url =a.attr('href')
+                var title = c.eq(3).text()
+                var criticality = c.eq(4).text()
+                var wiNo = a.text()
+                var cat = c.eq(5).text()
+                arr0.push([url , title, criticality, wiNo , cat ])
+            })
+        } else
+            arr0.push(arr1)
+        if (WiXml != '')
+            arr0=arr1
+        for (var i in arr0) {
+            var arr = arr0[i]
+            var tr0 = src.closest('tr')
+            var html = '<tr> <td>' + GetDelete() + ' <td>' + arr[1] + '<td><input type=checkbox /><td>' + arr[2] + '</td></tr>'
+            var id = 'LocalId'
+            //if (auto)
+            //    id = 'id'
+            var localId = arr[0].split('id=')[1]
+            var wiNo= arr[3]
+            $(html).attr(id, localId)
+                .attr('wiNo', wiNo)
+                .insertBefore(tr0)
+                .find(':checkbox').prop('checked', arr1 != null && arr1[3] == 1 ? true : false)
+            var td = tr0.prev().children().eq(1)
+            var url = arr[0]
+            if (Id == 0)
+                url = 'https://wims.enscoplc.com/wi/create.aspx?wiType=WI&id=' + arr[0]
+            td.html('<a href=' + url + ' >' + td.text() + '</a>')
+            GetId('JobCategory').find('option').each(function () {
+                var src = $(this)
+                if (GetVal(src) == arr[4])
+                    src.prop('selected', true)
+            })
+        }
+        CheckCriticality()
+    }
+    function GetCriticality(name) {
+        var i = 0
+        if (name == 'High')
+            i = 3
+        if (name == 'Medium')
+            i = 2
+        if (name == 'Low')
+            i = 1
+        return i
+    }
+    function CheckCriticality() {
+        var t = tWims
+        var arr = GetTd(t, 3).map(function () {
+            return GetCriticality($(this).text())
+        }).get()
+        var max = Math.max.apply(Math, arr);
+        var JobCriticality = $('#JobCriticality')
+        var c = GetCriticality(JobCriticality.val())
+        if (c < max)
+            JobCriticality.children().eq(max).prop('selected', true)
+    }
+    function InitHasWorkOrder() {
+        var ck = $('#HasWorkOrder')
+        ck.on('change', function () {
+            if (ck.prop('checked'))
+                ck.next().show().css('border', '1 solid gray')
+            else
+                ck.next().hide()
+        }).trigger('change')
+    }
+    function InitStatus(xml) {
+        var a = $('#Save').parent().prev().find('a')
+        if (tAuthorization0.find('td:contains("Permit Issuer")').parent().html().indexOf('green') != -1)
+            B.find('td').last().html('')
+        if (Status == 'Open' || Status == '') {
+            B.nextAll().hide()
+            if (Status == '')
+                GetId('Suspend').hide()
+        }else {
+            tJobPlan.hide()
+            tWims.next().andSelf().hide()
+            var role = $(GetXmlTable(xml, 2).text()).find('[Status="Pending Approval"]').attr('type')
+
+            switch (Status) {
+                case 'Pending Approval':
+                    if (role == 'Permit Holder')
+                        CD.add(E).hide()
+                    tExecution.nextAll().andSelf().hide()
+                    break
+                case 'Authorized':
+                    var src = A.add(B).add(CD).add(E).add(GetId('tEquipment'))
+                    src.find('input, select, img, textarea').prop('disabled', true)
+                    src.find('a').hide()
+                    tVerification.hide()
+                    break
+                case 'Pending Verification':
+                    LockTable(tPlanning.nextAll().andSelf(), true)
+                    tAuthorization.find('tr').eq(1).show().find('table, tr').show()
+                    tVerification.find('tr').eq(1).show().find('table, tr').show()
+
+                    LockTable(tVerification, false)
+                    B.find('tr').last().show().find('a').prop('disabled', true)
+                    tExecution.find('tr').last().remove()
+                    break
+                case 'Closed':
+                    GetId('Cancel').hide()
+                    GetId('Suspend').hide()
+                    GetId('Save').hide()
+                    var src = A.nextAll().andSelf()
+                    src.find('input, textarea, img').prop('disabled', true )
+                    break
+                case 'Suspended':
+                    GetId('Suspend').text('Resume')
+                    GetId('Save').hide()
+                    var src = A.nextAll().andSelf()
+                    src.find('input, textarea, img').prop('disabled', true)
+                    break
+            }
+        }
+        if ($(GetXmlTable(xml, 2).text()).attr('IsJobOwner') == 0) {
+            LockPage()
+            GetId('Cancel').hide()
+        }
+    }
+
+    function DateTimeCallback(data) {
+        var src = $(this)
+        var arr = ['', '1']
+        for (var i in arr) {
+            var name = arr[i]
+            var date1 = $('#FromDate' + name).datepicker('getDate')
+            var id = '#ToDate' + name
+            var date2 = $('#ToDate' + name).datepicker('getDate')
+
+            if (date1 == null || date2 == null)
+                continue
+            var diff = date2 - date1
+            diff = diff / 1000 / 60 / 60;
+            if (diff > 12 || diff <= 0) {
+                alert('The permit period has to be within 12 hours.')
+                src.val('')
+                return
+            }
+        }
+        CheckEndTime( src.closest('tr'), true )
+    }
+    Date.prototype.addHours = function (h) {
+        this.setHours(this.getHours() + h);
+        return this;
+    }
+    function CheckEndTime(tr, msg) {
+        var endTime = GetVal(tr.find(':text').eq(1))
+
+        endTime=endTime.split(' ')[1]
+        var tourEndTime = GetVal(GetId('TourEndTime'))
+        var div = tr.find('div')
+        if (endTime > tourEndTime) {
+            div.html ('Warning: the Permit Validity end time is past the end of tour recorded in PoB for the Permit Holder')
+        }else
+            div.html('')
+
+        var d = tr.find(':text').eq(1).datepicker('getDate')
+        if (d == null)
+            return
+        GetId('Status').show().next().hide()
+        if (d< (new Date() ) )
+            GetId('Status').hide().next().html('Expired').css('color', 'red').show()
+
+        //var xml = GetArray(['usp_JobCheckPermitEndTime', Id, GetVal(input)])
+        //if (Trim(GetXmlTable(xml).text()) != 1)
+    }
+    function Hours12(src) {
+        src = $(src)
+        var tr = src.closest('tr')
+        var from = tr.find(':text').first()
+        var d = from.datepicker('getDate')
+        if (d == null)
+            return
+        hours = src.text()
+        hours = hours.replace('+', '')
+        hours = parseInt(hours)
+        if (hours == NaN)
+            hours = 1
+
+        d.setHours(d.getHours() + hours);
+        var input = tr.find(':text').eq(1)
+        input.datepicker('setDate', d)
+        CheckEndTime(tr , true  )
+    }
+    function InitQuestion(xml) {
+        var arr = [C, D]
+        xml = MyReplace(xml, 'Table>', 'Table0>')
+        for (var i in arr) {
+            var t = arr[i]
+            var w = 30
+            t.find('tr').last().children().first().width(w).next().nextAll().width(w)
+            var radio = '<td width=1 ><input type=radio />'
+            radio = MyReplace('   ', ' ', radio)
+            var html = '<tr class=hidden><td>' + GetDelete() + '<td><input type=text />' + radio + '</tr>'
+            $(html).appendTo(t)
+            t.find('tr').last().find('img, :radio').parent().width(w)
+            html = '<tr ><td width=1 colspan=11 ><a href=javascript:void(0) onclick=on_Add(this)>+Add</a></tr>'
+            $(html).appendTo(t)
+
+            $(xml).find('Table' + i).each(function () {
+                var element = $(this)
+                on_Add(t.find('a'), [element.find('Name').text(), element.find('Answer').text(), element.find('id').text()], 'auto')
+            })
+            t.find(':radio').parent().addClass('center').css('padding', 0)
+            t.find('tr').each(function () {
+                var tr = $(this)
+                tr.find(':radio').attr('name', tr.index() + i * 1000)
+            })
+            AddNumber(t)
+            t.find('tr:even').not(':last').css('background-color', 'lightgray')
+        }
+    }
+    function AddNumber(t) {
+        t.find('img').each(function (index) {
+            var img = $(this)
+            img.nextAll().remove()
+            $('<span/>').insertAfter(img).text(index + 1)
+        })
+    }
+    function on_Add(src, arr, e) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        var tr1 = tr.clone().attr('active', 1).show().insertBefore(tr)
+
+        if (e != 'auto') {
+            var name = new Date().valueOf();
+            tr1.find(':radio').attr('name', name)
+        }
+        if (arr != null) {
+            tr1.find(':text').val(arr[0])
+            if (arr[2] != 0) {
+                tr1.attr('id', arr[2]).find('img').hide()
+                var tb = tr1.find(':text')
+                tb.parent().html(tb.val())
+            }
+            if (arr[1] != '' && arr[1] >= 0)
+                tr1.find(':radio').eq(arr[1]).prop('checked', true)
+        }
+        AddNumber(src.closest('table'))
+    }
+    function InitPermitColor(xml) {
+        var span = $('#PermitColor')
+        //var xml1 = $(xml).find('Table2').text()
+        //var type = $(xml1).attr('type')
+        //if (Id == 0)
+        //    type = Type
+        //type = type.toLowerCase()
+
+        if (Id < 1) {
+            if (Type == 'hot work')
+                Type = 'Hot Work'
+            else if (Type == 'cold work')
+                Type = 'Cold Work'
+            else
+                Type = 'Confined Space'
+            GetId('Type').text(Type)
+        }
+        var type = GetId('Type').text()
+
+        if (type == 'Hot Work')
+            span.text('Hot Work Permit').css('background-color', 'red').css('color', 'white')
+        else if (type == 'Cold Work')
+            span.text('Cold Work Permit').addClass('hazard')// .css('background-color', 'hazard').css('color', 'white')
+        else
+            span.text('Confined Space Entry Permit').css('background-color', 'yellow').css('color', 'black')
+    }
+    function InitClone() {
+        if (Clone != 1)
+            return
+        Id = 0
+        ClearAuthorization(tAuthorization)
+        ClearAuthorization(tVerification)
+    }
+    function ClearAuthorization(t) {
+        t.find('tr').slice(1).find('span').each(function () {
+            var span = $(this)
+            span.text('')
+            span.closest('tr').find('td').not(':first').not(':last').text('')
+            span.closest('tr').find(':text').val('')
+        })
+    }
+    function LockSecurity(xml) {
+        var xml1 = GetXmlTable(xml, 2).text()
+        if (!IsRole(xml1, 'Permit Authority'))
+            LockTable(CD.add(E), true)
+
+        LockAuthorization(tAuthorization)
+        LockAuthorization(tVerification)
+    }
+    function IsRole(xml, role) {
+        return $(xml).find('[Section=Authorization][Type="' + role + '"][UserId=' + UserId + ']').length
+    }
+    function LockTable(src, b) {
+        src.find('input, img, select, textarea').prop('disabled', b)
+        return
+        if (b)
+            src.find('a').closest('tr').hide()
+    }
+    function LockAuthorization(t) {
+        t.find(':button, img').hide()
+        t.find(':text').prop('disabled', true)
+        t.find('span[userId=' + UserId + ']').closest('tr').each(function () {
+            var tr = $(this)
+            var status = tr.children().eq(2).text()
+            status = Trim(status)
+            if (status.indexOf('Pending') > -1) {
+                tr.children().eq(3).children().show()
+                tr.children().eq(5).children().prop('disabled', false)
+            }
+            if (status == 'Approved') {
+                tr.children().eq(3).children().hide()
+                tr.children().eq(5).children().prop('disabled', true)
+            }
+            if (status == '') {
+                tr.find('img').show()
+                tr.children().eq(3).children().hide()
+                tr.children().eq(5).children().prop('disabled', true)
+            }
+        })
+    }
+    function InitEvent() {
+        $(':button').on('click', function () {
+            SaveScroll()
+            var button = $(this)
+            var tr = button.closest('tr')
+            var action = button.val()
+            if ([ 'Authorize' , 'Sign', 'Verify'].indexOf(action) != -1 )
+                action = 'Approve'
+            if (action != 'Approve' && action != 'Reject')
+                return
+            var section = button.closest('table').attr('id')
+            section = section.substring(1, section.length)
+            var type = tr.prev().children().first().attr('type')
+            if (type == 'Permit Issuer') {
+                //var xml = GetArray(['usp_JobValidatePermitChild', Id, '', section])
+                //if (Trim($(xml).text()) == '0') {
+                //    if (section == 'Authorization')
+                //        alert('Please authorize the Energy Certificate first.')
+                //    else
+                //        alert('Please close out the Energy Certificate first.')
+                //    return
+                //}
+            }
+            var requireClientSignature =0
+            if (type == 'Permit Authority') {
+                if (tr.find(':radio').length && !tr.find(':radio:checked').length) {
+                    alert('Please make a selection.')
+                    return
+                }
+                requireClientSignature = tr.find(':radio:checked').val()
+            }
+            var comment = GetVal(tr.find(':text'))
+            type = Trim(type)
+            if (!Validate(button))
+                return
+            on_Save(1)
+            GetArray(['usp_JobActionPermit', Id, section, type, action, comment, requireClientSignature ])
+
+            if (action == 'Approve' && button.closest('table').is(tVerification) ) {
+                if (type == 'Permit Holder') {
+                    if ($('[id=NewPermit]:checked').val() == 1) {
+                        localStorage['PermitClone'] = $('body').html()
+                        var r = showModal('PopupPermitClone.htm?id=' + Id, '', screen.width - 100, screen.height - 200)
+                        //if (r == null)
+                        //    return
+                    }
+                    var xml = GetArray(['usp_JobValidatePermitChild', Id, type, '' ])
+                    var text = Trim(GetXmlTable(xml).text())
+                    if (text !='')
+                        alert( text +' are still open.')
+                }
+                if (type == 'Permit Issuer') {
+                    var xml = GetArray(['usp_JobValidatePermitChild', Id, type, ''])
+                    var text = Trim(GetXmlTable(xml).text())
+                    if (text != '')
+                        alert(text + ' are still open.')
+                }
+            }
+            if (action == 'Approve' && section == 'Authorization' && type == 'Permit Issuer' ) {
+                xml = GetArray(['usp_JobValidatePermitEI', Id, 0])
+                var text = Trim(GetXmlTable(xml).text())
+                if (text != '') {
+                    var r = showModal('PopupAutoCloseoutEI.htm', text, 800, 800)
+                    if (r != null)
+                        GetArray(['usp_JobValidatePermitEI', Id, 1])
+                }
+            }
+            NotifyStatus(section, type, action)
+            return
+            Refresh()
+            SaveScroll()
+        })
+    }
+    function GetLink(src, text) {
+        return '<a href ="' + GetSiteUrl() + '/job/' + src + '" >' + text + '</a> '
+    }
+    function NotifyStatus(section, role, action, loaded) {
+        var eiid = GetVal( tForm.find('td:contains("Energy Isolation")').next().find('a'))
+        var gasId =GetVal( tForm.find('td:contains("Gas Test Certificate")').next().find('a'))
+        var permitType = Type // GetId('Crumb').find('a').last().text()
+        var url
+        if (eiid != null)
+            url = 'ei.htm?id=' + eiid + '&ProcessChart=1'
+        if (gasId != null)
+            url = 'gas.htm?id=' + gasId + '&ProcessChart=1'
+        if (action != 'Reject' && url !=null  ) {
+            if (!loaded) {
+                f.attr('src', url )
+            }
+            var tProcessChart = f.contents().find("#tProcessChart")
+            if (tProcessChart.find('tr').length < 2) {
+                setTimeout(function () {
+                    NotifyStatus(section, role, action, true);
+                }, 100)
+                return
+            }
+        }
+        var t = A.clone()
+        var bgColor = 'yellow'
+        if (Type == 'Hot Work')
+            bgColor ='red'
+        if (Type == 'Cold Work')
+            bgColor = 'blue'
+        $('<tr><th colspan=8></tr>').prependTo(t).find('th').addClass('header label').text('Planning')
+        $('<tr><td colspan=8></tr>').prependTo(t).find('td').css('background-color', bgColor).css('color', 'white').addClass('label').text(permitType+' Permit')
+        var jobId = GetVal(GetId('JobId'))
+        var title = GetVal(GetId('JobDescription'))
+        var type
+
+        var subject = permitType +' Permit ' + Id + ' ' + section
+        var s = '<table ><tr><th class=header colspan=7 > ' + (action == 'Reject' ? 'Rejection' : 'Task') + '</tr><tr class=labelCenter>'
+        var arr = ['Type', 'Job', 'Source', 'Source Title', 'Assigned By', 'Date/Time Created', 'Comment']
+        var arr1 = [section, GetLink('job.htm?id=' + jobId, jobId), GetLink('permit.htm?id=' + Id, permitType +' ' + Id), title, '', '']
+        for (var i in arr)
+            s += '<td>' + arr[i]
+        s += '<tr>'
+        for (var i in arr1)
+            s += '<td>' + arr1[i]
+        s += '</table>'
+        if (action == 'Reject') {
+            subject = subject.replace(section,  ' - Rejection')
+        } else {
+            s += Strip(t)
+            t = GetId('tEquipment')
+            t.find('td').first().attr('colspan', 7 )
+            s += Strip(t)
+            s += Strip(tAuthorization0)
+            t = B
+            t.find('td').last().html('')
+            s += Strip(t)
+            t = CD.show()
+            t.find('*').show()
+            t.find('.hidden').removeClass()
+            t.find('a').closest('tr').prev().andSelf().remove()
+            s += Strip(t)
+            t = E
+            t.show()
+            t.find('tr').last().remove()
+            s += Strip(t)
+            t = GetId('tPacket')
+            t.find('tr').last().remove()
+            t.find('th').first().attr('colspan', 6)
+            t.find(':hidden').show()
+            s += Strip(t)
+            //EI
+            if (eiid != null) {
+                t = f.contents().find('#tPlanning')
+
+                t.find('th').first().text('Energy Isolation Certificate')
+                s += Strip(t)
+
+                t = f.contents().find('#tList')
+                t.find('tr').slice(-2).remove()
+                TdByName(t, 'Type', true).remove()
+                AddGridSubHeader(t, 'Equipment to be Isolated')
+                t.find('th').first().attr('colspan', 8)
+                s += Strip(t)
+
+                t = f.contents().find('#tIsolationAuthority')
+                TdByName(t, 'Action', true).remove()
+                t.find('th').first().attr('colspan', 5)
+                s += Strip(t)
+
+                t = f.contents().find('#tProcessChart')
+                s += Strip(t)
+            }
+            //Gas
+            if (gasId != null) {
+                t = f.contents().find('#tPlanning')
+                t.find('th').first().text('Gas Test Certificate')
+                s += Strip(t)
+
+                t = f.contents().find('#tGasToTest')
+                s += Strip(t)
+
+                t =  f.contents().find('#tAuthorization')
+                t.find('th').eq(0).attr('colspan', 10)
+                t.find('tr').slice(-2).remove()
+                s += Strip(t)
+
+
+                t =  f.contents().find('#tExecution')
+                t.find('tr').slice(-2).remove()
+                s += Strip(t)
+
+                t = f.contents().find('#tProcessChart')
+                s += Strip(t)
+            }
+        }
+
+        GetArray(['usp_NotifyStatus', subject, s, Id, 'permit',  section, role, action])
+        Refresh()
+    }
+    function FormatEquipment() {
+        var t = $('#tEquipment')
+        if (!t.find('tr').length)
+            return
+        $('<tr><td colspan=22 >Equipment</tr>').prependTo(t)
+            .css('background-color', 'rgb(61, 183, 228)').css('color', 'white')
+        t.find('tr').first().find('td').css('border', 'none')
+        t.prev().find('tr').find('td').css('border-bottom', 'none')
+    }
+    function InitPlanning(xml) {
+        var t = A
+        t.find('td:even').addClass('labelRight')
+        t.find('tr').eq(1).children().width('13%')
+        SetData(xml, 2, ARR)
+        SetData(xml, 3, ARR1)
+
+        var arr1 = ['WorkCompleted', 'NewPermit']
+        var xml1 = $(xml).find('Table2').text()
+        for (var i in arr1) {
+            var name = arr1[i]
+            var value = $(xml1).attr(name)
+
+            $('[name=' + name + '][value=' + value + ']').prop('checked', true)
+        }
+        if (Id>0)
+            Type = $(xml1).attr('Type')
+        Status = GetVal( $('#Status'))
+        InitAuthorization0(xml)
+        InitAuthorization(xml)
+        InitVerification(xml)
+        InitTab(tAuthorization, xml1 )
+        InitTab(tVerification)
+        InitPermitColor(xml)
+
+        $($(xml).find('Table2').text()).find('JobOwner').each(function () {
+            var element = $(this)
+            AddJobOwner($('#JobOwner').prev(), element.attr('id'), element.attr('Name'))
+        })
+        InitHours()
+    }
+    function InitHours() {
+        var td = B.find('td').slice(-2, -1)
+        var arr = ['End of My Tour']
+        for (var i = 12; i > 0; i--) {
+            arr.push('+' + i)
+        }
+        for (var i in arr) {
+            var html = '<a style="margin-right:15" href="javascript:void(0)" onclick="Hours12(this)">' + arr[i] + '</a>'
+            $(html).appendTo(td)
+        }
+        $('<span/>').appendTo(td).text('Hour(s)')
+        $('<div/>').appendTo(td).css('color', 'red')
+        CheckEndTime(td.parent())
+    }
+    function SetData(xml, index, arr) {
+        var xml1 = $(xml).find('Table' + index).text()
+        var src = $(xml1)
+        if (src.attr('jobOwner') > 0)
+            IsOriginator = true
+        for (var i in arr) {
+            var id = arr[i]
+            SetVal($('#' + id), src.attr(id))
+        }
+    }
+    function InitCheckList(xml, t, index) {
+        DataBind(t, xml, index)
+        t.find('tr').first().remove()
+
+        t.find('td:nth-child(3)').each(function () {
+            var td = $(this)
+            td.width(100)
+            var td0 = td.prevAll().last()
+            var id = td0.text()
+            var name = td.text()
+            td.html(GetSelect()).children().val(name).attr('id', id)
+            td0.text(td0.parent().index() + 1)
+        })
+        var td = t.find('td').filter(function () {
+            if ($(this).text() == 'Other') {
+                $(this).html('<span style="padding-left:4" >Other: </span')
+                return true
+            }
+        })
+        $('<input style="margin-left:4;border: 1px solid black; width:500" type=text />').appendTo(td).val(td.nextAll().last().text())
+        t.find('td:nth-child(4)').remove()
+        if (t.attr('id') == 'C') {
+            var tr = $('<tr class="label "><td>#<td>Barrier<td>Yes No N/A</tr>').prependTo(t)
+            tr = $('<tr/>').prependTo(t)
+            AddTd(tr, ' <span class="minus">-</span> C. Safety Precautions (Permit Authority to Complete', 'th', 11).addClass('darkblue')
+        } else {
+            var tr = $('<tr/>').prependTo(t)
+            AddTd(tr, ' <span class="minus">-</span> D. Worksite Preparation (Permit Authority to Complete)', 'th', 11).addClass('darkblue')
+        }
+    }
+    function GetSelect() {
+        var arr = ['', 'Yes', 'No', 'N/A']
+        var select = $('<select/>')
+        for (var i in arr) {
+            var name = arr[i]
+            $('<option/>').text(name).val(name).appendTo(select)
+        }
+        return select[0].outerHTML // '<select ><option></option><option>Yes</option><option>No</option><option>N/A</option></select>'
+    }
+    function InitVerification(src) {
+        var arr = ['I have inspected the worksite and confirm that it is in a safe condition and completed all the work described in this permit.'
+            , 'I have inspected the worksite and confirm that it is in a safe condition.'
+            , 'I have been informed of the work covered by this permit.'
+            , 'STC'
+            , 'I have checked the permit details and closed out the permit in accordance with the PTW procedure.<br><center style="color:red">The Permit to Work is cancelled only after section M is complete.</center>'
+        ]
+        InitAuthorization(src, arr)
+        var t = tVerification
+        t.find('td:contains(Authorizer)').each(function () {
+            var td = $(this)
+            var text = td.text()
+            td.text(td.text().replace('Authorizer', 'Verifier'))
+        })
+        t.find(':button[value=Authorize]').val('Verify')
+
+        t.find('td:contains(Authorized)').text('Verified')
+        t.find('td:contains("Pending Authorization")').text('Pending Verification')
+    }
+    function NextChar(c) {
+        var res = c == 'z' ? 'a' : c == 'Z' ? 'A' : String.fromCharCode(c.charCodeAt(0) + 1);
+        return res
+    }
+    function InitAuthorization0(xml) {
+        var xml1 = $(xml).find('Table2').text()
+        var src = $(xml1)
+        var client = src.attr('client')
+        var brazil = src.attr('brazil')
+        var arr = ['Permit Holder', 'Permit Authority',  'Client', 'STC', 'Permit Issuer']
+        var t = tAuthorization0
+        $('<tr class=labelCenter><td width=300 > Role<td>Name<td>Position<td>Authorized<td>Verified<td>Comments<td>Action</tr>').appendTo(t)
+        for (var i in arr) {
+            var role = arr[i]
+            if (client != 1 && role == 'Client')
+                continue
+            if (brazil != 1 && role == 'STC')
+                continue
+            var element = src.find('JobAuthorization[Section=Authorization][Type="' + role + '"]')
+            var html = '<tr><td width=300 class="labelRight"><td><img class=hidden onclick="on_AuthoritySelect(this)" src="../Images/Select Personnel icon.png"><span></span><td><td><td><td></tr>'
+            var tr = $(html).appendTo(t)
+            tr.children().eq(0).text(role)
+            var span = tr.find('span').first()
+            span.text(element.attr('name')).attr('userId', element.attr('userId'))
+            tr.children().eq(2).text(element.attr('position'))
+            var htmlAuthorized = '', htmlVerified = ''
+            if (element.attr('status') == 'Approved')
+                htmlAuthorized = WingDing(252, 'green')
+            if (src.find('JobAuthorization[Section=Verification][Type="' + role + '"]').attr('status') == 'Approved')
+                htmlVerified = WingDing(252, 'green')
+            tr.children().eq(3).html(htmlAuthorized).addClass('center')
+            tr.children().eq(4).html(htmlVerified).addClass('center')
+
+            tr.children().eq(5).text(element.attr('comment'))
+            var td = $('<td/>').appendTo(tr)
+            var html = '<a href="javascript:void(0)" >Change</a><img src="../Images/Submit icon.png"  /><img src="../Images/Cancel icon.png"  />'
+            td.html(html).find('img, a').hide()
+            td.children().on('click', function () {
+                var src = $(this)
+                var tr = src.closest('tr')
+                var role = tr.children().first().text()
+
+                //Change
+                if (src.index() == 0) {
+                    if (role == 'Permit Holder') {
+                        localStorage['PermitClone'] = $('body').html()
+                        var r = showModal('PopupPermitClone.htm?id=' + Id, '', screen.width - 100, screen.height - 200)
+                        return
+                    }
+                    //return
+                    src.hide().parent().parent().find('img').show()
+                } else if (src.index() == 1) {//submit
+                    var span = tr.find('span').first()
+                    if (['Open', 'Pending Approval'].indexOf(Status) != -1) {
+                        localStorage['PermitClone'] = $('body').html()
+                        var r = showModal('PopupPermitClone.htm?id=' + Id, '', screen.width - 100, screen.height - 200)
+                    } else {
+                        GetArray(['usp_JobChangeCrew', Id, role, span.attr('userId'), GetVal(span), tr.children().eq(2).text()])
+                        Refresh()
+                    }
+                } else {//cancel
+                    Refresh()
+                }
+            })
+        }
+        var arr1 = ['Permit Holder', 'Permit Authority', 'Permit Issuer', 'STC' ]
+        for (var i in arr1) {
+            if (Status == 'Authorized' )
+                t.find('td:contains(' + arr1[i] + ')').parent().find('a').show()
+            if (Status == 'Open' || Status =='')
+                t.find('td:contains(' + arr1[i] + ')').next().find('img').show()
+        }
+    }
+    function InitTab(t, xml ) {
+        var tr = $('<tr/>')
+        t.find('img').hide()
+        t.find('td[rowspan=2]').each(function () {
+            var td = $(this).clone().attr('rowspan', 1) // removeAttr('rowspan')
+            $('<a href="javascript:void(0)" />').text(td.text()).appendTo(td.html(''))
+            td.appendTo(tr)
+            var status = GetVal($(this).parent().next().children().eq(2))
+            if (['Signed', 'Authorized', 'Verified'].indexOf(status )  != -1 )
+                $(WingDing(252, 'green')).appendTo(td)
+            var button = $(this).parent().next().children().eq(3).find(':button').eq(0)
+            if (t.is( tAuthorization) &&  td.find('a').text().indexOf('Permit Issuer') ==-1)
+                button.val('Sign')
+        })
+        tr.children().removeClass().addClass('center').width((100 / tr.children().length) + '%')
+        var tr1 = $('<tr/>').insertAfter(t.find('tr').eq(0))
+        AddTd(tr1, '<table/>').attr('colspan', 11).find('table').append(tr)
+        tr1.children().css('padding', 0)
+        tr.find('a').on('click', function () {
+            var a = $(this)
+            var trs = a.closest('table').closest('tr').next().nextAll()
+            trs.hide()
+            a.parent().css('background-color', 'lightblue').siblings().css('background-color', 'white')
+            var role = GetVal(a)
+            var td = trs.find('td:contains("' + role + '")')
+            td.parent().next().andSelf().show()
+
+        })
+       DefaultTab(t, xml )
+    }
+    function DefaultTab(t, xml ) {
+        var done = false
+        t.find('tr').eq(1).find('a').each(function () {
+            var a = $(this)
+            var role = GetVal(a)
+            var tr = a.closest('table').closest('tr').nextAll().find('td:contains("' + role + '")').parent().next()
+            var html = tr.html()
+            if (!done && html.indexOf('Pending') != -1 && html.indexOf(UserName) != -1) {
+                a.trigger('click')
+                done = true
+                if (role == 'G. Permit Authority' && $(xml).attr('RequireClientSignature') ==1  ) {
+                    var html = '<span>Require Client Signature: ' + GetRadio('Yes') + GetRadio('No')
+                    $(html).insertBefore(tr.find(':button').eq(0))
+                }
+            }
+        })
+        if (!done)
+            t.find('a').first().trigger('click')
+    }
+    function GetRadio(name) {
+        var value = 0
+        if (name == 'Yes')
+            value=1
+        return name+ '<input type=radio name=RequireClientSignature  value=' + value + ' />'
+    }
+    function InitAuthorization(xml, arr2) {
+        var xml1 = $(xml).find('Table2').text()
+        var src = $(xml1)
+        var client = src.attr('client')
+        var brazil = src.attr('brazil')
+        var t = tAuthorization
+        var section = 'Authorization'
+        var arr = ['Permit Holder', 'Permit Authority', 'Client', 'STC', 'Permit Issuer']
+        var arr0 = ['I have completed all the barrier management and actions listed and will comply with all PTW requirements during execution'
+             , 'I have verified permit detail and the barrier management and actions. I will personally inspect the work area and attend the JSA.'
+             , 'I have been informed of the work covered by this permit.'
+             			, ''
+           , 'I authorize this work under the specified barriers and actions above and pursuant to the Permit Authority personally visiting the work site and attending the JSA.  <br><center style="color:red">The Permit to Work is valid only after Permit Issuer approves</center>'
+        ]
+        var letter = 'F'
+        if (arr2 != null) {
+            t = tVerification
+            arr0 = arr2
+            section = 'Verification'
+            tAuthorization.find('tr').eq(1).clone().appendTo(t)
+            letter = 'K'
+        }
+        var type1 = type
+        for (var i in arr) {
+            var type = arr[i]
+            if (!(type == 'STC' || (type == 'Client' && section == 'Verification'))) {
+                type1 = letter + '. ' + type
+                letter = NextChar(letter)
+            } else
+                type1=type
+            if ((client != 1 || section == 'Verification') && type == 'Client')
+                continue
+            if ((brazil != 1 || section == 'Verification') && type == 'STC')
+                continue
+            var text = '<font size=2>' + arr0[i] + '</font>'
+            var tr = AddTr(t)
+            AddTd(tr).text(type1).attr('rowSpan', 2).attr('type', type)
+            AddTd(tr).html(text).attr('colSpan', 11).addClass('label')
+            tr = AddTr(t)
+            var arr1 = ['<img onclick="on_AuthoritySelect(this)" src="../Images/Select Personnel icon.png"><span ></span>'
+                , '', '', '<input type="button" value="Authorize" /><input type="button" value="Reject" />'
+                , '', '<input type="text" style="width:100%" />'
+            ]
+            var element = src.find('JobAuthorization[Section=' + section + '][Type="' + type + '"]')
+            for (var j in arr1) {
+                var html = arr1[j]
+                if (type == 'Permit Issuer' && section == 'Authorization')
+                    html += '<input type="button" value="Change PA" onclick=on_PA(this) />'
+                AddTd(tr).html(html)
+            }
+            tr.find('span').text(element.attr('name')).attr('userId', element.attr('userId'))
+            tr.find('td').eq(1).text(element.attr('position'))
+            tr.find('td').eq(2).text(element.attr('Status'))
+            tr.find('td').eq(4).text(element.attr('DateCompleted'))
+            tr.find('td').eq(5).find(':text').val(element.attr('Comment'))
+        }
+        t.find('[rowspan=2]').addClass('labelRight ')
+        t.find('tr').eq(1).addClass('labelCenter')
+
+        t.find('td:contains(Approved)').text('Signed')
+        t.find('tr').last().find('td:contains(Signed)').text('Authorized')
+        t.find('td:contains("Pending Approval")').text('Pending Authorization')
+        t.find('.minus').hide()
+    }
+    function on_PA(src) {
+        var t = tAuthorization
+        src = $(src)
+        var img = t.find('tr').eq(5).find('img').eq(0)
+
+        on_AuthoritySelect(img)
+        on_Save(1)
+        GetArray(['usp_JobActionPermit', Id, 'Authorization', '', 'PA', '', 0 ])
+        Refresh()
+        //src.prev().trigger('click')
+    }
+    function InitExecution() {
+        var t = tExecution
+        var tr = t.find('tr').eq(2)
+        tr.find('td:even').addClass('labelRight')
+        tr.find(':checkbox').on('click', function (index) {
+            var src = $(this)
+            var checked = src.prop('checked')
+            if (checked)
+                tr.find('input').not(src).prop('disabled', true)
+            else
+                tr.find('input').not(src).prop('disabled', false)
+            if (src.is(tr.find(':checkbox').eq(1)) && checked)
+                tr.find(':text').prop('disabled', false)
+        })
+    }
+    function AddDelete(td) {
+        td.append('<span style="font-family: Wingdings" onclick="on_Delete(this) ">&#253;</span>')
+    }
+    function AddSelect(xml, name, t) {
+        var index = parseInt(name.replace('Table', ''))
+
+        var src = t.find('select').eq(index)
+        $('<option/>').appendTo(src)
+        $(xml).find(name).find('Name').each(function () {
+
+            var element = $(this)
+            var option = $('<option/>').appendTo(src)
+            option.val(element.next().text()).text(element.text())
+            if (element.prev().length) {
+                option.attr('parent', element.prev().text())
+                option.wrap('<div/>')
+            }
+        })
+        src.children('option').wrap('<div/>')
+
+    }
+    function XmlForm( root ) {
+        var t = tForm
+        var element = $.createElement('form')
+        t.find('select').each(function () {
+            var src = $(this)
+            var id = GetVal(src)
+            if (id != '') {
+                var name = src.parent().prev().text()
+                element.attr('id', id)
+                element.attr('Name', name )
+            }
+        })
+        root.append(element)
+    }
+    function on_Save(noRefresh) {
+        if (!Validate())
+            return
+        SaveScroll()
+        var root = $('<r />')
+        root.addAttr('id', Id)
+        var element = $.createElement('packet')
+        var arr = ['JobCategory', 'JobCriticality', 'LeadDepartment', 'HasWorkOrder', 'EAMSWorkOrder']
+        for (var i in arr) {
+            var name = arr[i]
+            element.attr(name, GetVal(GetId(name)))
+        }
+        root.append(element)
+        SaveXmlAttachment()
+        XmlForm(root)
+        XmlGeneral(root)
+        XmlChecklist(root, C)
+        XmlChecklist(root, D)
+        //XmlAuthorization(tAuthorization, root)
+        XmlAuthorization0(root)
+        XmlAuthorization(tVerification, root)
+
+        var xml = root[0].outerHTML
+        xml = GetArray(['usp_JobSavePermit', xml, UserId, XmlPacket(), ''])
+        Id = Trim($(xml).find('Column1').first().text())
+
+        SaveEquipment()
+        if (noRefresh)
+            return
+        window.location = 'permit.htm?id=' + Id
+        RestoreScroll()
+    }
+    function XmlAuthorization0(root) {
+        tAuthorization0.find('tr').slice(2).each(function () {
+            var tr = $(this)
+            var el = $.createElement('Authorization')
+            el.addAttr('Page', 'Permit')
+            el.addAttr('Section', 'Authorization')
+            el.addAttr('Type', GetVal(tr.children().eq(0)))
+            el.addAttr('UserId', tr.find('span').attr('userId'))
+            el.addAttr('Name', GetVal(tr.find('span')))
+            el.addAttr('Position', GetVal(tr.children().eq(2)))
+            root.append(el)
+        })
+    }
+    function XmlPacket() {
+        var root = $('<r />')
+        root.addAttr('id', JobId)
+        root.addAttr('JobTitle', GetVal(tJobPlan.find(':text')))
+        var found = false
+        var t = tJobPlan
+        t.find(':checked').each(function () {
+            var name = GetVal($(this).parent().prev())
+            var element = $.createElement('General')
+            if (name == 'Confined Space Entry')
+                name = 'Confined Space'
+            element.addAttr('Name', name)
+            root.append(element)
+            found = true
+        })
+
+        return root[0].outerHTML
+    }
+    function XmlChecklist(root, t) {
+        t.find('[active]').each(function () {
+            var tr = $(this)
+            var input = tr.find(':text')
+            var element = $.createElement('question')
+            element.attr('id', tr.attr('id'))
+            element.attr('Name', GetVal(input))
+            element.attr('Answer', tr.find(':checked').parent().index() - 2)
+            element.attr('Type', t.attr('id'))
+            root.append(element)
+        })
+    }
+    function XmlGeneral(root) {
+        var element = $.createElement('General')
+        for (var i in ARR) {
+            var id = ARR[i]
+            var value = GetVal($('#' + id))
+            element.addAttr(id, value)
+        }
+        var arr1 = ['WorkCompleted', 'NewPermit']
+        for (var i in arr1) {
+            var name = arr1[i]
+            element.attr(name, $('input[name=' + name + ']:checked').val())
+        }
+        $('#JobOwner').find('td:odd').each(function () {
+            var td = $(this)
+            var JobOwner = $.createElement('JobOwner')
+            JobOwner.addAttr('id', td.attr('userId'))
+            JobOwner.addAttr('Name', GetVal(td))
+            element.append(JobOwner)
+        })
+        tWims.find('tr:gt(1)').not(':last').each(function () {
+            var tr = $(this)
+            var el = $.createElement('wims')
+            el.addAttr('id', tr.attr('id'))
+            el.addAttr('LocalId', tr.attr('LocalId'))
+            el.addAttr('WiNo', tr.attr('WiNo'))
+            el.addAttr('JobTitle', tr.find('td').eq(1).text())
+            el.addAttr('Review', tr.find(':checkbox').prop('checked'))
+            el.addAttr('Criticality', tr.find('td').eq(3).text())
+            element.append(el)
+        })
+        root.append(element)
+    }
+    function XmlAuthorization(t, element) {
+        var section = t.attr('id').substring(1, t.attr('id').length)
+        t.find('td:nth-child(1)[rowSpan=2]').each(function () {
+            var td = $(this)
+            var type = td.attr('type')
+            type = Trim(type)
+            td.parent().next().each(function () {
+                var tr = $(this)
+                var span = tr.children().eq(0).find('span')
+                var el = $.createElement('Authorization')
+                el.addAttr('Page', Page)
+                el.addAttr('Section', section)
+                el.addAttr('Type', type)
+                el.addAttr('UserId', span.attr('userId'))
+                el.addAttr('Name', GetVal(span))
+                el.addAttr('Position', tr.children().eq(1).text())
+                el.addAttr('Status', tr.children().eq(2).text())
+                el.addAttr('Action', tr.children().eq(3).text())
+                el.addAttr('DateCompleted', tr.children().eq(4).text())
+                el.addAttr('Comment', GetVal(tr.children().eq(5).find(':text')))
+                element.append(el)
+            })
+        })
+    }
+    function on_Delete(src) {
+        src = $(src)
+        src.closest('tr').remove()
+        AddNumber(src.closest('table'))
+    }
+
+    function GetDt() {
+        var dt = new Date()
+        var arr = dt.toString().split(' ')
+        return arr[2] + '-' + arr[1] + '-' + (arr[3] - 2000) + ' ' + arr[4]
+    }
+    function on_AuthoritySelect(src) {
+        src = $(src)
+        var tr = src.closest('tr').prev()
+        if (src.closest('table').is(tAuthorization0))
+            tr=tr.next()
+        var type = tr.children().first().text()
+        var arr = type.split('.')
+        if (arr.length > 1)
+            type = arr[1]
+        type = Trim(type)
+        var r = GetPobUser(type)
+        if (r == null)
+            return
+        r = r[0]
+        src.next().text(r[1]).attr('userId', r[0])
+        src.parent().next().text(r[2])
+        AddJobOwner(GetId('JobOwner').prev(), r[0], r[1])
+       // if (tr.html().indexOf('Permit Issuer22') !=-1)
+            on_Save(true )
+    }
+    function ClearTr(tr1) {
+        tr1.children().eq(2).text('')
+        tr1.children().eq(3).text('')
+        tr1.children().eq(4).text('')
+    }
+    function on_PobSelect(src, multiple, arr) {
+        src = $(src)
+        var r
+        if (arr != null)
+            r = arr
+        else {
+            r = GetPobUser()
+            if (r == null)
+                return
+            r = r[0]
+        }
+
+        src.next().text(r[1]).attr('userId', r[0])
+    }
+
+
+    function on_SubmitForAuthorization(src) {
+        src = $(src)
+        var t = tAuthorization0
+        if (!Validate(src))
+            return
+        if (GetTd(t, 1).filter(function () {
+            return GetVal($(this)) == ''
+        }).length) {
+            alert('Please select all approvers.')
+            return
+        }
+        if (Trim(src.text()) == 'Submit for Reauthorization' && !GetTd(t.find('img').closest('tr'), 2).filter(function () {
+            return GetVal($(this)) == ''
+        }).length) {
+            alert('Please change an approver.')
+            return
+        }
+        on_Save(true)
+        GetArray(['usp_JobPermitSubmit', Id, 'Authorization'])
+        NotifyStatus('Authorization', '', 'Submit')
+        //Refresh()
+    }
+    function on_Evaluate() {
+        Validate()
+    }
+    function Validate(src) {
+        src = $(src)
+        var PA = false
+        if (src.closest('tr').prev().children().first().text().indexOf('Permit Authority') > -1 && src.val() != 'Reject')
+            PA = true
+        var isOk = true
+        var arr1 = [GetFormDropDown('Energy Isolation'), GetFormDropDown('Gas Test Certificate')]
+        var count =0
+        for (var i in arr1) {
+            var val = GetVal(GetFormDropDown(arr1[i]))
+            if (val !=null && val != '')
+                count++
+        }
+        if (count > 1) {
+            alert('Only one certificate can be linked. ')
+            isOk = false
+            return false
+        }
+
+        var col = A.add(B).add(C.add(D).find('tr[active=1]')).find(':text, select, textarea')
+        var t = tAuthorization
+        var s = ''
+        col.each(function () {
+            var src = $(this)
+            if (src.closest('table').is(tForm))
+                return
+            if (src.attr('id') == 'Document' || !src.is(':visible'))
+                return
+            // not PA
+            if (!PA) {
+                var arr = ['B', 'E']
+                if (arr.indexOf(src.closest('table').attr('id')) > -1)
+                    return
+            }
+            if (IsEmpty(src)) {
+                var td = src
+                if (td.prop('tagName') != 'TD')
+                    td = td.closest('td')
+                s += Trim(td.prev().text()) + '\n'
+                isOk = false
+            }
+        })
+        var arr = ['JobDescription', 'Location', 'FromDate', 'ToDate']
+        if (Id == 0)
+            arr.push('JobTitle')
+        for (var i in arr){
+            if (IsEmpty(GetId( arr[i] ))) {
+                isOk = false
+            }
+        }
+
+        if (PA)
+            C.add(D).find(':radio').closest('tr[active]').each(function () {
+                var tr = $(this)
+                Highlight(tr.children().slice(-3), 'white')
+                if (!tr.find(':checked').length) {
+                    Highlight(tr.children().slice(-3), 'yellow')
+                    isOk = false
+                }
+            })
+        if (!isOk) {
+            alert('Please fill out the required fields.  \n')
+        }
+        return isOk
+    }
+
+    function ValidateSubmitVerification() {
+        var isOk = true
+        var t = tVerification
+        t.find('span').each(function () {
+            var src = $(this)
+            if (IsEmpty(src))
+                isOk = false
+        })
+        return isOk
+    }
+    function on_Submit(src) {
+        var tr = $(src).closest('tr').prev()
+        var root = $('<r />')
+        var WorkCompleted=$('[id=WorkCompleted]:checked').val()
+        var NewPermit = $('[id=NewPermit]:checked').val()
+        var ok =true
+        tExecution.find(':radio').each(function () {
+            if (IsEmpty($(this)))
+                ok=false
+        })
+        if ( !ok ) {
+            alert(RequiredMessage )
+            return
+        }
+        root.addAttr('WorkCompleted', WorkCompleted)
+        root.addAttr('NewPermit',  NewPermit)
+        var xml = GetCleanXml(root)
+        GetArray(['usp_JobPermitSubmit', Id, xml])
+        NotifyStatus('Verification', '', 'Submit')
+       // Refresh()
+    }
+    function on_ChangeAuthorization(src) {
+        src = $(src)
+        src.nextAll().show()
+        src.remove()
+        var t = tAuthorization
+        t.find('img').slice(1).show().prop('disabled', false)
+
+        var td = t.find('td:contains(Client)')
+        if (td.length) {
+            var tr = td.parent().next()
+            tr.find('img').hide()
+        }
+        t.find('.minus').filter(function () {
+            return Trim($(this).text()) == '+'
+        }).trigger('click')
+    }
+    function on_Start(src) {
+        src = $(src)
+        var action = GetVal(src)
+        var r = showModal('../common/PopupCommon.htm', 'Are you sure you want to cancel this permit?', 500, 500)
+        if (!r)
+            return
+        r = showModal('../common/PopupCommon.htm', 'Do you want to cancel the EI Certificate and other attachced forms?', 500, 500)
+        GetArray(['usp_JobSuspend', Id, Page, action, r ])
+        Refresh()
+    }
+    function on_JobOwner(src) {
+        src = $(src)
+        var r = GetPobUser()
+
+        if (r == null)
+            return
+        for (var i in r) {
+            var arr = r[i]
+            AddJobOwner(src, arr[0], arr[1])
+        }
+    }
+    function AddJobOwner(src, id, name) {
+        var t = src.next()
+        var tr = AddTr(t)
+        if (t.find('td[userId=' + id + ']').length)
+            return
+        AddTd(tr, GetDelete()).width(1)
+        AddTd(tr, name).attr('userId', id)
+        t.find('td').css('border', 'none')
+    }
+    function ChangeCrew() {
+        var t = tAuthorization0
+        var tr = t.find('tr').eq(2)
+        var span = tr.find('span')
+        var role = 'Permit Holder'
+        GetArray(['usp_JobChangeCrew', Id, role, span.attr('userId'), span.text(), tr.children().last().text()])
+    }
+</script>

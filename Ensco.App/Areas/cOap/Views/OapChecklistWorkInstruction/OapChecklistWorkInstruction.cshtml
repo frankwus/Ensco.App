@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Ensco.Irma.Oap.WebClient.Corp.OapChecklistWorkInstruction>
+@{
+    ViewBag.Title = "Checklist and Protocaol Work Instruction List";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+         
+        function OnToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case "AddNewChecklistWorkInstruction": 
+                    s.AddNewRow();
+                    break; 
+            }
+        }
+    </script>
+}
+
+@*<h1 class="area-headers">@ViewBag.Title</h1>*@
+<div class="oap-master-grid">
+    @Html.Partial("OapChecklistWorkInstructionPartial", Model)
+</div>

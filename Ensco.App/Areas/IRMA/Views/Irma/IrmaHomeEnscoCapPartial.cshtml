@@ -1,0 +1,26 @@
+﻿<iframe id="iCap" src="@ViewBag.CapURL" frameborder="0" scrolling="auto" style="width: 100%; height: 2200px; overflow: auto; vertical-align: text-bottom; -ms-user-select: text;"></iframe>
+
+@*@model Ensco.Models.DataTableModel
+@using Ensco.Models
+@{
+    GridViewOptions options = new GridViewOptions();
+    options.ShowAddButton = false;
+    options.ShowEditButton = false;
+    options.ShowDeleteButton = false;
+    options.ShowCommandColumn = false;
+    options.ShowTitle = false;
+    DataTableModel dt = (DataTableModel)this.ViewBag.Training;
+}
+
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name = "grid_HomeTasksCap";
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.CallbackRouteValues = new { Action = "IrmaHomeEnscoCapPartial", Controller = "Irma" };
+
+    Html.EnscoStandardGrid(grid, typeof(Ensco.Models.OpenCapModel), options);
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()*@

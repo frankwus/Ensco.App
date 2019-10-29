@@ -1,0 +1,26 @@
+﻿@model XtraReport
+
+
+@Html.DevExpress().DocumentViewer(settings =>
+{
+    settings.Name = "docViewerReport";
+    settings.Report = Model;
+    settings.CallbackRouteValues = new { Controller = "Report", Action = "ShowReportPartial" };
+    settings.ExportRouteValues = new { Controller = "Report", Action = "ExportDocumentViewer" };
+    settings.AutoHeight = true;
+    settings.ToolbarMode = DocumentViewerToolbarMode.StandardToolbar;
+
+    if (Model.GetType() == typeof(PobSummaryReport))
+    {
+        settings.ToolbarItems.Add(new ReportToolbarButton
+        {
+            ItemKind = ReportToolbarItemKind.Custom,
+            Text = "",
+            Name = "EmailReport",
+            ImageUrl = "~/Images/Email.png"
+        });
+        settings.ClientSideEvents.ToolbarItemClick = string.Format("function(s, e){{ if(e.item.name==\"EmailReport\") document.location.href = '{0}';}}", Url.Action("EmailReport", "Report", new { Area = "IRMA" }));
+    }
+    // Uncomment the following line to enable the mobile mode.
+    //settings.MobileMode = true;
+}).GetHtml()

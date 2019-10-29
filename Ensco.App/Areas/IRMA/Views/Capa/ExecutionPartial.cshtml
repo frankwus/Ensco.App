@@ -1,0 +1,46 @@
+﻿@using Ensco.Utilities;
+@using System.Data;
+@{
+    string mType = "Ensco.Models.CapaPlanExecutionModel";
+    string dType = "Ensco.Irma.Data.vw_CapaPlanExecution";
+    string Type = this.ViewBag.Type;// (string)this.Session["Type"];
+}
+
+@model Ensco.Models.DataTableModel
+@{
+    GridViewOptions options = new GridViewOptions();
+
+    options.ShowTitle = false;
+    string name = "grid";
+
+    string focusRowChangedEvent = "onFocusRowChangedEvent";
+
+    Dictionary<EnscoHelper.EventHandlerType, string> handlers = new Dictionary<EnscoHelper.EventHandlerType, string>();
+    handlers[EnscoHelper.EventHandlerType.FocusRowChanged] = focusRowChangedEvent;
+}
+@Html.DevExpress().GridView(grid =>
+{
+    grid.Name =name;
+    grid.KeyFieldName = Model.KeyFieldName;
+    grid.SettingsPager.PageSize = 10;
+    grid.ClientSideEvents.EndCallback = "function (s, e){ onEndCallback(s, e)  }"; 
+    grid.CallbackRouteValues = new {Area = "Irma", Controller = "Capa", Action = "ExecutionPartial" , id=Model.Id };
+
+    Html.EnscoStandardGrid(grid, Ensco.Irma.Services.IrmaServiceSystem.GetModelType(mType ), options, handlers );
+    grid.DataBound = (s, e) => {
+        ASPxGridView g = (ASPxGridView)s;
+        foreach (GridViewColumn c in g.Columns)
+            c.Caption = " " + c.Caption;
+    };
+}).BindToLINQ(string.Empty, string.Empty, (s, e) => {
+    e.KeyExpression = Model.KeyFieldName;
+    e.QueryableSource = Model.Dataset;
+}).GetHtml()
+@Html.DevExpress().Button(s => {
+    s.Name = "CAPA";
+    s.Text = "Create CAPA";
+    s.ClientSideEvents.Click = "function(s, e){ onCreateCapa(s, e) } ";
+}).GetHtml();
+@Html.DevExpress().PopupControl(settings => {
+    settings.Name = "pc";
+}).GetHtml()

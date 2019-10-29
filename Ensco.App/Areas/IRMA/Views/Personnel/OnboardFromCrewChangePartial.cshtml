@@ -1,0 +1,91 @@
+﻿@model Ensco.Irma.Models.PobBoardingModel
+
+@Html.DevExpress().FormLayout(form =>
+{
+    form.Name = "formOnboardFromCrewPartial";
+    form.EncodeHtml = false;
+    form.UseDefaultPaddings = false;
+    form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    form.UseDefaultPaddings = true;
+
+    form.Items.AddGroupItem(i =>
+    {
+        i.Caption = "Onboarding";
+        i.SettingsItemHelpTexts.Position = HelpTextPosition.Bottom;
+        i.ColCount = 4;
+
+        i.Items.Add(x => x.FlightManifest, item =>
+        {
+            Ensco.Models.LookupListModel<dynamic> lkpList = Ensco.Utilities.UtilitySystem.LookupLists["FlightManifest"];
+
+            item.FieldName = "FlightId";
+            item.NestedExtension().ComboBox(s =>
+            {
+                s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                s.Properties.ValidationSettings.Display = Display.Dynamic;
+                s.Properties.ValidationSettings.SetFocusOnError = true;
+                s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                s.Properties.DataSource = lkpList.Items;
+                s.Properties.NullText = "[Select]";
+                s.Properties.TextField = lkpList.DisplayField;
+                s.Properties.ValueField = lkpList.KeyFieldName;
+                s.Properties.DataMember = lkpList.DisplayField;
+                s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.NestedExtension().Button(s =>
+            {
+                s.Name = "btnFlightManifest";
+                s.Text = "";
+                s.Images.Image.Url = "~/Images/Submit.png";
+                s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                s.UseSubmitBehavior = true;
+            });
+        });
+
+        i.Items.Add(x => x.CrewChange, item =>
+        {
+            Ensco.Models.LookupListModel<dynamic>
+            lkpList = Ensco.Utilities.UtilitySystem.LookupLists["CrewChange"];
+
+            item.FieldName = "CrewId";
+            item.NestedExtension().ComboBox(s =>
+            {
+                s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                s.Properties.ValidationSettings.Display = Display.Dynamic;
+                s.Properties.ValidationSettings.SetFocusOnError = true;
+                s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                s.Properties.DataSource = lkpList.Items;
+                s.Properties.NullText = "[Select]";
+                s.Properties.TextField = lkpList.DisplayField;
+                s.Properties.ValueField = lkpList.KeyFieldName;
+                s.Properties.DataMember = lkpList.DisplayField;
+                s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.NestedExtension().Button(s =>
+            {
+                s.Name = "btnCrewChangeSubmit";
+                s.Text = "";
+                s.Images.Image.Url = "~/Images/Submit.png";
+                s.ControlStyle.BackColor = System.Drawing.Color.Transparent;
+                s.UseSubmitBehavior = true;
+            });
+        });
+        i.Items.Add(item =>
+        {
+            item.ShowCaption = DefaultBoolean.False;
+            item.ColumnSpan = 4;
+            item.SetNestedContent(() =>
+            {
+                Html.RenderPartial("OnboardFromCrewChangePobPartial", Model);
+            });
+        });
+    });
+}).GetHtml()

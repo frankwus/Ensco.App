@@ -1,0 +1,29 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        ASPxClientControl.GetControlCollection().ControlsInitialized.AddHandler(function () {
+            if (grid_HomeTasksTask0.GetVisibleRowsOnPage() == 0)
+                grid_HomeTasksTask0.SetVisible(false)
+        });
+        function OnValueChanged(s, url, id, selected) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { id: id, selected: selected },
+                beforeSend: function () {
+                },
+                success: function (msg) {
+                }
+            });
+        }
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("CrewChangeReportPartial", Model);
+}
+

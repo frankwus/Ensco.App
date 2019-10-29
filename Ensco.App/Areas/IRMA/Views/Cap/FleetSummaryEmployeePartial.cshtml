@@ -1,0 +1,219 @@
+﻿@model Ensco.App.TLC.FleetSummaryModel
+
+@{ 
+    string selectionChangedEvent = string.Format("function(s, e){{ var index = s.GetFocusedRowIndex(); document.location = '{0}?passportId=' + s.GetRowKey(index);}}", Url.Action("FleetSummary", "Cap", new { Area = "IRMA" }));
+
+    Dictionary<EnscoHelper.EventHandlerType, string> handlers = new Dictionary<EnscoHelper.EventHandlerType, string>();
+    handlers[EnscoHelper.EventHandlerType.FocusRowChanged] = selectionChangedEvent;
+
+}
+@Html.DevExpress().Splitter(settings =>
+{
+    settings.Name = "splitterFleetSummaryEmployee";
+    settings.AllowResize = false;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+    settings.SeparatorVisible = false;
+    settings.Styles.Pane.Border.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Paddings.Padding = System.Web.UI.WebControls.Unit.Pixel(0);
+    settings.Styles.Pane.Border.BorderStyle = System.Web.UI.WebControls.BorderStyle.None;
+    settings.ClientSideEvents.PaneResized = "function(s, e){ if(e.pane.name == \"panelFleetSummaryEmployeeDetail\") { grid_FleetSummaryEmployeeDetail.SetWidth(e.pane.GetClientWidth()); grid_FleetSummaryEmployeeDetail.SetHeight(e.pane.GetClientHeight()); }}";
+
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelFleetSummaryRig";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            Html.DevExpress().FormLayout(form =>
+            {
+                form.Name = "formFleetSummaryEmployeeInfo";
+                form.EncodeHtml = false;
+                form.UseDefaultPaddings = false;
+                form.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                form.ColumnCount = 1;
+                form.RequiredMarkDisplayMode = RequiredMarkMode.None;
+                form.UseDefaultPaddings = true;
+
+                form.Items.AddGroupItem(grp =>
+                {
+                    grp.Caption = "Employee";
+                    grp.ColumnCount = 4;
+                    grp.Items.Add(x=>x.PassportId, item =>
+                    {
+                        item.FieldName = "PassportId";
+                        item.Caption = "Name";
+                        Html.EnscoNestedEditor(item, x => x.PassportId, null, handlers);
+                    });
+
+                    grp.Items.Add(item =>
+                    {
+                        item.FieldName = "EnscoPassportNo";
+                        item.Caption = "Passport";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(item =>
+                    {
+                        item.FieldName = "Position";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(item =>
+                    {
+                        item.FieldName = "Department";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                });
+
+                form.Items.AddGroupItem(grp =>
+                {
+                    grp.Caption = "KSAs";
+                    grp.ColumnCount = 4;
+                    grp.Items.Add(x=>x.EmpTotals.TotalKSAs, item =>
+                    {
+                        item.FieldName = "TotalKSAs";
+                        item.Caption = "Total KSAs";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+
+                    grp.Items.Add(x => x.EmpTotals.KSAsAssessedCompetent, item =>
+                    {
+                        item.FieldName = "KSAsAssessedCompetent";
+                        item.Caption = "KSAs Assessed Competent";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsAssessedNotCompetent, item =>
+                    {
+                        item.FieldName = "KSAsAssessedNotCompetent";
+                        item.Caption = "KSAs Assessed Not Competent";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsAssessedNA, item =>
+                    {
+                        item.FieldName = "KSAsAssessedNA";
+                        item.Caption = "KSAs Assessed N/A";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsAssessedCredited, item =>
+                    {
+                        item.FieldName = "KSAsAssessedCredited";
+                        item.Caption = "KSAs Credited";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsAssessedOverdue, item =>
+                    {
+                        item.FieldName = "KSAsAssessedOverdue";
+                        item.Caption = "KSAs Overdue";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsReassessmentDue, item =>
+                    {
+                        item.FieldName = "KSAsReassessmentDue";
+                        item.Caption = "KSAs Reassessment Due Within Next 3 Months";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsReassessmentOverDue, item =>
+                    {
+                        item.FieldName = "KSAsReassessmentOverDue";
+                        item.Caption = "KSAs Reassessments Overdue";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsInGracePeriod, item =>
+                    {
+                        item.FieldName = "KSAsInGracePeriod";
+                        item.Caption = "KSAs In Grace Period";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                    grp.Items.Add(x => x.EmpTotals.KSAsInGracePeriodOverdue, item =>
+                    {
+                        item.FieldName = "KSAsInGracePeriodOverdue";
+                        item.Caption = "KSAs In Grace Period Overdue";
+                        item.NestedExtension().TextBox(s =>
+                        {
+                            s.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                            s.ReadOnly = true;
+                        });
+                    });
+                });
+
+            }).GetHtml();
+        });
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelFleetSummary1Empty1";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+        pane.SetContent(() =>
+        {
+            ViewContext.Writer.Write("<br/>");
+        });
+
+    });
+    settings.Panes.Add(pane =>
+    {
+        pane.Name = "panelFleetSummaryEmployeeDetail";
+        pane.AutoHeight = true;
+        pane.PaneStyle.BorderBottom.BorderWidth = System.Web.UI.WebControls.Unit.Pixel(1);
+        pane.AutoWidth = false;
+        pane.Size = Unit.Percentage(100);
+
+        pane.SetContent(() =>
+        {
+            Html.RenderAction("FleetSummaryEmployeeDetailPartial", "Cap", new { Area="IRMA", passportId=Model.PassportId});
+        });
+    });
+}).GetHtml()
+

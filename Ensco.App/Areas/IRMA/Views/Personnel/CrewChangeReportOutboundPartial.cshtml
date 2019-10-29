@@ -1,0 +1,30 @@
+﻿@model Ensco.Irma.Models.CrewChangeModel
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().GridView(gridFlight =>
+{
+    gridFlight.Name = "gridView_CrewChangeOutboundPersonnel";
+    gridFlight.KeyFieldName = Model.CrewFlightInfo.KeyFieldName;
+    gridFlight.Settings.ShowTitlePanel = true;
+    gridFlight.SettingsText.Title = "Outbound";
+    gridFlight.Height = Unit.Percentage(100);
+    gridFlight.Settings.VerticalScrollableHeight = 200;
+    gridFlight.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
+
+    gridFlight.CallbackRouteValues = new { Area = "Irma", Controller = "Personnel", Action = "CrewChangeReportOutboundPartial", Id = Model.Id };
+    Html.SetEnscoGridColumns(gridFlight, typeof(Ensco.Irma.Models.CrewPobViewModel));
+
+    gridFlight.Width = Unit.Percentage(100);
+
+    gridFlight.SettingsPager.Position = System.Web.UI.WebControls.PagerPosition.Bottom;
+    gridFlight.SettingsPager.FirstPageButton.Visible = true;
+    gridFlight.SettingsPager.LastPageButton.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Visible = true;
+    gridFlight.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50", "100" };
+    gridFlight.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+
+}).BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.KeyExpression = Model.OutboundPersonnel.KeyFieldName;
+    e.QueryableSource = Model.OutboundPersonnel.Dataset;
+}).GetHtml()
